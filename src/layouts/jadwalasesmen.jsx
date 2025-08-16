@@ -71,7 +71,7 @@ const JadwalAsesmen = () => {
         {/* Horizontal Line */}
         <div style={styles.horizontalLine}></div>
 
-        {/* Cards Section - Now Horizontal */}
+        {/* Cards Section - Full Screen Width */}
         <div style={styles.cardsContainer}>
           {/* Card 1 */}
           <div style={styles.card}>
@@ -79,6 +79,8 @@ const JadwalAsesmen = () => {
               <h3 style={styles.cardTitle}>
                 Lorem ipsum dolor sit amet consectetur adipiscing elit.
               </h3>
+              {/* Line after Lorem ipsum */}
+              <div style={styles.cardSeparatorLine}></div>
               <div style={styles.cardDetails}>
                 <p>Lokasi: Lorem Ipsum</p>
                 <p>Tanggat: DD/MM/YY</p>
@@ -98,6 +100,8 @@ const JadwalAsesmen = () => {
               <h3 style={styles.cardTitle}>
                 Lorem ipsum dolor sit amet consectetur adipiscing elit.
               </h3>
+              {/* Line after Lorem ipsum */}
+              <div style={styles.cardSeparatorLine}></div>
               <div style={styles.cardDetails}>
                 <p>Lokasi: Lorem Ipsum</p>
                 <p>Tanggat: DD/MM/YY</p>
@@ -117,6 +121,8 @@ const JadwalAsesmen = () => {
               <h3 style={styles.cardTitle}>
                 Lorem ipsum dolor sit amet consectetur adipiscing elit.
               </h3>
+              {/* Line after Lorem ipsum */}
+              <div style={styles.cardSeparatorLine}></div>
               <div style={styles.cardDetails}>
                 <p>Lokasi: Lorem Ipsum</p>
                 <p>Tanggat: DD/MM/YY</p>
@@ -376,13 +382,13 @@ const styles = {
     margin: '0 8px',
   },
   mainContent: {
-    maxWidth: '1200px',
+    maxWidth: '1400px',
     margin: '0 auto',
-    padding: '32px 16px',
-    marginBottom: '120px',
+    padding: '40px 60px',
+    marginBottom: '80px',
   },
   titleSection: {
-    marginBottom: '32px',
+    marginBottom: '40px',
   },
   subtitle: {
     fontSize: '14px',
@@ -398,23 +404,23 @@ const styles = {
   },
   searchSection: {
     display: 'flex',
-    flexWrap: 'wrap',
-    gap: '16px',
-    marginBottom: '24px',
+    gap: '30px',
+    marginBottom: '30px',
     alignItems: 'center',
-    width: '664px', // Total width to match 3 cards (200px each + 20px gaps = 660px + small buffer)
+    width: '100%',
   },
   searchSelect: {
-    flex: '0 0 120px', // Fixed width instead of flex: 1
+    flex: '1',
     padding: '12px 20px',
     border: '1px solid #ddd',
     borderRadius: '25px',
     backgroundColor: 'white',
     color: '#666',
     fontSize: '14px',
+    maxWidth: '200px',
   },
   searchInput: {
-    flex: '0 0 200px', // Fixed width to match card width
+    flex: '2',
     padding: '12px 20px',
     border: '1px solid #ddd',
     borderRadius: '25px',
@@ -430,63 +436,69 @@ const styles = {
     cursor: 'pointer',
   },
   horizontalLine: {
-    width: '664px', // Same width as searchSection to match alignment
+    width: '100%',
     height: '1px',
     backgroundColor: '#ddd',
-    marginBottom: '32px',
+    marginBottom: '40px',
   },
   cardsContainer: {
     display: 'flex',
-    flexDirection: 'row',
-    gap: '20px',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    marginLeft: '0', // Ensure cards start from the same left position as search elements
+    justifyContent: 'space-between',
+    gap: '30px',
+    alignItems: 'stretch',
     width: '100%',
   },
   card: {
     backgroundColor: 'white',
     border: '1px solid #e0e0e0',
     borderRadius: '12px',
-    padding: '20px 20px 24px 20px',
-    boxShadow: '0 6px 16px rgba(0,0,0,0.2)', // Much stronger shadow - more prominent
-    flex: '0 0 200px',
-    height: '300px',
+    padding: '25px',
+    boxShadow: '0 12px 40px rgba(0,0,0,0.25)',
+    flex: '1',
+    minHeight: '320px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
   },
   cardContent: {
-    marginBottom: '20px',
     flex: '1',
+    marginBottom: '20px',
   },
   cardTitle: {
-    fontWeight: '500',
+    fontWeight: '600',
     color: '#333',
-    marginBottom: '16px',
-    fontSize: '15px',
+    marginBottom: '15px',
+    fontSize: '16px',
     marginTop: '0',
     lineHeight: '1.4',
   },
-  cardDetails: {
-    fontSize: '13px',
-    color: '#666',
-    lineHeight: '1.6',
+  cardSeparatorLine: {
+    width: '100%',
+    height: '1px',
+    backgroundColor: '#e0e0e0',
     marginBottom: '20px',
   },
+  cardDetails: {
+    fontSize: '14px',
+    color: '#666',
+    lineHeight: '1.8',
+    marginBottom: '0',
+  },
   cardButtonContainer: {
-    textAlign: 'left',
+    textAlign: 'right',
+    marginTop: 'auto',
   },
   cardButton: {
     backgroundColor: 'transparent',
     color: '#3b82f6',
     border: '1px solid #3b82f6',
-    padding: '10px 32px',
-    borderRadius: '20px',
+    padding: '12px 36px',
+    borderRadius: '25px',
     fontWeight: '500',
-    fontSize: '13px',
+    fontSize: '14px',
     cursor: 'pointer',
+    transition: 'all 0.2s ease',
   },
 };
 
