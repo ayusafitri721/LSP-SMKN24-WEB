@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 function Navbar({ onNavClick, onLoginClick }) {
   const [isSertifikasiOpen, setIsSertifikasiOpen] = useState(false);
   const [isGaleriOpen, setIsGaleriOpen] = useState(false);

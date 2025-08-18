@@ -8,7 +8,6 @@ function AddAsesmen({ onBack, onSave }) {
   const handleSave = () => {
     if (judul && program && tanggal) {
       onSave && onSave({ judul, program, tanggal });
-      onBack && onBack();
     } else {
       alert('Harap isi semua field!');
     }
@@ -17,42 +16,121 @@ function AddAsesmen({ onBack, onSave }) {
   return (
     <div style={containerStyle}>
       {/* Header */}
-      <div style={headerStyle}>
-        <button onClick={onBack} style={backBtnStyle}>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-            <path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
-        <h1 style={titleStyle}>Tambah Asesmen</h1>
+      <h1 style={titleStyle}>Tambah Asesmen</h1>
+
+      {/* Card Form */}
+      <div style={cardStyle}>
+        <div style={formRow}>
+          <div style={formGroup}>
+            <label style={labelStyle}>Judul Asesmen</label>
+            <input
+              style={inputStyle}
+              value={judul}
+              onChange={(e) => setJudul(e.target.value)}
+              placeholder="Masukkan judul asesmen"
+            />
+          </div>
+          <div style={formGroup}>
+            <label style={labelStyle}>Program</label>
+            <input
+              style={inputStyle}
+              value={program}
+              onChange={(e) => setProgram(e.target.value)}
+              placeholder="Masukkan program"
+            />
+          </div>
+        </div>
+        <div style={formRow}>
+          <div style={formGroup}>
+            <label style={labelStyle}>Tanggal Dibuat</label>
+            <input
+              type="date"
+              style={inputStyle}
+              value={tanggal}
+              onChange={(e) => setTanggal(e.target.value)}
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Form */}
-      <div style={formGroup}>
-        <label style={labelStyle}>Judul Asesmen</label>
-        <input style={inputStyle} value={judul} onChange={(e) => setJudul(e.target.value)} />
+      {/* Action Buttons */}
+      <div style={btnGroupStyle}>
+        <button style={cancelBtnStyle} onClick={onBack}>Batal</button>
+        <button style={saveBtnStyle} onClick={handleSave}>Simpan</button>
       </div>
-      <div style={formGroup}>
-        <label style={labelStyle}>Program</label>
-        <input style={inputStyle} value={program} onChange={(e) => setProgram(e.target.value)} />
-      </div>
-      <div style={formGroup}>
-        <label style={labelStyle}>Tanggal Dibuat</label>
-        <input type="date" style={inputStyle} value={tanggal} onChange={(e) => setTanggal(e.target.value)} />
-      </div>
-
-      {/* Save Button */}
-      <button style={saveBtnStyle} onClick={handleSave}>Simpan</button>
     </div>
   );
 }
 
-const containerStyle = { minHeight: '100vh', backgroundColor: '#f0f0f0', padding: '16px', fontFamily: 'Segoe UI, Roboto, sans-serif' };
-const headerStyle = { display: 'flex', alignItems: 'center', marginBottom: '16px' };
-const backBtnStyle = { width: '24px', height: '24px', backgroundColor: '#4a9eff', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '8px', border: 'none', cursor: 'pointer', padding: 0 };
-const titleStyle = { fontSize: '18px', fontWeight: '700', color: '#333', margin: 0 };
-const formGroup = { marginBottom: '12px' };
-const labelStyle = { display: 'block', fontSize: '13px', fontWeight: '500', marginBottom: '4px' };
-const inputStyle = { width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', fontSize: '13px' };
-const saveBtnStyle = { backgroundColor: '#ff9500', color: 'white', border: 'none', borderRadius: '4px', padding: '8px 12px', fontSize: '13px', fontWeight: '500', cursor: 'pointer' };
+// Styles
+const containerStyle = {
+  minHeight: '100vh',
+  backgroundColor: '#f8f9fa',
+  padding: '40px',
+  fontFamily: 'Segoe UI, Roboto, sans-serif'
+};
+
+const titleStyle = {
+  fontSize: '28px',
+  fontWeight: '700',
+  color: '#333',
+  textAlign: 'center',
+  marginBottom: '32px'
+};
+
+const cardStyle = {
+  backgroundColor: '#fff',
+  padding: '32px',
+  borderRadius: '14px',
+  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+  margin: '0 auto 32px auto',
+  maxWidth: '950px'
+};
+
+const formRow = {
+  display: 'flex',
+  gap: '24px',
+  marginBottom: '20px'
+};
+
+const formGroup = { flex: 1 };
+const labelStyle = { display: 'block', fontSize: '16px', fontWeight: '600', marginBottom: '8px' };
+const inputStyle = {
+  width: '100%',
+  padding: '14px 16px',
+  borderRadius: '10px',
+  border: '1px solid #bbb',
+  fontSize: '16px'
+};
+
+const btnGroupStyle = {
+  display: 'flex',
+  justifyContent: 'flex-end',
+  gap: '16px',
+  maxWidth: '950px',
+  margin: '0 auto'
+};
+
+const cancelBtnStyle = {
+  backgroundColor: '#6c757d',
+  color: 'white',
+  border: 'none',
+  borderRadius: '10px',
+  padding: '12px 22px',
+  fontSize: '16px',
+  fontWeight: '600',
+  cursor: 'pointer'
+};
+
+const saveBtnStyle = {
+  backgroundColor: '#ff6b35',
+  color: 'white',
+  border: 'none',
+  borderRadius: '10px',
+  padding: '12px 22px',
+  fontSize: '16px',
+  fontWeight: '600',
+  cursor: 'pointer'
+};
 
 export default AddAsesmen;

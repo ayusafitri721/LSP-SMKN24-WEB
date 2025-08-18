@@ -9,7 +9,7 @@ import CariSkema from './layouts/CariSkema';
 import FooterPage from './layouts/FooterPage';
 import Register from './layouts/Register';
 import Login from './layouts/Login';
-// import SertifikasiCTA from './layouts/SertifikasiCTA';
+import SertifikasiCTA from './layouts/SertifikasiCTA'; //sementara untuk handle regis page
 import LandingPage from './layouts/DetailSertifikasi';
 import Kontak from './layouts/kontak';
 import ManajemenData from './layouts/ManajemenData';
@@ -35,8 +35,13 @@ import TempatUji from './layouts/TempatUji';
 import AddSkema from './layouts/AddSkema';
 import EditSkema from './layouts/EditSkema';
 import JadwalAsesmen from './layouts/jadwalasesmen';
+// Import komponen GaleriFoto dan GaleriVideo
+import GaleriFoto from './layouts/GaleriFoto';
+import GaleriVideo from './layouts/GaleriVideo';
+
 
 function App() {
+
   const [currentPage, setCurrentPage] = useState('home');
   const [activeMenu, setActiveMenu] = useState('Dashboard');
   const [pendingScroll, setPendingScroll] = useState(null);
@@ -181,6 +186,19 @@ function App() {
 
     if (section === 'jadwalasesmen') {
       setCurrentPage('jadwalasesmen');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // Tambah routing untuk galeri foto dan video
+    if (section === 'galerifoto') {
+      setCurrentPage('galerifoto');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (section === 'galerivideo') {
+      setCurrentPage('galerivideo');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -404,9 +422,33 @@ function App() {
     console.log(`Navigate to: ${menuItem}`);
   };
 
+  // Handler untuk navigasi dari GaleriFoto
+  const handleGaleriFotoNavigate = (menuItem) => {
+    const menuLower = menuItem.toLowerCase();
+    
+    if (menuLower === 'home') {
+      handleBackToHome();
+      return;
+    }
+    
+    console.log(`Navigate to: ${menuItem}`);
+  };
+
+  // Handler untuk navigasi dari GaleriVideo
+  const handleGaleriVideoNavigate = (menuItem) => {
+    const menuLower = menuItem.toLowerCase();
+    
+    if (menuLower === 'home') {
+      handleBackToHome();
+      return;
+    }
+    
+    console.log(`Navigate to: ${menuItem}`);
+  };
+
   return (
     <>
-      {(currentPage === 'home' || currentPage === 'kontak' || currentPage === 'berita' || currentPage === 'landingPage' || currentPage === 'tempatuji' || currentPage === 'jadwalasesmen') && (
+      {(currentPage === 'home' || currentPage === 'kontak' || currentPage === 'berita' || currentPage === 'landingPage' || currentPage === 'tempatuji' || currentPage === 'jadwalasesmen' || currentPage === 'galerifoto' || currentPage === 'galerivideo') && (
         <Navbar onNavClick={scrollToSection} onLoginClick={handleLoginClick} />
       )}
 
@@ -427,10 +469,11 @@ function App() {
           <div>
             <Skema />
           </div>
-          {/* <SertifikasiCTA
+          {/* HANDLE REGISTER PAGE */}
+          <SertifikasiCTA
             goToRegister={() => setCurrentPage('register')}
             goToDashboard={goToDashboard}
-          /> */}
+          />
           <div ref={galeriRef}>
             <CariSkema goToLandingPage={goToLandingPage} />
           </div>
@@ -444,6 +487,8 @@ function App() {
       {currentPage === 'berita' && <Berita onBack={handleBackToHome} />}
       {currentPage === 'tempatuji' && <TempatUji onBack={handleBackToHome} onNavigate={handleTempatUjiNavigate} />}
       {currentPage === 'jadwalasesmen' && <JadwalAsesmen onBack={handleBackToHome} />}
+      {currentPage === 'galerifoto' && <GaleriFoto onBack={handleBackToHome} onNavigate={handleGaleriFotoNavigate} />}
+      {currentPage === 'galerivideo' && <GaleriVideo onBack={handleBackToHome} onNavigate={handleGaleriVideoNavigate} />}
       {currentPage === 'dashboard' && (
         <Dashboard onBack={handleBackToHome} onNavigate={handleNavigate} />
       )}
@@ -612,6 +657,7 @@ function App() {
       {currentPage === 'login' && <Login onBack={handleBackToHome} goToDashboard={goToDashboard} />}
       {currentPage === 'landingPage' && <LandingPage onBack={handleBackToHome} onNavigate={handleDetailSertifikasiNavigate} />}
     </>
+    
   );
 }
 

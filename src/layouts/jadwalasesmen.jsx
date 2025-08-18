@@ -39,7 +39,7 @@ const JadwalAsesmen = () => {
                   display: "block"
                 }}
               >
-                Home &gt; Jadwal Asesmen
+                Home &gt; Berita Terkini
               </span>
 
       {/* Main Content */}
@@ -71,7 +71,7 @@ const JadwalAsesmen = () => {
         {/* Horizontal Line */}
         <div style={styles.horizontalLine}></div>
 
-        {/* Cards Section - Now Horizontal */}
+        {/* Cards Section - Full Screen Width */}
         <div style={styles.cardsContainer}>
           {/* Card 1 */}
           <div style={styles.card}>
@@ -79,6 +79,8 @@ const JadwalAsesmen = () => {
               <h3 style={styles.cardTitle}>
                 Lorem ipsum dolor sit amet consectetur adipiscing elit.
               </h3>
+              {/* Line after Lorem ipsum */}
+              <div style={styles.cardSeparatorLine}></div>
               <div style={styles.cardDetails}>
                 <p>Lokasi: Lorem Ipsum</p>
                 <p>Tanggat: DD/MM/YY</p>
@@ -98,6 +100,8 @@ const JadwalAsesmen = () => {
               <h3 style={styles.cardTitle}>
                 Lorem ipsum dolor sit amet consectetur adipiscing elit.
               </h3>
+              {/* Line after Lorem ipsum */}
+              <div style={styles.cardSeparatorLine}></div>
               <div style={styles.cardDetails}>
                 <p>Lokasi: Lorem Ipsum</p>
                 <p>Tanggat: DD/MM/YY</p>
@@ -117,6 +121,8 @@ const JadwalAsesmen = () => {
               <h3 style={styles.cardTitle}>
                 Lorem ipsum dolor sit amet consectetur adipiscing elit.
               </h3>
+              {/* Line after Lorem ipsum */}
+              <div style={styles.cardSeparatorLine}></div>
               <div style={styles.cardDetails}>
                 <p>Lokasi: Lorem Ipsum</p>
                 <p>Tanggat: DD/MM/YY</p>
@@ -376,13 +382,13 @@ const styles = {
     margin: '0 8px',
   },
   mainContent: {
-    maxWidth: '1200px',
+    maxWidth: '1400px',
     margin: '0 auto',
-    padding: '32px 16px',
-    marginBottom: '120px', // Increased more space from footer
+    padding: '40px 60px',
+    marginBottom: '80px',
   },
   titleSection: {
-    marginBottom: '32px',
+    marginBottom: '40px',
   },
   subtitle: {
     fontSize: '14px',
@@ -398,94 +404,101 @@ const styles = {
   },
   searchSection: {
     display: 'flex',
-    flexWrap: 'wrap',
-    gap: '16px',
-    marginBottom: '24px', // Reduced margin bottom since we have line now
+    gap: '30px',
+    marginBottom: '30px',
+    alignItems: 'center',
+    width: '100%',
   },
   searchSelect: {
     flex: '1',
-    minWidth: '0',
-    padding: '12px 20px', // Increased padding
+    padding: '12px 20px',
     border: '1px solid #ddd',
-    borderRadius: '25px', // Made pill/oval shaped
+    borderRadius: '25px',
     backgroundColor: 'white',
     color: '#666',
     fontSize: '14px',
+    maxWidth: '200px',
   },
   searchInput: {
-    flex: '1',
-    minWidth: '0',
-    padding: '12px 20px', // Increased padding
+    flex: '2',
+    padding: '12px 20px',
     border: '1px solid #ddd',
-    borderRadius: '25px', // Made pill/oval shaped
+    borderRadius: '25px',
     fontSize: '14px',
   },
   searchButton: {
     backgroundColor: '#ff6b00',
     color: 'white',
-    padding: '12px 32px', // Increased padding
+    padding: '12px 32px',
     border: 'none',
-    borderRadius: '25px', // Made pill/oval shaped
+    borderRadius: '25px',
     fontWeight: '500',
     cursor: 'pointer',
   },
-  // Added horizontal line style
   horizontalLine: {
     width: '100%',
     height: '1px',
     backgroundColor: '#ddd',
-    marginBottom: '32px',
+    marginBottom: '40px',
   },
-  // MAIN CHANGE: Cards now display horizontally in a row
   cardsContainer: {
     display: 'flex',
-    flexDirection: 'row', // Changed from 'column' to 'row'
-    gap: '24px',
-    flexWrap: 'wrap', // Allow wrapping on smaller screens
-    alignItems: 'flex-start', // Align cards to top consistently
+    justifyContent: 'space-between',
+    gap: '30px',
+    alignItems: 'stretch',
+    width: '100%',
   },
   card: {
     backgroundColor: 'white',
     border: '1px solid #e0e0e0',
-    borderRadius: '12px', // Slightly more rounded corners
-    padding: '20px 20px 24px 20px', // More compact padding
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)', // Enhanced shadow
-    flex: '0 0 200px', // Fixed width instead of flex 1
-    height: '300px', // Fixed height for consistency
+    borderRadius: '12px',
+    padding: '25px',
+    boxShadow: '0 12px 40px rgba(0,0,0,0.25)',
+    flex: '1',
+    minHeight: '320px',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between', // Space content evenly
+    justifyContent: 'space-between',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
   },
   cardContent: {
-    marginBottom: '20px', // Reduced margin
-    flex: '1', // Take up available space
+    flex: '1',
+    marginBottom: '20px',
   },
   cardTitle: {
-    fontWeight: '500',
+    fontWeight: '600',
     color: '#333',
-    marginBottom: '16px', // Increased space after title
-    fontSize: '15px', // Slightly smaller font
+    marginBottom: '15px',
+    fontSize: '16px',
     marginTop: '0',
     lineHeight: '1.4',
   },
+  cardSeparatorLine: {
+    width: '100%',
+    height: '1px',
+    backgroundColor: '#e0e0e0',
+    marginBottom: '20px',
+  },
   cardDetails: {
-    fontSize: '13px', // Slightly smaller
+    fontSize: '14px',
     color: '#666',
-    lineHeight: '1.6', // More line spacing
-    marginBottom: '20px', // Add space before button
+    lineHeight: '1.8',
+    marginBottom: '0',
   },
   cardButtonContainer: {
-    textAlign: 'left', // Changed from center to left (pinggir)
+    textAlign: 'right',
+    marginTop: 'auto',
   },
   cardButton: {
-    backgroundColor: 'transparent', // Changed from blue to transparent
-    color: '#3b82f6', // Blue text color
-    border: '1px solid #3b82f6', // Blue border only
-    padding: '10px 32px', // More horizontal padding
-    borderRadius: '20px', // More rounded like a pill
+    backgroundColor: 'transparent',
+    color: '#3b82f6',
+    border: '1px solid #3b82f6',
+    padding: '12px 36px',
+    borderRadius: '25px',
     fontWeight: '500',
-    fontSize: '13px',
+    fontSize: '14px',
     cursor: 'pointer',
+    transition: 'all 0.2s ease',
   },
 };
 
