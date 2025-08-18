@@ -9,7 +9,7 @@ import CariSkema from './layouts/CariSkema';
 import FooterPage from './layouts/FooterPage';
 import Register from './layouts/Register';
 import Login from './layouts/Login';
-// import SertifikasiCTA from './layouts/SertifikasiCTA';
+import SertifikasiCTA from './layouts/SertifikasiCTA'; //sementara untuk handle regis page
 import LandingPage from './layouts/DetailSertifikasi';
 import Kontak from './layouts/kontak';
 import ManajemenData from './layouts/ManajemenData';
@@ -469,10 +469,11 @@ function App() {
           <div>
             <Skema />
           </div>
-          {/* <SertifikasiCTA
+          {/* HANDLE REGISTER PAGE */}
+          <SertifikasiCTA
             goToRegister={() => setCurrentPage('register')}
             goToDashboard={goToDashboard}
-          /> */}
+          />
           <div ref={galeriRef}>
             <CariSkema goToLandingPage={goToLandingPage} />
           </div>

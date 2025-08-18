@@ -849,7 +849,7 @@ function Dashboard({ onBack, onNavigate }) {
         }}
       >
         {/* Konten berdasarkan activeMenu */}
-
+{/* dari sini */}
         {activeMenu === "Dashboard" && (
           <div style={{ textAlign: "center" }}>
             <h1
