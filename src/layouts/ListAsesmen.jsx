@@ -5,14 +5,27 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
+  // Sample data untuk demo sesuai dengan design
+  const sampleData = [
+    {
+      id: 1,
+      namaJadwal: 'USK RPL Pemrograman Dasar',
+      tuk: 'Sewaktu/Tempat Kerja/Mandiri',
+      nisn: '0071585059',
+      tanggalUjian: '9/7/2025',
+      status: 'aktif',
+      pembiayaan: 'Dibayar Penuh'
+    },
+    // Tambahkan data lain jika diperlukan
+  ];
+
+  const dataToUse = assessmentData && assessmentData.length > 0 ? assessmentData : sampleData;
+
   // Filter data berdasarkan search term
-  const filteredData = assessmentData.filter(item =>
+  const filteredData = dataToUse.filter(item =>
     item.namaJadwal.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.tuk.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.lokasiUjian.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.asesor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.jumlahPeserta.toString().includes(searchTerm.toLowerCase()) ||
-    item.pembiayaan.toLowerCase().includes(searchTerm.toLowerCase())
+    (item.nisn && item.nisn.toString().includes(searchTerm.toLowerCase()))
   );
 
   const handleOpenDeleteModal = (item) => {
@@ -27,28 +40,14 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
 
   const handleConfirmDelete = () => {
     if (itemToDelete) {
-      setAssessmentData(assessmentData.filter(item => item.id !== itemToDelete.id));
+      if (assessmentData && assessmentData.length > 0) {
+        setAssessmentData(assessmentData.filter(item => item.id !== itemToDelete.id));
+      }
     }
     handleCloseDeleteModal();
   };
 
   // Simple icon components
-  const EditIcon = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-    </svg>
-  );
-
-  const DeleteIcon = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="3 6 5 6 21 6"></polyline>
-      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-      <line x1="10" y1="11" x2="10" y2="17"></line>
-      <line x1="14" y1="11" x2="14" y2="17"></line>
-    </svg>
-  );
-
   const AddIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -264,10 +263,10 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
           color: '#1a1a1a',
           margin: 0
         }}>
-          Daftar Asesmen
+          Daftar Assessment
         </h2>
         <button
-          onClick={() => onNavigate('addlistasesmen')}
+          onClick={() => onNavigate && onNavigate('addlistasesmen')}
           style={{
             backgroundColor: '#fd7e14',
             color: '#ffffff',
@@ -300,213 +299,182 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
           <table style={{
             width: '100%',
             borderCollapse: 'collapse',
-            minWidth: '600px'
+            minWidth: '900px'
           }}>
             <thead>
               <tr style={{
-                backgroundColor: '#f8f9fa'
+                backgroundColor: '#f8f9fa',
+                borderBottom: '2px solid #dee2e6'
               }}>
                 <th style={{
-                  padding: '12px',
-                  textAlign: 'left',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#333',
-                  borderBottom: '1px solid #e0e0e0',
-                  width: '60px'
-                }}>No</th>
-                <th style={{
-                  padding: '12px',
-                  textAlign: 'left',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#333',
-                  borderBottom: '1px solid #e0e0e0'
-                }}>Nama Jadwal</th>
-                <th style={{
-                  padding: '12px',
-                  textAlign: 'left',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#333',
-                  borderBottom: '1px solid #e0e0e0'
-                }}>TUK</th>
-                <th style={{
-                  padding: '12px',
-                  textAlign: 'left',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#333',
-                  borderBottom: '1px solid #e0e0e0'
-                }}>Pembiayaan</th>
-                <th style={{
-                  padding: '12px',
-                  textAlign: 'left',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#333',
-                  borderBottom: '1px solid #e0e0e0'
-                }}>Tanggal Ujian</th>
-                <th style={{
-                  padding: '12px',
-                  textAlign: 'left',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#333',
-                  borderBottom: '1px solid #e0e0e0'
-                }}>Lokasi Ujian</th>
-                <th style={{
-                  padding: '12px',
-                  textAlign: 'left',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#333',
-                  borderBottom: '1px solid #e0e0e0'
-                }}>Asesor</th>
-                <th style={{
-                  padding: '12px',
-                  textAlign: 'left',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#333',
-                  borderBottom: '1px solid #e0e0e0'
-                }}>Jumlah Peserta</th>
-                <th style={{
-                  padding: '12px',
+                  padding: '16px 20px',
                   textAlign: 'center',
                   fontSize: '14px',
                   fontWeight: '600',
-                  color: '#333',
-                  borderBottom: '1px solid #e0e0e0',
-                  width: '150px'
-                }}>Aksi</th>
+                  color: '#495057',
+                  borderRight: '1px solid #dee2e6',
+                  width: '60px'
+                }}>No</th>
+                <th style={{
+                  padding: '16px 20px',
+                  textAlign: 'center',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#495057',
+                  borderRight: '1px solid #dee2e6',
+                  minWidth: '250px'
+                }}>Nama Jadwal</th>
+                <th style={{
+                  padding: '16px 20px',
+                  textAlign: 'center',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#495057',
+                  borderRight: '1px solid #dee2e6',
+                  minWidth: '180px'
+                }}>TUK</th>
+                <th style={{
+                  padding: '16px 20px',
+                  textAlign: 'center',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#495057',
+                  borderRight: '1px solid #dee2e6',
+                  minWidth: '120px'
+                }}>NISN</th>
+                <th style={{
+                  padding: '16px 20px',
+                  textAlign: 'center',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#495057',
+                  borderRight: '1px solid #dee2e6',
+                  minWidth: '120px'
+                }}>Tanggal Ujian</th>
+                <th style={{
+                  padding: '16px 20px',
+                  textAlign: 'center',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#495057',
+                  borderRight: '1px solid #dee2e6',
+                  minWidth: '100px'
+                }}>Status</th>
+                <th style={{
+                  padding: '16px 20px',
+                  textAlign: 'center',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#495057',
+                  minWidth: '100px'
+                }}>Lihat</th>
               </tr>
             </thead>
             <tbody>
               {filteredData.length > 0 ? (
                 filteredData.map((item, index) => (
                   <tr key={item.id} style={{
-                    backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9f9f9'
+                    borderBottom: '1px solid #dee2e6',
+                    backgroundColor: '#ffffff'
                   }}>
                     <td style={{
-                      padding: '12px',
-                      borderBottom: '1px solid #f0f0f0',
+                      padding: '20px',
+                      textAlign: 'center',
                       fontSize: '14px',
-                      color: '#666'
-                    }}>{index + 1}</td>
-                    <td style={{
-                      padding: '12px',
-                      borderBottom: '1px solid #f0f0f0',
-                      fontSize: '14px',
-                      color: '#333',
-                      fontWeight: '500'
-                    }}>{item.namaJadwal}</td>
-                    <td style={{
-                      padding: '12px',
-                      borderBottom: '1px solid #f0f0f0',
-                      fontSize: '14px',
-                      color: '#666'
-                    }}>{item.tuk}</td>
-                    <td style={{
-                      padding: '12px',
-                      borderBottom: '1px solid #f0f0f0',
-                      fontSize: '14px'
+                      color: '#495057',
+                      borderRight: '1px solid #dee2e6',
+                      verticalAlign: 'middle'
                     }}>
-                      <span style={{
-                        padding: '4px 12px',
-                        borderRadius: '20px',
-                        fontSize: '12px',
-                        fontWeight: '500',
-                        backgroundColor: item.pembiayaan === 'Dibayar Penuh' ? '#d4edda' : '#fff3cd',
-                        color: item.pembiayaan === 'Dibayar Penuh' ? '#155724' : '#856404'
-                      }}>
-                        {item.pembiayaan}
-                      </span>
+                      {index + 1}.
                     </td>
                     <td style={{
-                      padding: '12px',
-                      borderBottom: '1px solid #f0f0f0',
+                      padding: '20px',
                       fontSize: '14px',
-                      color: '#666'
-                    }}>{item.tanggalUjian}</td>
+                      color: '#212529',
+                      fontWeight: '500',
+                      borderRight: '1px solid #dee2e6',
+                      verticalAlign: 'middle'
+                    }}>
+                      {item.namaJadwal}
+                    </td>
                     <td style={{
-                      padding: '12px',
-                      borderBottom: '1px solid #f0f0f0',
+                      padding: '20px',
                       fontSize: '14px',
-                      color: '#666'
-                    }}>{item.lokasiUjian}</td>
+                      color: '#495057',
+                      borderRight: '1px solid #dee2e6',
+                      verticalAlign: 'middle'
+                    }}>
+                      {item.tuk}
+                    </td>
                     <td style={{
-                      padding: '12px',
-                      borderBottom: '1px solid #f0f0f0',
-                      fontSize: '14px',
-                      color: '#666'
-                    }}>{item.asesor}</td>
-                    <td style={{
-                      padding: '12px',
-                      borderBottom: '1px solid #f0f0f0',
-                      fontSize: '14px',
-                      color: '#666'
-                    }}>{item.jumlahPeserta}</td>
-                    <td style={{
-                      padding: '12px',
-                      borderBottom: '1px solid #f0f0f0',
+                      padding: '20px',
                       textAlign: 'center',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      gap: '8px'
+                      fontSize: '14px',
+                      color: '#495057',
+                      borderRight: '1px solid #dee2e6',
+                      verticalAlign: 'middle'
+                    }}>
+                      {item.nisn || item.asesor || '-'}
+                    </td>
+                    <td style={{
+                      padding: '20px',
+                      textAlign: 'center',
+                      fontSize: '14px',
+                      color: '#495057',
+                      borderRight: '1px solid #dee2e6',
+                      verticalAlign: 'middle'
+                    }}>
+                      {item.tanggalUjian}
+                    </td>
+                    <td style={{
+                      padding: '20px',
+                      textAlign: 'center',
+                      borderRight: '1px solid #dee2e6',
+                      verticalAlign: 'middle'
+                    }}>
+                      <div style={{
+                        width: '16px',
+                        height: '16px',
+                        backgroundColor: '#28a745',
+                        borderRadius: '2px',
+                        margin: '0 auto'
+                      }}></div>
+                    </td>
+                    <td style={{
+                      padding: '20px',
+                      textAlign: 'center',
+                      verticalAlign: 'middle'
                     }}>
                       <button style={{
-                        padding: '6px 12px',
-                        backgroundColor: '#ffff00',
-                        color: '#000000',
-                        border: 'none',
-                        borderRadius: '6px',
-                        fontSize: '12px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        transition: 'background-color 0.2s ease',
-                        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
-                      }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#e0d800'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = '#ffff00'}
-                      onClick={() => onNavigate('editlistasesmen', item)}
-                      >
-                        <EditIcon /> Edit
-                      </button>
-                      <button style={{
-                        padding: '6px 12px',
-                        backgroundColor: '#ff0000',
+                        backgroundColor: '#fd7e14',
                         color: '#ffffff',
                         border: 'none',
-                        borderRadius: '6px',
+                        borderRadius: '4px',
+                        padding: '6px 16px',
                         fontSize: '12px',
                         cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        transition: 'background-color 0.2s ease',
-                        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+                        fontWeight: '500',
+                        minWidth: '60px',
+                        transition: 'background-color 0.2s ease'
                       }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#cc0000'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = '#ff0000'}
-                      onClick={() => handleOpenDeleteModal(item)}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#e96a00'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = '#fd7e14'}
+                      onClick={() => onNavigate && onNavigate('lihatlistasesmen', item)} // Changed from 'detailasesmen' to 'lihatlistasesmen'
                       >
-                        <DeleteIcon /> Hapus
+                        Lihat
                       </button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="9" style={{
+                  <td colSpan="7" style={{
                     padding: '40px',
                     textAlign: 'center',
                     color: '#999',
                     fontSize: '14px'
                   }}>
-                    {searchTerm ? 'Tidak ada data yang sesuai dengan pencarian' : 'Belum ada data asesmen'}
+                    {searchTerm ? 'Tidak ada data yang sesuai dengan pencarian' : 'Belum ada data assessment'}
                   </td>
                 </tr>
               )}
@@ -515,7 +483,7 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
         </div>
       </div>
 
-      {/* Delete Confirmation Modal - Updated Design */}
+      {/* Delete Confirmation Modal */}
       {showDeleteModal && itemToDelete && (
         <div style={{
           position: 'fixed',
@@ -540,7 +508,6 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
             fontFamily: 'Arial, sans-serif',
             overflow: 'hidden',
           }}>
-            {/* Warning Icon Circle */}
             <div style={{
               backgroundColor: '#dc3545',
               width: '80px',
@@ -554,7 +521,6 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
               <WarningIcon />
             </div>
 
-            {/* Title */}
             <h3 style={{
               fontSize: '18px',
               fontWeight: '600',
@@ -574,7 +540,6 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
               Menghapus Data
             </h3>
 
-            {/* Item Name */}
             <p style={{
               fontSize: '18px',
               fontWeight: '600',
@@ -585,14 +550,12 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
               "{itemToDelete.namaJadwal}"?
             </p>
 
-            {/* Separator Line */}
             <div style={{
               height: '1px',
               backgroundColor: '#e0e0e0',
               margin: '0 0 0 0',
             }}></div>
 
-            {/* Buttons */}
             <div style={{
               display: 'flex',
               height: '50px',
