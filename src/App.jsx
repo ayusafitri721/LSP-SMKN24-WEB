@@ -198,28 +198,28 @@ function App() {
       setEditData(data);
     }
 
+    // UPDATED MENU MAPPING - THIS IS THE FIX
     const menuMap = {
       dashboard: 'Dashboard',
       manajemenData: 'ManajemenData',
       listasesmen: 'ListAsesmen',
       asesmenDiikuti: 'AsesmenDiikuti',
       profile: 'Profile',
-      addlistasesmen: 'ManajemenData',
+      addlistasesmen: 'ListAsesmen',  // Changed from ManajemenData
+      editlistasesmen: 'ListAsesmen', // Changed from ManajemenData
+      lihatlistasesmen: 'ListAsesmen', // Changed from ManajemenData
+      // Keep all other mappings the same
       addjurusan: 'ManajemenData',
       editjurusan: 'ManajemenData',
-      editlistasesmen: 'ManajemenData',
       addasesor: 'ManajemenData',
       editasesor: 'ManajemenData',
       addasesi: 'ManajemenData',
       editasesi: 'ManajemenData',
       addasesmen: 'ManajemenData',
-      editasesmen: 'ManajemenData',
-      lihatlistasesmen: 'ManajemenData'
+      editasesmen: 'ManajemenData'
     };
 
-    if (['asesor', 'asesi', 'asesmen', 'jurusan', 'kompetensi', 'addlistasesmen', 'addjurusan', 'editjurusan', 'addasesor', 'editasesor', 'addasesi', 'editasesi', 'addasesmen', 'editasesmen', 'lihatlistasesmen'].includes(pageLower)) {
-      setActiveMenu('ManajemenData');
-    } else if (menuMap[pageLower]) {
+    if (menuMap[pageLower]) {
       setActiveMenu(menuMap[pageLower]);
     }
 
