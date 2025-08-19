@@ -459,7 +459,7 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
                       }}
                       onMouseEnter={(e) => e.target.style.backgroundColor = '#e96a00'}
                       onMouseLeave={(e) => e.target.style.backgroundColor = '#fd7e14'}
-                      onClick={() => onNavigate && onNavigate('detailasesmen', item)}
+                      onClick={() => onNavigate && onNavigate('lihatlistasesmen', item)} // Changed from 'detailasesmen' to 'lihatlistasesmen'
                       >
                         Lihat
                       </button>
