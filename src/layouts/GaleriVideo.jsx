@@ -33,7 +33,8 @@ function GaleriVideo({ onBack }) {
       videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
       videoId: 'dQw4w9WgXcQ',
       duration: '3:32',
-      views: '1.2B'
+      views: '1.2B',
+      date: '15 Juli 2024'
     },
     {
       id: 2,
@@ -42,7 +43,8 @@ function GaleriVideo({ onBack }) {
       videoUrl: 'https://www.youtube.com/embed/kJQP7kiw5Fk',
       videoId: 'kJQP7kiw5Fk',
       duration: '4:42',
-      views: '8.1B'
+      views: '8.1B',
+      date: '20 Juni 2024'
     },
     {
       id: 3,
@@ -51,7 +53,8 @@ function GaleriVideo({ onBack }) {
       videoUrl: 'https://www.youtube.com/embed/9bZkp7q19f0',
       videoId: '9bZkp7q19f0',
       duration: '4:12',
-      views: '4.8B'
+      views: '4.8B',
+      date: '10 Mei 2024'
     },
     {
       id: 4,
@@ -60,7 +63,8 @@ function GaleriVideo({ onBack }) {
       videoUrl: 'https://www.youtube.com/embed/fJ9rUzIMcZQ',
       videoId: 'fJ9rUzIMcZQ',
       duration: '5:55',
-      views: '1.9B'
+      views: '1.9B',
+      date: '5 April 2024'
     },
     {
       id: 5,
@@ -69,7 +73,8 @@ function GaleriVideo({ onBack }) {
       videoUrl: 'https://www.youtube.com/embed/YQHsXMglC9A',
       videoId: 'YQHsXMglC9A',
       duration: '6:07',
-      views: '3.2B'
+      views: '3.2B',
+      date: '22 Maret 2024'
     },
     {
       id: 6,
@@ -78,7 +83,8 @@ function GaleriVideo({ onBack }) {
       videoUrl: 'https://www.youtube.com/embed/JGwWNGJdvx8',
       videoId: 'JGwWNGJdvx8',
       duration: '3:53',
-      views: '5.7B'
+      views: '5.7B',
+      date: '18 Februari 2024'
     }
   ];
 
@@ -88,8 +94,14 @@ function GaleriVideo({ onBack }) {
   // Video IDs yang diketahui bermasalah dengan thumbnail
   const problematicVideoIds = ['fJ9rUzIMcZQ', 'JGwWNGJdvx8'];
 
-  const shouldShowPlaceholder = (videoId) => {
-    return imageLoadStates[videoId] === 'error' || problematicVideoIds.includes(videoId);
+  const scrollToVideoSection = () => {
+    const videoSection = document.getElementById('video-section');
+    if (videoSection) {
+      videoSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
   };
 
   return (
@@ -100,7 +112,7 @@ function GaleriVideo({ onBack }) {
           position: 'relative',
           height: '60vh',
           minHeight: '400px',
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('src/img/auditoriums.png')`,
+          background:  `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('src/img/auditoriums.png')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -121,6 +133,7 @@ function GaleriVideo({ onBack }) {
           backgroundColor: '#FF8303',
           zIndex: 3
         }}></div> 
+        
         {/* Content */}
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '800px', padding: '0 20px' }}>
           <h1 
@@ -163,6 +176,7 @@ function GaleriVideo({ onBack }) {
               fontSize: '16px',
               fontWeight: '500'
             }}
+            onClick={scrollToVideoSection}
             onMouseOver={(e) => {
               e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.3)';
               e.currentTarget.style.transform = 'scale(1.05)';
@@ -177,7 +191,7 @@ function GaleriVideo({ onBack }) {
                 width: '40px',
                 height: '40px',
                 borderRadius: '50%',
-                backgroundColor: '#FF8303',
+                backgroundColor: '#FF0303FF',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -222,7 +236,7 @@ function GaleriVideo({ onBack }) {
         </div>
 
         {/* Video Grid */}
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px 60px' }}>
+        <div id="video-section" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px 60px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '24px' }}>
             {galleryVideos.map((video) => (
               <div
@@ -285,7 +299,7 @@ function GaleriVideo({ onBack }) {
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontSize: '24px',
-                      color: '#FF8303',
+                      color: '#FF0303FF',
                       boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
                       transform: 'scale(0.9)',
                       transition: 'transform 0.2s ease'
@@ -419,13 +433,14 @@ function GaleriVideo({ onBack }) {
         </div>
       )}
 
+      {/* CSS for hover effects */}
       <style>{`
         .play-overlay:hover div {
           transform: scale(1.1) !important;
         }
       `}</style>
 
-  {/* Footer */}
+      {/* Footer */}
       <footer style={{
         background: 'linear-gradient(135deg, #f97316 0%, #f97316 40%, #2C94FF 40%, #2C94FF 100%)',
         padding: '40px 60px',
@@ -609,48 +624,6 @@ function GaleriVideo({ onBack }) {
                 padding: 0,
                 margin: 0
               }}>
-                <li style={{ marginBottom: '8px' }}>
-                  <a href="#" style={{
-                    color: 'white',
-                    textDecoration: 'none',
-                    fontSize: '14px',
-                    opacity: '0.9',
-                    transition: 'opacity 0.3s ease',
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}>
-                    <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
-                    Syarat dan Ketentuan
-                  </a>
-                </li>
-                <li style={{ marginBottom: '8px' }}>
-                  <a href="#" style={{
-                    color: 'white',
-                    textDecoration: 'none',
-                    fontSize: '14px',
-                    opacity: '0.9',
-                    transition: 'opacity 0.3s ease',
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}>
-                    <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
-                    Jadwal Asesmen
-                  </a>
-                </li>
-                <li style={{ marginBottom: '8px' }}>
-                  <a href="#" style={{
-                    color: 'white',
-                    textDecoration: 'none',
-                    fontSize: '14px',
-                    opacity: '0.9',
-                    transition: 'opacity 0.3s ease',
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}>
-                    <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
-                    Berita
-                  </a>
-                </li>
                 <li style={{ marginBottom: '8px' }}>
                   <a href="#" style={{
                     color: 'white',

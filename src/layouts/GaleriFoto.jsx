@@ -161,16 +161,13 @@ function GaleriFoto({ onBack }) {
         margin: '0 auto',
         padding: '60px 20px'
       }}>
-        {/* Section Title */}
-        <div style={{
-          textAlign: 'center',
-          marginBottom: '50px'
-        }}>
+          {/* Section Title */}
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px 40px', textAlign: 'center' }}>
           <h2 style={{
-            fontSize: '32px',
-            fontWeight: '600',
+            fontSize: '36px',
+            fontWeight: '700',
             color: '#333',
-            margin: '0 0 10px 0'
+            margin: '0 0 16px 0'
           }}>
             Dokumentasi
           </h2>
