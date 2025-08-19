@@ -8,14 +8,48 @@ function AddAsesi({ onSave, onCancel }) {
     kelas: ''
   });
 
+  const [errors, setErrors] = useState({});
+  const [showAddNotif, setShowAddNotif] = useState(false);
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.nama.trim()) {
+      newErrors.nama = 'Nama lengkap harus diisi';
+    }
+    
+    if (!formData.pekerjaan.trim()) {
+      newErrors.pekerjaan = 'Pekerjaan harus diisi';
+    }
+    
+    if (!formData.jurusan.trim()) {
+      newErrors.jurusan = 'Jurusan harus dipilih';
+    }
+    
+    if (!formData.kelas.trim()) {
+      newErrors.kelas = 'Kelas harus dipilih';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = () => {
-    if (formData.nama.trim() && formData.jurusan.trim()) {
-      onSave(formData);
+    if (validateForm()) {
+      // Show notification modal
+      setShowAddNotif(true);
     }
   };
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    
+    if (errors[field]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
+    }
   };
 
   return (
@@ -80,7 +114,7 @@ function AddAsesi({ onSave, onCancel }) {
                 style={{
                   width: '100%',
                   padding: '8px 12px',
-                  border: '1px solid #ccc',
+                  border: errors.nama ? '1px solid #dc3545' : '1px solid #ccc',
                   borderRadius: '8px',
                   fontSize: '13px',
                   boxSizing: 'border-box',
@@ -88,6 +122,16 @@ function AddAsesi({ onSave, onCancel }) {
                 }}
                 placeholder="Masukkan nama lengkap"
               />
+              {errors.nama && (
+                <p style={{
+                  color: '#dc3545',
+                  fontSize: '12px',
+                  marginTop: '4px',
+                  margin: '4px 0 0 0'
+                }}>
+                  {errors.nama}
+                </p>
+              )}
             </div>
 
             <div style={{ marginBottom: '20px' }}>
@@ -109,7 +153,7 @@ function AddAsesi({ onSave, onCancel }) {
                 style={{
                   width: '100%',
                   padding: '8px 12px',
-                  border: '1px solid #ccc',
+                  border: errors.pekerjaan ? '1px solid #dc3545' : '1px solid #ccc',
                   borderRadius: '8px',
                   fontSize: '13px',
                   boxSizing: 'border-box',
@@ -117,6 +161,16 @@ function AddAsesi({ onSave, onCancel }) {
                 }}
                 placeholder="Contoh: Siswa, Mahasiswa, dll"
               />
+              {errors.pekerjaan && (
+                <p style={{
+                  color: '#dc3545',
+                  fontSize: '12px',
+                  marginTop: '4px',
+                  margin: '4px 0 0 0'
+                }}>
+                  {errors.pekerjaan}
+                </p>
+              )}
             </div>
           </div>
 
@@ -140,7 +194,7 @@ function AddAsesi({ onSave, onCancel }) {
                 style={{
                   width: '100%',
                   padding: '8px 12px',
-                  border: '1px solid #ccc',
+                  border: errors.jurusan ? '1px solid #dc3545' : '1px solid #ccc',
                   borderRadius: '8px',
                   fontSize: '13px',
                   boxSizing: 'border-box',
@@ -158,6 +212,16 @@ function AddAsesi({ onSave, onCancel }) {
                 <option value="Akuntansi">Akuntansi</option>
                 <option value="Administrasi Perkantoran">Administrasi Perkantoran</option>
               </select>
+              {errors.jurusan && (
+                <p style={{
+                  color: '#dc3545',
+                  fontSize: '12px',
+                  marginTop: '4px',
+                  margin: '4px 0 0 0'
+                }}>
+                  {errors.jurusan}
+                </p>
+              )}
             </div>
 
             <div style={{ marginBottom: '20px' }}>
@@ -178,7 +242,7 @@ function AddAsesi({ onSave, onCancel }) {
                 style={{
                   width: '100%',
                   padding: '8px 12px',
-                  border: '1px solid #ccc',
+                  border: errors.kelas ? '1px solid #dc3545' : '1px solid #ccc',
                   borderRadius: '8px',
                   fontSize: '13px',
                   boxSizing: 'border-box',
@@ -190,6 +254,16 @@ function AddAsesi({ onSave, onCancel }) {
                 <option value="11">Kelas 11</option>
                 <option value="12">Kelas 12</option>
               </select>
+              {errors.kelas && (
+                <p style={{
+                  color: '#dc3545',
+                  fontSize: '12px',
+                  marginTop: '4px',
+                  margin: '4px 0 0 0'
+                }}>
+                  {errors.kelas}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -228,6 +302,106 @@ function AddAsesi({ onSave, onCancel }) {
           </button>
         </div>
       </div>
+
+      {/* Add Success Modal - Center of screen */}
+      {showAddNotif && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: '#ffffff',
+            borderRadius: '20px',
+            padding: '40px 30px',
+            textAlign: 'center',
+            width: '300px',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+            position: 'relative'
+          }}>
+            {/* Check Icon */}
+            <div style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              backgroundColor: '#4A90E2',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 25px auto'
+            }}>
+              <svg width="35" height="35" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M20 6L9 17l-5-5"
+                  stroke="#ffffff"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            {/* Success Message */}
+            <h2 style={{
+              fontSize: '22px',
+              fontWeight: '600',
+              color: '#333333',
+              margin: '0 0 25px 0',
+              lineHeight: '1.4',
+              paddingBottom: '25px',
+              borderBottom: '1px solid #e0e0e0'
+            }}>
+              Data Berhasil<br />Ditambahkan!
+            </h2>
+
+            {/* OK Text */}
+            <div
+              onClick={() => {
+                setShowAddNotif(false);
+                
+                // Create new item
+                const newItem = {
+                  id: Date.now(),
+                  nama: formData.nama.trim(),
+                  pekerjaan: formData.pekerjaan.trim(),
+                  jurusan: formData.jurusan,
+                  kelas: formData.kelas
+                };
+                
+                if (onSave) {
+                  onSave(newItem);
+                }
+                
+                // Reset form after save
+                setFormData({
+                  nama: '',
+                  pekerjaan: '',
+                  jurusan: '',
+                  kelas: ''
+                });
+                setErrors({});
+              }}
+              style={{
+                fontSize: '18px',
+                fontWeight: '600',
+                color: '#333333',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                userSelect: 'none'
+              }}
+            >
+              Okay!
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
