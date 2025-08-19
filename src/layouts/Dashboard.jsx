@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ManajemenData from "./ManajemenData";
 import ListAsesmen from "./ListAsesmen";
-import AsesmenDiikuti from "./AsesmenDiikuti";
+import AsesmenDiikuti from "../AsesmenDiikuti/AsesmenDiikuti";
 import logoImage from "/src/img/image 12.png";
 
 // KOMPONEN SIDEBAR YANG BISA DI-EXPORT (seperti Navbar)

@@ -12,7 +12,7 @@ function AsesmenDiikuti({ onBack }) {
           marginBottom: "20px",
         }}
       >
-        Asesmen Diikuti
+        Asesmen 
       </h1>
       <p
         style={{

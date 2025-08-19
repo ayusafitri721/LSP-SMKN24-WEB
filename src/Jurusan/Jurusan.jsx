@@ -16,7 +16,7 @@ function Jurusan({ onBack }) {
   const [halaman, setHalaman] = useState('list'); // list | add | edit
   const [editItem, setEditItem] = useState(null);
 
-  const handleAddSave = (newItem) => {
+const handleAddSave = (newItem) => {
     setData(prev => [...prev, newItem]);
     setHalaman('list');
   };
