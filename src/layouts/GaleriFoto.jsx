@@ -142,7 +142,7 @@ function GaleriFoto({ onBack }) {
             margin: '0 0 20px 0',
             textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
           }}>
-            Galeri Foto dan Video
+            Galeri Foto 
           </h1>
           <p style={{
             fontSize: '20px',
