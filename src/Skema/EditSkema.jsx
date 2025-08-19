@@ -306,7 +306,7 @@ function EditSkema({ onBack, onSave, initialData, onCancel, onDelete }) {
             }}
             onMouseOver={(e) => {
               e.target.style.backgroundColor = '#c82333';
-            }}
+            }} 
             onMouseOut={(e) => {
               e.target.style.backgroundColor = '#dc3545';
             }}
