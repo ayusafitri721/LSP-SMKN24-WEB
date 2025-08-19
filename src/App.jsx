@@ -92,7 +92,7 @@ function App() {
 
   const pagesWithSidebar = [
     'manajemenData', 'asesor', 'asesi', 'asesmen', 'jurusan', 'kompetensi', 
-    'listasesmen', 'asesmenDiikuti', 'addasesmen', 'editasesmen', 'lihatlistasesmen'
+    'listasesmen', 'asesmenDiikuti','lihatlistasesmen'
   ];
 
   const scrollToSection = (section) => {
@@ -419,12 +419,6 @@ function App() {
             {currentPage === 'asesmenDiikuti' && (
               <AsesmenDiikuti onBack={handleBackToHome} />
             )}
-            {currentPage === 'addasesmen' && (
-              <AddAsesmen onSave={handleAddAsesmen} onBack={() => handleNavigate('asesmen')} />
-            )}
-            {currentPage === 'editasesmen' && (
-              <EditAsesmen data={editData} onSave={handleEditAsesmen} onBack={() => handleNavigate('asesmen')} />
-            )}
             {currentPage === 'lihatlistasesmen' && (
               <LihatListAsesmen onBack={() => handleNavigate('listasesmen')} data={editData} />
             )}
@@ -456,6 +450,12 @@ function App() {
       )}
       {currentPage === 'editlistasesmen' && (
         <EditListAsesmen onBack={() => handleNavigate('listasesmen')} onSave={handleEditAssessment} item={editData} />
+      )}
+      {currentPage === 'addasesmen' && (
+      <AddAsesmen onSave={handleAddAsesmen} onCancel={() => handleNavigate('asesmen')} />
+      )}
+      {currentPage === 'editasesmen' && (
+        <EditAsesmen data={editData} onSave={handleEditAsesmen} onCancel={() => handleNavigate('asesmen')} />
       )}
       {currentPage === 'addskema' && (
         <AddSkema onSave={handleAddSkema} onCancel={() => handleNavigate('kompetensi')} />
