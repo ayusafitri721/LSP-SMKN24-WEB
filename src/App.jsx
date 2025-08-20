@@ -8,7 +8,7 @@ import Skema from './layouts/Skema';
 import CariSkema from './layouts/CariSkema';
 import FooterPage from './layouts/FooterPage';
 import Register from './layouts/Register';
-import Login from './layouts/Login';
+import Login from './Auth/Login';
 import SertifikasiCTA from './layouts/SertifikasiCTA';
 import LandingPage from './layouts/DetailSertifikasi';
 import Kontak from './layouts/kontak';

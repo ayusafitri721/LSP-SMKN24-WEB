@@ -860,6 +860,12 @@ function Dashboard({ onBack, onNavigate }) {
     setActiveMenu(menuName);
   };
 
+  const handleDetailClick = () => {
+    if (onNavigate) {
+      onNavigate("listasesmen");
+    }
+  };
+
   return (
     <div
       style={{
@@ -878,45 +884,28 @@ function Dashboard({ onBack, onNavigate }) {
           position: "sticky",
           top: 0,
           left: 0,
-          height: "100vh", // Full height
+          height: "100vh",
           zIndex: 10,
         }}
-      ></div>
-      {/* Pakai DashboardSidebar component */}
-      <DashboardSidebar activeMenu={activeMenu} onMenuClick={handleMenuClick} />
+      >
+        <DashboardSidebar activeMenu={activeMenu} onMenuClick={handleMenuClick} />
+      </div>
 
-      {/* Main Content */}
       {/* Main Content - Scrollable */}
       <div
         style={{
           flex: 1,
-          overflowY: "auto", // Scroll hanya di konten utama
+          overflowY: "auto",
           padding: "20px",
           backgroundColor: "#fafafa",
         }}
       >
         {/* Konten berdasarkan activeMenu */}
-{/* dari sini */}
-        {activeMenu === "Dashboard" && (
-          <div style={{ textAlign: "center" }}>
-            <h1
-              style={{
-                fontSize: "6rem",
-                fontWeight: "900",
-                color: "#1a1a1a",
-                margin: 0,
-                letterSpacing: "-0.02em",
-                fontFamily: "Georgia, serif",
-              }}
-            ></h1>
-          </div>
-        )}
-
         {activeMenu === "Dashboard" && (
           <div
             style={{
               flex: 1,
-              padding: "30px",
+              padding: "20px",
               width: "100%",
               maxWidth: "1200px",
               margin: "0 auto",
@@ -929,7 +918,7 @@ function Dashboard({ onBack, onNavigate }) {
                 borderRadius: "16px",
                 padding: "24px",
                 marginBottom: "24px",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -944,7 +933,7 @@ function Dashboard({ onBack, onNavigate }) {
                     margin: "0 0 8px 0",
                   }}
                 >
-                  Halo, Ayu Saf
+                  Halo, $nama nye
                 </h1>
                 <p
                   style={{
@@ -958,18 +947,16 @@ function Dashboard({ onBack, onNavigate }) {
               </div>
               <div
                 style={{
-                  width: "48px",
+                  width: "20px",
                   height: "48px",
-                  backgroundColor: "#ff6b35",
-                  borderRadius: "12px",
+                  // backgroundColor: "#FFA726",
+                  borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                  <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" />
-                </svg>
+                <img src="src/img/LONCENG.png" alt="notification" style={{ width: "42px", height: "42px" }} />
               </div>
             </div>
 
@@ -977,18 +964,18 @@ function Dashboard({ onBack, onNavigate }) {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                gap: "16px",
+                gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                gap: "20px",
                 marginBottom: "24px",
               }}
             >
-              {/* Jumlah Asesoi */}
+              {/* Jumlah Asesor */}
               <div
                 style={{
                   backgroundColor: "white",
                   borderRadius: "12px",
                   padding: "20px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   border: "1px solid #f0f0f0",
                 }}
               >
@@ -996,39 +983,32 @@ function Dashboard({ onBack, onNavigate }) {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    marginBottom: "8px",
+                    marginBottom: "12px",
                   }}
                 >
                   <div
                     style={{
                       width: "20px",
                       height: "20px",
-                      backgroundColor: "#ff6b35",
-                      borderRadius: "6px",
+                      // backgroundColor: "#FFA726",
+                      borderRadius: "4px",
                       marginRight: "8px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      fontSize: "12px",
                     }}
                   >
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                    >
-                      <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" />
-                      <circle cx="12" cy="7" r="4" />
-                    </svg>
+                    <img src="src/img/ASESOR.png" alt="asesor" style={{ width: "15px", height: "15px" }} />
                   </div>
                   <span
                     style={{
                       color: "#666",
-                      fontSize: "12px",
+                      fontSize: "13px",
                       fontWeight: "500",
                     }}
                   >
-                    Jumlah Asesoi
+                    Jumlah Asesor
                   </span>
                 </div>
                 <div
@@ -1048,7 +1028,7 @@ function Dashboard({ onBack, onNavigate }) {
                   backgroundColor: "white",
                   borderRadius: "12px",
                   padding: "20px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   border: "1px solid #f0f0f0",
                 }}
               >
@@ -1056,37 +1036,28 @@ function Dashboard({ onBack, onNavigate }) {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    marginBottom: "8px",
+                    marginBottom: "12px",
                   }}
                 >
                   <div
                     style={{
                       width: "20px",
                       height: "20px",
-                      backgroundColor: "#ffd700",
-                      borderRadius: "6px",
+                      // backgroundColor: "#FFD54F",
+                      borderRadius: "4px",
                       marginRight: "8px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      fontSize: "12px",
                     }}
                   >
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                    >
-                      <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" />
-                      <circle cx="9" cy="7" r="4" />
-                      <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" />
-                      <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" />
-                    </svg>
+                    <img src="src/img/ASESI.png" alt="asesi" style={{ width: "15px", height: "15px" }} />
                   </div>
                   <span
                     style={{
                       color: "#666",
-                      fontSize: "12px",
+                      fontSize: "13px",
                       fontWeight: "500",
                     }}
                   >
@@ -1110,7 +1081,7 @@ function Dashboard({ onBack, onNavigate }) {
                   backgroundColor: "white",
                   borderRadius: "12px",
                   padding: "20px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   border: "1px solid #f0f0f0",
                 }}
               >
@@ -1118,35 +1089,28 @@ function Dashboard({ onBack, onNavigate }) {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    marginBottom: "8px",
+                    marginBottom: "12px",
                   }}
                 >
                   <div
                     style={{
                       width: "20px",
                       height: "20px",
-                      backgroundColor: "#32c5ff",
-                      borderRadius: "6px",
+                      // backgroundColor: "#FFA726",
+                      borderRadius: "4px",
                       marginRight: "8px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      fontSize: "12px",
                     }}
                   >
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                    >
-                      <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" />
-                      <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" />
-                    </svg>
+                    <img src="src/img/SKEMA.png" alt="skema" style={{ width: "15px", height: "15px" }} />
                   </div>
                   <span
                     style={{
                       color: "#666",
-                      fontSize: "12px",
+                      fontSize: "13px",
                       fontWeight: "500",
                     }}
                   >
@@ -1171,7 +1135,7 @@ function Dashboard({ onBack, onNavigate }) {
                 backgroundColor: "white",
                 borderRadius: "16px",
                 padding: "24px",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                 border: "1px solid #f0f0f0",
               }}
             >
@@ -1184,24 +1148,18 @@ function Dashboard({ onBack, onNavigate }) {
               >
                 <div
                   style={{
-                    width: "24px",
-                    height: "24px",
-                    backgroundColor: "#ff6b35",
-                    borderRadius: "6px",
+                    width: "20px",
+                    height: "20px",
+                    // backgroundColor: "#FFA726",
+                    borderRadius: "4px",
                     marginRight: "12px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    fontSize: "12px",
                   }}
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
-                    <line x1="8" y1="6" x2="21" y2="6" />
-                    <line x1="8" y1="12" x2="21" y2="12" />
-                    <line x1="8" y1="18" x2="21" y2="18" />
-                    <line x1="3" y1="6" x2="3.01" y2="6" />
-                    <line x1="3" y1="12" x2="3.01" y2="12" />
-                    <line x1="3" y1="18" x2="3.01" y2="18" />
-                  </svg>
+                  <img src="src/img/LISTASESMEN_ICON.png" alt="list" style={{ width: "32px", height: "32px" }} />
                 </div>
                 <h2
                   style={{
@@ -1233,7 +1191,7 @@ function Dashboard({ onBack, onNavigate }) {
                   },
                   {
                     batch: "TKJ Batch 12",
-                    date: "16 Agustus 2025",
+                    date: "16 Agustus 2025", 
                     time: "00:00 - 01:00",
                     location: "Kampung Raya",
                     participants: "TKJ24",
@@ -1246,21 +1204,19 @@ function Dashboard({ onBack, onNavigate }) {
                       alignItems: "center",
                       justifyContent: "space-between",
                       padding: "16px",
-                      backgroundColor: "#fafafa",
+                      backgroundColor: "#f8f9fa",
                       borderRadius: "12px",
-                      border: "1px solid #f0f0f0",
+                      border: "1px solid #e9ecef",
                     }}
                   >
-                    <div
-                      style={{ display: "flex", alignItems: "center", flex: 1 }}
-                    >
+                    <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
                       <div
                         style={{
                           fontSize: "14px",
                           fontWeight: "600",
                           color: "#1a1a1a",
-                          marginRight: "16px",
-                          minWidth: "120px",
+                          marginRight: "20px",
+                          minWidth: "140px",
                         }}
                       >
                         Asesmen {assessment.batch}
@@ -1270,7 +1226,7 @@ function Dashboard({ onBack, onNavigate }) {
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          gap: "20px",
+                          gap: "24px",
                           flex: 1,
                         }}
                       >
@@ -1282,26 +1238,8 @@ function Dashboard({ onBack, onNavigate }) {
                             color: "#666",
                           }}
                         >
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="#ff6b35"
-                            style={{ marginRight: "6px" }}
-                          >
-                            <rect
-                              x="3"
-                              y="4"
-                              width="18"
-                              height="18"
-                              rx="2"
-                              ry="2"
-                            />
-                            <line x1="16" y1="2" x2="16" y2="6" />
-                            <line x1="8" y1="2" x2="8" y2="6" />
-                            <line x1="3" y1="10" x2="21" y2="10" />
-                          </svg>
-                          {assessment.date}
+                          <img src="src/img/logo jadwal.png" alt="date" style={{ width: "14px", height: "14px" }} />
+                          <span style={{ marginLeft: "6px" }}>{assessment.date}</span>
                         </div>
 
                         <div
@@ -1312,17 +1250,8 @@ function Dashboard({ onBack, onNavigate }) {
                             color: "#666",
                           }}
                         >
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="#ffd700"
-                            style={{ marginRight: "6px" }}
-                          >
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12,6 12,12 16,14" />
-                          </svg>
-                          {assessment.time}
+                          <img src="src/img/JAM_ICON.png" alt="time" style={{ width: "14px", height: "14px" }} />
+                          <span style={{ marginLeft: "6px" }}>{assessment.time}</span>
                         </div>
 
                         <div
@@ -1333,17 +1262,8 @@ function Dashboard({ onBack, onNavigate }) {
                             color: "#666",
                           }}
                         >
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="#32c5ff"
-                            style={{ marginRight: "6px" }}
-                          >
-                            <path d="M21 10C21 17 12 23 12 23S3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.3639 3.63604C20.0518 5.32387 21 7.61305 21 10Z" />
-                            <circle cx="12" cy="10" r="3" />
-                          </svg>
-                          {assessment.location}
+                          <img src="src/img/LOKASI_ICON.png" alt="location" style={{ width: "14px", height: "14px" }} />
+                          <span style={{ marginLeft: "6px" }}>{assessment.location}</span>
                         </div>
 
                         <div
@@ -1354,37 +1274,32 @@ function Dashboard({ onBack, onNavigate }) {
                             color: "#666",
                           }}
                         >
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="#ff6b35"
-                            style={{ marginRight: "6px" }}
-                          >
-                            <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" />
-                            <circle cx="12" cy="7" r="4" />
-                          </svg>
-                          {assessment.participants}
+                          <img src="src/img/PERSON_ICON.png" alt="participants" style={{ width: "14px", height: "14px" }} />
+                          <span style={{ marginLeft: "6px" }}>{assessment.participants}</span>
                         </div>
                       </div>
                     </div>
 
                     <button
+                      onClick={handleDetailClick}
                       style={{
                         backgroundColor: "#f8f9fa",
                         border: "1px solid #e9ecef",
                         borderRadius: "8px",
-                        padding: "6px 12px",
+                        padding: "8px 16px",
                         fontSize: "12px",
                         color: "#666",
                         cursor: "pointer",
+                        fontWeight: "500",
                         transition: "all 0.2s ease",
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = "#e9ecef";
+                        e.currentTarget.style.color = "#495057";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = "#f8f9fa";
+                        e.currentTarget.style.color = "#666";
                       }}
                     >
                       Detail
