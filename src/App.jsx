@@ -7,7 +7,7 @@ import MengapaKami from './layouts/MengapaKami';
 import Skema from './layouts/Skema';
 import CariSkema from './layouts/CariSkema';
 import FooterPage from './layouts/FooterPage';
-import Register from './layouts/Register';
+import Register from './Auth/Register';
 import Login from './Auth/Login';
 import SertifikasiCTA from './layouts/SertifikasiCTA';
 import LandingPage from './layouts/DetailSertifikasi';

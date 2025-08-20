@@ -271,8 +271,9 @@ export function DashboardSidebar({ activeMenu, onMenuClick }) {
             List Asesmen
           </span>
         </div>
-
-        {/* Asesmen Diikuti Menu */}
+        
+        {/* karena asesmen diikuti gada dikomen dl*/}    
+        {/* Asesmen Diikuti Menu
         <div
           style={{
             display: "flex",
@@ -323,7 +324,7 @@ export function DashboardSidebar({ activeMenu, onMenuClick }) {
           <span style={{ fontSize: "15px", fontWeight: "500" }}>
             Asesmen Diikuti
           </span>
-        </div>
+        </div> */}
 
                 {/* Approvement Menu */}
         <div
@@ -933,7 +934,7 @@ function Dashboard({ onBack, onNavigate }) {
                     margin: "0 0 8px 0",
                   }}
                 >
-                  Halo, $nama nye
+                  Halo, Your Name
                 </h1>
                 <p
                   style={{
