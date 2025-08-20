@@ -32,6 +32,7 @@ import Berita from './layouts/Berita';
 import AddListAsesmen from './layouts/AddListAsesmen';
 import EditListAsesmen from './layouts/EditListAsesmen';
 import LihatListAsesmen from './layouts/LihatListAsesmen';
+import Approvement from "./layouts/Approvement";
 import TempatUji from './layouts/TempatUji';
 import AddSkema from './Skema/AddSkema';
 import EditSkema from './Skema/EditSkema';
@@ -92,7 +93,7 @@ function App() {
 
   const pagesWithSidebar = [
     'manajemenData', 'asesor', 'asesi', 'asesmen', 'jurusan', 'kompetensi', 
-    'listasesmen', 'asesmenDiikuti','lihatlistasesmen'
+    'listasesmen', 'asesmenDiikuti','lihatlistasesmen','approvement'
   ];
 
   const scrollToSection = (section) => {
@@ -196,6 +197,10 @@ function App() {
     
     if (data) {
       setEditData(data);
+      } else {
+    // Ini sangat penting. Atur ulang editData ketika tidak ada data
+    // untuk menghindari bug dari navigasi sebelumnya.
+    setEditData(null); 
     }
 
     // UPDATED MENU MAPPING - THIS IS THE FIX
@@ -240,6 +245,7 @@ function App() {
       ManajemenData: 'manajemenData',
       ListAsesmen: 'listasesmen',
       AsesmenDiikuti: 'asesmenDiikuti',
+      Approvement: 'approvement',
       Profile: 'dashboard',
     };
     if (pageMap[menuName]) {
@@ -421,6 +427,9 @@ function App() {
             )}
             {currentPage === 'lihatlistasesmen' && (
               <LihatListAsesmen onBack={() => handleNavigate('listasesmen')} data={editData} />
+            )}
+            {currentPage === 'approvement' && ( // Tambahkan ini
+              <Approvement onBack={handleBackToHome} onNavigate={handleNavigate} />
             )}
           </div>
         </div>

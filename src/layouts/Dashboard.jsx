@@ -1,8 +1,9 @@
-import { useState } from "react";
-import ManajemenData from "./ManajemenData";
-import ListAsesmen from "./ListAsesmen";
-import AsesmenDiikuti from "../AsesmenDiikuti/AsesmenDiikuti";
-import logoImage from "/src/img/image 12.png";
+  import { useState } from "react";
+  import ManajemenData from "./ManajemenData";
+  import ListAsesmen from "./ListAsesmen";
+  import AsesmenDiikuti from "../AsesmenDiikuti/AsesmenDiikuti";
+  import Approvement from './Approvement';
+  import logoImage from "/src/img/image 12.png";
 
 // KOMPONEN SIDEBAR YANG BISA DI-EXPORT (seperti Navbar)
 export function DashboardSidebar({ activeMenu, onMenuClick }) {
@@ -321,6 +322,52 @@ export function DashboardSidebar({ activeMenu, onMenuClick }) {
           </svg>
           <span style={{ fontSize: "15px", fontWeight: "500" }}>
             Asesmen Diikuti
+          </span>
+        </div>
+
+                {/* Approvement Menu */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "15px 20px",
+            marginBottom: "8px",
+            backgroundColor:
+              activeMenu === "Approvement" ? "#ff6b35" : "transparent",
+            borderRadius: "12px",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            color: activeMenu === "Approvement" ? "white" : "#666",
+          }}
+          onClick={() => onMenuClick("Approvement")}
+          onMouseEnter={(e) => {
+            if (activeMenu !== "Approvement") {
+              e.currentTarget.style.backgroundColor = "#f8f9fa";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (activeMenu !== "Approvement") {
+              e.currentTarget.style.backgroundColor = "transparent";
+            }
+          }}
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            style={{ marginRight: "15px" }}
+          >
+            <path
+              d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span style={{ fontSize: "15px", fontWeight: "500" }}>
+            Approvement
           </span>
         </div>
       </div>
