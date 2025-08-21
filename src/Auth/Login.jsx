@@ -1,54 +1,32 @@
 import { useState } from 'react';
+import { useAuth } from '../context/AuthContext'; // Import custom hook
 
 function Login({ goToDashboard }) {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    nik: '',
-    email: ''
+    input: "",
+    password: "",
   });
-
-  const [error, setError] = useState('');
-
-  // Dummy user data
-  const dummyUsers = [
-    {
-      email: 'admin@admin.com',
-      password: 'admin123',
-      username: 'admin',
-      nik: '1234567890'
-    },
-    {
-      email: 'user@user.com',
-      password: 'user123',
-      username: 'user',
-      nik: '0987654321'
-    }
-  ];
+  const [error, setError] = useState("");
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
-    // Clear error when user starts typing
-    if (error) setError('');
+    if (error) setError("");
   };
 
-  const handleSubmit = () => {
-    console.log('Login data:', formData);
-    
-    // Check if email and password match dummy data
-    const user = dummyUsers.find(u => 
-      u.email === formData.email && u.password === formData.password
-    );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Login data:", formData);
 
-    if (user) {
-      console.log('Login successful:', user);
-      if (goToDashboard) goToDashboard(); // Navigate to dashboard using prop
-      setError('');
+    const success = await login(formData); // langsung panggil API lewat AuthContext
+
+    if (success) {
+      goToDashboard(); // pindah ke dashboard
     } else {
-      setError('Invalid email or password. Try admin@admin.com / admin123 or user@user.com / user123');
+      setError("Email/Username atau Password salah!");
     }
   };
 
@@ -189,9 +167,9 @@ function Login({ goToDashboard }) {
             <div style={{ marginBottom: '20px', textAlign: 'left' }}>
               <input
                 type="email"
-                name="email"
-                placeholder="Email"
-                value={formData.email}
+                name="input"
+                placeholder="Email /"
+                value={formData.input}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
                 style={{
