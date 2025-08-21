@@ -21,6 +21,8 @@ import AddAsesi from './Asesi/AddAsesi';
 import EditAsesi from './Asesi/EditAsesi';
 import Asesmen from './Asesmen/asesmen';
 import AddAsesmen from './Asesmen/addasesmen';
+import ImportAsesmen from './Asesmen/importasesmen';
+import BarcodeAsesmen from './Asesmen/barcodeasesmen';
 import EditAsesmen from './Asesmen/editasesmen';
 import Jurusan from './Jurusan/Jurusan';
 import AddJurusan from './Jurusan/AddJurusan';
@@ -220,6 +222,8 @@ function App() {
       editasesor: 'ManajemenData',
       addasesi: 'ManajemenData',
       editasesi: 'ManajemenData',
+      importasesmen: 'ManajemenData',
+      barcodeasesmen: 'ManajemenData',
       addasesmen: 'ManajemenData',
       editasesmen: 'ManajemenData'
     };
@@ -297,10 +301,15 @@ function App() {
     handleNavigate('asesi');
   };
 
-  const handleAddAsesmen = (newData) => {
+  const handleImportAsesmen = (newData) => {
     alert('Data berhasil ditambahkan!');
     handleNavigate('asesmen');
   };
+
+  const handleBarcodeAsesmen = (newData) => {
+    alert('Barcode berhasil dibuat!');
+    handleNavigate('asesmen');
+  }
 
   const handleEditAsesmen = (updatedData) => {
     alert('Data berhasil diperbarui!');
@@ -460,11 +469,11 @@ function App() {
       {currentPage === 'editlistasesmen' && (
         <EditListAsesmen onBack={() => handleNavigate('listasesmen')} onSave={handleEditAssessment} item={editData} />
       )}
-      {currentPage === 'addasesmen' && (
-      <AddAsesmen onSave={handleAddAsesmen} onCancel={() => handleNavigate('asesmen')} />
+      {currentPage === 'importasesmen' && (
+        <ImportAsesmen onSubmit={handleImportAsesmen} onBack={() => setCurrentPage('asesmen')} />
       )}
-      {currentPage === 'editasesmen' && (
-        <EditAsesmen data={editData} onSave={handleEditAsesmen} onCancel={() => handleNavigate('asesmen')} />
+      {currentPage === 'barcodeasesmen' && (
+        <BarcodeAsesmen onSubmit={handleBarcodeAsesmen} onBack={() => setCurrentPage('asesmen')} />
       )}
       {currentPage === 'addskema' && (
         <AddSkema onSave={handleAddSkema} onCancel={() => handleNavigate('kompetensi')} />
