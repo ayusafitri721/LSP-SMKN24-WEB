@@ -1,136 +1,424 @@
 import React, { useState } from 'react';
 
-function AddAsesmen({ onBack, onSave }) {
-  const [judul, setJudul] = useState('');
-  const [program, setProgram] = useState('');
-  const [tanggal, setTanggal] = useState('');
+function AddAsesmen({ onBack, onSave, onCancel }) {
+  const [formData, setFormData] = useState({
+    judul: '',
+    program: '',
+    tanggal: ''
+  });
 
-  const handleSave = () => {
-    if (judul && program && tanggal) {
-      onSave && onSave({ judul, program, tanggal });
-    } else {
-      alert('Harap isi semua field!');
+  const [errors, setErrors] = useState({});
+  const [showAddNotif, setShowAddNotif] = useState(false);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.judul.trim()) {
+      newErrors.judul = 'Judul asesmen harus diisi';
+    }
+    
+    if (!formData.program.trim()) {
+      newErrors.program = 'Program harus diisi';
+    }
+    
+    if (!formData.tanggal.trim()) {
+      newErrors.tanggal = 'Tanggal dibuat harus diisi';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (validateForm()) {
+      // Show notification modal
+      setShowAddNotif(true);
+    }
+  };
+
+  const handleCancel = () => {
+    // Reset form
+    setFormData({
+      judul: '',
+      program: '',
+      tanggal: ''
+    });
+    setErrors({});
+    
+    // Call appropriate callback
+    if (onCancel) {
+      onCancel();
+    } else if (onBack) {
+      onBack();
     }
   };
 
   return (
-    <div style={containerStyle}>
+    <div style={{
+      minHeight: '100vh',
+      width: '100vw',
+      backgroundColor: '#f5f5f5',
+      padding: '0',
+      margin: '0',
+      boxSizing: 'border-box',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      overflow: 'auto'
+    }}>
       {/* Header */}
-      <h1 style={titleStyle}>Tambah Asesmen</h1>
+      <div style={{
+        padding: '40px 0 20px 0',
+        textAlign: 'center',
+        position: 'sticky',
+        top: 0,
+        backgroundColor: '#f5f5f5',
+        zIndex: 10
+      }}>
+        <h1 style={{
+          fontSize: '28px',
+          fontWeight: '600',
+          color: '#333',
+          margin: '0',
+          letterSpacing: '1px'
+        }}>
+          TAMBAHKAN DATA ASESMEN BARU
+        </h1>
+      </div>
 
-      {/* Card Form */}
-      <div style={cardStyle}>
-        <div style={formRow}>
-          <div style={formGroup}>
-            <label style={labelStyle}>Judul Asesmen</label>
-            <input
-              style={inputStyle}
-              value={judul}
-              onChange={(e) => setJudul(e.target.value)}
-              placeholder="Masukkan judul asesmen"
-            />
+      {/* Form Container */}
+      <div style={{
+        margin: '0 20px 40px 20px',
+        backgroundColor: '#ffffff',
+        borderRadius: '30px',
+        padding: '40px',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+        minHeight: '60vh'
+      }}>
+        {/* Form Content - 2 Columns */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '40px',
+          marginBottom: '40px'
+        }}>
+          {/* Left Column */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '30px'
+          }}>
+            {/* Judul Asesmen */}
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#333',
+                marginBottom: '12px'
+              }}>
+                Judul Asesmen
+              </label>
+              <input
+                type="text"
+                name="judul"
+                value={formData.judul}
+                onChange={handleInputChange}
+                placeholder="Masukkan judul asesmen"
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  border: '2px solid #e0e0e0',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  boxSizing: 'border-box',
+                  backgroundColor: '#ffffff',
+                  outline: 'none',
+                  transition: 'border-color 0.2s ease',
+                  fontFamily: 'inherit'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#007bff'}
+                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+              />
+              {errors.judul && (
+                <p style={{
+                  color: '#dc3545',
+                  fontSize: '14px',
+                  marginTop: '8px',
+                  margin: '8px 0 0 0'
+                }}>
+                  {errors.judul}
+                </p>
+              )}
+            </div>
+
+            {/* Program */}
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#333',
+                marginBottom: '12px'
+              }}>
+                Program
+              </label>
+              <input
+                type="text"
+                name="program"
+                value={formData.program}
+                onChange={handleInputChange}
+                placeholder="Masukkan program"
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  border: '2px solid #e0e0e0',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  boxSizing: 'border-box',
+                  backgroundColor: '#ffffff',
+                  outline: 'none',
+                  transition: 'border-color 0.2s ease',
+                  fontFamily: 'inherit'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#007bff'}
+                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+              />
+              {errors.program && (
+                <p style={{
+                  color: '#dc3545',
+                  fontSize: '14px',
+                  marginTop: '8px',
+                  margin: '8px 0 0 0'
+                }}>
+                  {errors.program}
+                </p>
+              )}
+            </div>
           </div>
-          <div style={formGroup}>
-            <label style={labelStyle}>Program</label>
-            <input
-              style={inputStyle}
-              value={program}
-              onChange={(e) => setProgram(e.target.value)}
-              placeholder="Masukkan program"
-            />
+
+          {/* Right Column */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '30px'
+          }}>
+            {/* Tanggal Dibuat */}
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#333',
+                marginBottom: '12px'
+              }}>
+                Tanggal Dibuat
+              </label>
+              <input
+                type="date"
+                name="tanggal"
+                value={formData.tanggal}
+                onChange={handleInputChange}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  border: '2px solid #e0e0e0',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  boxSizing: 'border-box',
+                  backgroundColor: '#ffffff',
+                  outline: 'none',
+                  transition: 'border-color 0.2s ease',
+                  fontFamily: 'inherit'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#007bff'}
+                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+              />
+              {errors.tanggal && (
+                <p style={{
+                  color: '#dc3545',
+                  fontSize: '14px',
+                  marginTop: '8px',
+                  margin: '8px 0 0 0'
+                }}>
+                  {errors.tanggal}
+                </p>
+              )}
+            </div>
           </div>
         </div>
-        <div style={formRow}>
-          <div style={formGroup}>
-            <label style={labelStyle}>Tanggal Dibuat</label>
-            <input
-              type="date"
-              style={inputStyle}
-              value={tanggal}
-              onChange={(e) => setTanggal(e.target.value)}
-            />
-          </div>
+
+        {/* Action Buttons */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: '12px',
+          paddingTop: '20px',
+          borderTop: '1px solid #e0e0e0'
+        }}>
+          <button
+            onClick={handleCancel}
+            style={{
+              backgroundColor: '#6c757d',
+              color: '#ffffff',
+              border: 'none',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              fontFamily: 'inherit'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = '#5a6268';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = '#6c757d';
+            }}
+          >
+            Batal
+          </button>
+          <button
+            onClick={handleSubmit}
+            style={{
+              backgroundColor: '#fd7e14',
+              color: '#ffffff',
+              border: 'none',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              fontFamily: 'inherit'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = '#e8670e';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = '#fd7e14';
+            }}
+          >
+            Simpan Data
+          </button>
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div style={btnGroupStyle}>
-        <button style={cancelBtnStyle} onClick={onBack}>Batal</button>
-        <button style={saveBtnStyle} onClick={handleSave}>Simpan</button>
-      </div>
+      {/* Add Success Modal - Center of screen */}
+      {showAddNotif && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: '#ffffff',
+            borderRadius: '20px',
+            padding: '40px 30px',
+            textAlign: 'center',
+            width: '300px',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+            position: 'relative'
+          }}>
+            {/* Check Icon */}
+            <div style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              backgroundColor: '#4A90E2',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 25px auto'
+            }}>
+              <svg width="35" height="35" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M20 6L9 17l-5-5"
+                  stroke="#ffffff"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            {/* Success Message */}
+            <h2 style={{
+              fontSize: '22px',
+              fontWeight: '600',
+              color: '#333333',
+              margin: '0 0 25px 0',
+              lineHeight: '1.4',
+              paddingBottom: '25px',
+              borderBottom: '1px solid #e0e0e0'
+            }}>
+              Data Berhasil<br />Ditambahkan!
+            </h2>
+
+            {/* OK Text */}
+            <div
+              onClick={() => {
+                setShowAddNotif(false);
+                
+                // Create new item
+                const newItem = {
+                  id: Date.now(),
+                  judul: formData.judul.trim(),
+                  program: formData.program.trim(),
+                  tanggal: formData.tanggal.trim()
+                };
+                
+                if (onSave) {
+                  onSave(newItem);
+                }
+                
+                // Reset form after save
+                setFormData({
+                  judul: '',
+                  program: '',
+                  tanggal: ''
+                });
+                setErrors({});
+              }}
+              style={{
+                fontSize: '18px',
+                fontWeight: '600',
+                color: '#333333',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                userSelect: 'none'
+              }}
+            >
+              Okay!
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
-// Styles
-const containerStyle = {
-  minHeight: '100vh',
-  backgroundColor: '#f8f9fa',
-  padding: '40px',
-  fontFamily: 'Segoe UI, Roboto, sans-serif'
-};
-
-const titleStyle = {
-  fontSize: '28px',
-  fontWeight: '700',
-  color: '#333',
-  textAlign: 'center',
-  marginBottom: '32px'
-};
-
-const cardStyle = {
-  backgroundColor: '#fff',
-  padding: '32px',
-  borderRadius: '14px',
-  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-  margin: '0 auto 32px auto',
-  maxWidth: '950px'
-};
-
-const formRow = {
-  display: 'flex',
-  gap: '24px',
-  marginBottom: '20px'
-};
-
-const formGroup = { flex: 1 };
-const labelStyle = { display: 'block', fontSize: '16px', fontWeight: '600', marginBottom: '8px' };
-const inputStyle = {
-  width: '100%',
-  padding: '14px 16px',
-  borderRadius: '10px',
-  border: '1px solid #bbb',
-  fontSize: '16px'
-};
-
-const btnGroupStyle = {
-  display: 'flex',
-  justifyContent: 'flex-end',
-  gap: '16px',
-  maxWidth: '950px',
-  margin: '0 auto'
-};
-
-const cancelBtnStyle = {
-  backgroundColor: '#6c757d',
-  color: 'white',
-  border: 'none',
-  borderRadius: '10px',
-  padding: '12px 22px',
-  fontSize: '16px',
-  fontWeight: '600',
-  cursor: 'pointer'
-};
-
-const saveBtnStyle = {
-  backgroundColor: '#ff6b35',
-  color: 'white',
-  border: 'none',
-  borderRadius: '10px',
-  padding: '12px 22px',
-  fontSize: '16px',
-  fontWeight: '600',
-  cursor: 'pointer'
-};
 
 export default AddAsesmen;

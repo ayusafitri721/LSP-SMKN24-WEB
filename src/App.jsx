@@ -7,8 +7,8 @@ import MengapaKami from './layouts/MengapaKami';
 import Skema from './layouts/Skema';
 import CariSkema from './layouts/CariSkema';
 import FooterPage from './layouts/FooterPage';
-import Register from './layouts/Register';
-import Login from './layouts/Login';
+import Register from './Auth/Register';
+import Login from './Auth/Login';
 import SertifikasiCTA from './layouts/SertifikasiCTA';
 import LandingPage from './layouts/DetailSertifikasi';
 import Kontak from './layouts/kontak';
@@ -32,6 +32,7 @@ import Berita from './layouts/Berita';
 import AddListAsesmen from './layouts/AddListAsesmen';
 import EditListAsesmen from './layouts/EditListAsesmen';
 import LihatListAsesmen from './layouts/LihatListAsesmen';
+import Approvement from "./layouts/Approvement";
 import TempatUji from './layouts/TempatUji';
 import AddSkema from './Skema/AddSkema';
 import EditSkema from './Skema/EditSkema';
@@ -92,7 +93,7 @@ function App() {
 
   const pagesWithSidebar = [
     'manajemenData', 'asesor', 'asesi', 'asesmen', 'jurusan', 'kompetensi', 
-    'listasesmen', 'asesmenDiikuti', 'addasesmen', 'editasesmen', 'lihatlistasesmen'
+    'listasesmen', 'asesmenDiikuti','lihatlistasesmen','approvement'
   ];
 
   const scrollToSection = (section) => {
@@ -196,6 +197,10 @@ function App() {
     
     if (data) {
       setEditData(data);
+      } else {
+    // Ini sangat penting. Atur ulang editData ketika tidak ada data
+    // untuk menghindari bug dari navigasi sebelumnya.
+    setEditData(null); 
     }
 
     // UPDATED MENU MAPPING - THIS IS THE FIX
@@ -240,6 +245,7 @@ function App() {
       ManajemenData: 'manajemenData',
       ListAsesmen: 'listasesmen',
       AsesmenDiikuti: 'asesmenDiikuti',
+      Approvement: 'approvement',
       Profile: 'dashboard',
     };
     if (pageMap[menuName]) {
@@ -419,14 +425,11 @@ function App() {
             {currentPage === 'asesmenDiikuti' && (
               <AsesmenDiikuti onBack={handleBackToHome} />
             )}
-            {currentPage === 'addasesmen' && (
-              <AddAsesmen onSave={handleAddAsesmen} onBack={() => handleNavigate('asesmen')} />
-            )}
-            {currentPage === 'editasesmen' && (
-              <EditAsesmen data={editData} onSave={handleEditAsesmen} onBack={() => handleNavigate('asesmen')} />
-            )}
             {currentPage === 'lihatlistasesmen' && (
               <LihatListAsesmen onBack={() => handleNavigate('listasesmen')} data={editData} />
+            )}
+            {currentPage === 'approvement' && ( // Tambahkan ini
+              <Approvement onBack={handleBackToHome} onNavigate={handleNavigate} />
             )}
           </div>
         </div>
@@ -456,6 +459,12 @@ function App() {
       )}
       {currentPage === 'editlistasesmen' && (
         <EditListAsesmen onBack={() => handleNavigate('listasesmen')} onSave={handleEditAssessment} item={editData} />
+      )}
+      {currentPage === 'addasesmen' && (
+      <AddAsesmen onSave={handleAddAsesmen} onCancel={() => handleNavigate('asesmen')} />
+      )}
+      {currentPage === 'editasesmen' && (
+        <EditAsesmen data={editData} onSave={handleEditAsesmen} onCancel={() => handleNavigate('asesmen')} />
       )}
       {currentPage === 'addskema' && (
         <AddSkema onSave={handleAddSkema} onCancel={() => handleNavigate('kompetensi')} />
