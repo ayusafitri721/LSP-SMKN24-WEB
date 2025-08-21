@@ -1,57 +1,55 @@
 import { useState } from 'react';
 
-function Register({ goToDashboard, goToLoginAsesi }) {
+function LoginAsesi({ goToDashboard }) {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: ''
+    username: '',
+    password: '',
+    nik: '',
+    email: ''
   });
 
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+
+  // Dummy user data
+  const dummyUsers = [
+    {
+      email: 'asesi@asesi.com',
+      password: 'asesi123',
+      username: 'asesi',
+      nik: '32456789'
+    },
+    {
+      email: 'user@user.com',
+      password: 'user123',
+      username: 'user',
+      nik: '0987654321'
+    }
+  ];
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
-    // Clear messages when user starts typing
+    // Clear error when user starts typing
     if (error) setError('');
-    if (success) setSuccess('');
   };
 
   const handleSubmit = () => {
-    console.log('Register data:', formData);
+    console.log('Login data:', formData);
     
-    // Basic validation
-    if (!formData.name || !formData.email || !formData.password) {
-      setError('All fields are required');
-      return;
+    // Check if email and password match dummy data
+    const user = dummyUsers.find(u => 
+      u.email === formData.email && u.password === formData.password
+    );
+
+    if (user) {
+      console.log('Login successful:', user);
+      if (goToDashboard) goToDashboard(); // Navigate to dashboard using prop
+      setError('');
+    } else {
+      setError('Invalid email or password. Try admin@admin.com / admin123 or user@user.com / user123');
     }
-
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      return;
-    }
-
-    // Simulate successful registration
-    console.log('Registration successful:', formData);
-    setSuccess('Registration successful! You can now sign in.');
-    setError('');
-    
-    // Clear form after successful registration
-    setFormData({
-      name: '',
-      email: '',
-      password: ''
-    });
-
-    // Automatically redirect to LoginAsesi after successful registration
-    setTimeout(() => {
-      if (goToLoginAsesi) {
-        goToLoginAsesi();
-      }
-    }, 2000); // Wait 2 seconds to show success message
   };
 
   const handleKeyPress = (e) => {
@@ -80,7 +78,7 @@ function Register({ goToDashboard, goToLoginAsesi }) {
       <div style={{
         minHeight: '100vh',
         height: '100vh',
-        backgroundImage: "url('src/img/ADM_LOGIN.png')",
+        // backgroundImage: "url('src/img/ADM_LOGIN.png')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -105,7 +103,7 @@ function Register({ goToDashboard, goToLoginAsesi }) {
           padding: '20px',
           borderRadius: '30px',
           width: '700px',
-          height: '550px',
+          height: '450px',
           maxWidth: '95vw',
           position: 'absolute',
           boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25), 0 10px 25px rgba(0, 0, 0, 0.15)',
@@ -119,7 +117,7 @@ function Register({ goToDashboard, goToLoginAsesi }) {
           padding: '50px 60px',
           borderRadius: '25px',
           width: '650px',
-          height: '500px',
+          height: '400px',
           maxWidth: '90vw',
           boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15), 0 0 100px rgba(255, 255, 255, 0.1)',
           textAlign: 'center',
@@ -137,7 +135,7 @@ function Register({ goToDashboard, goToLoginAsesi }) {
             marginBottom: '8px',
             letterSpacing: '-0.5px'
           }}>
-            Sign up
+            Sign in
           </h1>
           
           <p style={{
@@ -146,8 +144,28 @@ function Register({ goToDashboard, goToLoginAsesi }) {
             marginBottom: '25px',
             fontWeight: '400'
           }}>
-            Create your account
+            Sign in your account
           </p>
+
+          {/* Demo credentials info */}
+          <div style={{
+            backgroundColor: '#f0f9ff',
+            border: '1px solid #0ea5e9',
+            borderRadius: '10px',
+            padding: '12px',
+            marginBottom: '20px',
+            textAlign: 'left'
+          }}>
+            <p style={{ fontSize: '11px', color: '#0369a1', fontWeight: '600', marginBottom: '6px' }}>
+              Demo Credentials:
+            </p>
+            <p style={{ fontSize: '10px', color: '#0369a1', margin: '2px 0' }}>
+              Email: asesi@asesi.com | Pass: asesi123
+            </p>
+            <p style={{ fontSize: '10px', color: '#0369a1', margin: '2px 0' }}>
+              Email: user@user.com | Pass: user123
+            </p>
+          </div>
 
           {/* Error message */}
           {error && (
@@ -164,50 +182,9 @@ function Register({ goToDashboard, goToLoginAsesi }) {
             </div>
           )}
 
-          {/* Success message */}
-          {success && (
-            <div style={{
-              backgroundColor: '#f0fdf4',
-              border: '1px solid #4ade80',
-              borderRadius: '10px',
-              padding: '10px',
-              marginBottom: '15px',
-              fontSize: '11px',
-              color: '#16a34a'
-            }}>
-              {success}
-            </div>
-          )}
-
           <div style={{
             marginBottom: '25px'
           }}>
-            {/* Name */}
-            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
-              <input
-                type="text"
-                name="name"
-                placeholder="Full Name"
-                value={formData.name}
-                onChange={handleInputChange}
-                onKeyPress={handleKeyPress}
-                style={{
-                  width: '100%',
-                  padding: '14px 18px',
-                  border: 'none',
-                  borderBottom: '2px solid #e5e7eb',
-                  fontSize: '15px',
-                  backgroundColor: 'transparent',
-                  outline: 'none',
-                  fontFamily: 'inherit',
-                  color: '#333',
-                  transition: 'border-color 0.3s ease'
-                }}
-                onFocus={(e) => e.target.style.borderBottomColor = '#f97316'}
-                onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
-              />
-            </div>
-
             {/* Email */}
             <div style={{ marginBottom: '20px', textAlign: 'left' }}>
               <input
@@ -262,7 +239,7 @@ function Register({ goToDashboard, goToLoginAsesi }) {
           </div>
 
           {/* Submit Button */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
             <button
               onClick={handleSubmit}
               style={{
@@ -288,28 +265,7 @@ function Register({ goToDashboard, goToLoginAsesi }) {
                 e.target.style.boxShadow = '0 4px 15px rgba(255, 107, 53, 0.4)';
               }}
             >
-              Sign up
-            </button>
-          </div>
-
-          {/* Link to LoginAsesi */}
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ fontSize: '13px', color: '#666', marginBottom: '10px' }}>
-              Already have an account?
-            </p>
-            <button
-              onClick={goToLoginAsesi}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#f97316',
-                textDecoration: 'underline',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '500'
-              }}
-            >
-              Sign in as Asesi
+              Sign in
             </button>
           </div>
         </div>
@@ -318,4 +274,4 @@ function Register({ goToDashboard, goToLoginAsesi }) {
   );
 }
 
-export default Register;
+export default LoginAsesi;

@@ -9,6 +9,7 @@ import CariSkema from './layouts/CariSkema';
 import FooterPage from './layouts/FooterPage';
 import Register from './Auth/Register';
 import Login from './Auth/Login';
+import LoginAsesi from './Asesi-Dashboard/Login-Asesi';
 import SertifikasiCTA from './layouts/SertifikasiCTA';
 import LandingPage from './layouts/DetailSertifikasi';
 import Kontak from './layouts/kontak';
@@ -190,6 +191,15 @@ function App() {
 
   const goToLandingPage = () => {
     setCurrentPage('landingPage');
+  };
+
+  const goToLoginAsesi = () => {
+    setCurrentPage('loginasesi');
+  };
+
+  const goToAsesiDashboard = () => {
+    setCurrentPage('dashboard');
+    setActiveMenu('Dashboard');
   };
 
   const handleNavigate = (page, data = null) => {
@@ -437,7 +447,7 @@ function App() {
             {currentPage === 'lihatlistasesmen' && (
               <LihatListAsesmen onBack={() => handleNavigate('listasesmen')} data={editData} />
             )}
-            {currentPage === 'approvement' && ( // Tambahkan ini
+            {currentPage === 'approvement' && (
               <Approvement onBack={handleBackToHome} onNavigate={handleNavigate} />
             )}
           </div>
@@ -481,8 +491,20 @@ function App() {
       {currentPage === 'editskema' && (
         <EditSkema data={editData} onSave={handleEditSkema} onCancel={() => handleNavigate('kompetensi')} />
       )}
-      {currentPage === 'register' && <Register onBack={handleBackToHome} />}
+      {currentPage === 'register' && (
+        <Register 
+          onBack={handleBackToHome} 
+          goToDashboard={goToDashboard}
+          goToLoginAsesi={goToLoginAsesi}
+        />
+      )}
       {currentPage === 'login' && <Login onBack={handleBackToHome} goToDashboard={goToDashboard} />}
+      {currentPage === 'loginasesi' && (
+        <LoginAsesi 
+          onBack={handleBackToHome}
+          goToDashboard={goToAsesiDashboard}
+        />
+      )}
       {currentPage === 'landingPage' && <LandingPage onBack={handleBackToHome} onNavigate={handleDetailSertifikasiNavigate} />}
     </>
   );
