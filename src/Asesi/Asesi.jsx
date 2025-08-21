@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
+import { useAsesi } from '../context/AsesiContext'; // Import custom hook
 
 function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
+  const { asesis, loading, error } = useAsesi();
+  const data = asesis || []; 
   const [showAddNotif, setShowAddNotif] = useState(false);
 
-  // Sample data if asesiData is empty
-  const sampleData = asesiData && asesiData.length > 0 ? asesiData : [
-    { id: 1, no: 1, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Rekayasa Perangkat Lunak', kelas: '12' },
-    { id: 2, no: 2, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Rekayasa Perangkat Lunak', kelas: '11' },
-    { id: 3, no: 3, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Rekayasa Perangkat Lunak', kelas: '10' },
-    { id: 4, no: 4, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Perhotelan', kelas: '11' },
-    { id: 5, no: 5, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Busana', kelas: '11' },
-    { id: 6, no: 6, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Usaha Layanan Pariwisata', kelas: '11' },
-    { id: 7, no: 7, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Kuliner', kelas: '11' }
-  ];
+  console.log("Asesis from context:", asesis);
+console.log("Data to map:", asesis?.data || []);
+
 
   const handleAddClick = () => {
     onNavigate('addasesi');
@@ -22,7 +18,8 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
     onNavigate('editasesi', asesi);
   };
 
-
+  if (loading) return <p>Loading asesi...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div
@@ -191,7 +188,7 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
             </tr>
           </thead>
           <tbody>
-            {sampleData.map((asesi, index) => (
+            {data.map((asesi, index) => (
               <tr
                 key={asesi.id || index}
                 style={{
@@ -207,7 +204,7 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {asesi.no || index + 1}
+                  {asesi.user_id || index + 1}
                 </td>
                 <td
                   style={{
@@ -217,7 +214,7 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {asesi.nama}
+                  {asesi.nama_lengkap}
                 </td>
                 <td
                   style={{
@@ -228,7 +225,7 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {asesi.pekerjaan}
+                  {asesi.no_ktp}
                 </td>
                 <td
                   style={{
@@ -239,7 +236,7 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {asesi.jurusan}
+                  {asesi.jurusan.nama_jurusan}
                 </td>
                 <td
                   style={{
@@ -250,7 +247,18 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {asesi.kelas}
+                  {asesi.tempat_lahir}
+                </td>
+                <td
+                  style={{
+                    padding: '10px 8px',
+                    textAlign: 'center',
+                    color: '#333',
+                    fontSize: '12px',
+                    border: '1px solid #dee2e6',
+                  }}
+                >
+                  {asesi.jenis_kelamin}
                 </td>
                 <td 
                   style={{ 

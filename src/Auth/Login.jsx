@@ -168,7 +168,7 @@ function Login({ goToDashboard }) {
               <input
                 type="email"
                 name="input"
-                placeholder="Email /"
+                placeholder="Email / Username"
                 value={formData.input}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}

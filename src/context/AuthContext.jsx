@@ -1,49 +1,56 @@
+// context/AuthContext.jsx
 import { createContext, useContext, useState } from "react";
-import { login as apiLogin } from "../Api/api"; // API service
+import api from "../Api/api"; // axios instance misalnya
 
-// Buat Context
 const AuthContext = createContext();
 
-// Provider
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fungsi login
-  const login = async (formData) => {
-    setLoading(true);
-    setError(null);
-
+  // LOGIN
+  const login = async (credentials) => {
     try {
-      const res = await apiLogin(formData);
-      const { token, user } = res.data;
-
-      setUser(user);
-      localStorage.setItem("token", token);
-      return true;
+      setLoading(true);
+      const res = await api.post("/auth/login", credentials);
+      setUser(res.data.user);
+      localStorage.setItem("token", res.data.token); // simpan token
+      console.log("Login successful:", res.data);
+      return res.data;
     } catch (err) {
-      setError(err.response?.data?.message || "Login gagal!");
-      return false;
+      throw err.response?.data || err;
     } finally {
       setLoading(false);
     }
   };
 
-  // Fungsi logout
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("token");
+  // REGISTER (ini yang belum ada)
+  const register = async (formData) => {
+    try {
+      setLoading(true);
+      const res = await api.post("/auth/register", formData);
+      return res.data;
+    } catch (err) {
+      throw err.response?.data || err;
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, login, register, loading, error }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
 
-// Hook custom buat akses Auth
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 }
