@@ -10,6 +10,8 @@ function EditSkema({ onBack, onSave, initialData, onCancel, onDelete }) {
   const [showUpdateNotif, setShowUpdateNotif] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
+  const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   // Load initial data when component mounts
   useEffect(() => {
@@ -56,8 +58,13 @@ function EditSkema({ onBack, onSave, initialData, onCancel, onDelete }) {
     e.preventDefault();
     
     if (validateForm()) {
-      setShowUpdateNotif(true);
+      setShowSubmitConfirm(true);
     }
+  };
+
+  const confirmSubmit = () => {
+    setShowSubmitConfirm(false);
+    setShowUpdateNotif(true);
   };
 
   const handleCancel = () => {
@@ -107,6 +114,27 @@ function EditSkema({ onBack, onSave, initialData, onCancel, onDelete }) {
     }, 1500);
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    // Handle file drop logic here
+  };
+
+  const handleFileSelect = () => {
+    // Handle file selection logic here
+    console.log('File selection triggered');
+  };
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -128,190 +156,193 @@ function EditSkema({ onBack, onSave, initialData, onCancel, onDelete }) {
         zIndex: 10
       }}>
         <h1 style={{
-          fontSize: '28px',
-          fontWeight: '600',
+          fontSize: '32px',
+          fontWeight: '700',
           color: '#333',
-          margin: '0',
-          letterSpacing: '1px'
+          margin: '0 0 8px 0',
+          letterSpacing: '0.5px'
         }}>
-          EDIT DATA SKEMA
+          Import Skema
         </h1>
+        <p style={{
+          fontSize: '16px',
+          color: '#666',
+          margin: '0',
+          fontWeight: '400'
+        }}>
+          Silahkan import file skema di bawah ini
+        </p>
       </div>
 
-      {/* Form Container */}
+      {/* Main Container */}
       <div style={{
-        margin: '0 20px 40px 20px',
+        margin: '0 auto 40px auto', // Center dengan auto margin
         backgroundColor: '#ffffff',
         borderRadius: '30px',
-        padding: '40px',
+        padding: '30px 30px', // Padding sama semua sisi biar persegi
         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
-        minHeight: '60vh'
+        width: '500px', // Width tetap
+        height: '500px', // Height sama dengan width = PERSEGI!
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
       }}>
-        {/* Form Content - 2 Columns */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '40px',
-          marginBottom: '40px'
-        }}>
-          {/* Left Column */}
-          <div style={{
+        {/* Upload Area */}
+        <div 
+          style={{
+            width: '320px', // Lebih kecil lagi!
+            height: '320px', // Persegi 320x320
+            border: `3px dashed ${isDragOver ? '#fd7e14' : '#d1d5db'}`,
+            borderRadius: '16px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '30px'
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: isDragOver ? '#fff8f1' : '#fafafa',
+            transition: 'all 0.3s ease',
+            cursor: 'pointer',
+            marginBottom: '30px' // Margin dikecilkan juga
+          }}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={handleFileSelect}
+        >
+          {/* File Icon */}
+          <div style={{
+            width: '80px',
+            height: '80px',
+            marginBottom: '20px'
           }}>
-            {/* Judul Skema */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Judul Skema
-              </label>
-              <input
-                type="text"
-                name="judulSkema"
-                value={formData.judulSkema}
-                onChange={handleInputChange}
-                placeholder=""
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                stroke="#9ca3af"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="#f3f4f6"
               />
-              {errors.judulSkema && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '14px',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0'
-                }}>
-                  {errors.judulSkema}
-                </p>
-              )}
-            </div>
+              <polyline
+                points="14,2 14,8 20,8"
+                stroke="#9ca3af"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </div>
 
-          {/* Right Column */}
+          {/* Upload Text */}
           <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '30px'
+            textAlign: 'center',
+            marginBottom: '20px'
           }}>
-            {/* Jumlah Siswa */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Jumlah Siswa
-              </label>
-              <input
-                type="text"
-                name="jumlahSiswa"
-                value={formData.jumlahSiswa}
-                onChange={handleInputChange}
-                placeholder=""
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-              />
-              {errors.jumlahSiswa && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '14px',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0'
-                }}>
-                  {errors.jumlahSiswa}
-                </p>
-              )}
-            </div>
+            <p style={{
+              fontSize: '18px',
+              fontWeight: '600',
+              color: '#374151',
+              margin: '0 0 8px 0'
+            }}>
+              Import Skema
+            </p>
+            <p style={{
+              fontSize: '14px',
+              color: '#9ca3af',
+              margin: '0',
+              lineHeight: '1.5'
+            }}>
+              Drag & drop file xlsx (.xlsx) untuk memulai
+            </p>
           </div>
+
+          {/* Import File Button */}
+          <button
+            style={{
+              backgroundColor: '#fd7e14',
+              color: '#ffffff',
+              border: 'none',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              fontFamily: 'inherit',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = '#e8670e';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = '#fd7e14';
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <polyline
+                points="7,10 12,15 17,10"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <line
+                x1="12"
+                y1="15"
+                x2="12"
+                y2="3"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+            Import File
+          </button>
         </div>
 
-        {/* Action Buttons - All buttons grouped together on the right */}
+        {/* Action Buttons */}
         <div style={{
           display: 'flex',
-          justifyContent: 'flex-end',
+          justifyContent: 'center',
           alignItems: 'center',
-          paddingTop: '20px',
-          borderTop: '1px solid #e0e0e0',
-          gap: '12px'
+          gap: '16px'
         }}>
           <button
             onClick={handleCancel}
             style={{
-              backgroundColor: '#6c757d',
+              backgroundColor: '#fd7e14',
               color: '#ffffff',
               border: 'none',
               padding: '12px 24px',
               borderRadius: '8px',
               fontSize: '14px',
-              fontWeight: '500',
+              fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
-              fontFamily: 'inherit'
+              fontFamily: 'inherit',
+              minWidth: '120px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
             onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#5a6268';
+              e.target.style.backgroundColor = '#e8670e';
             }}
             onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#6c757d';
+              e.target.style.backgroundColor = '#fd7e14';
             }}
           >
-            Batal
-          </button>
-          
-          <button
-            onClick={handleDelete}
-            style={{
-              backgroundColor: '#dc3545',
-              color: '#ffffff',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              fontFamily: 'inherit'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#c82333';
-            }} 
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#dc3545';
-            }}
-          >
-            Hapus Data
+            Kembali
           </button>
           
           <button
@@ -323,10 +354,14 @@ function EditSkema({ onBack, onSave, initialData, onCancel, onDelete }) {
               padding: '12px 24px',
               borderRadius: '8px',
               fontSize: '14px',
-              fontWeight: '500',
+              fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
-              fontFamily: 'inherit'
+              fontFamily: 'inherit',
+              minWidth: '120px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
             onMouseOver={(e) => {
               e.target.style.backgroundColor = '#e8670e';
@@ -335,10 +370,112 @@ function EditSkema({ onBack, onSave, initialData, onCancel, onDelete }) {
               e.target.style.backgroundColor = '#fd7e14';
             }}
           >
-            Simpan Perubahan
+            Simpan
           </button>
         </div>
       </div>
+
+      {/* Submit Confirmation Modal */}
+      {showSubmitConfirm && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: '#ffffff',
+            borderRadius: '20px',
+            padding: '40px 30px',
+            textAlign: 'center',
+            width: '320px',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+            position: 'relative'
+          }}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              backgroundColor: '#fd7e14',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 25px auto'
+            }}>
+              <svg width="35" height="35" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                  stroke="#ffffff"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            <h2 style={{
+              fontSize: '22px',
+              fontWeight: '600',
+              color: '#333333',
+              margin: '0 0 25px 0',
+              lineHeight: '1.4',
+              paddingBottom: '25px',
+              borderBottom: '1px solid #e0e0e0'
+            }}>
+              Apa Kamu Yakin<br />Ingin Menyimpan<br />Data Ini?
+            </h2>
+
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <div
+                onClick={() => setShowSubmitConfirm(false)}
+                style={{
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  color: '#666666',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  userSelect: 'none',
+                  padding: '8px 20px'
+                }}
+              >
+                Batal
+              </div>
+              
+              <div style={{
+                width: '1px',
+                height: '20px',
+                backgroundColor: '#e0e0e0',
+                margin: '0 10px'
+              }}></div>
+              
+              <div
+                onClick={confirmSubmit}
+                style={{
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  color: '#fd7e14',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  userSelect: 'none',
+                  padding: '8px 20px'
+                }}
+              >
+                Ya, Simpan
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Update Success Modal */}
       {showUpdateNotif && (
