@@ -12,6 +12,7 @@ export default function App() {
       email: '',
       password: ''
     });
+    
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -54,6 +55,9 @@ export default function App() {
           },
           body: JSON.stringify(requestBody),
         });
+
+        const result = await response.json();
+
         // Check if the response is ok (status 200-299)
         if (!response.ok) {
           const errorText = response.statusText || 'Error tidak diketahui';
@@ -69,11 +73,14 @@ export default function App() {
           return;
         }
 
-        const result = await response.json();
-        
+         
         // API call was successful
         setError('');
-        if (goToDashboard) goToDashboard(); // Navigate to dashboard using prop
+        if (result.user?.role === "admin") {
+          if (goToDashboard) goToDashboard(); 
+        } else {
+          setError("Anda tidak memiliki akses sebagai admin.");
+        }
 
       } catch (err) {
         // Handle network errors (e.g., no internet connection)

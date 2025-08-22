@@ -35,6 +35,7 @@ import Berita from './layouts/Berita';
 import AddListAsesmen from './layouts/AddListAsesmen';
 import EditListAsesmen from './layouts/EditListAsesmen';
 import LihatListAsesmen from './layouts/LihatListAsesmen';
+import LihatApprovement from './layouts/LihatApprovement';
 import Approvement from "./layouts/Approvement";
 import TempatUji from './layouts/TempatUji';
 import AddSkema from './Skema/AddSkema';
@@ -225,6 +226,8 @@ function App() {
       addlistasesmen: 'ListAsesmen',  // Changed from ManajemenData
       editlistasesmen: 'ListAsesmen', // Changed from ManajemenData
       lihatlistasesmen: 'ListAsesmen', // Changed from ManajemenData
+      approvement: 'Approvement',
+      lihatapprovement: 'Approvement',
       // Keep all other mappings the same
       addjurusan: 'ManajemenData',
       editjurusan: 'ManajemenData',
@@ -450,6 +453,9 @@ function App() {
             {currentPage === 'approvement' && (
               <Approvement onBack={handleBackToHome} onNavigate={handleNavigate} />
             )}
+            {currentPage === 'lihatapprovement' && (
+              <LihatApprovement onBack={() => handleNavigate('approvement')} data={editData} />
+            )}
           </div>
         </div>
       )}
@@ -498,6 +504,12 @@ function App() {
           goToLoginAsesi={goToLoginAsesi}
         />
       )}
+
+      {currentPage === 'login' && (
+          <Login goToDashboard={goToDashboard} />
+      )}
+
+
       {currentPage === 'login' && <Login onBack={handleBackToHome} goToDashboard={goToDashboard} />}
       {currentPage === 'loginasesi' && (
         <LoginAsesi 

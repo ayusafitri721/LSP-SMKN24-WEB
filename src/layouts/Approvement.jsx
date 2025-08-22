@@ -32,7 +32,7 @@ export default function Approvement({ onBack, onNavigate }) {
     item.tuk.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (item.nisn && item.nisn.toString().includes(searchTerm.toLowerCase()))
   );
-  
+
   const SearchIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="11" cy="11" r="8"></circle>
@@ -121,8 +121,8 @@ export default function Approvement({ onBack, onNavigate }) {
       
       {/* Search Bar */}
       <div style={{ marginBottom: '30px', maxWidth: '300px' }}>
-        <div style={{ 
-          position: 'relative', 
+        <div style={{
+          position: 'relative',
           width: '100%',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
           borderRadius: '6px',
@@ -332,7 +332,7 @@ export default function Approvement({ onBack, onNavigate }) {
                       verticalAlign: 'middle'
                     }}>
                       <button
-                        onClick={() => onNavigate && onNavigate('detailApprovement', item)}
+                        onClick={() => onNavigate && onNavigate('LihatApprovement', item)}
                         style={{
                           backgroundColor: '#fd7e14',
                           color: '#ffffff',
