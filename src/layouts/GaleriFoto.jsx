@@ -88,99 +88,92 @@ function GaleriFoto({ onBack }) {
       backgroundColor: '#f8f9fa',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
-      {/* Hero Section dengan Background Image */}
+      {/* Hero Section dengan overlay */}
       <div style={{
-        position: 'relative',
-        height: '400px',
-        background: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('src/img/auditoriums.png')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'white',
-        overflow: 'hidden'
+         position: "relative",
+          height: "450px",
+          backgroundImage: "url('src/img/auditoriums.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          marginTop: "0"
       }}>
-       {/* Orange bottom border */}
-        <div style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: "15px 40px",
-          backgroundColor: '#FF8303',
-          zIndex: 3
-        }}></div>
-        {/* Background Pattern */}
+        {/* Blue overlay */}
         <div style={{
           position: 'absolute',
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          opacity: 0.3
+          backgroundColor: '#419EFD4D',
+          zIndex: 1
         }}></div>
-        
-        {/* Content */}
+      </div>
+
+      {/* Orange breadcrumb section - sama seperti di berita */}
+      <div style={{
+        backgroundColor: "#ff9324",
+        padding: "15px 40px",
+        color: "white"
+      }}>
         <div style={{
-          textAlign: 'center',
-          zIndex: 2,
-          maxWidth: '800px',
-          padding: '0 20px'
+          maxWidth: "1200px",
+          margin: "0 auto",
+          fontSize: "14px"
         }}>
-          <div style={{
-            fontSize: '72px',
-            marginBottom: '20px',
-            opacity: 0.9
-          }}>
-          </div>
-          <h1 style={{
-            fontSize: '48px',
-            fontWeight: '700',
-            margin: '0 0 20px 0',
-            textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
-          }}>
-            Galeri Foto 
-          </h1>
-          <p style={{
-            fontSize: '20px',
-            opacity: 0.9,
-            margin: 0,
-            textShadow: '1px 1px 2px rgba(0,0,0,0.3)'
-          }}>
-            Dokumentasi kegiatan dan acara LSP <br/>
-            SMKN 24 JAKARTA
-          </p>
+          
         </div>
       </div>
+
+      {/* Content Section untuk judul */}
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '60px 20px',
+        textAlign: 'center'
+      }}>
+        <h1 style={{
+          fontSize: '48px',
+          fontWeight: '700',
+          margin: '0 0 20px 0',
+          color: '#333',
+          textShadow: '1px 1px 2px rgba(0,0,0,0.1)'
+        }}>
+          Galeri Foto
+        </h1>
+        <p style={{
+          fontSize: '25px',
+          opacity: 0.9,
+          margin: '0 0 40px 0',
+          color: '#555'
+        }}>
+          Dokumentasi kegiatan dan acara LSP <br />
+          SMKN 24 JAKARTA
+        </p>
+
+        {/* Section Title (Dokumentasi) */}
+        <h2 style={{
+          fontSize: '36px',
+          fontWeight: '700',
+          color: '#333',
+          margin: '0 0 16px 0'
+        }}>
+          Dokumentasi
+        </h2>
+        <div style={{
+          width: '80px',
+          height: '4px',
+          backgroundColor: '#FF8303',
+          margin: '0 auto 40px',
+          borderRadius: '2px'
+        }}></div>
+      </div>
+
       {/* Gallery Section */}
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '60px 20px'
+        padding: '0 20px 60px'
       }}>
-          {/* Section Title */}
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px 40px', textAlign: 'center' }}>
-          <h2 style={{
-            fontSize: '36px',
-            fontWeight: '700',
-            color: '#333',
-            margin: '0 0 16px 0'
-          }}>
-            Dokumentasi
-          </h2>
-          <div style={{
-            width: '80px',
-            height: '4px',
-            backgroundColor: '#FF8303',
-            margin: '0 auto',
-            borderRadius: '2px'
-          }}></div>
-        </div>
-
-        {/* Gallery Grid */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
@@ -197,8 +190,8 @@ function GaleriFoto({ onBack }) {
                 backgroundColor: 'white',
                 borderRadius: '16px',
                 overflow: 'hidden',
-                boxShadow: hoveredImage === image.id 
-                  ? '0 20px 40px rgba(0,0,0,0.15)' 
+                boxShadow: hoveredImage === image.id
+                  ? '0 20px 40px rgba(0,0,0,0.15)'
                   : '0 8px 25px rgba(0,0,0,0.1)',
                 cursor: 'pointer',
                 transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -231,16 +224,16 @@ function GaleriFoto({ onBack }) {
                 </div>
 
                 {/* Image */}
-                <img 
-                  src={image.src} 
-                  alt={image.alt} 
+                <img
+                  src={image.src}
+                  alt={image.alt}
                   style={{
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
                     transition: 'transform 0.4s ease',
                     transform: hoveredImage === image.id ? 'scale(1.1)' : 'scale(1)'
-                  }} 
+                  }}
                 />
 
                 {/* Hover Effect */}
@@ -250,15 +243,13 @@ function GaleriFoto({ onBack }) {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  background: hoveredImage === image.id 
-                    ? 'rgba(0,0,0,0.3)' 
+                  background: hoveredImage === image.id
+                    ? 'rgba(0,0,0,0.3)'
                     : 'transparent',
                   transition: 'all 0.3s ease',
                   opacity: hoveredImage === image.id ? 1 : 0
                 }}></div>
               </div>
-
-
 
               {/* Hover Tooltip */}
               {hoveredImage === image.id && (
@@ -314,7 +305,7 @@ function GaleriFoto({ onBack }) {
                 </div>
               )}
 
-              {/* Tooltip */}
+              {/* Tooltip Animation */}
               <style>
                 {`
                   @keyframes fadeInUp {
@@ -334,7 +325,7 @@ function GaleriFoto({ onBack }) {
         </div>
       </div>
 
-    
+      
       {/* Footer */}
       <footer style={{
         background: 'linear-gradient(135deg, #f97316 0%, #f97316 40%, #2C94FF 40%, #2C94FF 100%)',
@@ -614,6 +605,5 @@ function GaleriFoto({ onBack }) {
     </div>
   );
 }
-
 
 export default GaleriFoto;
