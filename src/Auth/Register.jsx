@@ -1,14 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useJurusan } from '../context/JurusanContext';
+import { useAuth } from  '../context/AuthContext';
 
 function Register({ goToDashboard, goToLoginAsesi }) {
+  const {register} = useAuth();
+  const {jurusanList, loading} = useJurusan();
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
-    password: ''
+    password: '',
+    jurusan_id: '',
   });
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
 
   const handleInputChange = (e) => {
     setFormData({
@@ -20,39 +26,34 @@ function Register({ goToDashboard, goToLoginAsesi }) {
     if (success) setSuccess('');
   };
 
-  const handleSubmit = () => {
-    console.log('Register data:', formData);
-    
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Register data:", formData);
+
     // Basic validation
-    if (!formData.name || !formData.email || !formData.password) {
-      setError('All fields are required');
+    if (!formData.username || !formData.email || !formData.password || !formData.jurusan_id) {
+      setError("All fields are required");
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
+      setError("Password must be at least 6 characters long");
       return;
     }
 
-    // Simulate successful registration
-    console.log('Registration successful:', formData);
-    setSuccess('Registration successful! You can now sign in.');
-    setError('');
-    
-    // Clear form after successful registration
-    setFormData({
-      name: '',
-      email: '',
-      password: ''
-    });
+    try {
+      const res = await register(formData);
+      setSuccess("Registration successful!");
+      console.log("API Response:", res.data);
 
-    // Automatically redirect to LoginAsesi after successful registration
-    setTimeout(() => {
-      if (goToLoginAsesi) {
-        goToLoginAsesi();
-      }
-    }, 2000); // Wait 2 seconds to show success message
+      // misalnya langsung ke dashboard
+      goToLoginAsesi?.();
+    } catch (err) {
+      console.error("Register error:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "Registration failed");
+    }
   };
+
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
@@ -186,7 +187,7 @@ function Register({ goToDashboard, goToLoginAsesi }) {
             <div style={{ marginBottom: '20px', textAlign: 'left' }}>
               <input
                 type="text"
-                name="name"
+                name="username"
                 placeholder="Full Name"
                 value={formData.name}
                 onChange={handleInputChange}
@@ -261,6 +262,45 @@ function Register({ goToDashboard, goToLoginAsesi }) {
             </div>
           </div>
 
+          {/* Select Jurusan - Updated to match other inputs */}
+          <div style={{ marginBottom: '20px', textAlign: 'left' }}>
+            <select
+              name="jurusan_id"
+              value={formData.jurusan_id}
+              onChange={handleInputChange}
+              style={{
+                width: '100%',
+                padding: '14px 18px',
+                border: 'none',
+                borderBottom: '2px solid #e5e7eb',
+                fontSize: '15px',
+                backgroundColor: 'transparent',
+                outline: 'none',
+                fontFamily: 'inherit',
+                color: '#333',
+                transition: 'border-color 0.3s ease',
+                appearance: 'none', // Remove default arrow
+                cursor: 'pointer'
+              }}
+              onFocus={(e) => e.target.style.borderBottomColor = '#f97316'}
+              onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
+            >
+              <option value="" disabled style={{ color: '#999' }}>
+                Select Jurusan
+              </option>
+              {loading ? (
+                <option disabled>Loading...</option>
+              ) : (
+                jurusanList.map((jurusan) => (
+                  <option key={jurusan.id} value={jurusan.id}>
+                    {jurusan.kode_jurusan} - {jurusan.nama_jurusan}
+                  </option>
+                ))
+              )}
+            </select>
+          </div>
+
+
           {/* Submit Button */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
             <button
@@ -291,6 +331,8 @@ function Register({ goToDashboard, goToLoginAsesi }) {
               Sign up
             </button>
           </div>
+
+          
 
           {/* Link to LoginAsesi */}
           <div style={{ textAlign: 'center' }}>
