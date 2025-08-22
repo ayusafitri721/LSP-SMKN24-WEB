@@ -97,7 +97,7 @@ function App() {
 
   const pagesWithSidebar = [
     'manajemenData', 'asesor', 'asesi', 'asesmen', 'jurusan', 'kompetensi', 
-    'listasesmen', 'asesmenDiikuti','lihatlistasesmen','approvement'
+    'listasesmen', 'asesmenDiikuti','lihatlistasesmen','approvement', 'lihatapprovement'
   ];
 
   const scrollToSection = (section) => {
@@ -210,24 +210,22 @@ function App() {
     
     if (data) {
       setEditData(data);
-      } else {
-    // Ini sangat penting. Atur ulang editData ketika tidak ada data
-    // untuk menghindari bug dari navigasi sebelumnya.
-    setEditData(null); 
+    } else {
+      setEditData(null); 
     }
 
-    // UPDATED MENU MAPPING - THIS IS THE FIX
+    // Fixed menu mapping for approvement
     const menuMap = {
       dashboard: 'Dashboard',
       manajemenData: 'ManajemenData',
       listasesmen: 'ListAsesmen',
       asesmenDiikuti: 'AsesmenDiikuti',
       profile: 'Profile',
-      addlistasesmen: 'ListAsesmen',  // Changed from ManajemenData
-      editlistasesmen: 'ListAsesmen', // Changed from ManajemenData
-      lihatlistasesmen: 'ListAsesmen', // Changed from ManajemenData
-      approvement: 'Approvement',
-      lihatapprovement: 'Approvement',
+      addlistasesmen: 'ListAsesmen',
+      editlistasesmen: 'ListAsesmen',
+      lihatlistasesmen: 'ListAsesmen',
+      approvement: 'Approvement',  // Fixed this line
+      lihatapprovement: 'Approvement', // Fixed this line
       // Keep all other mappings the same
       addjurusan: 'ManajemenData',
       editjurusan: 'ManajemenData',
@@ -262,11 +260,11 @@ function App() {
       ManajemenData: 'manajemenData',
       ListAsesmen: 'listasesmen',
       AsesmenDiikuti: 'asesmenDiikuti',
-      Approvement: 'approvement',
+      Approvement: 'approvement', // Fixed this line
       Profile: 'dashboard',
     };
     if (pageMap[menuName]) {
-      setCurrentPage(pageMap[menuName]);
+      handleNavigate(pageMap[menuName]);
     }
   };
 
@@ -456,6 +454,7 @@ function App() {
             {currentPage === 'lihatapprovement' && (
               <LihatApprovement onBack={() => handleNavigate('approvement')} data={editData} />
             )}
+
           </div>
         </div>
       )}

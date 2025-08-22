@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 
 export default function Approvement({ onBack, onNavigate }) {
   const [searchTerm, setSearchTerm] = useState('');
+  // Removed the problematic safeData line since 'data' is not defined
+  // const safeData = data || [];
 
   // Sample data to display in the table
   const sampleData = [
@@ -332,7 +334,7 @@ export default function Approvement({ onBack, onNavigate }) {
                       verticalAlign: 'middle'
                     }}>
                       <button
-                        onClick={() => onNavigate && onNavigate('LihatApprovement', item)}
+                        onClick={() => onNavigate && onNavigate('lihatapprovement', item)}
                         style={{
                           backgroundColor: '#fd7e14',
                           color: '#ffffff',
