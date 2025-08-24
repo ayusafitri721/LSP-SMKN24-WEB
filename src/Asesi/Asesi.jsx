@@ -3,16 +3,19 @@ import React, { useState } from 'react';
 function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
   const [showAddNotif, setShowAddNotif] = useState(false);
 
-  console.log("Asesis from context:", asesis);
-console.log("Data to map:", asesis?.data || []);
-
-
   const handleAddClick = () => {
     onNavigate('addasesi');
   };
 
   const handleEdit = (asesi) => {
     onNavigate('editasesi', asesi);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Yakin mau hapus asesi ini?")) {
+      const updatedData = asesiData.filter(asesi => asesi.id !== id);
+      setAsesiData(updatedData);
+    }
   };
 
   return (
@@ -173,7 +176,7 @@ console.log("Data to map:", asesis?.data || []);
                   fontWeight: '600',
                   color: '#333',
                   fontSize: '12px',
-                  width: '80px',
+                  width: '120px',
                   border: '1px solid #dee2e6',
                 }}
               >
@@ -182,97 +185,130 @@ console.log("Data to map:", asesis?.data || []);
             </tr>
           </thead>
           <tbody>
-            {sampleData.map((asesi, index) => (
-              <tr
-                key={asesi.id || index}
-                style={{
-                  backgroundColor: 'white',
-                }}
-              >
-                <td
+            {asesiData && asesiData.length > 0 ? (
+              asesiData.map((asesi, index) => (
+                <tr
+                  key={asesi.id || index}
                   style={{
-                    padding: '10px 8px',
-                    textAlign: 'center',
-                    color: '#333',
-                    fontSize: '12px',
-                    border: '1px solid #dee2e6',
+                    backgroundColor: 'white',
                   }}
                 >
-                  {asesi.id || index + 1}
-                </td>
-                <td
-                  style={{
-                    padding: '10px 16px',
-                    color: '#333',
-                    fontSize: '12px',
-                    border: '1px solid #dee2e6',
-                  }}
-                >
-                  {asesi.nama}
-                </td>
-                <td
-                  style={{
-                    padding: '10px 8px',
-                    textAlign: 'center',
-                    color: '#333',
-                    fontSize: '12px',
-                    border: '1px solid #dee2e6',
-                  }}
-                >
-                  {asesi.pekerjaan}
-                </td>
-                <td
-                  style={{
-                    padding: '10px 8px',
-                    textAlign: 'center',
-                    color: '#333',
-                    fontSize: '12px',
-                    border: '1px solid #dee2e6',
-                  }}
-                >
-                  {asesi.jurusan}
-                </td>
-                <td
-                  style={{
-                    padding: '10px 8px',
-                    textAlign: 'center',
-                    color: '#333',
-                    fontSize: '12px',
-                    border: '1px solid #dee2e6',
-                  }}
-                >
-                  {asesi.kelas}
-                </td>
-                <td 
-                  style={{ 
-                    padding: '10px 8px', 
-                    textAlign: 'center',
-                    border: '1px solid #dee2e6',
-                  }}
-                >
-                  <button
-                    onClick={() => handleEdit(asesi)}
+                  <td
                     style={{
-                      backgroundColor: '#ffc107',
-                      color: '#212529',
-                      border: 'none',
-                      borderRadius: '4px',
-                      padding: '4px 8px',
-                      fontSize: '11px',
-                      fontWeight: '500',
-                      cursor: 'pointer',
+                      padding: '10px 8px',
+                      textAlign: 'center',
+                      color: '#333',
+                      fontSize: '12px',
+                      border: '1px solid #dee2e6',
                     }}
                   >
-                    Edit Data
-                  </button>
+                    {asesi.no || index + 1}
+                  </td>
+                  <td
+                    style={{
+                      padding: '10px 16px',
+                      color: '#333',
+                      fontSize: '12px',
+                      border: '1px solid #dee2e6',
+                    }}
+                  >
+                    {asesi.nama}
+                  </td>
+                  <td
+                    style={{
+                      padding: '10px 8px',
+                      textAlign: 'center',
+                      color: '#333',
+                      fontSize: '12px',
+                      border: '1px solid #dee2e6',
+                    }}
+                  >
+                    {asesi.pekerjaan}
+                  </td>
+                  <td
+                    style={{
+                      padding: '10px 8px',
+                      textAlign: 'center',
+                      color: '#333',
+                      fontSize: '12px',
+                      border: '1px solid #dee2e6',
+                    }}
+                  >
+                    {asesi.jurusan}
+                  </td>
+                  <td
+                    style={{
+                      padding: '10px 8px',
+                      textAlign: 'center',
+                      color: '#333',
+                      fontSize: '12px',
+                      border: '1px solid #dee2e6',
+                    }}
+                  >
+                    {asesi.kelas}
+                  </td>
+                  <td 
+                    style={{ 
+                      padding: '10px 8px', 
+                      textAlign: 'center',
+                      border: '1px solid #dee2e6',
+                    }}
+                  >
+                    <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
+                      <button
+                        onClick={() => handleEdit(asesi)}
+                        style={{
+                          backgroundColor: '#ffc107',
+                          color: '#212529',
+                          border: 'none',
+                          borderRadius: '4px',
+                          padding: '4px 8px',
+                          fontSize: '11px',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(asesi.id)}
+                        style={{
+                          backgroundColor: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          padding: '4px 8px',
+                          fontSize: '11px',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td 
+                  colSpan="6" 
+                  style={{
+                    padding: '20px',
+                    textAlign: 'center',
+                    color: '#666',
+                    border: '1px solid #dee2e6',
+                  }}
+                >
+                  Belum ada data asesi
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
 
-      {/* Add Success Modal - Center of screen */}
+      {/* Add Success Modal */}
       {showAddNotif && (
         <div style={{
           position: 'fixed',
