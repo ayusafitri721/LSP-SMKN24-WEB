@@ -84,7 +84,28 @@ const DashboardRoutes = () => {
     } else {
       setEditData(null);
     }
-    navigate(`/dashboard/${page}`);
+    
+    // Map page names to correct routes
+    const pageMap = {
+      'Asesi': 'asesi',
+      'Asesor': 'asesor', 
+      'Asesmen': 'asesmen',
+      'Jurusan': 'jurusan',
+      'Kompetensi': 'kompetensi',
+      'addasesi': 'asesi/add',
+      'editasesi': 'asesi/edit',
+      'addasesor': 'asesor/add',
+      'editasesor': 'asesor/edit',
+      'addasesmen': 'asesmen/add',
+      'editasesmen': 'asesmen/edit',
+      'addjurusan': 'jurusan/add',
+      'editjurusan': 'jurusan/edit',
+      'addskema': 'kompetensi/add-skema',
+      'editskema': 'kompetensi/edit-skema'
+    };
+    
+    const route = pageMap[page] || page;
+    navigate(`/dashboard/${route}`);
   };
 
   const handleSidebarMenuClick = (menuName) => {
@@ -403,6 +424,15 @@ const DashboardRoutes = () => {
           onBack={() => navigate('/dashboard/approvement')} 
           data={editData} 
         />
+      } />
+
+      {/* Test Route for Debugging */}
+      <Route path="/test" element={
+        <div style={{ padding: '20px', textAlign: 'center' }}>
+          <h2>Test Route Working!</h2>
+          <p>If you can see this, routing is working correctly.</p>
+          <button onClick={() => navigate('/dashboard/')}>Go to Dashboard</button>
+        </div>
       } />
 
       {/* Profile Route */}
