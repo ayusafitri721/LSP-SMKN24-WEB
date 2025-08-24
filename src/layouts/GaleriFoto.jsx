@@ -4,61 +4,61 @@ function GaleriFoto({ onBack }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [hoveredImage, setHoveredImage] = useState(null);
 
-  // Data contoh foto galeri
+  // Data foto galeri dengan deskripsi yang sesuai
   const galleryImages = [
     {
       id: 1,
       src: 'src/img/lab.png',
-      alt: 'Seminar Teknologi Informasi',
-      title: 'Seminar Nasional Teknologi Informasi',
-      description: 'Acara seminar nasional yang diselenggarakan oleh LSP dengan pembicara ahli teknologi terkini',
+      alt: 'Laboratorium Komputer RPL',
+      title: 'Laboratorium Rekayasa Perangkat Lunak',
+      description: 'Fasilitas laboratorium komputer yang digunakan untuk praktikum dan asesmen kompetensi RPL',
       date: '27 Januari 2025',
       category: 'Lab RPL'
     },
     {
       id: 2,
       src: 'src/img/kenapakami.jpg',
-      alt: 'Workshop Sertifikasi',
-      title: 'Workshop Sertifikasi Web Developer',
-      description: 'Pelatihan intensif pengembangan web untuk peserta sertifikasi dengan mentor berpengalaman',
+      alt: 'Uji Sertifikasi Kompetensi',
+      title: 'Pelaksanaan Uji Sertifikasi Kompetensi',
+      description: 'Dokumentasi kegiatan uji sertifikasi kompetensi LSP SMKN 24 Jakarta dengan para peserta',
       date: '15 Februari 2025',
       category: 'USK'
     },
     {
       id: 3,
       src: 'src/img/kontak.png',
-      alt: 'Asesmen Kompetensi',
-      title: 'Pelaksanaan Asesmen Kompetensi',
-      description: 'Kegiatan asesmen kompetensi bidang IT untuk mengukur kemampuan peserta',
+      alt: 'Gedung Sekolah',
+      title: 'Gedung SMKN 24 Jakarta',
+      description: 'Tampak depan gedung SMKN 24 Jakarta sebagai lokasi LSP dan kegiatan asesmen',
       date: '20 Februari 2025',
       category: 'Asesmen'
     },
     {
       id: 4,
       src: 'src/img/lsp.png',
-      alt: 'Penyerahan Sertifikat',
-      title: 'Penyerahan Sertifikat Kompetensi',
-      description: 'Acara penyerahan sertifikat kepada peserta yang berhasil lulus asesmen',
+      alt: 'Acara Penyerahan Sertifikat',
+      title: 'Upacara Penyerahan Sertifikat Kompetensi',
+      description: 'Momen penyerahan sertifikat kompetensi kepada peserta yang telah lulus asesmen',
       date: '25 Februari 2025',
       category: 'Sertifikasi'
     },
     {
       id: 5,
       src: 'src/img/smk.png',
-      alt: 'Rapat Koordinasi',
-      title: 'Rapat Koordinasi LSP',
-      description: 'Rapat koordinasi tim LSP membahas program kerja dan evaluasi kegiatan',
+      alt: 'Informasi Sekolah',
+      title: 'Papan Informasi SMKN 24 Jakarta',
+      description: 'Papan informasi dan profil sekolah SMKN 24 Jakarta yang menampilkan berbagai program keahlian',
       date: '1 Maret 2025',
-      category: 'Rapat'
+      category: 'Informasi'
     },
     {
       id: 6,
       src: 'src/img/dibutuhkan.png',
-      alt: 'Pelatihan Asesor',
-      title: 'Pelatihan Asesor Baru',
-      description: 'Pelatihan untuk asesor baru LSP guna meningkatkan kualitas penilaian',
+      alt: 'Lowongan Kerja Digital',
+      title: 'Info Lowongan Kerja Bidang IT',
+      description: 'Informasi lowongan pekerjaan di bidang teknologi digital dan rekayasa perangkat lunak',
       date: '5 Maret 2025',
-      category: 'Pelatihan'
+      category: 'Karir'
     },
   ];
 
@@ -112,7 +112,7 @@ function GaleriFoto({ onBack }) {
       {/* Orange breadcrumb section - sama seperti di berita */}
       <div style={{
         backgroundColor: "#ff9324",
-        padding: "15px 40px",
+        padding: "5px 20px",
         color: "white"
       }}>
         <div style={{
@@ -120,7 +120,7 @@ function GaleriFoto({ onBack }) {
           margin: "0 auto",
           fontSize: "14px"
         }}>
-          
+          <span>Home</span> → <span>Galeri</span> → <span style={{ fontWeight: '600' }}>Galeri Dokumentasi</span>
         </div>
       </div>
 
