@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import { useAsesi } from '../context/AsesiContext'; // Import custom hook
 
 function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
-  const { asesis, loading, error } = useAsesi();
-  const data = asesis || []; 
   const [showAddNotif, setShowAddNotif] = useState(false);
 
   console.log("Asesis from context:", asesis);
-  console.log("Data to map:", asesis?.data || []);
+console.log("Data to map:", asesis?.data || []);
 
 
   const handleAddClick = () => {
@@ -17,9 +14,6 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
   const handleEdit = (asesi) => {
     onNavigate('editasesi', asesi);
   };
-
-  if (loading) return <p>Loading asesi...</p>;
-  if (error) return <p>{error}</p>;
 
   return (
     <div
@@ -188,7 +182,7 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
             </tr>
           </thead>
           <tbody>
-            {data.map((asesi, index) => (
+            {sampleData.map((asesi, index) => (
               <tr
                 key={asesi.id || index}
                 style={{
@@ -204,7 +198,7 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {asesi.user_id || index + 1}
+                  {asesi.id || index + 1}
                 </td>
                 <td
                   style={{
@@ -214,7 +208,7 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {asesi.nama_lengkap}
+                  {asesi.nama}
                 </td>
                 <td
                   style={{
@@ -225,7 +219,7 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {asesi.no_ktp}
+                  {asesi.pekerjaan}
                 </td>
                 <td
                   style={{
@@ -236,7 +230,7 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {asesi.jurusan.nama_jurusan}
+                  {asesi.jurusan}
                 </td>
                 <td
                   style={{
@@ -247,18 +241,7 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {asesi.tempat_lahir}
-                </td>
-                <td
-                  style={{
-                    padding: '10px 8px',
-                    textAlign: 'center',
-                    color: '#333',
-                    fontSize: '12px',
-                    border: '1px solid #dee2e6',
-                  }}
-                >
-                  {asesi.jenis_kelamin}
+                  {asesi.kelas}
                 </td>
                 <td 
                   style={{ 

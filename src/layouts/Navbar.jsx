@@ -1,12 +1,88 @@
 import React, { useState } from 'react';
 
-
 function Navbar({ onNavClick, onLoginClick }) {
   const [isSertifikasiOpen, setIsSertifikasiOpen] = useState(false);
   const [isGaleriOpen, setIsGaleriOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Check if we're on the landing page
+  const isLandingPage = window.location.pathname === '/';
+
+  const handleNavigation = (path) => {
+    // Show loading effect
+    setIsLoading(true);
+    
+    // Add small delay for smooth transition
+    setTimeout(() => {
+      window.location.href = path;
+    }, 300);
+  };
+
+  const handleMainNavClick = (name) => {
+    if (name === "Berita") {
+      handleNavigation("/berita");
+    } else if (name === "Kontak") {
+      handleNavigation("/kontak");
+    } else if (name === "Home") {
+      // Always go to home page
+      handleNavigation("/");
+    } else if (name === "Profile") {
+      if (isLandingPage) {
+        // If on landing page, scroll to section
+        onNavClick(name.toLowerCase());
+      } else {
+        // If not on landing page, go to landing page first
+        handleNavigation("/#profile");
+      }
+    }
+  };
 
   return (
-    <nav
+    <>
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9999,
+            animation: 'fadeIn 0.3s ease-in-out',
+          }}
+        >
+          <div style={{ textAlign: 'center' }}>
+            {/* Spinning loader */}
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                border: '4px solid #f3f3f3',
+                borderTop: '4px solid #FF8303',
+                borderRadius: '50%',
+                animation: 'spin 1s linear infinite',
+                margin: '0 auto 16px',
+              }}
+            />
+            <p style={{ 
+              color: '#FF8303', 
+              fontSize: '16px',
+              fontWeight: '500',
+              margin: 0 
+            }}>
+              Loading...
+            </p>
+          </div>
+        </div>
+      )}
+      
+      <nav
       style={{
         position: "sticky",
         top: 0,
@@ -71,7 +147,7 @@ function Navbar({ onNavClick, onLoginClick }) {
               <button
                 onClick={() => {
                   if (name !== "Sertifikasi" && name !== "Galeri") {
-                    onNavClick(name.toLowerCase());
+                    handleMainNavClick(name);
                   }
                 }}
                 style={{
@@ -106,7 +182,7 @@ function Navbar({ onNavClick, onLoginClick }) {
                   }}
                 >
                   <button
-                    onClick={() => onNavClick("galeri")}
+                    onClick={() => handleNavigation("/detail-sertifikasi")}
                     style={{
                       display: "block",
                       width: "100%",
@@ -125,7 +201,7 @@ function Navbar({ onNavClick, onLoginClick }) {
                     Skema Sertifikasi
                   </button>
                   <button
-                    onClick={() => onNavClick("tempatuji")}
+                    onClick={() => handleNavigation("/tempat-uji")}
                     style={{
                       display: "block",
                       width: "100%",
@@ -144,7 +220,7 @@ function Navbar({ onNavClick, onLoginClick }) {
                     Tempat Uji Kompetensi
                   </button>
                   <button
-                    onClick={() => onNavClick("jadwalasesmen")}
+                    onClick={() => handleNavigation("/jadwal-asesmen")}
                     style={{
                       display: "block",
                       width: "100%",
@@ -181,7 +257,7 @@ function Navbar({ onNavClick, onLoginClick }) {
                   }}
                 >
                   <button
-                    onClick={() => onNavClick("galerifoto")}
+                    onClick={() => handleNavigation("/galeri-foto")}
                     style={{
                       display: "block",
                       width: "100%",
@@ -200,7 +276,7 @@ function Navbar({ onNavClick, onLoginClick }) {
                     Galeri Foto
                   </button>
                   <button
-                    onClick={() => onNavClick("galerivideo")}
+                    onClick={() => handleNavigation("/galeri-video")}
                     style={{
                       display: "block",
                       width: "100%",
@@ -249,7 +325,28 @@ function Navbar({ onNavClick, onLoginClick }) {
       >
         Login
       </button>
+      
+      {/* CSS Animations */}
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          
+          @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+          }
+          
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+        `}
+      </style>
     </nav>
+    </>
   );
 }
 

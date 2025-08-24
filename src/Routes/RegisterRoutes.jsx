@@ -13,7 +13,8 @@ const RegisterRoutes = () => {
   };
 
   const goToLoginAsesi = () => {
-    navigate('/auth/login/asesi');
+    // Path yang sesuai dengan route baru di App.jsx
+    navigate('/asesi/login');
   };
 
   const handleBackToHome = () => {
@@ -47,7 +48,7 @@ const RegisterRoutes = () => {
         } 
       />
       
-      {/* Asesi Register Route - You can create a separate RegisterAsesi component later */}
+      {/* Asesi Register Route */}
       <Route 
         path="/asesi" 
         element={
@@ -60,13 +61,7 @@ const RegisterRoutes = () => {
         } 
       />
 
-      {/* Legacy routes for backward compatibility */}
-      <Route 
-        path="/register" 
-        element={<Navigate to="/auth/register/" replace />} 
-      />
-
-      {/* Fallback */}
+      {/* Catch all - redirect to default register */}
       <Route 
         path="*" 
         element={<Navigate to="/auth/register/" replace />} 

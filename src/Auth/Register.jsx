@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useJurusan } from '../context/JurusanContext';
 import { useAuth } from  '../context/AuthContext';
+// Import gambar dari src/img/
+import registerBackground from '../img/ADM_LOGIN.png';
 
 function Register({ goToDashboard, goToLoginAsesi }) {
   const {register} = useAuth();
@@ -54,10 +56,9 @@ function Register({ goToDashboard, goToLoginAsesi }) {
     }
   };
 
-
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      handleSubmit();
+      handleSubmit(e);
     }
   };
 
@@ -81,7 +82,8 @@ function Register({ goToDashboard, goToLoginAsesi }) {
       <div style={{
         minHeight: '100vh',
         height: '100vh',
-        backgroundImage: "url('src/img/ADM_LOGIN.png')",
+        // Gunakan imported image
+        backgroundImage: `url(${registerBackground})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -189,7 +191,7 @@ function Register({ goToDashboard, goToLoginAsesi }) {
                 type="text"
                 name="username"
                 placeholder="Full Name"
-                value={formData.name}
+                value={formData.username}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
                 style={{
@@ -300,7 +302,6 @@ function Register({ goToDashboard, goToLoginAsesi }) {
             </select>
           </div>
 
-
           {/* Submit Button */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
             <button
@@ -331,8 +332,6 @@ function Register({ goToDashboard, goToLoginAsesi }) {
               Sign up
             </button>
           </div>
-
-          
 
           {/* Link to LoginAsesi */}
           <div style={{ textAlign: 'center' }}>
