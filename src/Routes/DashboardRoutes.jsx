@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { DashboardSidebar } from '../layouts/Dashboard';
-import Dashboard from '../layouts/Dashboard';
+import Dashboard from '../layouts/Dashboard'; // Default import
 import ManajemenData from '../layouts/ManajemenData';
 import ListAsesmen from '../layouts/ListAsesmen';
 import AsesmenDiikuti from '../AsesmenDiikuti/AsesmenDiikuti';
@@ -28,6 +27,7 @@ import AddListAsesmen from '../layouts/AddListAsesmen';
 import EditListAsesmen from '../layouts/EditListAsesmen';
 import LihatListAsesmen from '../layouts/LihatListAsesmen';
 import LihatApprovement from '../Approvment/APL-01/LihatApprovement';
+import ProfileSection from '../layouts/ProfileSection'; // Import ProfileSection
 
 const DashboardRoutes = () => {
   const navigate = useNavigate();
@@ -438,10 +438,7 @@ const DashboardRoutes = () => {
       {/* Profile Route */}
       <Route path="/profile" element={
         <DashboardLayout>
-          <div style={{ padding: '20px', textAlign: 'center' }}>
-            <h2>Profile Page</h2>
-            <p>Profile content akan ditampilkan di sini</p>
-          </div>
+          <ProfileSection />
         </DashboardLayout>
       } />
     </Routes>

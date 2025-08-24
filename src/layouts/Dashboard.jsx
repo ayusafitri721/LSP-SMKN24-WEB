@@ -1,9 +1,9 @@
-  import { useState } from "react";
-  import ManajemenData from "./ManajemenData";
-  import ListAsesmen from "./ListAsesmen";
-  import AsesmenDiikuti from "../AsesmenDiikuti/AsesmenDiikuti";
-  import Approvement from '../Approvment/APL-01/Approvement';
-  import logoImage from "/src/img/image 12.png";
+import { useState } from "react";
+import ManajemenData from "./ManajemenData";
+import ListAsesmen from "./ListAsesmen";
+import AsesmenDiikuti from "../AsesmenDiikuti/AsesmenDiikuti";
+import Approvement from '../Approvment/APL-01/Approvement';
+import logoImage from "/src/img/image 12.png";
 
 // KOMPONEN SIDEBAR YANG BISA DI-EXPORT (seperti Navbar)
 export function DashboardSidebar({ activeMenu, onMenuClick }) {
@@ -271,62 +271,8 @@ export function DashboardSidebar({ activeMenu, onMenuClick }) {
             List Asesmen
           </span>
         </div>
-        
-        {/* karena asesmen diikuti gada dikomen dl*/}    
-        {/* Asesmen Diikuti Menu
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            padding: "15px 20px",
-            marginBottom: "8px",
-            backgroundColor:
-              activeMenu === "AsesmenDiikuti" ? "#ff6b35" : "transparent",
-            borderRadius: "12px",
-            cursor: "pointer",
-            transition: "all 0.2s ease",
-            color: activeMenu === "AsesmenDiikuti" ? "white" : "#666",
-          }}
-          onClick={() => onMenuClick("AsesmenDiikuti")}
-          onMouseEnter={(e) => {
-            if (activeMenu !== "AsesmenDiikuti") {
-              e.currentTarget.style.backgroundColor = "#f8f9fa";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (activeMenu !== "AsesmenDiikuti") {
-              e.currentTarget.style.backgroundColor = "transparent";
-            }
-          }}
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            style={{ marginRight: "15px" }}
-          >
-            <path
-              d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span style={{ fontSize: "15px", fontWeight: "500" }}>
-            Asesmen Diikuti
-          </span>
-        </div> */}
 
-                {/* Approvement Menu */}
+        {/* Approvement Menu */}
         <div
           style={{
             display: "flex",
@@ -792,14 +738,12 @@ function ProfileSection() {
           </div>
         </div>
 
-
         {/* Upload Dokumen dalam satu baris */}
         <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
           {createUploadArea('KTP', 'Upload KTP', ktpImage, setKtpImage)}
           {createUploadArea('Buku Tabungan', 'Upload Buku Tabungan', bukuTabunganImage, setBukuTabunganImage)}
           {createUploadArea('Sertifikat Kompetensi', 'Upload Sertifikat Kompetensi', sertifikatImage, setSertifikatImage)}
         </div>
-
 
         {/* Tombol Simpan */}
         <button 
@@ -833,497 +777,438 @@ function ProfileSection() {
         >
           Simpan Perubahan
         </button>
-
-
-      
     </div>
   );
 }
 
-// DASHBOARD UTAMA (menggunakan sidebar component)
+// DASHBOARD CONTENT ONLY (tanpa sidebar, karena sudah di-handle oleh DashboardRoutes)
 function Dashboard({ onBack, onNavigate }) {
-  const [activeMenu, setActiveMenu] = useState("Dashboard");
-
-  const handleMenuClick = (menuName) => {
-    if (menuName === "Logout") {
-      if (confirm("Apakah Anda yakin ingin logout?")) {
-        alert("Logout berhasil!");
-        if (onBack) onBack();
-      }
-      return;
-    }
-
-    if (menuName === "ListAsesmen" && onNavigate) {
-      onNavigate("listasesmen");
-      return;
-    }
-
-    setActiveMenu(menuName);
-  };
-
   const handleDetailClick = () => {
     if (onNavigate) {
       onNavigate("listasesmen");
     }
   };
-  
-  
 
   return (
     <div
       style={{
-        display: "flex",
-        minHeight: "100vh",
-        height: "100vh",
-        fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        overflow: "hidden",
-        backgroundColor: "#f5f5f5",
+        flex: 1,
+        padding: "20px",
+        width: "100%",
+        maxWidth: "1200px",
+        margin: "0 auto",
       }}
     >
-      {/* Sidebar - Fixed */}
+      {/* Header Section */}
       <div
         style={{
-          position: "sticky",
-          top: 0,
-          left: 0,
-          height: "100vh",
-          zIndex: 10,
+          backgroundColor: "white",
+          borderRadius: "16px",
+          padding: "24px",
+          marginBottom: "24px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
-        <DashboardSidebar activeMenu={activeMenu} onMenuClick={handleMenuClick} />
-      </div>
-
-      {/* Main Content - Scrollable */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: "20px",
-          backgroundColor: "#fafafa",
-        }}
-      >
-        {/* Konten berdasarkan activeMenu */}
-        {activeMenu === "Dashboard" && (
-          <div
+        <div>
+          <h1
             style={{
-              flex: 1,
-              padding: "20px",
-              width: "100%",
-              maxWidth: "1200px",
-              margin: "0 auto",
+              fontSize: "24px",
+              fontWeight: "600",
+              color: "#1a1a1a",
+              margin: "0 0 8px 0",
             }}
           >
-            {/* Header Section */}
+            Halo, Your Name
+          </h1>
+          <p
+            style={{
+              color: "#666",
+              fontSize: "14px",
+              margin: 0,
+            }}
+          >
+            Selamat datang di panel administrasi asesmen
+          </p>
+        </div>
+        <div
+          style={{
+            width: "20px",
+            height: "48px",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <img src="../src/img/LONCENG.png" alt="notification" style={{ width: "42px", height: "42px" }} />
+        </div>
+      </div>
+
+      {/* Statistics Cards */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gap: "10px",
+          marginBottom: "24px",
+        }}
+      >
+        {/* Jumlah Asesor */}
+        <div
+          style={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            padding: "20px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            border: "1px solid #f0f0f0",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "12px",
+            }}
+          >
             <div
               style={{
-                backgroundColor: "white",
-                borderRadius: "16px",
-                padding: "24px",
-                marginBottom: "24px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                width: "20px",
+                height: "20px",
+                borderRadius: "4px",
+                marginRight: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "12px",
+              }}
+            >
+              <img src="../src/img/ASESOR.png" alt="asesor" style={{ width: "15px", height: "15px" }} />
+            </div>
+            <span
+              style={{
+                color: "#666",
+                fontSize: "13px",
+                fontWeight: "500",
+              }}
+            >
+              Jumlah Asesor
+            </span>
+          </div>
+          <div
+            style={{
+              fontSize: "32px",
+              fontWeight: "700",
+              color: "#1a1a1a",
+            }}
+          >
+            20
+          </div>
+        </div>
+
+        {/* Jumlah Asesi */}
+        <div
+          style={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            padding: "20px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            border: "1px solid #f0f0f0",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "12px",
+            }}
+          >
+            <div
+              style={{
+                width: "20px",
+                height: "20px",
+                borderRadius: "4px",
+                marginRight: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "12px",
+              }}
+            >
+              <img src="../src/img/ASESI.png" alt="asesi" style={{ width: "15px", height: "15px" }} />
+            </div>
+            <span
+              style={{
+                color: "#666",
+                fontSize: "13px",
+                fontWeight: "500",
+              }}
+            >
+              Jumlah Asesi
+            </span>
+          </div>
+          <div
+            style={{
+              fontSize: "32px",
+              fontWeight: "700",
+              color: "#1a1a1a",
+            }}
+          >
+            2,000
+          </div>
+        </div>
+
+        {/* Jumlah Skema */}
+        <div
+          style={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            padding: "20px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            border: "1px solid #f0f0f0",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "12px",
+            }}
+          >
+            <div
+              style={{
+                width: "20px",
+                height: "20px",
+                borderRadius: "4px",
+                marginRight: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "12px",
+              }}
+            >
+              <img src="../src/img/SKEMA.png" alt="skema" style={{ width: "15px", height: "15px" }} />
+            </div>
+            <span
+              style={{
+                color: "#666",
+                fontSize: "13px",
+                fontWeight: "500",
+              }}
+            >
+              Jumlah Skema
+            </span>
+          </div>
+          <div
+            style={{
+              fontSize: "32px",
+              fontWeight: "700",
+              color: "#1a1a1a",
+            }}
+          >
+            23
+          </div>
+        </div>
+      </div>
+
+      {/* List Assessment Section */}
+      <div
+        style={{
+          backgroundColor: "white",
+          borderRadius: "16px",
+          padding: "24px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          border: "1px solid #f0f0f0",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "20px",
+          }}
+        >
+          <div
+            style={{
+              width: "20px",
+              height: "20px",
+              borderRadius: "4px",
+              marginRight: "12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "12px",
+            }}
+          >
+            <img src="../src/img/LISTASESMEN_ICON.png" alt="list" style={{ width: "32px", height: "32px" }} />
+          </div>
+          <h2
+            style={{
+              fontSize: "18px",
+              fontWeight: "600",
+              color: "#1a1a1a",
+              margin: 0,
+            }}
+          >
+            List Assessment
+          </h2>
+        </div>
+
+        {/* Assessment Items */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+          }}
+        >
+          {[
+            {
+              batch: "TKJ Batch 12",
+              date: "16 Agustus 2025",
+              time: "00:00 - 01:00",
+              location: "Kampung Raya",
+              participants: "TKJ24",
+            },
+            {
+              batch: "TKJ Batch 12",
+              date: "16 Agustus 2025", 
+              time: "00:00 - 01:00",
+              location: "Kampung Raya",
+              participants: "TKJ24",
+            },
+          ].map((assessment, index) => (
+            <div
+              key={index}
+              style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
+                padding: "16px",
+                backgroundColor: "#f8f9fa",
+                borderRadius: "12px",
+                border: "1px solid #e9ecef",
               }}
             >
-              <div>
-                <h1
+              <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
+                <div
                   style={{
-                    fontSize: "24px",
-                    fontWeight: "600",
-                    color: "#1a1a1a",
-                    margin: "0 0 8px 0",
-                  }}
-                >
-                  Halo, Your Name
-                </h1>
-                <p
-                  style={{
-                    color: "#666",
                     fontSize: "14px",
-                    margin: 0,
-                  }}
-                >
-                  Selamat datang di panel administrasi asesmen
-                </p>
-              </div>
-              <div
-                style={{
-                  width: "20px",
-                  height: "48px",
-                  // backgroundColor: "#FFA726",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <img src="src/img/LONCENG.png" alt="notification" style={{ width: "42px", height: "42px" }} />
-              </div>
-            </div>
-
-            {/* Statistics Cards */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-                gap: "20px",
-                marginBottom: "24px",
-              }}
-            >
-              {/* Jumlah Asesor */}
-              <div
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: "12px",
-                  padding: "20px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                  border: "1px solid #f0f0f0",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "12px",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "20px",
-                      height: "20px",
-                      // backgroundColor: "#FFA726",
-                      borderRadius: "4px",
-                      marginRight: "8px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "12px",
-                    }}
-                  >
-                    <img src="src/img/ASESOR.png" alt="asesor" style={{ width: "15px", height: "15px" }} />
-                  </div>
-                  <span
-                    style={{
-                      color: "#666",
-                      fontSize: "13px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Jumlah Asesor
-                  </span>
-                </div>
-                <div
-                  style={{
-                    fontSize: "32px",
-                    fontWeight: "700",
-                    color: "#1a1a1a",
-                  }}
-                >
-                  20
-                </div>
-              </div>
-
-              {/* Jumlah Asesi */}
-              <div
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: "12px",
-                  padding: "20px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                  border: "1px solid #f0f0f0",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "12px",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "20px",
-                      height: "20px",
-                      // backgroundColor: "#FFD54F",
-                      borderRadius: "4px",
-                      marginRight: "8px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "12px",
-                    }}
-                  >
-                    <img src="src/img/ASESI.png" alt="asesi" style={{ width: "15px", height: "15px" }} />
-                  </div>
-                  <span
-                    style={{
-                      color: "#666",
-                      fontSize: "13px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Jumlah Asesi
-                  </span>
-                </div>
-                <div
-                  style={{
-                    fontSize: "32px",
-                    fontWeight: "700",
-                    color: "#1a1a1a",
-                  }}
-                >
-                  2,000
-                </div>
-              </div>
-
-              {/* Jumlah Skema */}
-              <div
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: "12px",
-                  padding: "20px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                  border: "1px solid #f0f0f0",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "12px",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "20px",
-                      height: "20px",
-                      // backgroundColor: "#FFA726",
-                      borderRadius: "4px",
-                      marginRight: "8px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "12px",
-                    }}
-                  >
-                    <img src="src/img/SKEMA.png" alt="skema" style={{ width: "15px", height: "15px" }} />
-                  </div>
-                  <span
-                    style={{
-                      color: "#666",
-                      fontSize: "13px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Jumlah Skema
-                  </span>
-                </div>
-                <div
-                  style={{
-                    fontSize: "32px",
-                    fontWeight: "700",
-                    color: "#1a1a1a",
-                  }}
-                >
-                  23
-                </div>
-              </div>
-            </div>
-
-            {/* List Assessment Section */}
-            <div
-              style={{
-                backgroundColor: "white",
-                borderRadius: "16px",
-                padding: "24px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                border: "1px solid #f0f0f0",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginBottom: "20px",
-                }}
-              >
-                <div
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    // backgroundColor: "#FFA726",
-                    borderRadius: "4px",
-                    marginRight: "12px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "12px",
-                  }}
-                >
-                  <img src="src/img/LISTASESMEN_ICON.png" alt="list" style={{ width: "32px", height: "32px" }} />
-                </div>
-                <h2
-                  style={{
-                    fontSize: "18px",
                     fontWeight: "600",
                     color: "#1a1a1a",
-                    margin: 0,
+                    marginRight: "20px",
+                    minWidth: "140px",
                   }}
                 >
-                  List Assessment
-                </h2>
-              </div>
+                  Asesmen {assessment.batch}
+                </div>
 
-              {/* Assessment Items */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "12px",
-                }}
-              >
-                {[
-                  {
-                    batch: "TKJ Batch 12",
-                    date: "16 Agustus 2025",
-                    time: "00:00 - 01:00",
-                    location: "Kampung Raya",
-                    participants: "TKJ24",
-                  },
-                  {
-                    batch: "TKJ Batch 12",
-                    date: "16 Agustus 2025", 
-                    time: "00:00 - 01:00",
-                    location: "Kampung Raya",
-                    participants: "TKJ24",
-                  },
-                ].map((assessment, index) => (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "24px",
+                    flex: 1,
+                  }}
+                >
                   <div
-                    key={index}
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "16px",
-                      backgroundColor: "#f8f9fa",
-                      borderRadius: "12px",
-                      border: "1px solid #e9ecef",
+                      fontSize: "12px",
+                      color: "#666",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
-                      <div
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "600",
-                          color: "#1a1a1a",
-                          marginRight: "20px",
-                          minWidth: "140px",
-                        }}
-                      >
-                        Asesmen {assessment.batch}
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "24px",
-                          flex: 1,
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            fontSize: "12px",
-                            color: "#666",
-                          }}
-                        >
-                          <img src="src/img/logo jadwal.png" alt="date" style={{ width: "14px", height: "14px" }} />
-                          <span style={{ marginLeft: "6px" }}>{assessment.date}</span>
-                        </div>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            fontSize: "12px",
-                            color: "#666",
-                          }}
-                        >
-                          <img src="src/img/JAM_ICON.png" alt="time" style={{ width: "14px", height: "14px" }} />
-                          <span style={{ marginLeft: "6px" }}>{assessment.time}</span>
-                        </div>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            fontSize: "12px",
-                            color: "#666",
-                          }}
-                        >
-                          <img src="src/img/LOKASI_ICON.png" alt="location" style={{ width: "14px", height: "14px" }} />
-                          <span style={{ marginLeft: "6px" }}>{assessment.location}</span>
-                        </div>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            fontSize: "12px",
-                            color: "#666",
-                          }}
-                        >
-                          <img src="src/img/PERSON_ICON.png" alt="participants" style={{ width: "14px", height: "14px" }} />
-                          <span style={{ marginLeft: "6px" }}>{assessment.participants}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={handleDetailClick}
-                      style={{
-                        backgroundColor: "#f8f9fa",
-                        border: "1px solid #e9ecef",
-                        borderRadius: "8px",
-                        padding: "8px 16px",
-                        fontSize: "12px",
-                        color: "#666",
-                        cursor: "pointer",
-                        fontWeight: "500",
-                        transition: "all 0.2s ease",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "#e9ecef";
-                        e.currentTarget.style.color = "#495057";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "#f8f9fa";
-                        e.currentTarget.style.color = "#666";
-                      }}
-                    >
-                      Detail
-                    </button>
+                    <img src="../src/img/logo jadwal.png" alt="date" style={{ width: "14px", height: "14px" }} />
+                    <span style={{ marginLeft: "6px" }}>{assessment.date}</span>
                   </div>
-                ))}
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      fontSize: "12px",
+                      color: "#666",
+                    }}
+                  >
+                    <img src="../src/img/JAM_ICON.png" alt="time" style={{ width: "14px", height: "14px" }} />
+                    <span style={{ marginLeft: "6px" }}>{assessment.time}</span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      fontSize: "12px",
+                      color: "#666",
+                    }}
+                  >
+                    <img src="../src/img/LOKASI_ICON.png" alt="location" style={{ width: "14px", height: "14px" }} />
+                    <span style={{ marginLeft: "6px" }}>{assessment.location}</span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      fontSize: "12px",
+                      color: "#666",
+                    }}
+                  >
+                    <img src="../src/img/PERSON_ICON.png" alt="participants" style={{ width: "14px", height: "14px" }} />
+                    <span style={{ marginLeft: "6px" }}>{assessment.participants}</span>
+                  </div>
+                </div>
               </div>
+
+              <button
+                onClick={handleDetailClick}
+                style={{
+                  backgroundColor: "#f8f9fa",
+                  border: "1px solid #e9ecef",
+                  borderRadius: "8px",
+                  padding: "8px 16px",
+                  fontSize: "12px",
+                  color: "#666",
+                  cursor: "pointer",
+                  fontWeight: "500",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#e9ecef";
+                  e.currentTarget.style.color = "#495057";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f8f9fa";
+                  e.currentTarget.style.color = "#666";
+                }}
+              >
+                Detail
+              </button>
             </div>
-          </div>
-        )}
-
-        {activeMenu === "ManajemenData" && (
-          <ManajemenData onNavigate={onNavigate} />
-        )}
-
-        {activeMenu === "AsesmenDiikuti" && <AsesmenDiikuti />}
-
-        {activeMenu === "Profile" && <ProfileSection />}
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
-export default Dashboard;
+// MAIN EXPORT - Hanya content dashboard, tanpa sidebar
+export default function DashboardContent({ onBack, onNavigate, activeMenu }) {
+  if (activeMenu === "Profile") {
+    return <ProfileSection />;
+  }
+
+  if (activeMenu === "ManajemenData") {
+    return <ManajemenData onNavigate={onNavigate} />;
+  }
+
+  if (activeMenu === "AsesmenDiikuti") {
+    return <AsesmenDiikuti />;
+  }
+
+  // Default dashboard content
+  return <Dashboard onBack={onBack} onNavigate={onNavigate} />;
+}
