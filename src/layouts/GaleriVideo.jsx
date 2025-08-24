@@ -18,13 +18,8 @@ function GaleriVideo({ onBack }) {
     } else if (currentSrc.includes('mqdefault')) {
       e.target.src = `https://img.youtube.com/vi/${videoId}/default.jpg`;
     } else {
-<<<<<<< HEAD
       setImageLoadStates(prev => ({ ...prev, [videoId]: 'error' }));
       e.target.style.display = 'none';
-=======
-      // Show fallback placeholder
-      setImageLoadStates(prev => ({ ...prev, [videoId]: 'error' }));
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
     }
   };
 
@@ -38,86 +33,24 @@ function GaleriVideo({ onBack }) {
   const galleryVideos = [
     {
       id: 1,
-<<<<<<< HEAD
-      title: 'TUTORIAL APL01 dan APL02 LSP MEDIA INFORMATIKA',
-      description: 'Panduan lengkap untuk mengisi formulir APL01 dan APL02 untuk sertifikasi LSP Media Informatika.',
-      videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-      videoId: 'dQw4w9WgXcQ',
-      duration: '3:32',
-      views: '1.2B',
-      date: '15 Juli 2024',
-=======
       title: 'Pengenalan Pemrograman Web HTML CSS JavaScript',
       description: 'Tutorial lengkap pengenalan pemrograman web menggunakan HTML, CSS, dan JavaScript untuk pemula. Pelajari dasar-dasar web development.',
       videoUrl: 'https://www.youtube.com/embed/qz0aGYrrlhU?autoplay=1',
       videoId: 'qz0aGYrrlhU',
       duration: '1:09:34',
       views: '127K',
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
+      date: '15 Juli 2024',
       category: 'Tutorial'
     },
     {
       id: 2,
-<<<<<<< HEAD
-      title: 'KEGIATAN UJI KOMPETENSI LSP MEDIA INFORMATIKA DI P4 JAKARTA TIMUR',
-      description: 'Dokumentasi kegiatan uji kompetensi yang dilaksanakan di P4 Jakarta Timur.',
-      videoUrl: 'https://www.youtube.com/embed/kJQP7kiw5Fk',
-      videoId: 'kJQP7kiw5Fk',
-      duration: '4:42',
-      views: '8.1B',
-      date: '20 Juni 2024',
-      category: 'Asesmen'
-    },
-    {
-      id: 3,
-      title: 'COMPANY PROFILE LSP MEDIA INFORMATIKA',
-      description: 'Profil lengkap LSP Media Informatika dan layanan sertifikasi yang tersedia.',
-      videoUrl: 'https://www.youtube.com/embed/9bZkp7q19f0',
-      videoId: '9bZkp7q19f0',
-      duration: '4:12',
-      views: '4.8B',
-      date: '10 Mei 2024',
-      category: 'Profile'
-    },
-    {
-      id: 4,
-      title: 'Workshop Sertifikasi Web Developer',
-      description: 'Pelatihan intensif pengembangan web untuk peserta sertifikasi batch pertama.',
-      videoUrl: 'https://www.youtube.com/embed/fJ9rUzIMcZQ',
-      videoId: 'fJ9rUzIMcZQ',
-      duration: '5:55',
-      views: '1.9B',
-      date: '5 April 2024',
-      category: 'Workshop'
-    },
-    {
-      id: 5,
-      title: 'Sosialisasi Program LSP ke Institusi',
-      description: 'Kegiatan sosialisasi program LSP kepada berbagai institusi pendidikan.',
-      videoUrl: 'https://www.youtube.com/embed/YQHsXMglC9A',
-      videoId: 'YQHsXMglC9A',
-      duration: '6:07',
-      views: '3.2B',
-      date: '22 Maret 2024',
-      category: 'Sosialisasi'
-    },
-    {
-      id: 6,
-      title: 'Pelatihan Asesor LSP',
-      description: 'Program pelatihan untuk asesor baru LSP SMKN 24 Jakarta.',
-      videoUrl: 'https://www.youtube.com/embed/JGwWNGJdvx8',
-      videoId: 'JGwWNGJdvx8',
-      duration: '3:53',
-      views: '5.7B',
-      date: '18 Februari 2024',
-      category: 'Pelatihan'
-=======
       title: 'Belajar React JS untuk Pemula - Komponen dan State',
       description: 'Panduan komprehensif belajar React JS dari dasar, memahami konsep komponen, state management, dan pengembangan aplikasi modern.',
       videoUrl: 'https://www.youtube.com/embed/w7ejDZ8SWv8?autoplay=1',
       videoId: 'w7ejDZ8SWv8',
       duration: '1:48:48',
       views: '89K',
+      date: '20 Juni 2024',
       category: 'Framework'
     },
     {
@@ -128,6 +61,7 @@ function GaleriVideo({ onBack }) {
       videoId: 'HXV3zeQKqGY',
       duration: '4:20:38',
       views: '156K',
+      date: '10 Mei 2024',
       category: 'Database'
     },
     {
@@ -138,6 +72,7 @@ function GaleriVideo({ onBack }) {
       videoId: 'OK_JCtrrv-c',
       duration: '4:36:38',
       views: '92K',
+      date: '5 April 2024',
       category: 'Backend'
     },
     {
@@ -148,6 +83,7 @@ function GaleriVideo({ onBack }) {
       videoId: '8JJ101D3knE',
       duration: '1:09:13',
       views: '73K',
+      date: '22 Maret 2024',
       category: 'Tools'
     },
     {
@@ -158,6 +94,7 @@ function GaleriVideo({ onBack }) {
       videoId: 'jV8B24rSN5o',
       duration: '27:55',
       views: '68K',
+      date: '18 Februari 2024',
       category: 'CSS'
     },
     {
@@ -168,6 +105,7 @@ function GaleriVideo({ onBack }) {
       videoId: 'f2EqECiTBL8',
       duration: '6:50:41',
       views: '95K',
+      date: '15 Januari 2024',
       category: 'Backend'
     },
     {
@@ -178,17 +116,14 @@ function GaleriVideo({ onBack }) {
       videoId: 'nZ1DMMsyVyI',
       duration: '1:05:26',
       views: '112K',
+      date: '12 Desember 2023',
       category: 'JavaScript'
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
     }
   ];
 
   const openModal = (video) => setSelectedVideo(video);
   const closeModal = () => setSelectedVideo(null);
 
-<<<<<<< HEAD
-  const problematicVideoIds = ['fJ9rUzIMcZQ', 'JGwWNGJdvx8'];
-=======
   const renderThumbnail = (video) => {
     const isError = imageLoadStates[video.videoId] === 'error';
     
@@ -266,7 +201,6 @@ function GaleriVideo({ onBack }) {
       />
     );
   };
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
 
   return (
     <div style={{
@@ -312,7 +246,6 @@ function GaleriVideo({ onBack }) {
             textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
             lineHeight: '1.4'
           }}>
-    
           </p>
         </div>
       </div>
@@ -320,11 +253,7 @@ function GaleriVideo({ onBack }) {
       {/* Orange breadcrumb section */}
       <div style={{
         backgroundColor: "#ff9324",
-<<<<<<< HEAD
         padding: "15px 40px",
-=======
-        padding: "5px 20px",
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
         color: "white"
       }}>
         <div style={{
@@ -332,25 +261,17 @@ function GaleriVideo({ onBack }) {
           margin: "0 auto",
           fontSize: "14px"
         }}>
-<<<<<<< HEAD
-        </div>
-      </div>
-
-    {/* Content Section untuk judul */}
-=======
           <span>Home</span> → <span>Galeri</span> → <span style={{ fontWeight: '600' }}>Video Pembelajaran</span>
         </div>
       </div>
 
       {/* Content Section untuk judul */}
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
         padding: '60px 20px',
         textAlign: 'center'
       }}>
-<<<<<<< HEAD
         <h1 style={{
           fontSize: '48px',
           fontWeight: '700',
@@ -369,20 +290,13 @@ function GaleriVideo({ onBack }) {
           Dokumentasi kegiatan dan acara LSP <br />
           SMKN 24 JAKARTA
         </p>
-
-=======
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
         <h2 style={{
           fontSize: '36px',
           fontWeight: '700',
           color: '#333',
           margin: '0 0 16px 0'
         }}>
-<<<<<<< HEAD
-          Dokumentasi
-=======
           Video Pembelajaran Terbaru
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
         </h2>
         <div style={{
           width: '80px',
@@ -391,9 +305,7 @@ function GaleriVideo({ onBack }) {
           margin: '0 auto 40px',
           borderRadius: '2px'
         }}></div>
-        
-<<<<<<< HEAD
-=======
+      
         <p style={{
           fontSize: '18px',
           color: '#666',
@@ -403,8 +315,7 @@ function GaleriVideo({ onBack }) {
         }}>
           Kumpulan video tutorial programming, web development, dan teknologi informasi terbaru
         </p>
-        
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
+
         {/* Play Button */}
         <div
           style={{
@@ -424,11 +335,7 @@ function GaleriVideo({ onBack }) {
           }}
           onClick={scrollToVideoSection}
           onMouseOver={(e) => {
-<<<<<<< HEAD
-            e.currentTarget.style.backgroundColor = '#879FEEFF';
-=======
             e.currentTarget.style.backgroundColor = '#FF8303';
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
             e.currentTarget.style.color = 'white';
             e.currentTarget.style.transform = 'scale(1.05)';
           }}
@@ -516,51 +423,8 @@ function GaleriVideo({ onBack }) {
                   {video.category}
                 </div>
 
-<<<<<<< HEAD
-                {/* Thumbnail */}
-                <img 
-                  src={problematicVideoIds.includes(video.videoId) 
-                    ? `https://img.youtube.com/vi/${video.videoId}/mqdefault.jpg`
-                    : `https://img.youtube.com/vi/${video.videoId}/maxresdefault.jpg`}
-                  alt={video.title}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    transition: 'transform 0.4s ease',
-                    display: imageLoadStates[video.videoId] === 'error' ? 'none' : 'block'
-                  }}
-                  onLoad={() => handleImageLoad(video.videoId)}
-                  onError={(e) => handleImageError(video.videoId, e)}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'scale(1.1)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'scale(1)';
-                  }}
-                />
-=======
-                {/* Duration Tag */}
-                {!imageLoadStates[video.videoId] || imageLoadStates[video.videoId] !== 'error' ? (
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '15px',
-                    right: '15px',
-                    backgroundColor: 'rgba(0,0,0,0.8)',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    fontWeight: '500',
-                    zIndex: 2
-                  }}>
-                    {video.duration}
-                  </div>
-                ) : null}
-
                 {/* Thumbnail */}
                 {renderThumbnail(video)}
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
 
                 {/* Play Button Overlay */}
                 <div style={{
@@ -568,18 +432,6 @@ function GaleriVideo({ onBack }) {
                   top: '50%',
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
-<<<<<<< HEAD
-                  width: '60px',
-                  height: '60px',
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(255,255,255,0.9)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '20px',
-                  color: '#FF0303FF',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-=======
                   width: '70px',
                   height: '70px',
                   borderRadius: '50%',
@@ -590,19 +442,11 @@ function GaleriVideo({ onBack }) {
                   fontSize: '24px',
                   color: '#FF0303FF',
                   boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
                   transition: 'all 0.3s ease',
                   zIndex: 3
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1.1)';
-<<<<<<< HEAD
-                  e.currentTarget.style.backgroundColor = 'rgba(255,255,255,1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)';
-                  e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.9)';
-=======
                   e.currentTarget.style.backgroundColor = '#FF0303FF';
                   e.currentTarget.style.color = 'white';
                 }}
@@ -610,17 +454,12 @@ function GaleriVideo({ onBack }) {
                   e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)';
                   e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.95)';
                   e.currentTarget.style.color = '#FF0303FF';
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
                 }}
                 >
                   ▶
                 </div>
 
-<<<<<<< HEAD
-                {/* Hover Effect */}
-=======
                 {/* Hover Effect Overlay */}
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
                 <div style={{
                   position: 'absolute',
                   top: 0,
@@ -631,11 +470,7 @@ function GaleriVideo({ onBack }) {
                   transition: 'all 0.3s ease'
                 }}
                 onMouseEnter={(e) => {
-<<<<<<< HEAD
-                  e.currentTarget.style.background = 'rgba(0,0,0,0.3)';
-=======
                   e.currentTarget.style.background = 'rgba(0,0,0,0.2)';
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'transparent';
@@ -645,33 +480,19 @@ function GaleriVideo({ onBack }) {
 
               {/* Video Info Card */}
               <div style={{
-<<<<<<< HEAD
-                padding: '20px',
-                backgroundColor: 'white'
-              }}>
-                <h3 style={{
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  margin: '0 0 8px 0',
-=======
                 padding: '24px'
               }}>
                 <h3 style={{
                   fontSize: '18px',
                   fontWeight: '600',
                   margin: '0 0 12px 0',
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
                   color: '#333',
                   display: '-webkit-box',
                   WebkitLineClamp: 2,
                   WebkitBoxOrient: 'vertical',
                   overflow: 'hidden',
-<<<<<<< HEAD
-                  lineHeight: '1.4'
-=======
                   lineHeight: '1.4',
                   minHeight: '50px'
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
                 }}>
                   {video.title}
                 </h3>
@@ -679,14 +500,6 @@ function GaleriVideo({ onBack }) {
                 <p style={{
                   fontSize: '14px',
                   color: '#666',
-<<<<<<< HEAD
-                  margin: '0 0 12px 0',
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden',
-                  lineHeight: '1.5'
-=======
                   margin: '0 0 16px 0',
                   display: '-webkit-box',
                   WebkitLineClamp: 3,
@@ -694,7 +507,6 @@ function GaleriVideo({ onBack }) {
                   overflow: 'hidden',
                   lineHeight: '1.5',
                   minHeight: '63px'
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
                 }}>
                   {video.description}
                 </p>
@@ -706,16 +518,6 @@ function GaleriVideo({ onBack }) {
                   fontSize: '12px',
                   color: '#888',
                   borderTop: '1px solid #f0f0f0',
-<<<<<<< HEAD
-                  paddingTop: '12px'
-                }}>
-                  <span style={{ color: '#FF8303', fontWeight: '500' }}>
-                    {video.date}
-                  </span>
-                  <div style={{ display: 'flex', gap: '12px' }}>
-                    <span>{video.duration}</span>
-                    <span>{video.views}</span>
-=======
                   paddingTop: '16px'
                 }}>
                   <span style={{ color: '#FF8303', fontWeight: '600' }}>
@@ -733,7 +535,6 @@ function GaleriVideo({ onBack }) {
                     }}>
                       👁️ {video.views}
                     </span>
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
                   </div>
                 </div>
               </div>
@@ -763,16 +564,10 @@ function GaleriVideo({ onBack }) {
               maxWidth: '90vw',
               maxHeight: '90vh',
               backgroundColor: 'white',
-<<<<<<< HEAD
-              borderRadius: '12px',
-              overflow: 'hidden',
-              width: '800px'
-=======
               borderRadius: '16px',
               overflow: 'hidden',
               width: '900px',
               boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -781,16 +576,6 @@ function GaleriVideo({ onBack }) {
               onClick={closeModal}
               style={{
                 position: 'absolute',
-<<<<<<< HEAD
-                top: '10px',
-                right: '10px',
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                backgroundColor: 'rgba(255,255,255,0.9)',
-                border: 'none',
-                fontSize: '20px',
-=======
                 top: '15px',
                 right: '15px',
                 width: '45px',
@@ -800,14 +585,10 @@ function GaleriVideo({ onBack }) {
                 color: 'white',
                 border: 'none',
                 fontSize: '24px',
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
                 cursor: 'pointer',
                 zIndex: 1001,
                 display: 'flex',
                 alignItems: 'center',
-<<<<<<< HEAD
-                justifyContent: 'center'
-=======
                 justifyContent: 'center',
                 transition: 'all 0.3s ease'
               }}
@@ -818,45 +599,24 @@ function GaleriVideo({ onBack }) {
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.7)';
                 e.currentTarget.style.transform = 'scale(1)';
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
               }}
             >
               ×
             </button>
 
             {/* YouTube Player */}
-<<<<<<< HEAD
-            <div style={{ width: '100%', height: '450px', backgroundColor: '#000' }}>
-=======
             <div style={{ 
               width: '100%', 
               height: '500px', 
               backgroundColor: '#000',
               position: 'relative'
             }}>
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
               <iframe
                 width="100%"
                 height="100%"
                 src={selectedVideo.videoUrl}
                 title={selectedVideo.title}
                 frameBorder="0"
-<<<<<<< HEAD
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
-
-            {/* Info */}
-            <div style={{ padding: '20px' }}>
-              <h2 style={{ fontSize: '24px', fontWeight: '600', margin: '0 0 12px 0', color: '#333' }}>{selectedVideo.title}</h2>
-              <p style={{ fontSize: '16px', color: '#666', margin: '0 0 16px 0', lineHeight: '1.5' }}>{selectedVideo.description}</p>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid #eee', fontSize: '14px' }}>
-                <div style={{ color: '#FF8303', fontWeight: '500' }}>{selectedVideo.date}</div>
-                <div style={{ display: 'flex', gap: '16px', color: '#888' }}>
-                  <span>{selectedVideo.duration}</span>
-                  <span>{selectedVideo.views} views</span>
-=======
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
                 style={{
@@ -943,7 +703,6 @@ function GaleriVideo({ onBack }) {
                   }}>
                     👁️ {selectedVideo.views} views
                   </span>
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
                 </div>
               </div>
             </div>
@@ -983,11 +742,7 @@ function GaleriVideo({ onBack }) {
             opacity: '0.95',
             marginBottom: '25px'
           }}>
-<<<<<<< HEAD
-            Membantu industri menyediakan ikon bahwa produk/jasa nya telah dibuat oleh tenaga-tenaga yang kompeten.
-=======
             Platform pembelajaran dan sertifikasi kompetensi teknologi informasi untuk mengembangkan SDM yang berkualitas.
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
           </p>
           
           {/* Social Media Icons */}
@@ -1043,9 +798,6 @@ function GaleriVideo({ onBack }) {
               justifyContent: 'center'
             }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-<<<<<<< HEAD
-                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
-=======
                 <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
               </svg>
             </a>
@@ -1064,7 +816,6 @@ function GaleriVideo({ onBack }) {
             }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
               </svg>
             </a>
           </div>
@@ -1232,8 +983,6 @@ function GaleriVideo({ onBack }) {
                 cursor: 'pointer',
                 transition: 'all 0.3s ease'
               }}
-<<<<<<< HEAD
-=======
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = 'transparent';
                 e.currentTarget.style.color = 'white';
@@ -1244,15 +993,12 @@ function GaleriVideo({ onBack }) {
                 e.currentTarget.style.color = 'white';
                 e.currentTarget.style.borderColor = '#6B7280';
               }}
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
             >
               Contact Us
             </button>
           </div>
         </div>
       </footer>
-<<<<<<< HEAD
-=======
 
       {/* Add floating animation keyframes */}
       <style>
@@ -1267,7 +1013,6 @@ function GaleriVideo({ onBack }) {
           }
         `}
       </style>
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
     </div>
   );
 }
