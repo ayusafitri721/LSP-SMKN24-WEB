@@ -1,17 +1,6 @@
 import React, { useState } from 'react';
 
 // You would use this component to handle state and rendering
-<<<<<<< HEAD
-// of the main Approvement view.
-
-export default function Approvement({ onBack, onNavigate }) {
-  const [searchTerm, setSearchTerm] = useState('');
-  // Removed the problematic safeData line since 'data' is not defined
-  // const safeData = data || [];
-
-  // Sample data to display in the table
-  const sampleData = [
-=======
 // of the main Approvement view with tab switching functionality.
 
 export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' }) {
@@ -21,7 +10,6 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
 
   // Sample data untuk APL-01
   const sampleDataAPL01 = [
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
     {
       id: 1,
       namaJadwal: 'USK RPL Pemrograman Dasar',
@@ -38,12 +26,6 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
       tanggalUjian: '10/7/2025',
       status: 'aktif',
     },
-<<<<<<< HEAD
-    // Add more sample data as needed
-  ];
-
-  const filteredData = sampleData.filter(item =>
-=======
   ];
 
   // Sample data untuk APL-02
@@ -70,7 +52,6 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
   const currentData = activeTab === 'APL-01' ? sampleDataAPL01 : sampleDataAPL02;
 
   const filteredData = currentData.filter(item =>
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
     item.namaJadwal.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.tuk.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (item.nisn && item.nisn.toString().includes(searchTerm.toLowerCase()))
@@ -83,8 +64,6 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
     </svg>
   );
 
-<<<<<<< HEAD
-=======
   // Function untuk handle tab click
   const handleTabClick = (tabName) => {
     if (tabName === 'APL-01') {
@@ -100,7 +79,6 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
     }
   };
 
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
   return (
     <div style={{
       minHeight: '100vh',
@@ -140,33 +118,6 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
           borderRadius: '8px',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
         }}>
-<<<<<<< HEAD
-          <button style={{
-            padding: '12px 20px',
-            fontSize: '14px',
-            fontWeight: '600',
-            border: 'none',
-            backgroundColor: '#ff6b35',
-            color: 'white',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s ease',
-            margin: '4px',
-          }}>
-            FR.APL.01
-          </button>
-          <button style={{
-            padding: '12px 20px',
-            fontSize: '14px',
-            fontWeight: '600',
-            border: 'none',
-            backgroundColor: 'transparent',
-            color: '#666',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s ease',
-            margin: '4px',
-          }}>
-=======
           <button 
             onClick={() => handleTabClick('APL-01')}
             style={{
@@ -199,7 +150,6 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
               borderRadius: '8px',
             }}
           >
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
             FR.APL.02
           </button>
         </div>
@@ -212,11 +162,7 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
         color: '#1a1a1a',
         margin: '0 0 20px 0'
       }}>
-<<<<<<< HEAD
-        APPROVEMENT
-=======
         APPROVEMENT - {activeTab}
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
       </h1>
       
       {/* Search Bar */}
@@ -270,11 +216,7 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
           color: '#1a1a1a',
           margin: 0
         }}>
-<<<<<<< HEAD
-          Daftar Asesi
-=======
           Daftar Asesi ({activeTab})
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
         </h2>
       </div>
 
@@ -436,11 +378,7 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
                       verticalAlign: 'middle'
                     }}>
                       <button
-<<<<<<< HEAD
-                        onClick={() => onNavigate && onNavigate('lihatapprovement', item)}
-=======
                         onClick={() => onNavigate && onNavigate('lihatapprovement', { ...item, tabType: activeTab })}
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
                         style={{
                           backgroundColor: '#fd7e14',
                           color: '#ffffff',
@@ -469,11 +407,7 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
                     color: '#999',
                     fontSize: '14px'
                   }}>
-<<<<<<< HEAD
-                    {searchTerm ? 'Tidak ada data yang sesuai dengan pencarian' : 'Belum ada data asesi'}
-=======
                     {searchTerm ? 'Tidak ada data yang sesuai dengan pencarian' : `Belum ada data asesi untuk ${activeTab}`}
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
                   </td>
                 </tr>
               )}

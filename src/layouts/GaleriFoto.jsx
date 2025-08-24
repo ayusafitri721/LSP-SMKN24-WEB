@@ -4,105 +4,61 @@ function GaleriFoto({ onBack }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [hoveredImage, setHoveredImage] = useState(null);
 
-<<<<<<< HEAD
-  // Data contoh foto galeri
-=======
   // Data foto galeri dengan deskripsi yang sesuai
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
   const galleryImages = [
     {
       id: 1,
       src: 'src/img/lab.png',
-<<<<<<< HEAD
-      alt: 'Seminar Teknologi Informasi',
-      title: 'Seminar Nasional Teknologi Informasi',
-      description: 'Acara seminar nasional yang diselenggarakan oleh LSP dengan pembicara ahli teknologi terkini',
-=======
       alt: 'Laboratorium Komputer RPL',
       title: 'Laboratorium Rekayasa Perangkat Lunak',
       description: 'Fasilitas laboratorium komputer yang digunakan untuk praktikum dan asesmen kompetensi RPL',
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
       date: '27 Januari 2025',
       category: 'Lab RPL'
     },
     {
       id: 2,
       src: 'src/img/kenapakami.jpg',
-<<<<<<< HEAD
-      alt: 'Workshop Sertifikasi',
-      title: 'Workshop Sertifikasi Web Developer',
-      description: 'Pelatihan intensif pengembangan web untuk peserta sertifikasi dengan mentor berpengalaman',
-=======
       alt: 'Uji Sertifikasi Kompetensi',
       title: 'Pelaksanaan Uji Sertifikasi Kompetensi',
       description: 'Dokumentasi kegiatan uji sertifikasi kompetensi LSP SMKN 24 Jakarta dengan para peserta',
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
       date: '15 Februari 2025',
       category: 'USK'
     },
     {
       id: 3,
       src: 'src/img/kontak.png',
-<<<<<<< HEAD
-      alt: 'Asesmen Kompetensi',
-      title: 'Pelaksanaan Asesmen Kompetensi',
-      description: 'Kegiatan asesmen kompetensi bidang IT untuk mengukur kemampuan peserta',
-=======
       alt: 'Gedung Sekolah',
       title: 'Gedung SMKN 24 Jakarta',
       description: 'Tampak depan gedung SMKN 24 Jakarta sebagai lokasi LSP dan kegiatan asesmen',
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
       date: '20 Februari 2025',
       category: 'Asesmen'
     },
     {
       id: 4,
       src: 'src/img/lsp.png',
-<<<<<<< HEAD
-      alt: 'Penyerahan Sertifikat',
-      title: 'Penyerahan Sertifikat Kompetensi',
-      description: 'Acara penyerahan sertifikat kepada peserta yang berhasil lulus asesmen',
-=======
       alt: 'Acara Penyerahan Sertifikat',
       title: 'Upacara Penyerahan Sertifikat Kompetensi',
       description: 'Momen penyerahan sertifikat kompetensi kepada peserta yang telah lulus asesmen',
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
       date: '25 Februari 2025',
       category: 'Sertifikasi'
     },
     {
       id: 5,
       src: 'src/img/smk.png',
-<<<<<<< HEAD
-      alt: 'Rapat Koordinasi',
-      title: 'Rapat Koordinasi LSP',
-      description: 'Rapat koordinasi tim LSP membahas program kerja dan evaluasi kegiatan',
-      date: '1 Maret 2025',
-      category: 'Rapat'
-=======
       alt: 'Informasi Sekolah',
       title: 'Papan Informasi SMKN 24 Jakarta',
       description: 'Papan informasi dan profil sekolah SMKN 24 Jakarta yang menampilkan berbagai program keahlian',
       date: '1 Maret 2025',
       category: 'Informasi'
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
     },
     {
       id: 6,
       src: 'src/img/dibutuhkan.png',
-<<<<<<< HEAD
-      alt: 'Pelatihan Asesor',
-      title: 'Pelatihan Asesor Baru',
-      description: 'Pelatihan untuk asesor baru LSP guna meningkatkan kualitas penilaian',
-      date: '5 Maret 2025',
-      category: 'Pelatihan'
-=======
       alt: 'Lowongan Kerja Digital',
       title: 'Info Lowongan Kerja Bidang IT',
       description: 'Informasi lowongan pekerjaan di bidang teknologi digital dan rekayasa perangkat lunak',
       date: '5 Maret 2025',
       category: 'Karir'
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
     },
   ];
 
@@ -156,11 +112,7 @@ function GaleriFoto({ onBack }) {
       {/* Orange breadcrumb section - sama seperti di berita */}
       <div style={{
         backgroundColor: "#ff9324",
-<<<<<<< HEAD
-        padding: "15px 40px",
-=======
         padding: "5px 20px",
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
         color: "white"
       }}>
         <div style={{
@@ -168,11 +120,7 @@ function GaleriFoto({ onBack }) {
           margin: "0 auto",
           fontSize: "14px"
         }}>
-<<<<<<< HEAD
-          
-=======
           <span>Home</span> → <span>Galeri</span> → <span style={{ fontWeight: '600' }}>Galeri Dokumentasi</span>
->>>>>>> 76e000d57f40e3601f2a02e89871e156b6d8ab61
         </div>
       </div>
 
