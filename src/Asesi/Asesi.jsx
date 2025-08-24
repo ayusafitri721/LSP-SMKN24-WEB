@@ -7,7 +7,7 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
   const [showAddNotif, setShowAddNotif] = useState(false);
 
   console.log("Asesis from context:", asesis);
-console.log("Data to map:", asesis?.data || []);
+  console.log("Data to map:", asesis?.data || []);
 
 
   const handleAddClick = () => {

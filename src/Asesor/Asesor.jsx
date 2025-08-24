@@ -1,29 +1,28 @@
 import React from 'react';
+import { useAsesor } from '../context/AsesorContext'; // Import custom hook
 
 function Asesor({ onBack, onNavigate, asesorData, setAsesorData }) {
+  const { asesors, loading, error, fetchAsesors, addAsesor, editAsesor, removeAsesor } = useAsesor();
   const handleAddClick = () => {
     onNavigate('addasesor');
   };
+
+  const dataAsesors = asesors || [];
 
   const handleEdit = (asesor) => {
     onNavigate('editasesor', asesor);
   };
 
-  // Sample data if asesorData is empty
-  const sampleData = asesorData && asesorData.length > 0 ? asesorData : [
-    { id: 1, no: 1, nama: 'Arul Maulia Singa, M.Kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2004' },
-    { id: 2, no: 2, nama: 'Arul Maulia Singa, M.Kom', pekerjaan: 'Guru', sertifikat: 'Tidak Tersertifikasi', tanggal: '22/8/2004' },
-    { id: 3, no: 3, nama: 'Arul Maulia Singa, M.Kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2004' },
-    { id: 4, no: 4, nama: 'Arul Maulia Singa, M.Kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2004' },
-    { id: 5, no: 5, nama: 'Arul Maulia Singa, M.Kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2004' },
-    { id: 6, no: 6, nama: 'Arul Maulia Singa, M.Kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2004' },
-    { id: 7, no: 7, nama: 'Arul Maulia Singa, M.Kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2004' },
-    { id: 8, no: 8, nama: 'Arul Maulia Singa, M.Kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2004' },
-    { id: 9, no: 9, nama: 'Arul Maulia Singa, M.Kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2004' },
-    { id: 10, no: 10, nama: 'Arul Maulia Singa, M.Kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2004' },
-    { id: 11, no: 11, nama: 'Arul Maulia Singa, M.Kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2004' },
-    { id: 12, no: 12, nama: 'Arul Maulia Singa, M.Kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2004' }
-  ];
+  const handleDelete = async (id) => {
+  if (window.confirm("Yakin mau hapus asesor ini?")) {
+    try {
+      await removeAsesor(id);
+    } catch (err) {
+      console.error("Gagal hapus asesor:", err);
+    }
+  }
+};
+
 
   return (
     <div
@@ -192,7 +191,7 @@ function Asesor({ onBack, onNavigate, asesorData, setAsesorData }) {
             </tr>
           </thead>
           <tbody>
-            {sampleData.map((asesor, index) => (
+            {dataAsesors.map((asesor, index) => (
               <tr
                 key={asesor.id || index}
                 style={{
