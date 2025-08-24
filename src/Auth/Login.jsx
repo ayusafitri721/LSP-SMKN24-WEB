@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext'; // Import custom hook
+import loginBackground from '../img/ADM_LOGIN.png';
 
 function Login({ goToDashboard }) {
   const { login } = useAuth();
@@ -32,7 +33,7 @@ function Login({ goToDashboard }) {
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      handleSubmit();
+      handleSubmit(e);
     }
   };
 
@@ -56,7 +57,8 @@ function Login({ goToDashboard }) {
       <div style={{
         minHeight: '100vh',
         height: '100vh',
-        backgroundImage: "url('src/img/ADM_LOGIN.png')",
+        // Gunakan imported image
+        backgroundImage: `url(${loginBackground})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
