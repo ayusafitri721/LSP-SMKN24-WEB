@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 
-// You would use this component to handle state and rendering
-// of the main Approvement view with tab switching functionality.
 
 export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -72,7 +70,7 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
         onNavigate('apl01-approvement');
       }
     } else if (tabName === 'APL-02') {
-      // Navigate ke APL-02/ApprovementApl0...jsx
+      // Navigate ke APL-02/ApprovementApl02.jsx
       if (onNavigate) {
         onNavigate('apl02-approvement');
       }
