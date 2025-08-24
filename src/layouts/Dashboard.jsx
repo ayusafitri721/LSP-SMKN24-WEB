@@ -2,7 +2,7 @@
   import ManajemenData from "./ManajemenData";
   import ListAsesmen from "./ListAsesmen";
   import AsesmenDiikuti from "../AsesmenDiikuti/AsesmenDiikuti";
-  import Approvement from './Approvement';
+  import Approvement from '../Approvment/APL-01/Approvement';
   import logoImage from "/src/img/image 12.png";
 
 // KOMPONEN SIDEBAR YANG BISA DI-EXPORT (seperti Navbar)
@@ -866,6 +866,8 @@ function Dashboard({ onBack, onNavigate }) {
       onNavigate("listasesmen");
     }
   };
+  
+  
 
   return (
     <div
