@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 
 // You would use this component to handle state and rendering
-// of the main Approvement view.
+// of the main Approvement view with tab switching functionality.
 
-export default function Approvement({ onBack, onNavigate }) {
+export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' }) {
   const [searchTerm, setSearchTerm] = useState('');
-  // Removed the problematic safeData line since 'data' is not defined
-  // const safeData = data || [];
+  // activeTab sekarang diambil dari props currentTab
+  const activeTab = currentTab;
 
-  // Sample data to display in the table
-  const sampleData = [
+  // Sample data untuk APL-01
+  const sampleDataAPL01 = [
     {
       id: 1,
       namaJadwal: 'USK RPL Pemrograman Dasar',
@@ -26,10 +26,32 @@ export default function Approvement({ onBack, onNavigate }) {
       tanggalUjian: '10/7/2025',
       status: 'aktif',
     },
-    // Add more sample data as needed
   ];
 
-  const filteredData = sampleData.filter(item =>
+  // Sample data untuk APL-02
+  const sampleDataAPL02 = [
+    {
+      id: 3,
+      namaJadwal: 'USK Web Development',
+      tuk: 'Tempat Uji Kompetensi',
+      nisn: '0091234567',
+      tanggalUjian: '11/7/2025',
+      status: 'aktif',
+    },
+    {
+      id: 4,
+      namaJadwal: 'USK Database Management',
+      tuk: 'Sewaktu/Tempat Kerja/Mandiri',
+      nisn: '0101234567',
+      tanggalUjian: '12/7/2025',
+      status: 'aktif',
+    },
+  ];
+
+  // Pilih data berdasarkan tab aktif
+  const currentData = activeTab === 'APL-01' ? sampleDataAPL01 : sampleDataAPL02;
+
+  const filteredData = currentData.filter(item =>
     item.namaJadwal.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.tuk.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (item.nisn && item.nisn.toString().includes(searchTerm.toLowerCase()))
@@ -41,6 +63,21 @@ export default function Approvement({ onBack, onNavigate }) {
       <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
     </svg>
   );
+
+  // Function untuk handle tab click
+  const handleTabClick = (tabName) => {
+    if (tabName === 'APL-01') {
+      // Navigate ke APL-01/Approvement.jsx
+      if (onNavigate) {
+        onNavigate('apl01-approvement');
+      }
+    } else if (tabName === 'APL-02') {
+      // Navigate ke APL-02/ApprovementApl0...jsx
+      if (onNavigate) {
+        onNavigate('apl02-approvement');
+      }
+    }
+  };
 
   return (
     <div style={{
@@ -81,31 +118,38 @@ export default function Approvement({ onBack, onNavigate }) {
           borderRadius: '8px',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
         }}>
-          <button style={{
-            padding: '12px 20px',
-            fontSize: '14px',
-            fontWeight: '600',
-            border: 'none',
-            backgroundColor: '#ff6b35',
-            color: 'white',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s ease',
-            margin: '4px',
-          }}>
+          <button 
+            onClick={() => handleTabClick('APL-01')}
+            style={{
+              padding: '12px 20px',
+              fontSize: '14px',
+              fontWeight: '600',
+              border: 'none',
+              backgroundColor: activeTab === 'APL-01' ? '#ff6b35' : 'transparent',
+              color: activeTab === 'APL-01' ? 'white' : '#666',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              margin: '4px',
+            }}
+          >
             FR.APL.01
           </button>
-          <button style={{
-            padding: '12px 20px',
-            fontSize: '14px',
-            fontWeight: '600',
-            border: 'none',
-            backgroundColor: 'transparent',
-            color: '#666',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s ease',
-            margin: '4px',
-          }}>
+          <button 
+            onClick={() => handleTabClick('APL-02')}
+            style={{
+              padding: '12px 20px',
+              fontSize: '14px',
+              fontWeight: '600',
+              border: 'none',
+              backgroundColor: activeTab === 'APL-02' ? '#ff6b35' : 'transparent',
+              color: activeTab === 'APL-02' ? 'white' : '#666',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              margin: '4px',
+              borderRadius: '8px',
+            }}
+          >
             FR.APL.02
           </button>
         </div>
@@ -118,7 +162,7 @@ export default function Approvement({ onBack, onNavigate }) {
         color: '#1a1a1a',
         margin: '0 0 20px 0'
       }}>
-        APPROVEMENT
+        APPROVEMENT - {activeTab}
       </h1>
       
       {/* Search Bar */}
@@ -172,7 +216,7 @@ export default function Approvement({ onBack, onNavigate }) {
           color: '#1a1a1a',
           margin: 0
         }}>
-          Daftar Asesi
+          Daftar Asesi ({activeTab})
         </h2>
       </div>
 
@@ -334,7 +378,7 @@ export default function Approvement({ onBack, onNavigate }) {
                       verticalAlign: 'middle'
                     }}>
                       <button
-                        onClick={() => onNavigate && onNavigate('lihatapprovement', item)}
+                        onClick={() => onNavigate && onNavigate('lihatapprovement', { ...item, tabType: activeTab })}
                         style={{
                           backgroundColor: '#fd7e14',
                           color: '#ffffff',
@@ -363,7 +407,7 @@ export default function Approvement({ onBack, onNavigate }) {
                     color: '#999',
                     fontSize: '14px'
                   }}>
-                    {searchTerm ? 'Tidak ada data yang sesuai dengan pencarian' : 'Belum ada data asesi'}
+                    {searchTerm ? 'Tidak ada data yang sesuai dengan pencarian' : `Belum ada data asesi untuk ${activeTab}`}
                   </td>
                 </tr>
               )}

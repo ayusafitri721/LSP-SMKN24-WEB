@@ -37,6 +37,7 @@ import EditListAsesmen from './layouts/EditListAsesmen';
 import LihatListAsesmen from './layouts/LihatListAsesmen';
 import LihatApprovement from './Approvment/APL-01/LihatApprovement';
 import Approvement from "./Approvment/APL-01/Approvement";
+import ApprovementApl02 from "./Approvment/APL-02/ApprovementApl02";
 import TempatUji from './layouts/TempatUji';
 import AddSkema from './Skema/AddSkema';
 import EditSkema from './Skema/EditSkema';
@@ -97,7 +98,8 @@ function App() {
 
   const pagesWithSidebar = [
     'manajemenData', 'asesor', 'asesi', 'asesmen', 'jurusan', 'kompetensi', 
-    'listasesmen', 'asesmenDiikuti','lihatlistasesmen','approvement', 'lihatapprovement'
+    'listasesmen', 'asesmenDiikuti','lihatlistasesmen','approvement', 'lihatapprovement',
+    'apl02-approvement'
   ];
 
   const scrollToSection = (section) => {
@@ -214,7 +216,6 @@ function App() {
       setEditData(null); 
     }
 
-    // Fixed menu mapping for approvement
     const menuMap = {
       dashboard: 'Dashboard',
       manajemenData: 'ManajemenData',
@@ -224,8 +225,10 @@ function App() {
       addlistasesmen: 'ListAsesmen',
       editlistasesmen: 'ListAsesmen',
       lihatlistasesmen: 'ListAsesmen',
-      approvement: 'Approvement',  // Fixed this line
-      lihatapprovement: 'Approvement', // Fixed this line
+      approvement: 'Approvement',
+      lihatapprovement: 'Approvement',
+      'apl01-approvement': 'Approvement',
+      'apl02-approvement': 'Approvement',
       // Keep all other mappings the same
       addjurusan: 'ManajemenData',
       editjurusan: 'ManajemenData',
@@ -260,7 +263,7 @@ function App() {
       ManajemenData: 'manajemenData',
       ListAsesmen: 'listasesmen',
       AsesmenDiikuti: 'asesmenDiikuti',
-      Approvement: 'approvement', // Fixed this line
+      Approvement: 'approvement',
       Profile: 'dashboard',
     };
     if (pageMap[menuName]) {
@@ -453,6 +456,9 @@ function App() {
             )}
             {currentPage === 'lihatapprovement' && (
               <LihatApprovement onBack={() => handleNavigate('approvement')} data={editData} />
+            )}
+            {currentPage === 'apl02-approvement' && (
+              <ApprovementApl02 onBack={handleBackToHome} onNavigate={handleNavigate} />
             )}
 
           </div>
