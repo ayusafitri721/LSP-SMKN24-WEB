@@ -1,0 +1,17 @@
+/* global.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #fff;
+  overflow-x: hidden;
+}
+
+section {
+  width: 100%;
+  padding: 60px 40px;
+}
