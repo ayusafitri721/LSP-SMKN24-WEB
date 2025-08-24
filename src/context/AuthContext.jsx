@@ -15,11 +15,12 @@ export function AuthProvider({ children }) {
       setLoading(true);
       const res = await api.post("/auth/login", credentials);
       setUser(res.data.user);
-      localStorage.setItem("token", res.data.token); // simpan token
-      console.log("Login successful:", res.data);
+      console.log("Login response:", res.data);
+      localStorage.setItem("user", JSON.stringify({id: res.data.user.id, role: res.data.user.role})); // simpan token
       return res.data;
     } catch (err) {
       throw err.response?.data || err;
+      console.log(err);
     } finally {
       setLoading(false);
     }

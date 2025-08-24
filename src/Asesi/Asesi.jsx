@@ -3,10 +3,6 @@ import React, { useState } from 'react';
 function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
   const [showAddNotif, setShowAddNotif] = useState(false);
 
-  console.log("Asesis from context:", asesis);
-console.log("Data to map:", asesis?.data || []);
-
-
   const handleAddClick = () => {
     onNavigate('addasesi');
   };
@@ -182,7 +178,7 @@ console.log("Data to map:", asesis?.data || []);
             </tr>
           </thead>
           <tbody>
-            {sampleData.map((asesi, index) => (
+            {asesiData.map((asesi, index) => (
               <tr
                 key={asesi.id || index}
                 style={{

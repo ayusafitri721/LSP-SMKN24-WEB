@@ -9,7 +9,17 @@ const LoginRoutes = () => {
   const navigate = useNavigate();
 
   const goToDashboard = () => {
-    navigate('/dashboard');
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log("User from localStorage:", user);
+    if (user && user.role === 'admin') {
+      window.location.href = "/dashboard";
+    } else if (user && user.role === 'assesi') {
+      window.location.href = "dashboard/asesi";
+    } else if (user && user.role === 'asesor') {
+      window.location.href = "/asesor";
+    } else {
+      window.location.href = "/auth/login";
+    }
   };
 
   const handleBackToHome = () => {
@@ -29,16 +39,7 @@ const LoginRoutes = () => {
         }
       />
       
-      {/* Main Login Route */}
-      <Route 
-        path="/login" 
-        element={
-          <Login 
-            onBack={handleBackToHome}
-            goToDashboard={goToDashboard}
-          />
-        }
-      />
+      
     </Routes>
   );
 };

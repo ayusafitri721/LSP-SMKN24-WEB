@@ -9,6 +9,7 @@ function Login({ goToDashboard }) {
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({
