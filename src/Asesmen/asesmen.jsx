@@ -14,17 +14,27 @@ function Asesmen({ onBack, onNavigate, data }) {
     setShowDeleteModal(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (selectedItem) {
-      removeAssesment(selectedItem.id);
-    }
-    setShowDeleteModal(false);
-    setShowDeleteSuccess(true);
+      setShowDeleteModal(false);
 
-    setTimeout(() => {
-      setShowDeleteSuccess(false);
-      setSelectedItem(null);
+      try{
+        await removeAssesment(selectedItem.id);
+        await fetchAssesments();
+
+        setShowDeleteSuccess(true);
+
+        setTimeout(() => {
+          setShowDeleteSuccess(false);
+          setSelectedItem(null);
     }, 1500);
+
+      }catch(err){
+        console.error("Error deleting assesment:", err);
+      }
+      
+    }
+    
   };
 
   const handleCancelDelete = () => {
