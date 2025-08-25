@@ -1,28 +1,20 @@
 import React from 'react';
-import { useAsesor } from '../context/AsesorContext'; // Import custom hook
 
 function Asesor({ onBack, onNavigate, asesorData, setAsesorData }) {
-  const { asesors, loading, error, fetchAsesors, addAsesor, editAsesor, removeAsesor } = useAsesor();
   const handleAddClick = () => {
     onNavigate('addasesor');
   };
-
-  const dataAsesors = asesors || [];
 
   const handleEdit = (asesor) => {
     onNavigate('editasesor', asesor);
   };
 
-  const handleDelete = async (id) => {
-  if (window.confirm("Yakin mau hapus asesor ini?")) {
-    try {
-      await removeAsesor(id);
-    } catch (err) {
-      console.error("Gagal hapus asesor:", err);
+  const handleDelete = (id) => {
+    if (window.confirm("Yakin mau hapus asesor ini?")) {
+      const updatedData = asesorData.filter(asesor => asesor.id !== id);
+      setAsesorData(updatedData);
     }
-  }
-};
-
+  };
 
   return (
     <div
@@ -182,7 +174,7 @@ function Asesor({ onBack, onNavigate, asesorData, setAsesorData }) {
                   fontWeight: '600',
                   color: '#333',
                   fontSize: '12px',
-                  width: '80px',
+                  width: '120px',
                   border: '1px solid #dee2e6',
                 }}
               >
@@ -191,103 +183,136 @@ function Asesor({ onBack, onNavigate, asesorData, setAsesorData }) {
             </tr>
           </thead>
           <tbody>
-            {dataAsesors.map((asesor, index) => (
-              <tr
-                key={asesor.id || index}
-                style={{
-                  backgroundColor: 'white',
-                }}
-              >
-                <td
+            {asesorData && asesorData.length > 0 ? (
+              asesorData.map((asesor, index) => (
+                <tr
+                  key={asesor.id || index}
                   style={{
-                    padding: '10px 8px',
-                    textAlign: 'center',
-                    color: '#333',
-                    fontSize: '12px',
-                    border: '1px solid #dee2e6',
+                    backgroundColor: 'white',
                   }}
                 >
-                  {asesor.no || index + 1}
-                </td>
-                <td
-                  style={{
-                    padding: '10px 16px',
-                    color: '#333',
-                    fontSize: '12px',
-                    border: '1px solid #dee2e6',
-                  }}
-                >
-                  {asesor.nama}
-                </td>
-                <td
-                  style={{
-                    padding: '10px 8px',
-                    textAlign: 'center',
-                    color: '#333',
-                    fontSize: '12px',
-                    border: '1px solid #dee2e6',
-                  }}
-                >
-                  {asesor.pekerjaan}
-                </td>
-                <td 
-                  style={{ 
-                    padding: '10px 8px', 
-                    textAlign: 'center', 
-                    fontSize: '12px',
-                    border: '1px solid #dee2e6',
-                  }}
-                >
-                  <span
+                  <td
                     style={{
-                      color:
-                        asesor.sertifikat === 'Tersertifikasi'
-                          ? '#28a745'
-                          : asesor.sertifikat === 'Tidak Tersertifikasi'
-                          ? '#dc3545'
-                          : '#6c757d',
-                      fontWeight: '500',
+                      padding: '10px 8px',
+                      textAlign: 'center',
+                      color: '#333',
+                      fontSize: '12px',
+                      border: '1px solid #dee2e6',
                     }}
                   >
-                    {asesor.sertifikat}
-                  </span>
-                </td>
-                <td
-                  style={{
-                    padding: '10px 8px',
-                    textAlign: 'center',
-                    color: '#333',
-                    fontSize: '12px',
-                    border: '1px solid #dee2e6',
-                  }}
-                >
-                  {asesor.tanggal}
-                </td>
-                <td 
-                  style={{ 
-                    padding: '10px 8px', 
-                    textAlign: 'center',
-                    border: '1px solid #dee2e6',
-                  }}
-                >
-                  <button
-                    onClick={() => handleEdit(asesor)}
+                    {asesor.no || index + 1}
+                  </td>
+                  <td
                     style={{
-                      backgroundColor: '#ffc107',
-                      color: '#212529',
-                      border: 'none',
-                      borderRadius: '4px',
-                      padding: '4px 8px',
-                      fontSize: '11px',
-                      fontWeight: '500',
-                      cursor: 'pointer',
+                      padding: '10px 16px',
+                      color: '#333',
+                      fontSize: '12px',
+                      border: '1px solid #dee2e6',
                     }}
                   >
-                    Edit Data
-                  </button>
+                    {asesor.nama}
+                  </td>
+                  <td
+                    style={{
+                      padding: '10px 8px',
+                      textAlign: 'center',
+                      color: '#333',
+                      fontSize: '12px',
+                      border: '1px solid #dee2e6',
+                    }}
+                  >
+                    {asesor.pekerjaan}
+                  </td>
+                  <td 
+                    style={{ 
+                      padding: '10px 8px', 
+                      textAlign: 'center', 
+                      fontSize: '12px',
+                      border: '1px solid #dee2e6',
+                    }}
+                  >
+                    <span
+                      style={{
+                        color:
+                          asesor.sertifikat === 'Tersertifikasi'
+                            ? '#28a745'
+                            : asesor.sertifikat === 'Tidak Tersertifikasi'
+                            ? '#dc3545'
+                            : '#6c757d',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {asesor.sertifikat}
+                    </span>
+                  </td>
+                  <td
+                    style={{
+                      padding: '10px 8px',
+                      textAlign: 'center',
+                      color: '#333',
+                      fontSize: '12px',
+                      border: '1px solid #dee2e6',
+                    }}
+                  >
+                    {asesor.tanggal}
+                  </td>
+                  <td 
+                    style={{ 
+                      padding: '10px 8px', 
+                      textAlign: 'center',
+                      border: '1px solid #dee2e6',
+                    }}
+                  >
+                    <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
+                      <button
+                        onClick={() => handleEdit(asesor)}
+                        style={{
+                          backgroundColor: '#ffc107',
+                          color: '#212529',
+                          border: 'none',
+                          borderRadius: '4px',
+                          padding: '4px 8px',
+                          fontSize: '11px',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(asesor.id)}
+                        style={{
+                          backgroundColor: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          padding: '4px 8px',
+                          fontSize: '11px',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td 
+                  colSpan="6" 
+                  style={{
+                    padding: '20px',
+                    textAlign: 'center',
+                    color: '#666',
+                    border: '1px solid #dee2e6',
+                  }}
+                >
+                  Belum ada data asesor
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
