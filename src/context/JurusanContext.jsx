@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { jurusans as apiJurusans } from "../Api/api"; // service ambil jurusan
+import { jurusans as apiJurusans, putJurusan } from "../Api/api"; // service ambil jurusan
+import { createJurusan } from "../Api/api";
 
+import { data } from "react-router-dom";
 // Context
 const JurusanContext = createContext();
 
@@ -16,6 +18,7 @@ export function JurusanProvider({ children }) {
     setError(null);
     try {
       const res = await apiJurusans();
+      console.log("cek", res.data.data );
       setJurusanList(res.data.data || []);
     } catch (err) {
       setError(err.response?.data?.message || "Gagal mengambil data jurusan!");
@@ -24,6 +27,31 @@ export function JurusanProvider({ children }) {
     }
   };
 
+  const postJurusan = async (data) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await createJurusan(data);
+      setJurusanList((prev) => [...prev, res.data?.data]);
+      return res.data?.data;
+    } catch (err) {
+      setError(err.response?.data?.message || "Gagal menambah jurusan!");
+      throw err;
+    }
+  }
+
+  const updateJurusan = async (id, data) => {
+    setLoading(true);
+    setError(null);
+    try{
+      const res = await putJurusan(id, data);
+      return res.data?.data;
+    }catch(err){
+      setError(err.response?.data?.message || "Gagal menambah jurusan!");
+      throw err;
+    }
+  }
+
   // Auto load saat pertama
   useEffect(() => {
     fetchJurusans();
@@ -31,7 +59,7 @@ export function JurusanProvider({ children }) {
 
   return (
     <JurusanContext.Provider
-      value={{ jurusanList, loading, error, fetchJurusans }}
+      value={{ jurusanList, loading, error, fetchJurusans, postJurusan, updateJurusan }}
     >
       {children}
     </JurusanContext.Provider>

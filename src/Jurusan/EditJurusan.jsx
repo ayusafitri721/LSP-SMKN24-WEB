@@ -1,79 +1,109 @@
 import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Save, Trash2 } from 'lucide-react';
+import { InputField, SelectField, TextareaField } from '../components/FieldComponents.jsx';
+import { useJurusan } from '../context/JurusanContext.jsx';
 
-function EditJurusan({ onBack, onSave, onDelete, initialData }) {
+function EditJurusan({ item, onBack, onSave, onDelete, initialData }) {
+  const { loading, error, updateJurusan,fetchJurusans, deleteJurusan } = useJurusan();
   const [formData, setFormData] = useState({
-    kompetensiKeahlian: '',
-    jumlahSiswa: ''
+    kode_jurusan: '',
+    nama_jurusan: '',
+    jenjang: '',
+    deskripsi: ''
   });
 
-  const [errors, setErrors] = useState({});
+  console.log("id", initialData.id)
+  
+  const [validationErrors, setValidationErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const jenjangOptions = [
+    { value: 'SMK', label: 'SMK (Sekolah Menengah Kejuruan)' },
+    { value: 'D1', label: 'D1 (Diploma 1)' },
+    { value: 'D2', label: 'D2 (Diploma 2)' },
+    { value: 'D3', label: 'D3 (Diploma 3)' },
+    { value: 'S1', label: 'S1 (Sarjana)' }
+  ];
 
   // Load initial data when component mounts
   useEffect(() => {
     if (initialData) {
       setFormData({
-        kompetensiKeahlian: initialData.kompetensiKeahlian || '',
-        jumlahSiswa: initialData.jumlahSiswa || ''
+        kode_jurusan: initialData.kode_jurusan || '',
+        nama_jurusan: initialData.nama_jurusan || '',
+        jenjang: initialData.jenjang || '',
+        deskripsi: initialData.deskripsi || ''
       });
     }
   }, [initialData]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const handleInputChange = (field) => (e) => {
+    const value = e.target.value;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [field]: value
     }));
     
-    if (errors[name]) {
-      setErrors(prev => ({
+    // Clear validation error when user starts typing
+    if (validationErrors[field]) {
+      setValidationErrors(prev => ({
         ...prev,
-        [name]: ''
+        [field]: ''
       }));
     }
   };
 
   const validateForm = () => {
-    const newErrors = {};
+    const errors = {};
     
-    if (!formData.kompetensiKeahlian.trim()) {
-      newErrors.kompetensiKeahlian = 'Kompetensi keahlian harus diisi';
+    if (!formData.kode_jurusan.trim()) {
+      errors.kode_jurusan = 'Kode jurusan wajib diisi';
     }
     
-    if (!formData.jumlahSiswa.trim()) {
-      newErrors.jumlahSiswa = 'Jumlah siswa harus diisi';
-    } else if (isNaN(formData.jumlahSiswa) || parseInt(formData.jumlahSiswa) < 0) {
-      newErrors.jumlahSiswa = 'Jumlah siswa harus berupa angka positif';
+    if (!formData.nama_jurusan.trim()) {
+      errors.nama_jurusan = 'Nama jurusan wajib diisi';
     }
     
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    if (!formData.jenjang) {
+      errors.jenjang = 'Jenjang wajib dipilih';
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (validateForm()) {
-      const updatedItem = {
-        ...initialData,
-        kompetensiKeahlian: formData.kompetensiKeahlian.trim(),
-        jumlahSiswa: parseInt(formData.jumlahSiswa.trim())
-      };
-      
-      // Simpan data ke state sementara
-      window.tempUpdateData = updatedItem;
-      
-      // Tampilkan notifikasi
+    if (!validateForm()) {
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      await updateJurusan(initialData.id, formData);
       setShowSuccess(true);
+    } catch (err) {
+      console.error('Error updating jurusan:', err);
+      alert('Gagal memperbarui jurusan. Silakan coba lagi.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleDelete = () => {
-    // Tampilkan notifikasi konfirmasi custom
-    setShowDeleteConfirm(true);
+  const handleDelete = async () => {
+    try {
+      await deleteJurusan(initialData.id);
+      setShowDeleteConfirm(false);
+      setShowDeleteSuccess(true);
+    } catch (err) {
+      console.error('Error deleting jurusan:', err);
+      alert('Gagal menghapus jurusan. Silakan coba lagi.');
+    }
   };
 
   // Blue Checkmark Icon Component
@@ -108,7 +138,7 @@ function EditJurusan({ onBack, onSave, onDelete, initialData }) {
     </div>
   );
 
-  // Red Warning Icon Component - Updated to match your design
+  // Red Warning Icon Component
   const WarningIcon = () => (
     <div style={{
       width: '100px',
@@ -146,21 +176,11 @@ function EditJurusan({ onBack, onSave, onDelete, initialData }) {
 
   return (
     <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
       minHeight: '100vh',
-      width: '100vw',
-      backgroundColor: '#f5f5f5',
-      padding: '0',
-      margin: '0',
-      boxSizing: 'border-box',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-      zIndex: 9999
+      backgroundColor: '#f8f9fa',
+      padding: '20px'
     }}>
-      {/* Notifikasi Konfirmasi Delete - Enhanced Design */}
+      {/* Notifikasi Konfirmasi Delete */}
       {showDeleteConfirm && (
         <>
           {/* Overlay */}
@@ -178,7 +198,7 @@ function EditJurusan({ onBack, onSave, onDelete, initialData }) {
             }}
           />
           
-          {/* Modal Konfirmasi - Enhanced Design */}
+          {/* Modal Konfirmasi */}
           <div style={{
             position: 'fixed',
             top: '50%',
@@ -197,7 +217,7 @@ function EditJurusan({ onBack, onSave, onDelete, initialData }) {
             {/* Icon Warning */}
             <WarningIcon />
             
-            {/* Text - Updated to match your design */}
+            {/* Text */}
             <div style={{
               fontSize: '22px',
               fontWeight: '600',
@@ -223,7 +243,7 @@ function EditJurusan({ onBack, onSave, onDelete, initialData }) {
               marginBottom: '40px',
               lineHeight: '1.3'
             }}>
-              "{formData.kompetensiKeahlian || 'Data ini'}"?
+              "{formData.nama_jurusan || 'Data ini'}"?
             </div>
             
             {/* Line separator */}
@@ -234,7 +254,7 @@ function EditJurusan({ onBack, onSave, onDelete, initialData }) {
               marginBottom: '30px'
             }}></div>
             
-            {/* Buttons - Enhanced Design */}
+            {/* Buttons */}
             <div style={{
               display: 'flex',
               gap: '1px',
@@ -267,16 +287,7 @@ function EditJurusan({ onBack, onSave, onDelete, initialData }) {
                 Batal
               </button>
               <button
-                onClick={() => {
-                  // Tutup konfirmasi
-                  setShowDeleteConfirm(false);
-                  
-                  // Simpan id untuk delete
-                  window.tempDeleteId = initialData.id;
-                  
-                  // Tampilkan notifikasi sukses delete
-                  setShowDeleteSuccess(true);
-                }}
+                onClick={handleDelete}
                 style={{
                   backgroundColor: 'white',
                   color: '#E53E3E',
@@ -372,14 +383,9 @@ function EditJurusan({ onBack, onSave, onDelete, initialData }) {
             {/* Button */}
             <button
               onClick={() => {
-                // Tutup notifikasi
                 setShowSuccess(false);
-                
-                // Baru panggil onSave
-                if (window.tempUpdateData) {
-                  onSave && onSave(window.tempUpdateData);
-                  window.tempUpdateData = null;
-                }
+                onSave();
+                setLoading(false);
               }}
               style={{
                 backgroundColor: '#f8f9fa',
@@ -475,14 +481,9 @@ function EditJurusan({ onBack, onSave, onDelete, initialData }) {
             {/* Button */}
             <button
               onClick={() => {
-                // Tutup notifikasi
                 setShowDeleteSuccess(false);
-                
-                // Baru panggil onDelete
-                if (window.tempDeleteId) {
-                  onDelete && onDelete(window.tempDeleteId);
-                  window.tempDeleteId = null;
-                }
+                onDelete && onDelete();
+                setIsSubmitting(false);
               }}
               style={{
                 backgroundColor: '#f8f9fa',
@@ -511,207 +512,239 @@ function EditJurusan({ onBack, onSave, onDelete, initialData }) {
 
       {/* Header */}
       <div style={{
-        padding: '40px 0 20px 0',
-        textAlign: 'center'
+        maxWidth: '800px',
+        margin: '0 auto',
+        marginBottom: '30px'
       }}>
-        <h1 style={{
-          fontSize: '28px',
-          fontWeight: '600',
-          color: '#333',
-          margin: '0',
-          letterSpacing: '1px'
-        }}>
-          EDIT DATA
-        </h1>
-      </div>
-
-      {/* Form Container */}
-      <div style={{
-        margin: '0 20px 0 20px',
-        backgroundColor: '#ffffff',
-        borderRadius: '30px 30px 0 0',
-        padding: '40px',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
-        minHeight: 'calc(100vh - 100px)',
-        height: 'calc(100vh - 100px)',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        {/* Form Content */}
-        <div style={{
-          flex: '1',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '30px'
-        }}>
-          {/* Kompetensi Keahlian */}
-          <div>
-            <label style={{
-              display: 'block',
-              fontSize: '16px',
-              fontWeight: '600',
-              color: '#333',
-              marginBottom: '12px'
-            }}>
-              Kompetensi Keahlian
-            </label>
-            <input
-              type="text"
-              name="kompetensiKeahlian"
-              value={formData.kompetensiKeahlian}
-              onChange={handleInputChange}
-              placeholder=""
-              style={{
-                width: '100%',
-                padding: '16px',
-                border: '2px solid #e0e0e0',
-                borderRadius: '12px',
-                fontSize: '16px',
-                boxSizing: 'border-box',
-                backgroundColor: '#ffffff',
-                outline: 'none',
-                transition: 'border-color 0.2s ease',
-                fontFamily: 'inherit'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#007bff'}
-              onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-            />
-            {errors.kompetensiKeahlian && (
-              <p style={{
-                color: '#dc3545',
-                fontSize: '14px',
-                marginTop: '8px',
-                margin: '8px 0 0 0'
-              }}>
-                {errors.kompetensiKeahlian}
-              </p>
-            )}
-          </div>
-
-          {/* Jumlah Siswa */}
-          <div>
-            <label style={{
-              display: 'block',
-              fontSize: '16px',
-              fontWeight: '600',
-              color: '#333',
-              marginBottom: '12px'
-            }}>
-              Jumlah Siswa
-            </label>
-            <input
-              type="number"
-              name="jumlahSiswa"
-              value={formData.jumlahSiswa}
-              onChange={handleInputChange}
-              placeholder=""
-              min="0"
-              style={{
-                width: '100%',
-                padding: '16px',
-                border: '2px solid #e0e0e0',
-                borderRadius: '12px',
-                fontSize: '16px',
-                boxSizing: 'border-box',
-                backgroundColor: '#ffffff',
-                outline: 'none',
-                transition: 'border-color 0.2s ease',
-                fontFamily: 'inherit'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#007bff'}
-              onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-            />
-            {errors.jumlahSiswa && (
-              <p style={{
-                color: '#dc3545',
-                fontSize: '14px',
-                marginTop: '8px',
-                margin: '8px 0 0 0'
-              }}>
-                {errors.jumlahSiswa}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Action Buttons */}
         <div style={{
           display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '12px',
-          marginTop: 'auto',
-          paddingTop: '40px'
+          alignItems: 'center',
+          gap: '16px',
+          marginBottom: '20px'
         }}>
           <button
             onClick={onBack}
             style={{
-              backgroundColor: '#6c757d',
-              color: '#ffffff',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '10px',
+              backgroundColor: '#FFFFFF',
+              border: '2px solid #79B4F1',
+              borderRadius: '12px',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              fontFamily: 'inherit'
+              transition: 'all 0.3s ease'
             }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#5a6268';
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = '#79B4F1';
+              e.target.style.color = '#FFFFFF';
             }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#6c757d';
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = '#FFFFFF';
+              e.target.style.color = '#343434';
             }}
           >
-            Batal
+            <ArrowLeft size={20} />
           </button>
-          <button
-            onClick={handleDelete}
-            style={{
-              backgroundColor: '#dc3545',
-              color: '#ffffff',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '8px',
+          <div>
+            <h1 style={{
+              fontSize: '28px',
+              fontWeight: '700',
+              color: '#000000',
+              margin: 0
+            }}>
+              Edit Data Jurusan
+            </h1>
+            <p style={{
               fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              fontFamily: 'inherit'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#c82333';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#dc3545';
-            }}
-          >
-            Hapus Data
-          </button>
-          <button
-            onClick={handleSubmit}
-            style={{
-              backgroundColor: '#fd7e14',
-              color: '#ffffff',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              fontFamily: 'inherit'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#e8670e';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#fd7e14';
-            }}
-          >
-            Simpan Perubahan
-          </button>
+              color: '#343434',
+              margin: '4px 0 0 0'
+            }}>
+              Perbarui data jurusan yang sudah ada
+            </p>
+          </div>
         </div>
+      </div>
+
+      {/* Form Container */}
+      <div style={{
+        maxWidth: '800px',
+        margin: '0 auto',
+        backgroundColor: '#FFFFFF',
+        borderRadius: '20px',
+        padding: '40px',
+        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+        border: '1px solid #79B4F1'
+      }}>
+        {/* Error Display */}
+        {error && (
+          <div style={{
+            backgroundColor: '#fff3f3',
+            border: '1px solid #FF8200',
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '24px',
+            color: '#FF8200',
+            fontSize: '14px'
+          }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '24px',
+            marginBottom: '24px'
+          }}>
+            {/* Kode Jurusan */}
+            <InputField
+              label="Kode Jurusan"
+              value={formData.kode_jurusan}
+              onChange={handleInputChange('kode_jurusan')}
+              placeholder="Contoh: RPL01"
+              required={true}
+              error={validationErrors.kode_jurusan}
+              maxLength={10}
+            />
+
+            {/* Jenjang */}
+            <SelectField
+              label="Jenjang Pendidikan"
+              value={formData.jenjang}
+              onChange={handleInputChange('jenjang')}
+              options={jenjangOptions}
+              placeholder="Pilih jenjang..."
+              required={true}
+              error={validationErrors.jenjang}
+            />
+          </div>
+
+          {/* Nama Jurusan */}
+          <InputField
+            label="Nama Jurusan"
+            value={formData.nama_jurusan}
+            onChange={handleInputChange('nama_jurusan')}
+            placeholder="Masukkan nama jurusan lengkap"
+            required={true}
+            error={validationErrors.nama_jurusan}
+            maxLength={100}
+          />
+
+          {/* Deskripsi */}
+          <TextareaField
+            label="Deskripsi"
+            value={formData.deskripsi}
+            onChange={handleInputChange('deskripsi')}
+            placeholder="Masukkan deskripsi jurusan (opsional)"
+            rows={4}
+            error={validationErrors.deskripsi}
+          />
+
+          {/* Action Buttons */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '16px',
+            marginTop: '32px'
+          }}>
+            <button
+              type="button"
+              onClick={() => setShowDeleteConfirm(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '12px 24px',
+                backgroundColor: '#FFFFFF',
+                border: '2px solid #E53E3E',
+                borderRadius: '12px',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#E53E3E',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#E53E3E';
+                e.target.style.color = '#FFFFFF';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#FFFFFF';
+                e.target.style.color = '#E53E3E';
+              }}
+            >
+              <Trash2 size={16} />
+              Hapus
+            </button>
+
+            <div style={{ display: 'flex', gap: '16px' }}>
+              <button
+                type="button"
+                onClick={onBack}
+                style={{
+                  padding: '12px 24px',
+                  backgroundColor: '#FFFFFF',
+                  border: '2px solid #343434',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#343434',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = '#343434';
+                  e.target.style.color = '#FFFFFF';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = '#FFFFFF';
+                  e.target.style.color = '#343434';
+                }}
+              >
+                Batal
+              </button>
+
+              <button
+                type="submit"
+                disabled={isSubmitting || loading}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '12px 32px',
+                  backgroundColor: isSubmitting || loading ? '#79B4F1' : '#10A9C9',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#FFFFFF',
+                  cursor: isSubmitting || loading ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.3s ease',
+                  opacity: isSubmitting || loading ? 0.7 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSubmitting && !loading) {
+                    e.target.style.backgroundColor = '#2F90FF';
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 8px 25px rgba(47, 144, 255, 0.3)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSubmitting && !loading) {
+                    e.target.style.backgroundColor = '#10A9C9';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = 'none';
+                  }
+                }}
+              >
+                <Save size={16} />
+                {isSubmitting || loading ? 'Menyimpan...' : 'Simpan Perubahan'}
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
 
       {/* CSS Animations */}

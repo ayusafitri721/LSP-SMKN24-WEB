@@ -1,653 +1,283 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
+import {
+  InputField,
+  SelectField,
+  DateField,
+  RadioField
+} from "../components/FieldComponents.jsx";
+import { useAsesor } from "../context/AsesorContext";
+import { useSkema } from "../context/SkemaContext.jsx";
+import { useAssesment } from "../context/AssesmentContext";
 
 function EditAsesmen({ data, onSave, onCancel, onDelete }) {
-  // Dummy database simulation - in real app this would be from props/context
-  const [database, setDatabase] = useState([
-    { judul: "Erwin Alaskar Mega", program: "Rekayasa Perangkat Lunak", tanggal: "-" },
-    { judul: "Erwin Alaskar Mega", program: "Rekayasa Perangkat Lunak", tanggal: "-" },
-    { judul: "Erwin Alaskar Mega", program: "Rekayasa Perangkat Lunak", tanggal: "-" },
-    { judul: "Erwin Alaskar Mega", program: "Perhotelan", tanggal: "-" },
-    { judul: "Erwin Alaskar Mega", program: "Busana", tanggal: "-" },
-    { judul: "Erwin Alaskar Mega", program: "Usaha Layanan Pariwisata", tanggal: "-" },
-    { judul: "Erwin Alaskar Mega", program: "Kuliner", tanggal: "-" },
-  ]);
-
-  // Current data being edited
-  const currentData = data || database[0];
+  const { asesors } = useAsesor();
+  const { skemaList } = useSkema();
+  const { editAssesment } = useAssesment();
 
   const [formData, setFormData] = useState({
-    id: currentData.id,
-    judul: currentData.judul,
-    program: currentData.program,
-    tanggal: currentData.tanggal
+    id: data?.id || "",
+    skema_id: data?.skema_id || "",
+    admin_id: data?.admin_id || 1,
+    assesor_id: data?.assesor_id || "",
+    tanggal_assesment: data?.tanggal_assesment || "",
+    status: data?.status || "",
+    tuk: data?.tuk || ""
   });
 
   const [errors, setErrors] = useState({});
-  const [showUpdateNotif, setShowUpdateNotif] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
 
-  const handleInputChange = (e) => {
+  useEffect(() => {
+    if (data) {
+      setFormData({
+        id: data.id,
+        skema_id: data.skema_id,
+        admin_id: data.admin_id,
+        assesor_id: data.assesor_id,
+        tanggal_assesment: data.tanggal_assesment,
+        status: data.status,
+        tuk: data.tuk
+      });
+    }
+  }, [data]);
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
-    if (!formData.judul.trim()) {
-      newErrors.judul = 'Judul asesmen harus diisi';
-    }
-    
-    if (!formData.program.trim()) {
-      newErrors.program = 'Program harus diisi';
-    }
-    
-    if (!formData.tanggal.trim()) {
-      newErrors.tanggal = 'Tanggal dibuat harus diisi';
-    }
-    
+    if (!formData.skema_id) newErrors.skema_id = "Skema harus dipilih";
+    if (!formData.assesor_id) newErrors.assesor_id = "Asesor harus dipilih";
+    if (!formData.tanggal_assesment) newErrors.tanggal_assesment = "Tanggal asesmen harus diisi";
+    if (!formData.status) newErrors.status = "Status harus dipilih";
+    if (!formData.tuk) newErrors.tuk = "TUK harus diisi";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    
-    if (validateForm()) {
-      setShowUpdateNotif(true);
-    }
-  };
-
-  const handleCancel = () => {
-    setFormData({
-      id: currentData.id,
-      judul: currentData.judul,
-      program: currentData.program,
-      tanggal: currentData.tanggal
-    });
-    setErrors({});
-    
-    if (onCancel) {
-      onCancel();
+    if (!validateForm()) return;
+    try {
+      await editAssesment(formData.id, formData)
+      if (onSave) onSave(formData);
+    } catch (err) {
+      if (err.response?.data?.errors) {
+        console.error("Validation errors:", err.response.data.errors);
+      } else {
+        console.error("Error updating asesmen:", err);
+      }
     }
   };
 
   const handleDelete = () => {
-    setShowDeleteConfirm(true);
+    if (window.confirm("Yakin ingin menghapus asesmen ini?")) {
+      if (onDelete) onDelete(formData.id);
+    }
   };
 
-  const confirmDelete = () => {
-    setShowDeleteConfirm(false);
-    
-    // Actually delete from database simulation
-    const updatedDatabase = database.filter(item => item.id !== formData.id);
-    setDatabase(updatedDatabase);
-    
-    // Call parent's onDelete function if provided
-    if (onDelete) {
-      onDelete(formData);
-    }
-    
-    // Show success notification briefly then redirect
-    setShowDeleteSuccess(true);
-    
-    console.log('Data berhasil dihapus dari database:', formData);
-    console.log('Database sekarang:', updatedDatabase);
-    
-    // Auto redirect after 1.5 seconds
-    setTimeout(() => {
-      setShowDeleteSuccess(false);
-      
-      // Use the same redirect logic as Cancel button
-      if (onCancel) {
-        onCancel();
-      } else {
-        // Fallback redirect if no onCancel provided
-        window.location.href = '/asesmen';
-      }
-      
-    }, 1500);
-  };
+  // Format dropdown
+  const skemaOptions = skemaList.map((s) => ({
+    value: s.id,
+    label: s.judul_skema
+  }));
+
+  const asesorOptions = asesors.map((a) => ({
+    value: a.id,
+    label: a.nama_lengkap
+  }));
+
+  const statusOptions = [
+    { value: "active", label: "Terjadwal" },
+    { value: "expired", label: "Selesai" },
+    { value: "dibatalkan", label: "Dibatalkan" }
+  ];
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      width: '100vw',
-      backgroundColor: '#f5f5f5',
-      padding: '0',
-      margin: '0',
-      boxSizing: 'border-box',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-      overflow: 'auto'
-    }}>
-      {/* Header */}
-      <div style={{
-        padding: '40px 0 20px 0',
-        textAlign: 'center',
-        position: 'sticky',
-        top: 0,
-        backgroundColor: '#f5f5f5',
-        zIndex: 10
-      }}>
-        <h1 style={{
-          fontSize: '28px',
-          fontWeight: '600',
-          color: '#333',
-          margin: '0',
-          letterSpacing: '1px'
-        }}>
-          EDIT DATA ASESMEN
-        </h1>
-      </div>
+    <div
+      style={{
+        padding: "24px",
+        backgroundColor: "#FFFFFF",
+        minHeight: "100vh",
+        fontFamily: "Arial, sans-serif"
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "#FFFFFF",
+          borderRadius: "12px",
+          padding: "24px",
+          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+          maxWidth: "800px",
+          margin: "0 auto"
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "24px",
+            borderBottom: "1px solid #f0f0f0",
+            paddingBottom: "16px"
+          }}
+        >
+          <button
+            onClick={onCancel}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              marginRight: "16px",
+              color: "#10A9C9",
+              fontSize: "20px"
+            }}
+          >
+            &larr;
+          </button>
+          <h1
+            style={{
+              margin: 0,
+              color: "#343434",
+              fontSize: "24px",
+              fontWeight: "600"
+            }}
+          >
+            Edit Asesmen
+          </h1>
+        </div>
 
-      {/* Form Container */}
-      <div style={{
-        margin: '0 20px 40px 20px',
-        backgroundColor: '#ffffff',
-        borderRadius: '30px',
-        padding: '40px',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
-        minHeight: '60vh'
-      }}>
-        {/* Form Content - 2 Columns */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '40px',
-          marginBottom: '40px'
-        }}>
-          {/* Left Column */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '30px'
-          }}>
-            {/* Judul Asesmen */}
+        <form onSubmit={handleSave}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+              marginBottom: "24px"
+            }}
+          >
+            <SelectField
+              label="Skema"
+              name="skema_id"
+              value={formData.skema_id}
+              onChange={handleChange}
+              options={skemaOptions}
+              placeholder="Pilih Skema"
+              required={true}
+              error={errors.skema_id}
+            />
+
+            <SelectField
+              label="Asesor"
+              name="assesor_id"
+              value={formData.assesor_id}
+              onChange={handleChange}
+              options={asesorOptions}
+              placeholder="Pilih Asesor"
+              required={true}
+              error={errors.assesor_id}
+            />
+
+            <DateField
+              label="Tanggal Asesmen"
+              name="tanggal_assesment"
+              value={formData.tanggal_assesment}
+              onChange={handleChange}
+              required={true}
+              error={errors.tanggal_assesment}
+            />
+
             <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Judul Asesmen
-              </label>
-              <input
-                type="text"
-                name="judul"
-                value={formData.judul}
-                onChange={handleInputChange}
-                placeholder="Masukkan judul asesmen"
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+              <RadioField
+                label="Status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                options={statusOptions}
+                required={true}
+                error={errors.status}
               />
-              {errors.judul && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '14px',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0'
-                }}>
-                  {errors.judul}
-                </p>
-              )}
             </div>
 
-            {/* Program */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Program
-              </label>
-              <input
-                type="text"
-                name="program"
-                value={formData.program}
-                onChange={handleInputChange}
-                placeholder="Masukkan program"
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+            <div style={{ gridColumn: "span 2" }}>
+              <InputField
+                label="Tempat Uji Kompetensi (TUK)"
+                name="tuk"
+                value={formData.tuk}
+                onChange={handleChange}
+                placeholder="Masukkan TUK"
+                required={true}
+                error={errors.tuk}
               />
-              {errors.program && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '14px',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0'
-                }}>
-                  {errors.program}
-                </p>
-              )}
             </div>
           </div>
 
-          {/* Right Column */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '30px'
-          }}>
-            {/* Tanggal Dibuat */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Tanggal Dibuat
-              </label>
-              <input
-                type="date"
-                name="tanggal"
-                value={formData.tanggal}
-                onChange={handleInputChange}
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-              />
-              {errors.tanggal && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '14px',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0'
-                }}>
-                  {errors.tanggal}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Action Buttons - All buttons grouped together on the right */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          paddingTop: '20px',
-          borderTop: '1px solid #e0e0e0',
-          gap: '12px'
-        }}>
-          <button
-            onClick={handleCancel}
+          <div
             style={{
-              backgroundColor: '#6c757d',
-              color: '#ffffff',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              fontFamily: 'inherit'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#5a6268';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#6c757d';
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "12px",
+              marginTop: "24px",
+              borderTop: "1px solid #f0f0f0",
+              paddingTop: "20px"
             }}
           >
-            Batal
-          </button>
-          
-          <button
-            onClick={handleDelete}
-            style={{
-              backgroundColor: '#dc3545',
-              color: '#ffffff',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              fontFamily: 'inherit'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#c82333';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#dc3545';
-            }}
-          >
-            Hapus Data
-          </button>
-          
-          <button
-            onClick={handleSubmit}
-            style={{
-              backgroundColor: '#fd7e14',
-              color: '#ffffff',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              fontFamily: 'inherit'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#e8670e';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#fd7e14';
-            }}
-          >
-            Simpan Perubahan
-          </button>
-        </div>
-      </div>
-
-      {/* Update Success Modal */}
-      {showUpdateNotif && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: '#ffffff',
-            borderRadius: '20px',
-            padding: '40px 30px',
-            textAlign: 'center',
-            width: '300px',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-            position: 'relative'
-          }}>
-            <div style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              backgroundColor: '#4A90E2',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 25px auto'
-            }}>
-              <svg width="35" height="35" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M20 6L9 17l-5-5"
-                  stroke="#ffffff"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-
-            <h2 style={{
-              fontSize: '22px',
-              fontWeight: '600',
-              color: '#333333',
-              margin: '0 0 25px 0',
-              lineHeight: '1.4',
-              paddingBottom: '25px',
-              borderBottom: '1px solid #e0e0e0'
-            }}>
-              Data Anda<br />Diperbarui!
-            </h2>
-
-            <div
-              onClick={() => {
-                setShowUpdateNotif(false);
-                if (onSave) {
-                  onSave({
-                    ...formData,
-                    judul: formData.judul.trim(),
-                    program: formData.program.trim(),
-                    tanggal: formData.tanggal.trim()
-                  });
-                }
-              }}
+            <button
+              type="button"
+              onClick={onCancel}
               style={{
-                fontSize: '18px',
-                fontWeight: '600',
-                color: '#333333',
-                cursor: 'pointer',
-                fontFamily: 'inherit',
-                userSelect: 'none'
+                padding: "10px 20px",
+                backgroundColor: "#FFFFFF",
+                color: "#343434",
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: "500"
               }}
             >
-              Okay!
-            </div>
+              Batal
+            </button>
+
+            <button
+              type="button"
+              onClick={handleDelete}
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#BE3D2A",
+                color: "#FFFFFF",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: "500"
+              }}
+            >
+              Hapus
+            </button>
+
+            <button
+              type="submit"
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#10A9C9",
+                color: "#FFFFFF",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: "500"
+              }}
+            >
+              Simpan Perubahan
+            </button>
           </div>
-        </div>
-      )}
-
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: '#ffffff',
-            borderRadius: '20px',
-            padding: '40px 30px',
-            textAlign: 'center',
-            width: '320px',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-            position: 'relative'
-          }}>
-            <div style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              backgroundColor: '#dc3545',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 25px auto'
-            }}>
-              <svg width="35" height="35" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  stroke="#ffffff"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-
-            <h2 style={{
-              fontSize: '22px',
-              fontWeight: '600',
-              color: '#333333',
-              margin: '0 0 25px 0',
-              lineHeight: '1.4',
-              paddingBottom: '25px',
-              borderBottom: '1px solid #e0e0e0'
-            }}>
-              Anda Yakin<br />Menghapus Data<br />"{formData.judul}"?
-            </h2>
-
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <div
-                onClick={() => setShowDeleteConfirm(false)}
-                style={{
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: '#666666',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  userSelect: 'none',
-                  padding: '8px 20px'
-                }}
-              >
-                Batal
-              </div>
-              
-              <div style={{
-                width: '1px',
-                height: '20px',
-                backgroundColor: '#e0e0e0',
-                margin: '0 10px'
-              }}></div>
-              
-              <div
-                onClick={confirmDelete}
-                style={{
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: '#dc3545',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  userSelect: 'none',
-                  padding: '8px 20px'
-                }}
-              >
-                Hapus
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Success Modal */}
-      {showDeleteSuccess && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: '#ffffff',
-            borderRadius: '20px',
-            padding: '40px 30px',
-            textAlign: 'center',
-            width: '300px',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-            position: 'relative'
-          }}>
-            <div style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              backgroundColor: '#28a745',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 25px auto'
-            }}>
-              <svg width="35" height="35" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M20 6L9 17l-5-5"
-                  stroke="#ffffff"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-
-            <h2 style={{
-              fontSize: '22px',
-              fontWeight: '600',
-              color: '#333333',
-              margin: '0 0 25px 0',
-              lineHeight: '1.4',
-              paddingBottom: '25px',
-              borderBottom: '1px solid #e0e0e0'
-            }}>
-              Data Berhasil<br />Dihapus! 
-            </h2>
-
-            <p style={{
-              fontSize: '16px',
-              color: '#666666',
-              margin: '0',
-              fontFamily: 'inherit'
-            }}>
-              Mengarahkan ke halaman asesmen...
-            </p>
-          </div>
-        </div>
-      )}
+        </form>
+      </div>
     </div>
   );
 }

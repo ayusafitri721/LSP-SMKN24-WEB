@@ -136,8 +136,6 @@ const DashboardRoutes = () => {
   };
 
   const handleAddJurusan = (newItem) => {
-    const newId = Math.max(...jurusanData.map(j => j.id), 0) + 1;
-    setJurusanData([...jurusanData, { ...newItem, id: newId }]);
     navigate('/dashboard/jurusan');
   };
 
@@ -289,7 +287,7 @@ const DashboardRoutes = () => {
           onBack={() => navigate('/dashboard/asesmen')} 
         />
       } />
-      <Route path="/asesmen/edit/:id" element={
+      <Route path="/asesmen/edit" element={
         <EditAsesmen 
           data={editData} 
           onSave={handleEditAsesmen} 
@@ -307,21 +305,6 @@ const DashboardRoutes = () => {
             setJurusanData={setJurusanData} 
           />
         </DashboardLayout>
-      } />
-
-      <Route path="/jurusan/add" element={
-        <AddJurusan 
-          onBack={() => navigate('/dashboard/jurusan')} 
-          onSave={handleAddJurusan} 
-        />
-      } />
-
-      <Route path="/jurusan/edit/:id" element={
-        <EditJurusan 
-          onBack={() => navigate('/dashboard/jurusan')} 
-          onSave={handleEditJurusan} 
-          initialData={editData} 
-        />
       } />
 
       {/* Kompetensi Routes */}

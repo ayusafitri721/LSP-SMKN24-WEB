@@ -27,14 +27,12 @@ function Asesmen({ onBack, onNavigate, data }) {
         setTimeout(() => {
           setShowDeleteSuccess(false);
           setSelectedItem(null);
-    }, 1500);
+        }, 1500);
 
       }catch(err){
         console.error("Error deleting assesment:", err);
       }
-      
     }
-    
   };
 
   const handleCancelDelete = () => {
@@ -54,6 +52,122 @@ function Asesmen({ onBack, onNavigate, data }) {
     justifyContent: "center",
     zIndex: 9999,
   };
+
+  // Loading Component
+  const LoadingSpinner = () => (
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '60px 20px',
+      flexDirection: 'column',
+      gap: '16px'
+    }}>
+      <div style={{
+        width: '40px',
+        height: '40px',
+        border: '4px solid #f3f3f3',
+        borderTop: '4px solid #ff6600',
+        borderRadius: '50%',
+        animation: 'spin 1s linear infinite'
+      }}></div>
+      <p style={{
+        color: '#666',
+        fontSize: '16px',
+        margin: 0,
+        fontWeight: '500'
+      }}>
+        Memuat data asesmen...
+      </p>
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
+
+  // Empty State Component
+  const EmptyState = () => (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '60px 20px',
+      textAlign: 'center',
+      gap: '20px'
+    }}>
+      {/* Empty State Icon */}
+      <div style={{
+        width: '80px',
+        height: '80px',
+        borderRadius: '50%',
+        backgroundColor: '#f8f9fa',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '2px solid #dee2e6'
+      }}>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6c757d" strokeWidth="1.5">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round"/>
+          <polyline points="14,2 14,8 20,8" strokeLinecap="round" strokeLinejoin="round"/>
+          <line x1="16" y1="13" x2="8" y2="13" strokeLinecap="round" strokeLinejoin="round"/>
+          <line x1="16" y1="17" x2="8" y2="17" strokeLinecap="round" strokeLinejoin="round"/>
+          <polyline points="10,9 9,9 8,9" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
+      
+      {/* Empty State Text */}
+      <div>
+        <h3 style={{
+          fontSize: '20px',
+          fontWeight: '600',
+          color: '#495057',
+          margin: '0 0 8px 0'
+        }}>
+          Belum Ada Data Asesmen
+        </h3>
+        <p style={{
+          fontSize: '16px',
+          color: '#6c757d',
+          margin: '0 0 24px 0',
+          lineHeight: '1.5',
+          maxWidth: '400px'
+        }}>
+          Mulai dengan menambahkan asesmen pertama Anda untuk melacak dan mengelola proses penilaian.
+        </p>
+      </div>
+
+      {/* Add Assessment Button */}
+      <button 
+        onClick={() => onNavigate && onNavigate('asesmen/add')}
+        style={{
+          backgroundColor: '#ff6600',
+          color: 'white',
+          border: 'none',
+          borderRadius: '8px',
+          padding: '12px 24px',
+          fontSize: '16px',
+          fontWeight: '500',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          transition: 'background-color 0.2s',
+          boxShadow: '0 2px 4px rgba(255, 102, 0, 0.2)'
+        }}
+        onMouseOver={(e) => e.target.style.backgroundColor = '#e55a00'}
+        onMouseOut={(e) => e.target.style.backgroundColor = '#ff6600'}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 5v14M5 12h14" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        Tambah Asesmen Pertama
+      </button>
+    </div>
+  );
 
   return (
     <div style={{
@@ -83,35 +197,37 @@ function Asesmen({ onBack, onNavigate, data }) {
         </h1>
       </div>
 
-      {/* Import Button */}
-      <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'flex-end' }}>
-        <button 
-          onClick={() => onNavigate && onNavigate('asesmen/add')}
-          style={{
-            backgroundColor: '#ff6600',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            padding: '10px 16px',
-            fontSize: '14px',
-            fontWeight: '500',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            zIndex: 1
-          }}
-          onMouseOver={(e) => e.target.style.backgroundColor = '#e55a00'}
-          onMouseOut={(e) => e.target.style.backgroundColor = '#ff6600'}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" strokeLinecap="round" strokeLinejoin="round"/>
-            <polyline points="7,10 12,15 17,10" strokeLinecap="round" strokeLinejoin="round"/>
-            <line x1="12" y1="15" x2="12" y2="3" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          Add
-        </button>
-      </div>
+      {/* Add Button - Only show when not loading and has data */}
+      {!loading && dataAssesments.length > 0 && (
+        <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'flex-end' }}>
+          <button 
+            onClick={() => onNavigate && onNavigate('asesmen/add')}
+            style={{
+              backgroundColor: '#ff6600',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '10px 16px',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              zIndex: 1
+            }}
+            onMouseOver={(e) => e.target.style.backgroundColor = '#e55a00'}
+            onMouseOut={(e) => e.target.style.backgroundColor = '#ff6600'}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" strokeLinecap="round" strokeLinejoin="round"/>
+              <polyline points="7,10 12,15 17,10" strokeLinecap="round" strokeLinejoin="round"/>
+              <line x1="12" y1="15" x2="12" y2="3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Add
+          </button>
+        </div>
+      )}
 
       {/* Table Container */}
       <div style={{
@@ -122,64 +238,70 @@ function Asesmen({ onBack, onNavigate, data }) {
         maxHeight: '70vh',
         overflowY: 'auto'
       }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f8f9fa' }}>
-              <th style={headerStyle}>Id</th>
-              <th style={headerStyle}>Nama Skema</th>
-              <th style={headerStyle}>Nomor Skema</th>
-              <th style={headerStyle}>Admin</th>
-              <th style={headerStyle}>Tanggal Assesment</th>
-              <th style={headerStyle}>TUK</th>
-              <th style={headerStyle}>Asesor</th>
-              <th style={headerStyle}>Status</th>
-              <th style={headerStyle}>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dataAssesments.map((item) => (
-              <tr key={item.id} style={{ borderBottom: '1px solid #e5e5e5' }}>
-                <td style={cellStyle}>{item.id}</td>
-                <td style={cellStyle}>{item.schema.judul_skema}</td>
-                <td style={cellStyle}>{item.schema.nomor_skema}</td>
-                <td style={cellStyle}>{item.admin.nama_lengkap}</td>
-                <td style={cellStyle}>{item.tangga_assesment}</td>
-                <td style={cellStyle}>{item.tuk}</td>
-                <td style={cellStyle}>{item.assesor.nama_lengkap}</td>
-                <td style={cellStyle}>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <div style={{
-                      width: '16px',
-                      height: '16px',
-                      borderRadius: '3px',
-                      backgroundColor: item.status ? '#28a745' : '#dee2e6'
-                    }}></div>
-                  </div>
-                </td>
-                <td style={cellStyle}>
-                  <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                    <button 
-                      style={actionButtonStyle}
-                      onClick={() => handleDeleteClick(item)}
-                      onMouseOver={(e) => e.target.style.backgroundColor = '#e55a00'}
-                      onMouseOut={(e) => e.target.style.backgroundColor = '#ff6600'}
-                    >
-                      🗑
-                    </button>
-                    <button 
-                      style={actionButtonStyle}
-                      onClick={() => onNavigate && onNavigate('barcodeasesmen', item)}
-                      onMouseOver={(e) => e.target.style.backgroundColor = '#e55a00'}
-                      onMouseOut={(e) => e.target.style.backgroundColor = '#ff6600'}
-                    >
-                      ✏️
-                    </button>
-                  </div>
-                </td>
+        {loading ? (
+          <LoadingSpinner />
+        ) : dataAssesments.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ backgroundColor: '#f8f9fa' }}>
+                <th style={headerStyle}>Id</th>
+                <th style={headerStyle}>Nama Skema</th>
+                <th style={headerStyle}>Nomor Skema</th>
+                <th style={headerStyle}>Admin</th>
+                <th style={headerStyle}>Tanggal Assesment</th>
+                <th style={headerStyle}>TUK</th>
+                <th style={headerStyle}>Asesor</th>
+                <th style={headerStyle}>Status</th>
+                <th style={headerStyle}>Aksi</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {dataAssesments.map((item) => (
+                <tr key={item.id} style={{ borderBottom: '1px solid #e5e5e5' }}>
+                  <td style={cellStyle}>{item.id}</td>
+                  <td style={cellStyle}>{item.schema.judul_skema}</td>
+                  <td style={cellStyle}>{item.schema.nomor_skema}</td>
+                  <td style={cellStyle}>{item.admin.nama_lengkap}</td>
+                  <td style={cellStyle}>{item.tangga_assesment}</td>
+                  <td style={cellStyle}>{item.tuk}</td>
+                  <td style={cellStyle}>{item.assesor.nama_lengkap}</td>
+                  <td style={cellStyle}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <div style={{
+                        width: '16px',
+                        height: '16px',
+                        borderRadius: '3px',
+                        backgroundColor: item.status ? '#28a745' : '#dee2e6'
+                      }}></div>
+                    </div>
+                  </td>
+                  <td style={cellStyle}>
+                    <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                      <button 
+                        style={actionButtonStyle}
+                        onClick={() => handleDeleteClick(item)}
+                        onMouseOver={(e) => e.target.style.backgroundColor = '#e55a00'}
+                        onMouseOut={(e) => e.target.style.backgroundColor = '#ff6600'}
+                      >
+                        🗑
+                      </button>
+                      <button 
+                        style={actionButtonStyle}
+                        onClick={() => onNavigate && onNavigate('asesmen/edit', item)}
+                        onMouseOver={(e) => e.target.style.backgroundColor = '#e55a00'}
+                        onMouseOut={(e) => e.target.style.backgroundColor = '#ff6600'}
+                      >
+                        ✏️
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Delete Confirmation Modal */}
@@ -225,7 +347,6 @@ function Asesmen({ onBack, onNavigate, data }) {
                 <circle cx="12" cy="13.5" r="1.2" fill="#dc3545" />
               </svg>
             </div>
-
 
             {/* Action Buttons */}
             <div style={{

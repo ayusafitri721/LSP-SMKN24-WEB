@@ -1,397 +1,350 @@
 import React, { useState } from 'react';
+import { ArrowLeft, Save, X } from 'lucide-react';
+import { InputField, SelectField, TextareaField } from '../components/FieldComponents.jsx'; // Import field components
+import {useJurusan} from '../context/JurusanContext.jsx'
+// Mock useJurusan hook for demo
 
 function AddJurusan({ onBack, onSave }) {
+  const { loading, error, postJurusan } = useJurusan();
   const [formData, setFormData] = useState({
-    kompetensiKeahlian: '',
-    jumlahSiswa: ''
+    kode_jurusan: '',
+    nama_jurusan: '',
+    jenjang: '',
+    deskripsi: ''
   });
+  
+  const [validationErrors, setValidationErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [errors, setErrors] = useState({});
-  const [showSuccess, setShowSuccess] = useState(false);
+  const jenjangOptions = [
+    { value: 'SMK', label: 'SMK (Sekolah Menengah Kejuruan)' },
+    { value: 'D1', label: 'D1 (Diploma 1)' },
+    { value: 'D2', label: 'D2 (Diploma 2)' },
+    { value: 'D3', label: 'D3 (Diploma 3)' },
+    { value: 'S1', label: 'S1 (Sarjana)' }
+  ];
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const handleInputChange = (field) => (e) => {
+    const value = e.target.value;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [field]: value
     }));
     
-    if (errors[name]) {
-      setErrors(prev => ({
+    // Clear validation error when user starts typing
+    if (validationErrors[field]) {
+      setValidationErrors(prev => ({
         ...prev,
-        [name]: ''
+        [field]: ''
       }));
     }
   };
 
   const validateForm = () => {
-    const newErrors = {};
+    const errors = {};
     
-    if (!formData.kompetensiKeahlian.trim()) {
-      newErrors.kompetensiKeahlian = 'Kompetensi keahlian harus diisi';
+    if (!formData.kode_jurusan.trim()) {
+      errors.kode_jurusan = 'Kode jurusan wajib diisi';
     }
     
-    if (!formData.jumlahSiswa.trim()) {
-      newErrors.jumlahSiswa = 'Jumlah siswa harus diisi';
-    } else if (isNaN(formData.jumlahSiswa) || parseInt(formData.jumlahSiswa) < 0) {
-      newErrors.jumlahSiswa = 'Jumlah siswa harus berupa angka positif';
+    if (!formData.nama_jurusan.trim()) {
+      errors.nama_jurusan = 'Nama jurusan wajib diisi';
     }
     
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    if (!formData.jenjang) {
+      errors.jenjang = 'Jenjang wajib dipilih';
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (validateForm()) {
-      const newItem = {
-        id: Date.now(),
-        kompetensiKeahlian: formData.kompetensiKeahlian.trim(),
-        jumlahSiswa: parseInt(formData.jumlahSiswa.trim())
-      };
+    if (!validateForm()) {
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      await postJurusan(formData);
+      if (onSave) onSave();
       
-      // Tampilkan notifikasi dulu
-      setShowSuccess(true);
+      // Reset form
+      setFormData({
+        kode_jurusan: '',
+        nama_jurusan: '',
+        jenjang: '',
+        deskripsi: ''
+      });
       
-      // Baru panggil onSave dan reset form setelah delay
-      setTimeout(() => {
-        onSave && onSave(newItem);
-        setFormData({
-          kompetensiKeahlian: '',
-          jumlahSiswa: ''
-        });
-      }, 100);
+      // Show success message (you can customize this)
+      alert('Jurusan berhasil ditambahkan!');
+      
+    } catch (err) {
+      console.error('Error creating jurusan:', err);
+      alert('Gagal menambahkan jurusan. Silakan coba lagi.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  // Updated Blue Checkmark Icon Component
-  const CheckmarkIcon = () => (
-    <div style={{
-      width: '80px',
-      height: '80px',
-      backgroundColor: '#4A90E2',
-      borderRadius: '50%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      margin: '0 auto',
-      animation: showSuccess ? 'scaleIn 0.3s ease-out' : 'none'
-    }}>
-      <svg 
-        width="40" 
-        height="40" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path 
-          d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" 
-          fill="white"
-          style={{
-            transform: showSuccess ? 'scale(1)' : 'scale(0)',
-            transition: 'transform 0.2s ease-out 0.1s'
-          }}
-        />
-      </svg>
-    </div>
-  );
+  const handleReset = () => {
+    setFormData({
+      kode_jurusan: '',
+      nama_jurusan: '',
+      jenjang: '',
+      deskripsi: ''
+    });
+    setValidationErrors({});
+  };
 
   return (
     <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: '#f5f5f5',
-      zIndex: 9999
+      minHeight: '100vh',
+      backgroundColor: '#f8f9fa',
+      padding: '20px'
     }}>
-      {/* Updated Success Notification */}
-      {showSuccess && (
-        <>
-          {/* Overlay dengan animasi fade */}
-          <div 
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              zIndex: 10000,
-              animation: 'fadeIn 0.3s ease-out'
-            }}
-          />
-          
-          {/* Modal Notifikasi - Updated Design */}
-          <div style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: 'white',
-            padding: '50px 40px 40px 40px',
-            borderRadius: '16px',
-            boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
-            textAlign: 'center',
-            zIndex: 10001,
-            width: '320px',
-            maxWidth: '90vw',
-            animation: 'slideUp 0.4s ease-out'
-          }}>
-            {/* Green Checkmark Icon */}
-            <div style={{ marginBottom: '30px' }}>
-              <CheckmarkIcon />
-            </div>
-            
-            {/* Updated Text */}
-            <div style={{
-              fontSize: '20px',
-              fontWeight: '600',
-              color: '#333',
-              marginBottom: '8px',
-              lineHeight: '1.3'
-            }}>
-              Data Berhasil
-            </div>
-            <div style={{
-              fontSize: '20px',
-              fontWeight: '600',
-              color: '#333',
-              marginBottom: '40px',
-              lineHeight: '1.3'
-            }}>
-              Ditambahkan!
-            </div>
-            
-            {/* Thicker line separator */}
-            <div style={{
-              width: '100%',
-              height: '2px',
-              backgroundColor: '#e9ecef',
-              marginBottom: '30px'
-            }}></div>
-            
-            {/* Updated Button without border */}
-            <button
-              onClick={() => {
-                // Tutup notifikasi
-                setShowSuccess(false);
-                
-                // Baru panggil onSave dan reset form
-                if (window.tempData) {
-                  onSave && onSave(window.tempData);
-                  window.tempData = null;
-                }
-                
-                setFormData({
-                  kompetensiKeahlian: '',
-                  jumlahSiswa: ''
-                });
-              }}
-              style={{
-                backgroundColor: '#f8f9fa',
-                color: '#333',
-                border: 'none',
-                padding: '12px 30px',
-                borderRadius: '8px',
-                fontSize: '16px',
-                fontWeight: '500',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                minWidth: '100px'
-              }}
-              onMouseOver={(e) => {
-                e.target.style.backgroundColor = '#e9ecef';
-              }}
-              onMouseOut={(e) => {
-                e.target.style.backgroundColor = '#f8f9fa';
-              }}
-            >
-              Okay!
-            </button>
-          </div>
-        </>
-      )}
-
       {/* Header */}
       <div style={{
-        padding: '40px 0 20px 0',
-        textAlign: 'center'
+        maxWidth: '800px',
+        margin: '0 auto',
+        marginBottom: '30px'
       }}>
-        <h1 style={{
-          fontSize: '28px',
-          fontWeight: '600',
-          color: '#333',
-          margin: 0
-        }}>
-          TAMBAHKAN DATA BARU
-        </h1>
-      </div>
-
-      {/* Form Container */}
-      <div style={{
-        margin: '0 20px',
-        backgroundColor: 'white',
-        borderRadius: '30px 30px 0 0',
-        padding: '40px',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
-        minHeight: 'calc(100vh - 100px)',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        {/* Form Input */}
-        <div style={{ flex: 1 }}>
-          <div style={{ marginBottom: '30px' }}>
-            <label style={{
-              display: 'block',
-              fontSize: '16px',
-              fontWeight: '600',
-              marginBottom: '12px'
-            }}>
-              Kompetensi Keahlian
-            </label>
-            <input
-              type="text"
-              name="kompetensiKeahlian"
-              value={formData.kompetensiKeahlian}
-              onChange={handleInputChange}
-              style={{
-                width: '100%',
-                padding: '16px',
-                border: '2px solid #e0e0e0',
-                borderRadius: '12px',
-                fontSize: '16px',
-                boxSizing: 'border-box'
-              }}
-            />
-            {errors.kompetensiKeahlian && (
-              <p style={{ color: 'red', marginTop: '8px', fontSize: '14px' }}>
-                {errors.kompetensiKeahlian}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label style={{
-              display: 'block',
-              fontSize: '16px',
-              fontWeight: '600',
-              marginBottom: '12px'
-            }}>
-              Jumlah Siswa
-            </label>
-            <input
-              type="number"
-              name="jumlahSiswa"
-              value={formData.jumlahSiswa}
-              onChange={handleInputChange}
-              min="0"
-              style={{
-                width: '100%',
-                padding: '16px',
-                border: '2px solid #e0e0e0',
-                borderRadius: '12px',
-                fontSize: '16px',
-                boxSizing: 'border-box'
-              }}
-            />
-            {errors.jumlahSiswa && (
-              <p style={{ color: 'red', marginTop: '8px', fontSize: '14px' }}>
-                {errors.jumlahSiswa}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Action Buttons */}
         <div style={{
           display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '12px',
-          marginTop: '40px'
+          alignItems: 'center',
+          gap: '16px',
+          marginBottom: '20px'
         }}>
           <button
             onClick={onBack}
             style={{
-              backgroundColor: '#6c757d',
-              color: 'white',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '10px',
+              backgroundColor: '#FFFFFF',
+              border: '2px solid #79B4F1',
+              borderRadius: '12px',
               cursor: 'pointer',
-              transition: 'background-color 0.2s'
+              transition: 'all 0.3s ease'
             }}
-            onMouseOver={(e) => e.target.style.backgroundColor = '#5a6268'}
-            onMouseOut={(e) => e.target.style.backgroundColor = '#6c757d'}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = '#79B4F1';
+              e.target.style.color = '#FFFFFF';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = '#FFFFFF';
+              e.target.style.color = '#343434';
+            }}
           >
-            Batal
+            <ArrowLeft size={20} />
           </button>
-          <button
-            onClick={() => {
-              if (validateForm()) {
-                const newItem = {
-                  id: Date.now(),
-                  kompetensiKeahlian: formData.kompetensiKeahlian.trim(),
-                  jumlahSiswa: parseInt(formData.jumlahSiswa.trim())
-                };
-                
-                // Simpan data ke state sementara
-                window.tempData = newItem;
-                
-                // Tampilkan notifikasi
-                setShowSuccess(true);
-              }
-            }}
-            style={{
-              backgroundColor: '#fd7e14',
-              color: 'white',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '8px',
+          <div>
+            <h1 style={{
+              fontSize: '28px',
+              fontWeight: '700',
+              color: '#000000',
+              margin: 0
+            }}>
+              Tambah Jurusan Baru
+            </h1>
+            <p style={{
               fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s'
-            }}
-            onMouseOver={(e) => e.target.style.backgroundColor = '#e8690c'}
-            onMouseOut={(e) => e.target.style.backgroundColor = '#fd7e14'}
-          >
-            Simpan Data
-          </button>
+              color: '#343434',
+              margin: '4px 0 0 0'
+            }}>
+              Isi form di bawah untuk menambahkan jurusan baru
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* CSS Animations */}
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-          from { 
-            opacity: 0;
-            transform: translate(-50%, -40%);
-          }
-          to { 
-            opacity: 1;
-            transform: translate(-50%, -50%);
-          }
-        }
-        
-        @keyframes scaleIn {
-          from { 
-            transform: scale(0);
-          }
-          to { 
-            transform: scale(1);
-          }
-        }
-      `}</style>
+      {/* Form Container */}
+      <div style={{
+        maxWidth: '800px',
+        margin: '0 auto',
+        backgroundColor: '#FFFFFF',
+        borderRadius: '20px',
+        padding: '40px',
+        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+        border: '1px solid #79B4F1'
+      }}>
+        {/* Error Display */}
+        {error && (
+          <div style={{
+            backgroundColor: '#fff3f3',
+            border: '1px solid #FF8200',
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '24px',
+            color: '#FF8200',
+            fontSize: '14px'
+          }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '24px',
+            marginBottom: '24px'
+          }}>
+            {/* Kode Jurusan */}
+            <InputField
+              label="Kode Jurusan"
+              value={formData.kode_jurusan}
+              onChange={handleInputChange('kode_jurusan')}
+              placeholder="Contoh: RPL01"
+              required={true}
+              error={validationErrors.kode_jurusan}
+              maxLength={10}
+            />
+
+            {/* Jenjang */}
+            <SelectField
+              label="Jenjang Pendidikan"
+              value={formData.jenjang}
+              onChange={handleInputChange('jenjang')}
+              options={jenjangOptions}
+              placeholder="Pilih jenjang..."
+              required={true}
+              error={validationErrors.jenjang}
+            />
+          </div>
+
+          {/* Nama Jurusan */}
+          <InputField
+            label="Nama Jurusan"
+            value={formData.nama_jurusan}
+            onChange={handleInputChange('nama_jurusan')}
+            placeholder="Masukkan nama jurusan lengkap"
+            required={true}
+            error={validationErrors.nama_jurusan}
+            maxLength={100}
+          />
+
+          {/* Deskripsi */}
+          <TextareaField
+            label="Deskripsi"
+            value={formData.deskripsi}
+            onChange={handleInputChange('deskripsi')}
+            placeholder="Masukkan deskripsi jurusan (opsional)"
+            rows={4}
+            error={validationErrors.deskripsi}
+          />
+
+          {/* Action Buttons */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '16px',
+            marginTop: '32px'
+          }}>
+            <button
+              type="button"
+              onClick={handleReset}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '12px 24px',
+                backgroundColor: '#FFFFFF',
+                border: '2px solid #343434',
+                borderRadius: '12px',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#343434',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#343434';
+                e.target.style.color = '#FFFFFF';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#FFFFFF';
+                e.target.style.color = '#343434';
+              }}
+            >
+              <X size={16} />
+              Reset
+            </button>
+
+            <button
+              type="submit"
+              disabled={isSubmitting || loading}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '12px 32px',
+                backgroundColor: isSubmitting || loading ? '#79B4F1' : '#10A9C9',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#FFFFFF',
+                cursor: isSubmitting || loading ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s ease',
+                opacity: isSubmitting || loading ? 0.7 : 1
+              }}
+              onMouseEnter={(e) => {
+                if (!isSubmitting && !loading) {
+                  e.target.style.backgroundColor = '#2F90FF';
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 8px 25px rgba(47, 144, 255, 0.3)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isSubmitting && !loading) {
+                  e.target.style.backgroundColor = '#10A9C9';
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = 'none';
+                }
+              }}
+            >
+              <Save size={16} />
+              {isSubmitting || loading ? 'Menyimpan...' : 'Simpan Jurusan'}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Info Card */}
+      <div style={{
+        maxWidth: '800px',
+        margin: '20px auto 0',
+        backgroundColor: '#FFFFFF',
+        borderRadius: '12px',
+        padding: '20px',
+        border: '1px solid #FF9E62',
+        borderLeft: '4px solid #FF8200'
+      }}>
+        <h3 style={{
+          fontSize: '16px',
+          fontWeight: '600',
+          color: '#FF8200',
+          margin: '0 0 8px 0'
+        }}>
+          💡 Tips Pengisian
+        </h3>
+        <ul style={{
+          fontSize: '14px',
+          color: '#343434',
+          margin: 0,
+          paddingLeft: '18px'
+        }}>
+          <li style={{ marginBottom: '4px' }}>Kode jurusan sebaiknya singkat dan mudah diingat</li>
+          <li style={{ marginBottom: '4px' }}>Nama jurusan harus sesuai dengan standar pendidikan</li>
+          <li style={{ marginBottom: '4px' }}>Deskripsi membantu siswa memahami jurusan dengan lebih baik</li>
+        </ul>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { data } from "react-router-dom";
 
 const api = axios.create({
   baseURL: "http://127.0.0.1:8000/api",
@@ -20,6 +21,8 @@ export const getUsers = () => api.get("/users");
 export const login = (data) => api.post("/auth/login", data);
 export const register = (data) => api.post("/auth/register", data);
 export const jurusans = () => api.get("/jurusan");
+export const createJurusan = (data) => api.post("/jurusan",data)
+export const putJurusan = (id, data) => api.put(`/jurusan/${id}`, data)
 
 // Asesi CRUD operations
 export const getAsesis = () => api.get("/assesi");

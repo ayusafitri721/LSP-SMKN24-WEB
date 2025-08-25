@@ -2,28 +2,21 @@ import React, { useState } from 'react';
 import AddJurusan from './AddJurusan';
 import EditJurusan from './EditJurusan';
 
+import { useJurusan } from '../context/JurusanContext.jsx';
+
 function Jurusan({ onBack }) {
-  const [data, setData] = useState([
-    { id: 1, kompetensiKeahlian: 'Erwin Alaskar Mega', jumlahSiswa: 'Rekayasa Perangkat Lunak' },
-    { id: 2, kompetensiKeahlian: 'Erwin Alaskar Mega', jumlahSiswa: 'Rekayasa Perangkat Lunak' },
-    { id: 3, kompetensiKeahlian: 'Erwin Alaskar Mega', jumlahSiswa: 'Rekayasa Perangkat Lunak' },
-    { id: 4, kompetensiKeahlian: 'Erwin Alaskar Mega', jumlahSiswa: 'Perhotelan' },
-    { id: 5, kompetensiKeahlian: 'Erwin Alaskar Mega', jumlahSiswa: 'Busana' },
-    { id: 6, kompetensiKeahlian: 'Erwin Alaskar Mega', jumlahSiswa: 'Usaha Layanan Pariwisata' },
-    { id: 7, kompetensiKeahlian: 'Erwin Alaskar Mega', jumlahSiswa: 'Kuliner' }
-  ]);
+  const { jurusanList, fetchJurusans } = useJurusan();
+  const data= jurusanList;
 
   const [halaman, setHalaman] = useState('list'); // list | add | edit
   const [editItem, setEditItem] = useState(null);
 
-const handleAddSave = (newItem) => {
-    setData(prev => [...prev, newItem]);
+  const handleAddSave = (newItem) => {
     setHalaman('list');
   };
 
-  const handleEditClick = (id) => {
-    const item = data.find(d => d.id === id);
-    setEditItem(item);
+  const handleEditClick = (data) => {
+    setEditItem(data);
     setHalaman('edit');
   };
 
@@ -34,7 +27,7 @@ const handleAddSave = (newItem) => {
 
   // Render EditJurusan
   if (halaman === 'edit') {
-    return <EditJurusan item={editItem} onBack={() => setHalaman('list')} />;
+    return <EditJurusan initialData={editItem} onBack={() => setHalaman('list')} onSave={() => {setHalaman('list'), fetchJurusans()}} />;
   }
 
   // Main list dengan layout asli (ada ruang untuk sidebar)
@@ -136,7 +129,7 @@ const handleAddSave = (newItem) => {
                 border: '1px solid #dee2e6',
                 borderLeft: 'none'
               }}>
-                Kompetensi Keahlian
+                Kode Jurusan
               </th>
               <th style={{
                 padding: '15px 20px',
@@ -147,7 +140,7 @@ const handleAddSave = (newItem) => {
                 border: '1px solid #dee2e6',
                 borderLeft: 'none'
               }}>
-                Jumlah Siswa
+                Nama Jurusan
               </th>
               <th style={{
                 padding: '15px 20px',
@@ -184,7 +177,7 @@ const handleAddSave = (newItem) => {
                   borderLeft: 'none',
                   backgroundColor: 'white'
                 }}>
-                  {item.kompetensiKeahlian}
+                  {item.kode_jurusan}
                 </td>
                 <td style={{
                   padding: '15px 20px',
@@ -194,7 +187,7 @@ const handleAddSave = (newItem) => {
                   borderLeft: 'none',
                   backgroundColor: 'white'
                 }}>
-                  {item.jumlahSiswa}
+                  {item.nama_jurusan}
                 </td>
                 <td style={{
                   padding: '15px 20px',
@@ -205,7 +198,7 @@ const handleAddSave = (newItem) => {
                   backgroundColor: 'white'
                 }}>
                   <button
-                    onClick={() => handleEditClick(item.id)}
+                    onClick={() => handleEditClick(item)}
                     style={{
                       backgroundColor: '#FFC107',
                       color: '#333',
