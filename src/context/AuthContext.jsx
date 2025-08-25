@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
       const res = await api.post("/auth/login", credentials);
       setUser(res.data.user);
       console.log("Login response:", res.data);
-      localStorage.setItem("user", JSON.stringify({id: res.data.user.id, role: res.data.user.role})); // simpan token
+      localStorage.setItem("user", JSON.stringify({id: res.data.user.id, role: res.data.user.role, token: res.data.token})); // simpan token
       return res.data;
     } catch (err) {
       throw err.response?.data || err;
