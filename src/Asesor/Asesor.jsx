@@ -9,14 +9,20 @@ function Asesor({ onBack, onNavigate, setAsesorDataEdit }) {
   };
 
   const handleEdit = (asesor) => {
-    
+
     onNavigate('editasesor', asesor);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async(id) => {
     if (window.confirm("Yakin mau hapus asesor ini?")) {
-      const updatedData = asesorData.filter(asesor => asesor.id !== id);
-      setAsesorData(updatedData);
+      await removeAsesor(id)
+      .then(() => {
+        alert("Asesor berhasil dihapus");
+        fetchAsesors();
+      })
+      .catch((err) => {
+        alert("Gagal menghapus asesor: " + (err.message || "Terjadi kesalahan"));
+      });
     }
   };
 

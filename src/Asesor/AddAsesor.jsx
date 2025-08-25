@@ -1,459 +1,450 @@
 import React, { useState } from 'react';
+import { InputField, SelectField } from '../components/FieldComponents';
+import { useAsesor } from '../context/AsesorContext';
 
 function AddAsesor({ onBack, onSave, onCancel }) {
+  const { addAsesor } = useAsesor();
   const [formData, setFormData] = useState({
-    nama: '',
-    pekerjaan: '',
-    sertifikasi: 'Tersertifikasi',
-    tanggal_daftar: ''
+    nama_lengkap: '',
+    no_registrasi: '',
+    jenis_kelamin: '',
+    email: '',
+    no_telepon: '',
+    kompetensi: '',
+    username: '',
+    password: ''
   });
-
+  const [ktpFile, setKtpFile] = useState(null);
+  const [kkFile, setKkFile] = useState(null);
+  const [sertifikasiFiles, setSertifikasiFiles] = useState([]);
   const [errors, setErrors] = useState({});
-  const [showAddNotif, setShowAddNotif] = useState(false);
+  const [showNotif, setShowNotif] = useState(false);
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+  };
+
+  const handleKtpChange = (e) => {
+    const file = e.target.files[0];
+    setKtpFile(file);
+    if (errors['ktp']) setErrors(prev => ({ ...prev, ktp: '' }));
+  };
+
+  const handleKkChange = (e) => {
+    const file = e.target.files[0];
+    setKkFile(file);
+    if (errors['kk']) setErrors(prev => ({ ...prev, kk: '' }));
+  };
+
+  const handleSertifikasiChange = (e) => {
+    const files = Array.from(e.target.files);
+    setSertifikasiFiles(files);
+    if (errors['sertifikasi']) setErrors(prev => ({ ...prev, sertifikasi: '' }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (validate()) {
+      try {
+        const data = new FormData();
+        Object.keys(formData).forEach(key => data.append(key, formData[key]));
+
+        if (ktpFile) data.append('attachments[]', ktpFile);
+        if (kkFile) data.append('attachments[]', kkFile);
+        sertifikasiFiles.forEach(file => data.append('attachments[]', file));
+
+        await addAsesor(data);
+        setShowNotif(true);
+      } catch (error) {
+        console.error("Gagal menambahkan asesor:", error);
+      }
     }
   };
 
-  const validateForm = () => {
+  const validate = () => {
     const newErrors = {};
-    
-    if (!formData.nama.trim()) {
-      newErrors.nama = 'Nama lengkap harus diisi';
-    }
-    
-    if (!formData.pekerjaan.trim()) {
-      newErrors.pekerjaan = 'Pekerjaan harus diisi';
-    }
-    
-    if (!formData.tanggal_daftar.trim()) {
-      newErrors.tanggal_daftar = 'Tanggal daftar harus diisi';
-    }
+    if (!formData.nama_lengkap.trim()) newErrors.nama_lengkap = 'Nama lengkap harus diisi';
+    if (!formData.no_registrasi.trim()) newErrors.no_registrasi = 'No registrasi harus diisi';
+    if (!formData.jenis_kelamin.trim()) newErrors.jenis_kelamin = 'Jenis kelamin harus dipilih';
+    if (!formData.email.trim()) newErrors.email = 'Email harus diisi';
+    if (!formData.no_telepon.trim()) newErrors.no_telepon = 'No telepon harus diisi';
+    if (!formData.kompetensi.trim()) newErrors.kompetensi = 'Kompetensi harus diisi';
+    if (!formData.username.trim()) newErrors.username = 'Username harus diisi';
+    if (!formData.password.trim()) newErrors.password = 'Password harus diisi';
+    if (!ktpFile) newErrors.ktp = 'KTP harus diupload';
+    if (!kkFile) newErrors.kk = 'KK harus diupload';
+    if (sertifikasiFiles.length === 0) newErrors.sertifikasi = 'Minimal 1 sertifikasi harus diupload';
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (validateForm()) {
-      // Show notification modal
-      setShowAddNotif(true);
-    }
-  };
-
   const handleCancel = () => {
-    // Reset form
     setFormData({
-      nama: '',
-      pekerjaan: '',
-      sertifikasi: 'Tersertifikasi',
-      tanggal_daftar: ''
+      nama_lengkap: '',
+      no_registrasi: '',
+      jenis_kelamin: '',
+      email: '',
+      no_telepon: '',
+      kompetensi: '',
+      username: '',
+      password: ''
     });
+    setKtpFile(null);
+    setKkFile(null);
+    setSertifikasiFiles([]);
     setErrors({});
-    
-    // Call appropriate callback
-    if (onCancel) {
-      onCancel();
-    } else if (onBack) {
-      onBack();
-    }
+    onCancel?.() || onBack?.();
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      width: '100vw',
+    <div style={{ 
+      padding: '40px', 
+      fontFamily: "'Poppins', sans-serif", 
+      minHeight: '100vh', 
       backgroundColor: '#f5f5f5',
-      padding: '0',
-      margin: '0',
-      boxSizing: 'border-box',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-      overflow: 'auto'
+      backgroundImage: 'linear-gradient(to bottom, #f9f9f9, #e9ecef)'
     }}>
-      {/* Header */}
-      <div style={{
-        padding: '40px 0 20px 0',
-        textAlign: 'center',
-        position: 'sticky',
-        top: 0,
-        backgroundColor: '#f5f5f5',
-        zIndex: 10
+      <h1 style={{ 
+        textAlign: 'center', 
+        marginBottom: '30px', 
+        color: '#333',
+        fontWeight: '600',
+        fontSize: '28px'
+      }}>TAMBAHKAN DATA ASESOR BARU</h1>
+      
+      <form onSubmit={handleSubmit} style={{ 
+        maxWidth: '700px', 
+        margin: '0 auto', 
+        background: '#fff', 
+        padding: '30px', 
+        borderRadius: '15px',
+        boxShadow: '0 5px 15px rgba(0,0,0,0.08)'
       }}>
-        <h1 style={{
-          fontSize: '28px',
-          fontWeight: '600',
-          color: '#333',
-          margin: '0',
-          letterSpacing: '1px'
-        }}>
-          TAMBAHKAN DATA BARU
-        </h1>
-      </div>
-
-      {/* Form Container */}
-      <div style={{
-        margin: '0 20px 40px 20px',
-        backgroundColor: '#ffffff',
-        borderRadius: '30px',
-        padding: '40px',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
-        minHeight: '60vh'
-      }}>
-        {/* Form Content - 2 Columns */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '40px',
-          marginBottom: '40px'
-        }}>
-          {/* Left Column */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '30px'
-          }}>
-            {/* Nama Lengkap */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          <InputField 
+            label="Nama Lengkap" 
+            name="nama_lengkap" 
+            value={formData.nama_lengkap} 
+            onChange={handleChange} 
+            required 
+            error={errors.nama_lengkap} 
+          />
+          <InputField 
+            label="No Registrasi" 
+            name="no_registrasi" 
+            value={formData.no_registrasi} 
+            onChange={handleChange} 
+            required 
+            error={errors.no_registrasi} 
+          />
+        </div>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '15px' }}>
+          <SelectField 
+            label="Jenis Kelamin" 
+            name="jenis_kelamin"
+            value={formData.jenis_kelamin} 
+            onChange={handleChange} 
+            options={[
+              { value: '', label: 'Pilih Jenis Kelamin' },
+              { value: 'Laki-laki', label: 'Laki-laki' },
+              { value: 'Perempuan', label: 'Perempuan' }
+            ]}
+            required
+            error={errors.jenis_kelamin}
+          />
+          <InputField 
+            label="Email" 
+            name="email" 
+            type="email" 
+            value={formData.email} 
+            onChange={handleChange} 
+            required 
+            error={errors.email} 
+          />
+        </div>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '15px' }}>
+          <InputField 
+            label="No Telepon" 
+            name="no_telepon" 
+            type="tel" 
+            value={formData.no_telepon} 
+            onChange={handleChange} 
+            required 
+            error={errors.no_telepon} 
+          />
+          <InputField 
+            label="Kompetensi" 
+            name="kompetensi" 
+            value={formData.kompetensi} 
+            onChange={handleChange} 
+            required 
+            error={errors.kompetensi} 
+          />
+        </div>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '15px' }}>
+          <InputField 
+            label="Username" 
+            name="username" 
+            value={formData.username} 
+            onChange={handleChange} 
+            required 
+            error={errors.username} 
+          />
+          <InputField 
+            label="Password" 
+            name="password" 
+            type="password" 
+            value={formData.password} 
+            onChange={handleChange} 
+            required 
+            error={errors.password} 
+          />
+        </div>
+        
+        {/* Upload Section */}
+        <div style={{ marginTop: '25px', borderTop: '1px solid #eee', paddingTop: '25px' }}>
+          <h3 style={{ marginBottom: '15px', color: '#555' }}>Upload Dokumen</h3>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            {/* KTP Upload */}
             <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Nama Lengkap
+              <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+                KTP <span style={{ color: 'red' }}>*</span>
               </label>
-              <input
-                type="text"
-                name="nama"
-                value={formData.nama}
-                onChange={handleInputChange}
-                placeholder=""
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-              />
-              {errors.nama && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '14px',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0'
-                }}>
-                  {errors.nama}
+              <div style={{
+                border: errors.ktp ? '2px dashed #ff4d4f' : '2px dashed #ccc',
+                borderRadius: '8px',
+                padding: '15px',
+                textAlign: 'center',
+                backgroundColor: '#f9f9f9',
+                cursor: 'pointer',
+                position: 'relative'
+              }}>
+                <input 
+                  type="file" 
+                  onChange={handleKtpChange} 
+                  accept=".pdf,.jpg,.jpeg,.png" 
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    opacity: 0,
+                    cursor: 'pointer'
+                  }} 
+                />
+                <div style={{ fontSize: '40px', color: '#6c757d' }}>📄</div>
+                <p style={{ margin: '8px 0 0', fontSize: '14px' }}>
+                  {ktpFile ? ktpFile.name : 'Klik untuk upload KTP'}
                 </p>
-              )}
+                <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#6c757d' }}>
+                  PDF, JPG, atau PNG
+                </p>
+              </div>
+              {errors.ktp && <span style={{ color: '#ff4d4f', fontSize: '13px' }}>{errors.ktp}</span>}
             </div>
-
-            {/* Pekerjaan */}
+            
+            {/* KK Upload */}
             <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Pekerjaan
+              <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+                Kartu Keluarga (KK) <span style={{ color: 'red' }}>*</span>
               </label>
-              <input
-                type="text"
-                name="pekerjaan"
-                value={formData.pekerjaan}
-                onChange={handleInputChange}
-                placeholder=""
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-              />
-              {errors.pekerjaan && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '14px',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0'
-                }}>
-                  {errors.pekerjaan}
+              <div style={{
+                border: errors.kk ? '2px dashed #ff4d4f' : '2px dashed #ccc',
+                borderRadius: '8px',
+                padding: '15px',
+                textAlign: 'center',
+                backgroundColor: '#f9f9f9',
+                cursor: 'pointer',
+                position: 'relative'
+              }}>
+                <input 
+                  type="file" 
+                  onChange={handleKkChange} 
+                  accept=".pdf,.jpg,.jpeg,.png" 
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    opacity: 0,
+                    cursor: 'pointer'
+                  }} 
+                />
+                <div style={{ fontSize: '40px', color: '#6c757d' }}>📄</div>
+                <p style={{ margin: '8px 0 0', fontSize: '14px' }}>
+                  {kkFile ? kkFile.name : 'Klik untuk upload KK'}
                 </p>
-              )}
+                <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#6c757d' }}>
+                  PDF, JPG, atau PNG
+                </p>
+              </div>
+              {errors.kk && <span style={{ color: '#ff4d4f', fontSize: '13px' }}>{errors.kk}</span>}
             </div>
           </div>
-
-          {/* Right Column */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '30px'
-          }}>
-            {/* Sertifikasi */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Sertifikasi
-              </label>
-              <select
-                name="sertifikasi"
-                value={formData.sertifikasi}
-                onChange={handleInputChange}
+          
+          {/* Sertifikasi Upload */}
+          <div style={{ marginTop: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+              Sertifikasi (Bisa lebih dari 1) <span style={{ color: 'red' }}>*</span>
+            </label>
+            <div style={{
+              border: errors.sertifikasi ? '2px dashed #ff4d4f' : '2px dashed #ccc',
+              borderRadius: '8px',
+              padding: '15px',
+              textAlign: 'center',
+              backgroundColor: '#f9f9f9',
+              cursor: 'pointer',
+              position: 'relative'
+            }}>
+              <input 
+                type="file" 
+                onChange={handleSertifikasiChange} 
+                multiple 
+                accept=".pdf,.jpg,.jpeg,.png" 
                 style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
                   width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-              >
-                <option value="Tersertifikasi">Tersertifikasi</option>
-                <option value="Tidak Tersertifikasi">Tidak Tersertifikasi</option>
-                <option value="-">-</option>
-              </select>
-            </div>
-
-            {/* Tanggal Daftar */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Tanggal Daftar
-              </label>
-              <input
-                type="date"
-                name="tanggal_daftar"
-                value={formData.tanggal_daftar}
-                onChange={handleInputChange}
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                  height: '100%',
+                  opacity: 0,
+                  cursor: 'pointer'
+                }} 
               />
-              {errors.tanggal_daftar && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '14px',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0'
-                }}>
-                  {errors.tanggal_daftar}
-                </p>
-              )}
+              <div style={{ fontSize: '40px', color: '#6c757d' }}>📑</div>
+              <p style={{ margin: '8px 0 0', fontSize: '14px' }}>
+                Klik untuk upload sertifikasi
+              </p>
+              <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#6c757d' }}>
+                PDF, JPG, atau PNG (Multiple files allowed)
+              </p>
             </div>
+            {errors.sertifikasi && <span style={{ color: '#ff4d4f', fontSize: '13px' }}>{errors.sertifikasi}</span>}
+            
+            {sertifikasiFiles.length > 0 && (
+              <div style={{ marginTop: '10px' }}>
+                <p style={{ marginBottom: '5px', fontSize: '14px' }}>File terpilih:</p>
+                <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                  {sertifikasiFiles.map((file, idx) => (
+                    <li key={idx} style={{ fontSize: '13px', marginBottom: '3px' }}>
+                      {file.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '12px',
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'flex-end', 
+          gap: '15px', 
+          marginTop: '30px',
           paddingTop: '20px',
-          borderTop: '1px solid #e0e0e0'
+          borderTop: '1px solid #eee'
         }}>
-          <button
-            onClick={handleCancel}
-            style={{
-              backgroundColor: '#6c757d',
-              color: '#ffffff',
+          <button 
+            type="button" 
+            onClick={handleCancel} 
+            style={{ 
+              padding: '12px 25px', 
+              borderRadius: '8px', 
+              backgroundColor: '#6c757d', 
+              color: '#fff',
               border: 'none',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              fontFamily: 'inherit'
+              fontWeight: '500',
+              transition: 'all 0.2s ease'
             }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#5a6268';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#6c757d';
-            }}
+            onMouseOver={(e) => e.target.style.backgroundColor = '#5a6268'}
+            onMouseOut={(e) => e.target.style.backgroundColor = '#6c757d'}
           >
             Batal
           </button>
-          <button
-            onClick={handleSubmit}
-            style={{
-              backgroundColor: '#fd7e14',
-              color: '#ffffff',
+          <button 
+            type="submit" 
+            style={{ 
+              padding: '12px 25px', 
+              borderRadius: '8px', 
+              backgroundColor: '#fd7e14', 
+              color: '#fff',
               border: 'none',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              fontFamily: 'inherit'
+              fontWeight: '500',
+              transition: 'all 0.2s ease'
             }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#e8670e';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#fd7e14';
-            }}
+            onMouseOver={(e) => e.target.style.backgroundColor = '#e76f11'}
+            onMouseOut={(e) => e.target.style.backgroundColor = '#fd7e14'}
           >
             Simpan Data
           </button>
         </div>
-      </div>
+      </form>
 
-      {/* Add Success Modal - Center of screen */}
-      {showAddNotif && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
+      {showNotif && (
+        <div style={{ 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          width: '100vw', 
+          height: '100vh', 
+          backgroundColor: 'rgba(0,0,0,0.5)', 
+          display: 'flex', 
+          justifyContent: 'center', 
           alignItems: 'center',
           zIndex: 1000
         }}>
-          <div style={{
-            backgroundColor: '#ffffff',
-            borderRadius: '20px',
-            padding: '40px 30px',
+          <div style={{ 
+            backgroundColor: '#fff', 
+            borderRadius: '15px', 
+            padding: '30px', 
             textAlign: 'center',
-            width: '300px',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-            position: 'relative'
+            boxShadow: '0 5px 25px rgba(0,0,0,0.2)',
+            maxWidth: '400px'
           }}>
-            {/* Check Icon */}
-            <div style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              backgroundColor: '#4A90E2',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 25px auto'
-            }}>
-              <svg width="35" height="35" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M20 6L9 17l-5-5"
-                  stroke="#ffffff"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-
-            {/* Success Message */}
-            <h2 style={{
-              fontSize: '22px',
-              fontWeight: '600',
-              color: '#333333',
-              margin: '0 0 25px 0',
-              lineHeight: '1.4',
-              paddingBottom: '25px',
-              borderBottom: '1px solid #e0e0e0'
-            }}>
-              Data Berhasil<br />Ditambahkan!
-            </h2>
-
-            {/* OK Text */}
-            <div
+            <div style={{ fontSize: '50px', marginBottom: '15px' }}>✅</div>
+            <h2 style={{ marginBottom: '15px', color: '#333' }}>Data Berhasil Ditambahkan!</h2>
+            <button 
               onClick={() => {
-                setShowAddNotif(false);
-                
-                // Create new item
-                const newItem = {
-                  id: Date.now(),
-                  nama: formData.nama.trim(),
-                  pekerjaan: formData.pekerjaan.trim(),
-                  sertifikasi: formData.sertifikasi,
-                  tanggal_daftar: formData.tanggal_daftar.trim()
-                };
-                
-                if (onSave) {
-                  onSave(newItem);
-                }
-                
-                // Reset form after save
+                setShowNotif(false);
+                onSave?.({ ...formData, id: Date.now() });
                 setFormData({
-                  nama: '',
-                  pekerjaan: '',
-                  sertifikasi: 'Tersertifikasi',
-                  tanggal_daftar: ''
+                  nama_lengkap: '',
+                  no_registrasi: '',
+                  jenis_kelamin: '',
+                  email: '',
+                  no_telepon: '',
+                  kompetensi: '',
+                  username: '',
+                  password: ''
                 });
+                setKtpFile(null);
+                setKkFile(null);
+                setSertifikasiFiles([]);
                 setErrors({});
-              }}
+              }} 
               style={{
-                fontSize: '18px',
-                fontWeight: '600',
-                color: '#333333',
+                padding: '10px 20px',
+                borderRadius: '8px',
+                backgroundColor: '#fd7e14',
+                color: '#fff',
+                border: 'none',
                 cursor: 'pointer',
-                fontFamily: 'inherit',
-                userSelect: 'none'
+                fontWeight: '500'
               }}
             >
               Okay!
-            </div>
+            </button>
           </div>
         </div>
       )}

@@ -30,9 +30,9 @@ export const getAsesiById = (id) => api.get(`/assesi/${id}`);
 
 // Asesor CRUD operations
 export const getAsesors = (page, size) => api.get(`/assesor?page=${page}&size=${size}`);
-export const createAsesor = (data) => api.post("/asesor", data);
-export const updateAsesor = (id, data) => api.put(`/asesor/${id}`, data);
-export const deleteAsesor = (id) => api.delete(`/asesor/${id}`);
+export const createAsesor = (data) => api.post("/assesor", data);
+export const updateAsesor = (id, data) => api.put(`/assesor/${id}`, data);
+export const deleteAsesor = (id) => api.delete(`/assesor/${id}`);
 
 // Skema CRUD operations
 export const getSkemas = () => api.get("/skema");
@@ -41,7 +41,5 @@ export const getSkemas = () => api.get("/skema");
 export const getAssesmens = () => api.get("/assesmen");
 export const createAssesmen = (data) => api.post("/assesmen", data);
 export const updateAssesmen = (id, data) => api.put(`/assesmen/${id}`, data);
-
-
 
 export default api;
