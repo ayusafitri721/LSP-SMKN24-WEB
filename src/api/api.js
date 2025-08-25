@@ -35,11 +35,12 @@ export const updateAsesor = (id, data) => api.put(`/assesor/${id}`, data);
 export const deleteAsesor = (id) => api.delete(`/assesor/${id}`);
 
 // Skema CRUD operations
-export const getSkemas = () => api.get("/skema");
+export const getSkemas = () => api.get("/schema");
 
 // Assesmen CRUD operations
-export const getAssesmens = () => api.get("/assesmen");
-export const createAssesmen = (data) => api.post("/assesmen", data);
-export const updateAssesmen = (id, data) => api.put(`/assesmen/${id}`, data);
+export const getAssesments = () => api.get("/assesment");
+export const createAssesment = (data) => api.post("/assesment", data);
+export const updateAssesment = (id, data) => api.put(`/assesment/${id}`, data);
+export const deleteAssesment = (id) => api.delete(`/assesment/${id}`);
 
 export default api;

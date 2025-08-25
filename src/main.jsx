@@ -7,6 +7,8 @@ import { JurusanProvider } from "./context/JurusanContext.jsx"; // Import Jurusa
 import { AsesiProvider } from "./context/AsesiContext.jsx";
 import Asesor from "./Asesor/Asesor.jsx";
 import { AsesorProvider } from "./context/AsesorContext.jsx";
+import { AssesmentProvider } from "./context/AssesmentContext.jsx";
+import { SkemaProvider } from "./context/SkemaContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -14,7 +16,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <JurusanProvider>
         <AsesiProvider>
           <AsesorProvider>
-            <App />
+            <AssesmentProvider>
+              <JurusanProvider>
+                <SkemaProvider>
+                <App />
+                </SkemaProvider>
+              </JurusanProvider>
+            </AssesmentProvider>
           </AsesorProvider>
         </AsesiProvider>
       </JurusanProvider>

@@ -16,7 +16,7 @@ export function JurusanProvider({ children }) {
     setError(null);
     try {
       const res = await apiJurusans();
-      setJurusanList(res.data);
+      setJurusanList(res.data.data || []);
     } catch (err) {
       setError(err.response?.data?.message || "Gagal mengambil data jurusan!");
     } finally {

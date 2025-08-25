@@ -173,6 +173,11 @@ const DashboardRoutes = () => {
     navigate('/dashboard/asesmen');
   };
 
+  const handleAddAsesmen = (newData) => {
+    alert('Data berhasil ditambahkan!');
+    navigate('/dashboard/asesmen');
+  }
+
   const handleBarcodeAsesmen = (newData) => {
     alert('Barcode berhasil dibuat!');
     navigate('/dashboard/asesmen');
@@ -268,7 +273,7 @@ const DashboardRoutes = () => {
       } />
       <Route path="/asesmen/add" element={
         <AddAsesmen 
-          onSubmit={handleImportAsesmen} 
+          onSubmit={handleAddAsesmen} 
           onBack={() => navigate('/dashboard/asesmen')} 
         />
       } />

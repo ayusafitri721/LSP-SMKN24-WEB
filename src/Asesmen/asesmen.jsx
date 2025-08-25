@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
+import { useAssesment } from '../context/AssesmentContext';
 
 function Asesmen({ onBack, onNavigate, data }) {
-  const initialData = data || [
-    { id: "A001", nama: "USK RPL Pemrograman Dasar", kode: "MT001", skema: "Pilihan Ganda", tanggal: "2025-08-20", tuk: "Jakarta Timur", asesor: "Dr.Jamaludin", status: true },
-    { id: "A002", nama: "USK RPL Pemrograman Dasar", kode: "MT002", skema: "Pilihan Ganda", tanggal: "2025-08-20", tuk: "Jakarta Timur", asesor: "Dr.Jamaludin", status: false },
-    { id: "A003", nama: "USK RPL Pemrograman Dasar", kode: "MT003", skema: "Pilihan Ganda", tanggal: "2025-08-20", tuk: "Jakarta Timur", asesor: "Dr.Jamaludin", status: false },
-  ];
+  const {assesments, loading, error, fetchAssesments, addAssesment, editAssesment, removeAssesment} = useAssesment();
+  const dataAssesments = assesments || [];
 
-  const [asesmenList, setAsesmenList] = useState(initialData);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -18,7 +15,9 @@ function Asesmen({ onBack, onNavigate, data }) {
   };
 
   const handleDelete = () => {
-    setAsesmenList((prev) => prev.filter((i) => i.id !== selectedItem.id));
+    if (selectedItem) {
+      removeAssesment(selectedItem.id);
+    }
     setShowDeleteModal(false);
     setShowDeleteSuccess(true);
 
@@ -77,7 +76,7 @@ function Asesmen({ onBack, onNavigate, data }) {
       {/* Import Button */}
       <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'flex-end' }}>
         <button 
-          onClick={() => onNavigate && onNavigate('importasesmen')}
+          onClick={() => onNavigate && onNavigate('asesmen/add')}
           style={{
             backgroundColor: '#ff6600',
             color: 'white',
@@ -100,7 +99,7 @@ function Asesmen({ onBack, onNavigate, data }) {
             <polyline points="7,10 12,15 17,10" strokeLinecap="round" strokeLinejoin="round"/>
             <line x1="12" y1="15" x2="12" y2="3" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          Import
+          Add
         </button>
       </div>
 
@@ -117,10 +116,10 @@ function Asesmen({ onBack, onNavigate, data }) {
           <thead>
             <tr style={{ backgroundColor: '#f8f9fa' }}>
               <th style={headerStyle}>Id</th>
-              <th style={headerStyle}>Nama Assessment</th>
-              <th style={headerStyle}>Kode</th>
-              <th style={headerStyle}>Skema</th>
-              <th style={headerStyle}>Tanggal Ujian</th>
+              <th style={headerStyle}>Nama Skema</th>
+              <th style={headerStyle}>Nomor Skema</th>
+              <th style={headerStyle}>Admin</th>
+              <th style={headerStyle}>Tanggal Assesment</th>
               <th style={headerStyle}>TUK</th>
               <th style={headerStyle}>Asesor</th>
               <th style={headerStyle}>Status</th>
@@ -128,15 +127,15 @@ function Asesmen({ onBack, onNavigate, data }) {
             </tr>
           </thead>
           <tbody>
-            {asesmenList.map((item) => (
+            {dataAssesments.map((item) => (
               <tr key={item.id} style={{ borderBottom: '1px solid #e5e5e5' }}>
                 <td style={cellStyle}>{item.id}</td>
-                <td style={cellStyle}>{item.nama}</td>
-                <td style={cellStyle}>{item.kode}</td>
-                <td style={cellStyle}>{item.skema}</td>
-                <td style={cellStyle}>{item.tanggal}</td>
+                <td style={cellStyle}>{item.schema.judul_skema}</td>
+                <td style={cellStyle}>{item.schema.nomor_skema}</td>
+                <td style={cellStyle}>{item.admin.nama_lengkap}</td>
+                <td style={cellStyle}>{item.tangga_assesment}</td>
                 <td style={cellStyle}>{item.tuk}</td>
-                <td style={cellStyle}>{item.asesor}</td>
+                <td style={cellStyle}>{item.assesor.nama_lengkap}</td>
                 <td style={cellStyle}>
                   <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <div style={{

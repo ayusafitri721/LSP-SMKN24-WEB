@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 
-function AddSkema({ onBack, onSave, onCancel }) {
+function AddAsesmen({ onBack, onSave, onCancel }) {
   const [formData, setFormData] = useState({
-    judulSkema: '',
-    jumlahSiswa: ''
+    judul: '',
+    program: '',
+    tanggal: ''
   });
 
   const [errors, setErrors] = useState({});
@@ -16,7 +17,6 @@ function AddSkema({ onBack, onSave, onCancel }) {
       [name]: value
     }));
     
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -28,12 +28,16 @@ function AddSkema({ onBack, onSave, onCancel }) {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.judulSkema.trim()) {
-      newErrors.judulSkema = 'Judul skema harus diisi';
+    if (!formData.judul.trim()) {
+      newErrors.judul = 'Judul asesmen harus diisi';
     }
     
-    if (!formData.jumlahSiswa.trim()) {
-      newErrors.jumlahSiswa = 'Jumlah siswa harus diisi';
+    if (!formData.program.trim()) {
+      newErrors.program = 'Program harus diisi';
+    }
+    
+    if (!formData.tanggal.trim()) {
+      newErrors.tanggal = 'Tanggal dibuat harus diisi';
     }
     
     setErrors(newErrors);
@@ -44,6 +48,7 @@ function AddSkema({ onBack, onSave, onCancel }) {
     e.preventDefault();
     
     if (validateForm()) {
+      // Show notification modal
       setShowAddNotif(true);
     }
   };
@@ -51,8 +56,9 @@ function AddSkema({ onBack, onSave, onCancel }) {
   const handleCancel = () => {
     // Reset form
     setFormData({
-      judulSkema: '',
-      jumlahSiswa: ''
+      judul: '',
+      program: '',
+      tanggal: ''
     });
     setErrors({});
     
@@ -62,37 +68,6 @@ function AddSkema({ onBack, onSave, onCancel }) {
     } else if (onBack) {
       onBack();
     }
-  };
-
-  const handleDelete = () => {
-    setShowDeleteConfirm(true);
-  };
-
-  const confirmDelete = () => {
-    setShowDeleteConfirm(false);
-    
-    // Call parent's onDelete function if provided
-    if (onDelete) {
-      onDelete(formData);
-    }
-    
-    // Show success notification briefly then redirect
-    setShowDeleteSuccess(true);
-    
-    console.log('Data berhasil dihapus:', formData);
-    
-    // Auto redirect after 1.5 seconds
-    setTimeout(() => {
-      setShowDeleteSuccess(false);
-      
-      // Use the same redirect logic as Cancel button
-      if (onCancel) {
-        onCancel();
-      } else if (onBack) {
-        onBack();
-      }
-      
-    }, 1500);
   };
 
   return (
@@ -122,7 +97,7 @@ function AddSkema({ onBack, onSave, onCancel }) {
           margin: '0',
           letterSpacing: '1px'
         }}>
-          TAMBAHKAN DATA BARU
+          TAMBAHKAN DATA ASESMEN BARU
         </h1>
       </div>
 
@@ -148,7 +123,7 @@ function AddSkema({ onBack, onSave, onCancel }) {
             flexDirection: 'column',
             gap: '30px'
           }}>
-            {/* Judul Skema */}
+            {/* Judul Asesmen */}
             <div>
               <label style={{
                 display: 'block',
@@ -157,14 +132,14 @@ function AddSkema({ onBack, onSave, onCancel }) {
                 color: '#333',
                 marginBottom: '12px'
               }}>
-                Judul Skema
+                Judul Asesmen
               </label>
               <input
                 type="text"
-                name="judulSkema"
-                value={formData.judul_skema}
+                name="judul"
+                value={formData.judul}
                 onChange={handleInputChange}
-                placeholder=""
+                placeholder="Masukkan judul asesmen"
                 style={{
                   width: '100%',
                   padding: '16px',
@@ -180,14 +155,58 @@ function AddSkema({ onBack, onSave, onCancel }) {
                 onFocus={(e) => e.target.style.borderColor = '#007bff'}
                 onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
               />
-              {errors.judulSkema && (
+              {errors.judul && (
                 <p style={{
                   color: '#dc3545',
                   fontSize: '14px',
                   marginTop: '8px',
                   margin: '8px 0 0 0'
                 }}>
-                  {errors.judulSkema}
+                  {errors.judul}
+                </p>
+              )}
+            </div>
+
+            {/* Program */}
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#333',
+                marginBottom: '12px'
+              }}>
+                Program
+              </label>
+              <input
+                type="text"
+                name="program"
+                value={formData.program}
+                onChange={handleInputChange}
+                placeholder="Masukkan program"
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  border: '2px solid #e0e0e0',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  boxSizing: 'border-box',
+                  backgroundColor: '#ffffff',
+                  outline: 'none',
+                  transition: 'border-color 0.2s ease',
+                  fontFamily: 'inherit'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#007bff'}
+                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+              />
+              {errors.program && (
+                <p style={{
+                  color: '#dc3545',
+                  fontSize: '14px',
+                  marginTop: '8px',
+                  margin: '8px 0 0 0'
+                }}>
+                  {errors.program}
                 </p>
               )}
             </div>
@@ -199,7 +218,7 @@ function AddSkema({ onBack, onSave, onCancel }) {
             flexDirection: 'column',
             gap: '30px'
           }}>
-            {/* Jumlah Siswa */}
+            {/* Tanggal Dibuat */}
             <div>
               <label style={{
                 display: 'block',
@@ -208,14 +227,13 @@ function AddSkema({ onBack, onSave, onCancel }) {
                 color: '#333',
                 marginBottom: '12px'
               }}>
-                Jumlah Siswa
+                Tanggal Dibuat
               </label>
               <input
-                type="text"
-                name="jumlahSiswa"
-                value={formData.jumlahSiswa}
+                type="date"
+                name="tanggal"
+                value={formData.tanggal}
                 onChange={handleInputChange}
-                placeholder=""
                 style={{
                   width: '100%',
                   padding: '16px',
@@ -231,14 +249,14 @@ function AddSkema({ onBack, onSave, onCancel }) {
                 onFocus={(e) => e.target.style.borderColor = '#007bff'}
                 onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
               />
-              {errors.jumlahSiswa && (
+              {errors.tanggal && (
                 <p style={{
                   color: '#dc3545',
                   fontSize: '14px',
                   marginTop: '8px',
                   margin: '8px 0 0 0'
                 }}>
-                  {errors.jumlahSiswa}
+                  {errors.tanggal}
                 </p>
               )}
             </div>
@@ -302,7 +320,7 @@ function AddSkema({ onBack, onSave, onCancel }) {
         </div>
       </div>
 
-      {/* Add Success Modal */}
+      {/* Add Success Modal - Center of screen */}
       {showAddNotif && (
         <div style={{
           position: 'fixed',
@@ -368,8 +386,9 @@ function AddSkema({ onBack, onSave, onCancel }) {
                 // Create new item
                 const newItem = {
                   id: Date.now(),
-                  judulSkema: formData.judulSkema.trim(),
-                  jumlahSiswa: formData.jumlahSiswa.trim()
+                  judul: formData.judul.trim(),
+                  program: formData.program.trim(),
+                  tanggal: formData.tanggal.trim()
                 };
                 
                 if (onSave) {
@@ -378,8 +397,9 @@ function AddSkema({ onBack, onSave, onCancel }) {
                 
                 // Reset form after save
                 setFormData({
-                  judulSkema: '',
-                  jumlahSiswa: ''
+                  judul: '',
+                  program: '',
+                  tanggal: ''
                 });
                 setErrors({});
               }}
@@ -401,4 +421,4 @@ function AddSkema({ onBack, onSave, onCancel }) {
   );
 }
 
-export default AddSkema;
+export default AddAsesmen;

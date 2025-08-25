@@ -1,424 +1,254 @@
-import React, { useState } from 'react';
+import React, {useState} from "react";
+import { useNavigate } from "react-router-dom";
+import { useAssesment } from "../context/AssesmentContext";
+import {useAsesor} from "../context/AsesorContext";
+import { useJurusan } from "../context/JurusanContext.jsx";
+import { useSkema } from "../context/SkemaContext.jsx";
+import {
+    InputField,
+    SelectField,
+    DateField,
+    RadioField
+} from "../components/FieldComponents.jsx";
 
-function AddAsesmen({ onBack, onSave, onCancel }) {
-  const [formData, setFormData] = useState({
-    judul: '',
-    program: '',
-    tanggal: ''
-  });
+const AddAsesmen = ({ onSubmit, onBack }) => {
+    const navigate = useNavigate();
+    const { addAssesment } = useAssesment();
+    const { asesors } = useAsesor();
+    const { jurusanList } = useJurusan();
+    const {skemaList} = useSkema();
+    const [loading, setLoading] = useState(false);
 
-  const [errors, setErrors] = useState({});
-  const [showAddNotif, setShowAddNotif] = useState(false);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
+    const skemaOptions = skemaList.map((s) => ({
+        value: s.id,
+        label: s.judul_skema
     }));
     
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.judul.trim()) {
-      newErrors.judul = 'Judul asesmen harus diisi';
-    }
-    
-    if (!formData.program.trim()) {
-      newErrors.program = 'Program harus diisi';
-    }
-    
-    if (!formData.tanggal.trim()) {
-      newErrors.tanggal = 'Tanggal dibuat harus diisi';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (validateForm()) {
-      // Show notification modal
-      setShowAddNotif(true);
-    }
-  };
-
-  const handleCancel = () => {
-    // Reset form
-    setFormData({
-      judul: '',
-      program: '',
-      tanggal: ''
+    const [formData, setFormData] = useState({
+        skema_id: "",
+        admin_id: 1, // Ganti dengan ID admin yang sesuai
+        assesor_id: "",
+        tanggal_assesment: "",
+        status: "",
+        tuk: "",
     });
-    setErrors({});
     
-    // Call appropriate callback
-    if (onCancel) {
-      onCancel();
-    } else if (onBack) {
-      onBack();
-    }
-  };
+    const [errors, setErrors] = useState({});
+    
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+        // Clear error when user starts typing
+        if (errors[name]) {
+            setErrors(prev => ({...prev, [name]: ''}));
+        }
+    };
+    
+    const validateForm = () => {
+        const newErrors = {};
+        
+        if (!formData.skema_id) newErrors.skema_id = "Skema harus dipilih";
+        if (!formData.assesor_id) newErrors.assesor_id = "Asesor harus dipilih";
+        if (!formData.tanggal_assesment) newErrors.tanggal_assesment = "Tanggal asesmen harus diisi";
+        if (!formData.status) newErrors.status = "Status harus dipilih";
+        if (!formData.tuk) newErrors.tuk = "TUK harus diisi";
+        
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (!validateForm()) return;
+        
+        try {
+            await addAssesment(formData);
+            if (onSubmit) onSubmit(formData);
+            navigate('/dashboard/asesmen');
+        } catch (err) {
+            if (err.response?.data?.errors) {
+                console.error("Validation errors:", err.response.data.errors);
+            } else {
+                console.error("Error adding assesment:", err.response?.data?.message || err.message);
+            }
+        }
 
-  return (
-    <div style={{
-      minHeight: '100vh',
-      width: '100vw',
-      backgroundColor: '#f5f5f5',
-      padding: '0',
-      margin: '0',
-      boxSizing: 'border-box',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-      overflow: 'auto'
-    }}>
-      {/* Header */}
-      <div style={{
-        padding: '40px 0 20px 0',
-        textAlign: 'center',
-        position: 'sticky',
-        top: 0,
-        backgroundColor: '#f5f5f5',
-        zIndex: 10
-      }}>
-        <h1 style={{
-          fontSize: '28px',
-          fontWeight: '600',
-          color: '#333',
-          margin: '0',
-          letterSpacing: '1px'
-        }}>
-          TAMBAHKAN DATA ASESMEN BARU
-        </h1>
-      </div>
+    };
 
-      {/* Form Container */}
-      <div style={{
-        margin: '0 20px 40px 20px',
-        backgroundColor: '#ffffff',
-        borderRadius: '30px',
-        padding: '40px',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
-        minHeight: '60vh'
-      }}>
-        {/* Form Content - 2 Columns */}
+    const handleBack = () => {
+        if (onBack) {
+            onBack();
+        } else {
+            navigate(-1);
+        }
+    };
+
+    // Format asesor list untuk dropdown
+    const asesorOptions = asesors.map(asesor => ({
+        value: asesor.id,
+        label: asesor.nama_lengkap
+    }));
+
+    // Options untuk status radio button
+    const statusOptions = [
+        { value: "active", label: "Terjadwal" },
+        { value: "expired", label: "Selesai" },
+        { value: "dibatalkan", label: "Dibatalkan" }
+    ];
+
+    return (
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '40px',
-          marginBottom: '40px'
+            padding: '24px',
+            backgroundColor: '#FFFFFF',
+            minHeight: '100vh',
+            fontFamily: 'Arial, sans-serif'
         }}>
-          {/* Left Column */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '30px'
-          }}>
-            {/* Judul Asesmen */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Judul Asesmen
-              </label>
-              <input
-                type="text"
-                name="judul"
-                value={formData.judul}
-                onChange={handleInputChange}
-                placeholder="Masukkan judul asesmen"
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-              />
-              {errors.judul && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '14px',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0'
-                }}>
-                  {errors.judul}
-                </p>
-              )}
-            </div>
-
-            {/* Program */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Program
-              </label>
-              <input
-                type="text"
-                name="program"
-                value={formData.program}
-                onChange={handleInputChange}
-                placeholder="Masukkan program"
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-              />
-              {errors.program && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '14px',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0'
-                }}>
-                  {errors.program}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Right Column */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '30px'
-          }}>
-            {/* Tanggal Dibuat */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Tanggal Dibuat
-              </label>
-              <input
-                type="date"
-                name="tanggal"
-                value={formData.tanggal}
-                onChange={handleInputChange}
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-              />
-              {errors.tanggal && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '14px',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0'
-                }}>
-                  {errors.tanggal}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '12px',
-          paddingTop: '20px',
-          borderTop: '1px solid #e0e0e0'
-        }}>
-          <button
-            onClick={handleCancel}
-            style={{
-              backgroundColor: '#6c757d',
-              color: '#ffffff',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              fontFamily: 'inherit'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#5a6268';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#6c757d';
-            }}
-          >
-            Batal
-          </button>
-          <button
-            onClick={handleSubmit}
-            style={{
-              backgroundColor: '#fd7e14',
-              color: '#ffffff',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              fontFamily: 'inherit'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#e8670e';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#fd7e14';
-            }}
-          >
-            Simpan Data
-          </button>
-        </div>
-      </div>
-
-      {/* Add Success Modal - Center of screen */}
-      {showAddNotif && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: '#ffffff',
-            borderRadius: '20px',
-            padding: '40px 30px',
-            textAlign: 'center',
-            width: '300px',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-            position: 'relative'
-          }}>
-            {/* Check Icon */}
             <div style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              backgroundColor: '#4A90E2',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 25px auto'
+                backgroundColor: '#FFFFFF',
+                borderRadius: '12px',
+                padding: '24px',
+                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                maxWidth: '800px',
+                margin: '0 auto'
             }}>
-              <svg width="35" height="35" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M20 6L9 17l-5-5"
-                  stroke="#ffffff"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginBottom: '24px',
+                    borderBottom: '1px solid #f0f0f0',
+                    paddingBottom: '16px'
+                }}>
+                    <button 
+                        onClick={handleBack}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            marginRight: '16px',
+                            color: '#10A9C9',
+                            fontSize: '20px'
+                        }}
+                    >
+                        &larr;
+                    </button>
+                    <h1 style={{
+                        margin: 0,
+                        color: '#343434',
+                        fontSize: '24px',
+                        fontWeight: '600'
+                    }}>
+                        Tambah Asesmen Baru
+                    </h1>
+                </div>
+                
+                <form onSubmit={handleSubmit}>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: '20px',
+                        marginBottom: '24px'
+                    }}>
+                        <SelectField
+                            label="Skema"
+                            name="skema_id"
+                            value={formData.skema_id}
+                            onChange={handleChange}
+                            options={skemaOptions}
+                            placeholder="Pilih Skema"
+                            required={true}
+                            error={errors.skema_id}
+                        />
+                        
+                        <SelectField
+                            label="Asesor"
+                            name="assesor_id"
+                            value={formData.assesor_id}
+                            onChange={handleChange}
+                            options={asesorOptions}
+                            placeholder="Pilih Asesor"
+                            required={true}
+                            error={errors.assesor_id}
+                        />
+                        
+                        <DateField
+                            label="Tanggal Asesmen"
+                            name="tanggal_assesment"
+                            value={formData.tanggal_assesment}
+                            onChange={handleChange}
+                            required={true}
+                            error={errors.tanggal_assesment}
+                        />
+                        
+                        <div>
+                            <RadioField
+                                label="Status"
+                                name="status"
+                                value={formData.status}
+                                onChange={handleChange}
+                                options={statusOptions}
+                                required={true}
+                                error={errors.status}
+                            />
+                        </div>
+                        
+                        <div style={{ gridColumn: 'span 2' }}>
+                            <InputField
+                                label="Tempat Uji Kompetensi (TUK)"
+                                name="tuk"
+                                value={formData.tuk}
+                                onChange={handleChange}
+                                placeholder="Masukkan TUK"
+                                required={true}
+                                error={errors.tuk}
+                            />
+                        </div>
+                    </div>
+                    
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        gap: '12px',
+                        marginTop: '24px',
+                        borderTop: '1px solid #f0f0f0',
+                        paddingTop: '20px'
+                    }}>
+                        <button
+                            type="button"
+                            onClick={handleBack}
+                            style={{
+                                padding: '10px 20px',
+                                backgroundColor: '#FFFFFF',
+                                color: '#343434',
+                                border: '1px solid #ccc',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                fontSize: '14px',
+                                fontWeight: '500'
+                            }}
+                        >
+                            Batal
+                        </button>
+                        <button
+                            type="submit"
+                            style={{
+                                padding: '10px 20px',
+                                backgroundColor: '#10A9C9',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                fontSize: '14px',
+                                fontWeight: '500'
+                            }}
+                        >
+                            Simpan Asesmen
+                        </button>
+                    </div>
+                </form>
             </div>
-
-            {/* Success Message */}
-            <h2 style={{
-              fontSize: '22px',
-              fontWeight: '600',
-              color: '#333333',
-              margin: '0 0 25px 0',
-              lineHeight: '1.4',
-              paddingBottom: '25px',
-              borderBottom: '1px solid #e0e0e0'
-            }}>
-              Data Berhasil<br />Ditambahkan!
-            </h2>
-
-            {/* OK Text */}
-            <div
-              onClick={() => {
-                setShowAddNotif(false);
-                
-                // Create new item
-                const newItem = {
-                  id: Date.now(),
-                  judul: formData.judul.trim(),
-                  program: formData.program.trim(),
-                  tanggal: formData.tanggal.trim()
-                };
-                
-                if (onSave) {
-                  onSave(newItem);
-                }
-                
-                // Reset form after save
-                setFormData({
-                  judul: '',
-                  program: '',
-                  tanggal: ''
-                });
-                setErrors({});
-              }}
-              style={{
-                fontSize: '18px',
-                fontWeight: '600',
-                color: '#333333',
-                cursor: 'pointer',
-                fontFamily: 'inherit',
-                userSelect: 'none'
-              }}
-            >
-              Okay!
-            </div>
-          </div>
         </div>
-      )}
-    </div>
-  );
+    );
 }
 
 export default AddAsesmen;
