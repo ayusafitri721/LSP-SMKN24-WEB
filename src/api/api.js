@@ -29,7 +29,7 @@ export const deleteAsesi = (id) => api.delete(`/assesi/${id}`);
 export const getAsesiById = (id) => api.get(`/assesi/${id}`);
 
 // Asesor CRUD operations
-export const getAsesors = (page, size) => api.get(`/asesor?page=${page}&size=${size}`);
+export const getAsesors = (page, size) => api.get(`/assesor?page=${page}&size=${size}`);
 export const createAsesor = (data) => api.post("/asesor", data);
 export const updateAsesor = (id, data) => api.put(`/asesor/${id}`, data);
 export const deleteAsesor = (id) => api.delete(`/asesor/${id}`);

@@ -1,11 +1,15 @@
 import React from 'react';
+import {useAsesor} from '../context/AsesorContext';
+function Asesor({ onBack, onNavigate, setAsesorDataEdit }) {
+  const {asesors, loading, error, fetchAsesors, addAsesor, editAsesor, removeAsesor} = useAsesor();
+  const asesorList = asesors || [];
 
-function Asesor({ onBack, onNavigate, asesorData, setAsesorData }) {
   const handleAddClick = () => {
     onNavigate('addasesor');
   };
 
   const handleEdit = (asesor) => {
+    
     onNavigate('editasesor', asesor);
   };
 
@@ -183,8 +187,8 @@ function Asesor({ onBack, onNavigate, asesorData, setAsesorData }) {
             </tr>
           </thead>
           <tbody>
-            {asesorData && asesorData.length > 0 ? (
-              asesorData.map((asesor, index) => (
+            {asesorList && asesorList.length > 0 ? (
+              asesorList.map((asesor, index) => (
                 <tr
                   key={asesor.id || index}
                   style={{
@@ -200,7 +204,7 @@ function Asesor({ onBack, onNavigate, asesorData, setAsesorData }) {
                       border: '1px solid #dee2e6',
                     }}
                   >
-                    {asesor.no || index + 1}
+                    {asesor.user_id || index + 1}
                   </td>
                   <td
                     style={{
@@ -210,7 +214,7 @@ function Asesor({ onBack, onNavigate, asesorData, setAsesorData }) {
                       border: '1px solid #dee2e6',
                     }}
                   >
-                    {asesor.nama}
+                    {asesor.nama_lengkap}
                   </td>
                   <td
                     style={{
@@ -221,7 +225,7 @@ function Asesor({ onBack, onNavigate, asesorData, setAsesorData }) {
                       border: '1px solid #dee2e6',
                     }}
                   >
-                    {asesor.pekerjaan}
+                    {asesor.no_registrasi}
                   </td>
                   <td 
                     style={{ 
@@ -242,7 +246,7 @@ function Asesor({ onBack, onNavigate, asesorData, setAsesorData }) {
                         fontWeight: '500',
                       }}
                     >
-                      {asesor.sertifikat}
+                      {asesor.email}
                     </span>
                   </td>
                   <td
@@ -254,7 +258,7 @@ function Asesor({ onBack, onNavigate, asesorData, setAsesorData }) {
                       border: '1px solid #dee2e6',
                     }}
                   >
-                    {asesor.tanggal}
+                    {asesor.jenis_kelamin}
                   </td>
                   <td 
                     style={{ 

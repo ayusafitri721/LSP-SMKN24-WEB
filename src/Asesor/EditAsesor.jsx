@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
 
-function EditAsesor({ data, onSave, onCancel, onDelete }) {
-  // Dummy database simulation - in real app this would be from props/context
-  const [database, setDatabase] = useState([
-    { id: 1, nama: 'John Doe', pekerjaan: 'Software Engineer', sertifikasi: 'Tersertifikasi', tanggal_daftar: '2024-01-15' },
-    { id: 2, nama: 'Jane Smith', pekerjaan: 'Data Analyst', sertifikasi: 'Tidak Tersertifikasi', tanggal_daftar: '2024-02-10' },
-    { id: 3, nama: 'Bob Johnson', pekerjaan: 'Web Developer', sertifikasi: 'Tersertifikasi', tanggal_daftar: '2024-03-05' }
-  ]);
-
-  // Current data being edited
-  const currentData = data || database[0];
+function EditAsesor({ data, onSave, onCancel}) {
+  // Current data being edited - menggunakan data dummy jika tidak ada data
+  const currentData = data || {
+    id: '1',
+    nama_lengkap: 'John Doe',
+    no_registrasi: 'REG001',
+    email: 'john@example.com',
+    jenis_kelamin: 'Laki-laki',
+    pekerjaan: 'Software Developer',
+    sertifikasi: 'Tersertifikasi',
+    tanggal_daftar: '2024-01-01'
+  };
 
   const [formData, setFormData] = useState({
     id: currentData.id,
-    nama: currentData.nama,
-    pekerjaan: currentData.pekerjaan,
-    sertifikasi: currentData.sertifikasi,
-    tanggal_daftar: currentData.tanggal_daftar
+    nama: currentData.nama_lengkap,
+    no_registrasi: currentData.no_registrasi,
+    email: currentData.email,
+    jenis_kelamin: currentData.jenis_kelamin,
+    pekerjaan: currentData.pekerjaan || '',
+    sertifikasi: currentData.sertifikasi || 'Tersertifikasi',
+    tanggal_daftar: currentData.tanggal_daftar || ''
   });
 
   const [errors, setErrors] = useState({});
@@ -69,10 +74,13 @@ function EditAsesor({ data, onSave, onCancel, onDelete }) {
   const handleCancel = () => {
     setFormData({
       id: currentData.id,
-      nama: currentData.nama,
-      pekerjaan: currentData.pekerjaan,
-      sertifikasi: currentData.sertifikasi,
-      tanggal_daftar: currentData.tanggal_daftar
+      nama: currentData.nama_lengkap,
+      no_registrasi: currentData.no_registrasi,
+      email: currentData.email,
+      jenis_kelamin: currentData.jenis_kelamin,
+      pekerjaan: '',
+      sertifikasi: 'Tersertifikasi',
+      tanggal_daftar:  ''
     });
     setErrors({});
     
@@ -87,35 +95,11 @@ function EditAsesor({ data, onSave, onCancel, onDelete }) {
 
   const confirmDelete = () => {
     setShowDeleteConfirm(false);
-    
-    // Actually delete from database simulation
-    const updatedDatabase = database.filter(item => item.id !== formData.id);
-    setDatabase(updatedDatabase);
-    
-    // Call parent's onDelete function if provided
-    if (onDelete) {
-      onDelete(formData);
-    }
-    
-    // Show success notification briefly then redirect
     setShowDeleteSuccess(true);
     
-    console.log('Data berhasil dihapus dari database:', formData);
-    console.log('Database sekarang:', updatedDatabase);
-    
-    // Auto redirect after 1.5 seconds
     setTimeout(() => {
       setShowDeleteSuccess(false);
-      
-      // Use the same redirect logic as Cancel button
-      if (onCancel) {
-        onCancel();
-      } else {
-        // Fallback redirect if no onCancel provided
-        window.location.href = '/asesor';
-      }
-      
-    }, 1500);
+    }, 2000);
   };
 
   return (
@@ -185,9 +169,9 @@ function EditAsesor({ data, onSave, onCancel, onDelete }) {
               <input
                 type="text"
                 name="nama"
-                value={formData.nama}
+                value={formData.nama || ''}
                 onChange={handleInputChange}
-                placeholder=""
+                placeholder="Masukkan nama lengkap"
                 style={{
                   width: '100%',
                   padding: '16px',
@@ -215,6 +199,74 @@ function EditAsesor({ data, onSave, onCancel, onDelete }) {
               )}
             </div>
 
+            {/* No Registrasi */}
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#333',
+                marginBottom: '12px'
+              }}>
+                No Registrasi
+              </label>
+              <input
+                type="text"
+                name="no_registrasi"
+                value={formData.no_registrasi || ''}
+                onChange={handleInputChange}
+                placeholder="Masukkan nomor registrasi"
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  border: '2px solid #e0e0e0',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  boxSizing: 'border-box',
+                  backgroundColor: '#ffffff',
+                  outline: 'none',
+                  transition: 'border-color 0.2s ease',
+                  fontFamily: 'inherit'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#007bff'}
+                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#333',
+                marginBottom: '12px'
+              }}>
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email || ''}
+                onChange={handleInputChange}
+                placeholder="Masukkan email"
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  border: '2px solid #e0e0e0',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  boxSizing: 'border-box',
+                  backgroundColor: '#ffffff',
+                  outline: 'none',
+                  transition: 'border-color 0.2s ease',
+                  fontFamily: 'inherit'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#007bff'}
+                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+              />
+            </div>
+
             {/* Pekerjaan */}
             <div>
               <label style={{
@@ -229,9 +281,9 @@ function EditAsesor({ data, onSave, onCancel, onDelete }) {
               <input
                 type="text"
                 name="pekerjaan"
-                value={formData.pekerjaan}
+                value={formData.pekerjaan || ''}
                 onChange={handleInputChange}
-                placeholder=""
+                placeholder="Masukkan pekerjaan"
                 style={{
                   width: '100%',
                   padding: '16px',
@@ -266,6 +318,42 @@ function EditAsesor({ data, onSave, onCancel, onDelete }) {
             flexDirection: 'column',
             gap: '30px'
           }}>
+            {/* Jenis Kelamin */}
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#333',
+                marginBottom: '12px'
+              }}>
+                Jenis Kelamin
+              </label>
+              <select
+                name="jenis_kelamin"
+                value={formData.jenis_kelamin || ''}
+                onChange={handleInputChange}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  border: '2px solid #e0e0e0',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  boxSizing: 'border-box',
+                  backgroundColor: '#ffffff',
+                  outline: 'none',
+                  transition: 'border-color 0.2s ease',
+                  fontFamily: 'inherit'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#007bff'}
+                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+              >
+                <option value="">Pilih jenis kelamin</option>
+                <option value="Laki-laki">Laki-laki</option>
+                <option value="Perempuan">Perempuan</option>
+              </select>
+            </div>
+
             {/* Sertifikasi */}
             <div>
               <label style={{
@@ -279,7 +367,7 @@ function EditAsesor({ data, onSave, onCancel, onDelete }) {
               </label>
               <select
                 name="sertifikasi"
-                value={formData.sertifikasi}
+                value={formData.sertifikasi || 'Tersertifikasi'}
                 onChange={handleInputChange}
                 style={{
                   width: '100%',
@@ -316,7 +404,7 @@ function EditAsesor({ data, onSave, onCancel, onDelete }) {
               <input
                 type="date"
                 name="tanggal_daftar"
-                value={formData.tanggal_daftar}
+                value={formData.tanggal_daftar || ''}
                 onChange={handleInputChange}
                 style={{
                   width: '100%',

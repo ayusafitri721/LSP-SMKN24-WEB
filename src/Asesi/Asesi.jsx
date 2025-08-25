@@ -1,15 +1,28 @@
 import React, { useState } from 'react';
 import { useAsesi } from '../context/AsesiContext'; // Import custom hook
 
-function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
+function Asesi({ onBack, onNavigate}) {
   const [showAddNotif, setShowAddNotif] = useState(false);
-  const { asesis, loading, error, fetchAsesis, addAsesi, editAsesi } = useAsesi();
+  const { asesis, loading, error, fetchAsesis, addAsesi, editAsesi, removeAsesi } = useAsesi();
+  const {asesi, setAsesiDataEdit} = useState(null);
 
   const dataAsesis = asesis || [];
 
   const handleAddClick = () => {
     onNavigate('addasesi');
   };
+
+  const handleDelete = (asesi) => {
+    if (window.confirm(`Yakin ingin menghapus data asesi: ${asesi.nama_lengkap}?`)) {
+      removeAsesi(asesi.id)
+        .then(() => {
+          fetchAsesis(); // Refresh data setelah hapus
+        })
+        .catch((err) => {
+          alert(`Gagal menghapus data: ${err.message || err}`);
+        });
+    }
+  }
 
   const handleEdit = (asesi) => {
     onNavigate('editasesi', asesi);
@@ -251,17 +264,6 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
                   }}
                 >
 
-                  <td
-                  style={{
-                    padding: '10px 8px',
-                    textAlign: 'center',
-                    color: '#333',
-                    fontSize: '12px',
-                    border: '1px solid #dee2e6',
-                  }}
-                >
-                  {asesi.tanggal_lahir}
-                </td>
                 <td 
                   style={{ 
                     padding: '10px 8px', 
@@ -270,7 +272,7 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
                   }}
                 ></td>
 
-                
+
                   <button
                     onClick={() => handleEdit(asesi)}
                     style={{
@@ -285,6 +287,22 @@ function Asesi({ onBack, onNavigate, asesiData, setAsesiData }) {
                     }}
                   >
                     Edit Data
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(asesi)}
+                    style={{
+                      backgroundColor: '#ff0707ff',
+                      color: '#212529',
+                      border: 'none',
+                      borderRadius: '4px',
+                      padding: '4px 8px',
+                      fontSize: '11px',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Delete
                   </button>
                 </td>
               </tr>

@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
+import { useAsesi } from '../context/AsesiContext';
+import { 
+  InputField, 
+  SelectField, 
+  TextareaField, 
+  RadioField, 
+  DateField,
+  JURUSAN_OPTIONS,
+  GENDER_OPTIONS
+} from '../components/FieldComponents';
 
 function AddAsesi({ onSave, onCancel }) {
+  const { asesis, loading, error, fetchAsesis, addAsesi, editAsesi } = useAsesi();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
-    jurusan_id: '',
+    jurusan_id: 1,
     nama_lengkap: '',
     no_ktp: '',
     tempat_lahir: '',
@@ -16,6 +27,17 @@ function AddAsesi({ onSave, onCancel }) {
     kode_pos: '',
     kualifikasi_pendidikan: ''
   });
+
+  const handleSubmit = async () => {
+    if (validateForm()) {
+      try {
+        await addAsesi(formData);
+        setShowAddNotif(true);
+      } catch (error) {
+        console.error("Error adding asesi:", error);
+      }
+    }
+  };
 
   const [errors, setErrors] = useState({});
   const [showAddNotif, setShowAddNotif] = useState(false);
@@ -85,13 +107,6 @@ function AddAsesi({ onSave, onCancel }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      // Show notification modal
-      setShowAddNotif(true);
-    }
-  };
-
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     
@@ -146,548 +161,131 @@ function AddAsesi({ onSave, onCancel }) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
           {/* Left Column */}
           <div>
-            {/* Username */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#333',
-                  fontSize: '14px',
-                }}
-              >
-                Username *
-              </label>
-              <input
-                type="text"
-                value={formData.username}
-                onChange={(e) => handleChange('username', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: errors.username ? '1px solid #dc3545' : '1px solid #ccc',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#f8f9fa',
-                }}
-                placeholder="Masukkan username"
-              />
-              {errors.username && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '12px',
-                  marginTop: '4px',
-                  margin: '4px 0 0 0'
-                }}>
-                  {errors.username}
-                </p>
-              )}
-            </div>
+            <InputField
+              label="Username"
+              value={formData.username}
+              onChange={(e) => handleChange('username', e.target.value)}
+              placeholder="Masukkan username"
+              required
+              error={errors.username}
+            />
 
-            {/* Email */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#333',
-                  fontSize: '14px',
-                }}
-              >
-                Email *
-              </label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: errors.email ? '1px solid #dc3545' : '1px solid #ccc',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#f8f9fa',
-                }}
-                placeholder="contoh@email.com"
-              />
-              {errors.email && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '12px',
-                  marginTop: '4px',
-                  margin: '4px 0 0 0'
-                }}>
-                  {errors.email}
-                </p>
-              )}
-            </div>
+            <InputField
+              label="Email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleChange('email', e.target.value)}   
+              placeholder="contoh@email.com"
+              required
+              error={errors.email}
+            />
 
-            {/* Password */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#333',
-                  fontSize: '14px',
-                }}
-              >
-                Password *
-              </label>
-              <input
-                type="password"
-                value={formData.password}
-                onChange={(e) => handleChange('password', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: errors.password ? '1px solid #dc3545' : '1px solid #ccc',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#f8f9fa',
-                }}
-                placeholder="Minimal 6 karakter"
-              />
-              {errors.password && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '12px',
-                  marginTop: '4px',
-                  margin: '4px 0 0 0'
-                }}>
-                  {errors.password}
-                </p>
-              )}
-            </div>
+            <InputField
+              label="Password"
+              type="password"
+              value={formData.password}
+              onChange={(e) => handleChange('password', e.target.value)}
+              placeholder="Minimal 6 karakter"
+              required
+              error={errors.password}
+            />
 
-            {/* Jurusan */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#333',
-                  fontSize: '14px',
-                }}
-              >
-                Jurusan *
-              </label>
-              <select
-                value={formData.jurusan_id}
-                onChange={(e) => handleChange('jurusan_id', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: errors.jurusan_id ? '1px solid #dc3545' : '1px solid #ccc',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#f8f9fa',
-                }}
-              >
-                <option value="">Pilih Jurusan</option>
-                <option value="1">Rekayasa Perangkat Lunak</option>
-                <option value="2">Perhotelan</option>
-                <option value="3">Busana</option>
-                <option value="4">Usaha Layanan Pariwisata</option>
-                <option value="5">Kuliner</option>
-                <option value="6">Teknik Komputer dan Jaringan</option>
-                <option value="7">Multimedia</option>
-                <option value="8">Akuntansi</option>
-                <option value="9">Administrasi Perkantoran</option>
-              </select>
-              {errors.jurusan_id && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '12px',
-                  marginTop: '4px',
-                  margin: '4px 0 0 0'
-                }}>
-                  {errors.jurusan_id}
-                </p>
-              )}
-            </div>
+            <SelectField
+              label="Jurusan"
+              value={formData.jurusan_id}
+              onChange={(e) => handleChange('jurusan_id', e.target.value)}
+              options={JURUSAN_OPTIONS}
+              placeholder="Pilih Jurusan"
+              required
+              error={errors.jurusan_id}
+            />
 
-            {/* Nama Lengkap */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#333',
-                  fontSize: '14px',
-                }}
-              >
-                Nama Lengkap *
-              </label>
-              <input
-                type="text"
-                value={formData.nama_lengkap}
-                onChange={(e) => handleChange('nama_lengkap', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: errors.nama_lengkap ? '1px solid #dc3545' : '1px solid #ccc',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#f8f9fa',
-                }}
-                placeholder="Masukkan nama lengkap"
-              />
-              {errors.nama_lengkap && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '12px',
-                  marginTop: '4px',
-                  margin: '4px 0 0 0'
-                }}>
-                  {errors.nama_lengkap}
-                </p>
-              )}
-            </div>
+            <InputField
+              label="Nama Lengkap"
+              value={formData.nama_lengkap}
+              onChange={(e) => handleChange('nama_lengkap', e.target.value)}
+              placeholder="Masukkan nama lengkap"
+              required
+              error={errors.nama_lengkap}
+            />
 
-            {/* No KTP */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#333',
-                  fontSize: '14px',
-                }}
-              >
-                Nomor KTP *
-              </label>
-              <input
-                type="text"
-                value={formData.no_ktp}
-                onChange={(e) => handleChange('no_ktp', e.target.value)}
-                maxLength="16"
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: errors.no_ktp ? '1px solid #dc3545' : '1px solid #ccc',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#f8f9fa',
-                }}
-                placeholder="16 digit nomor KTP"
-              />
-              {errors.no_ktp && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '12px',
-                  marginTop: '4px',
-                  margin: '4px 0 0 0'
-                }}>
-                  {errors.no_ktp}
-                </p>
-              )}
-            </div>
+            <InputField
+              label="Nomor KTP"
+              value={formData.no_ktp}
+              onChange={(e) => handleChange('no_ktp', e.target.value)}
+              placeholder="16 digit nomor KTP"
+              maxLength="16"
+              required
+              error={errors.no_ktp}
+            />
           </div>
 
           {/* Right Column */}
           <div>
-            {/* Tempat Lahir */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#333',
-                  fontSize: '14px',
-                }}
-              >
-                Tempat Lahir *
-              </label>
-              <input
-                type="text"
-                value={formData.tempat_lahir}
-                onChange={(e) => handleChange('tempat_lahir', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: errors.tempat_lahir ? '1px solid #dc3545' : '1px solid #ccc',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#f8f9fa',
-                }}
-                placeholder="Masukkan tempat lahir"
-              />
-              {errors.tempat_lahir && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '12px',
-                  marginTop: '4px',
-                  margin: '4px 0 0 0'
-                }}>
-                  {errors.tempat_lahir}
-                </p>
-              )}
-            </div>
+            <InputField
+              label="Tempat Lahir"
+              value={formData.tempat_lahir}
+              onChange={(e) => handleChange('tempat_lahir', e.target.value)}
+              placeholder="Masukkan tempat lahir"
+              required
+              error={errors.tempat_lahir}
+            />
 
-            {/* Tanggal Lahir */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#333',
-                  fontSize: '14px',
-                }}
-              >
-                Tanggal Lahir *
-              </label>
-              <input
-                type="date"
-                value={formData.tanggal_lahir}
-                onChange={(e) => handleChange('tanggal_lahir', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: errors.tanggal_lahir ? '1px solid #dc3545' : '1px solid #ccc',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#f8f9fa',
-                }}
-              />
-              {errors.tanggal_lahir && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '12px',
-                  marginTop: '4px',
-                  margin: '4px 0 0 0'
-                }}>
-                  {errors.tanggal_lahir}
-                </p>
-              )}
-            </div>
+            <DateField
+              label="Tanggal Lahir"
+              value={formData.tanggal_lahir}
+              onChange={(e) => handleChange('tanggal_lahir', e.target.value)}
+              required
+              error={errors.tanggal_lahir}
+            />
 
-            {/* Alamat */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#333',
-                  fontSize: '14px',
-                }}
-              >
-                Alamat *
-              </label>
-              <textarea
-                value={formData.alamat}
-                onChange={(e) => handleChange('alamat', e.target.value)}
-                rows="3"
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: errors.alamat ? '1px solid #dc3545' : '1px solid #ccc',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#f8f9fa',
-                  resize: 'vertical',
-                  fontFamily: 'inherit'
-                }}
-                placeholder="Masukkan alamat lengkap"
-              />
-              {errors.alamat && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '12px',
-                  marginTop: '4px',
-                  margin: '4px 0 0 0'
-                }}>
-                  {errors.alamat}
-                </p>
-              )}
-            </div>
+            <TextareaField
+              label="Alamat"
+              value={formData.alamat}
+              onChange={(e) => handleChange('alamat', e.target.value)}
+              placeholder="Masukkan alamat lengkap"
+              rows={3}
+              required
+              error={errors.alamat}
+            />
 
-            {/* No Telepon */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#333',
-                  fontSize: '14px',
-                }}
-              >
-                Nomor Telepon *
-              </label>
-              <input
-                type="tel"
-                value={formData.no_telepon}
-                onChange={(e) => handleChange('no_telepon', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: errors.no_telepon ? '1px solid #dc3545' : '1px solid #ccc',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#f8f9fa',
-                }}
-                placeholder="Contoh: 089123456789"
-              />
-              {errors.no_telepon && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '12px',
-                  marginTop: '4px',
-                  margin: '4px 0 0 0'
-                }}>
-                  {errors.no_telepon}
-                </p>
-              )}
-            </div>
+            <InputField
+              label="Nomor Telepon"
+              type="tel"
+              value={formData.no_telepon}
+              onChange={(e) => handleChange('no_telepon', e.target.value)}
+              placeholder="Contoh: 089123456789"
+              required
+              error={errors.no_telepon}
+            />
 
-            {/* Jenis Kelamin */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#333',
-                  fontSize: '14px',
-                }}
-              >
-                Jenis Kelamin *
-              </label>
-              <div style={{ display: 'flex', gap: '20px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                  <input
-                    type="radio"
-                    name="jenis_kelamin"
-                    value="Laki-laki"
-                    checked={formData.jenis_kelamin === 'Laki-laki'}
-                    onChange={(e) => handleChange('jenis_kelamin', e.target.value)}
-                    style={{ marginRight: '8px' }}
-                  />
-                  <span style={{ fontSize: '13px' }}>Laki-laki</span>
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                  <input
-                    type="radio"
-                    name="jenis_kelamin"
-                    value="Perempuan"
-                    checked={formData.jenis_kelamin === 'Perempuan'}
-                    onChange={(e) => handleChange('jenis_kelamin', e.target.value)}
-                    style={{ marginRight: '8px' }}
-                  />
-                  <span style={{ fontSize: '13px' }}>Perempuan</span>
-                </label>
-              </div>
-              {errors.jenis_kelamin && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '12px',
-                  marginTop: '4px',
-                  margin: '4px 0 0 0'
-                }}>
-                  {errors.jenis_kelamin}
-                </p>
-              )}
-            </div>
+            <RadioField
+              label="Jenis Kelamin"
+              name="jenis_kelamin"
+              value={formData.jenis_kelamin}
+              onChange={(e) => handleChange('jenis_kelamin', e.target.value)}
+              options={GENDER_OPTIONS}
+              required
+              error={errors.jenis_kelamin}
+            />
 
-            {/* Kode Pos */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#333',
-                  fontSize: '14px',
-                }}
-              >
-                Kode Pos *
-              </label>
-              <input
-                type="text"
-                value={formData.kode_pos}
-                onChange={(e) => handleChange('kode_pos', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: errors.kode_pos ? '1px solid #dc3545' : '1px solid #ccc',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#f8f9fa',
-                }}
-                placeholder="Contoh: 12345"
-              />
-              {errors.kode_pos && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '12px',
-                  marginTop: '4px',
-                  margin: '4px 0 0 0'
-                }}>
-                  {errors.kode_pos}
-                </p>
-              )}
-            </div>
+            <InputField
+              label="Kode Pos"
+              value={formData.kode_pos}
+              onChange={(e) => handleChange('kode_pos', e.target.value)}
+              placeholder="Contoh: 12345"
+              required
+              error={errors.kode_pos}
+            />
 
-            {/* Kualifikasi Pendidikan */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#333',
-                  fontSize: '14px',
-                }}
-              >
-                Kualifikasi Pendidikan *
-              </label>
-              <input
-                type="text"
-                value={formData.kualifikasi_pendidikan}
-                onChange={(e) => handleChange('kualifikasi_pendidikan', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  border: errors.kualifikasi_pendidikan ? '1px solid #dc3545' : '1px solid #ccc',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#f8f9fa',
-                }}
-                placeholder="Contoh: SMK, SMA, S1, dll"
-              />
-              {errors.kualifikasi_pendidikan && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '12px',
-                  marginTop: '4px',
-                  margin: '4px 0 0 0'
-                }}>
-                  {errors.kualifikasi_pendidikan}
-                </p>
-              )}
-            </div>
+            <InputField
+              label="Kualifikasi Pendidikan"
+              value={formData.kualifikasi_pendidikan}
+              onChange={(e) => handleChange('kualifikasi_pendidikan', e.target.value)}
+              placeholder="Contoh: SMK, SMA, S1, dll"
+              required
+              error={errors.kualifikasi_pendidikan}
+            />
           </div>
         </div>
 
@@ -726,7 +324,7 @@ function AddAsesi({ onSave, onCancel }) {
         </div>
       </div>
 
-      {/* Add Success Modal - Center of screen */}
+      {/* Add Success Modal */}
       {showAddNotif && (
         <div style={{
           position: 'fixed',

@@ -32,25 +32,7 @@ import ProfileSection from '../layouts/ProfileSection'; // Import ProfileSection
 const DashboardRoutes = () => {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState('Dashboard');
-  const [editData, setEditData] = useState(null);
-
-  
-  const [asesorData, setAsesorData] = useState([
-    { id: 1, no: 1, nama: 'Arul Maulita Singo, M.kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2024' },
-    { id: 2, no: 2, nama: 'Arul Maulita Singo, M.kom', pekerjaan: 'Guru', sertifikat: 'Tidak Tersertifikasi', tanggal: '22/8/2024' },
-    { id: 3, no: 3, nama: 'Arul Maulita Singo, M.kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2024' },
-    { id: 4, no: 4, nama: 'Arul Maulita Singo, M.kom', pekerjaan: 'Guru', sertifikat: 'Tersertifikasi', tanggal: '22/8/2024' },
-  ]);
-
-  const [asesiData, setAsesiData] = useState([
-    { id: 1, no: 1, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Rekayasa Perangkat Lunak', kelas: '12' },
-    { id: 2, no: 2, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Rekayasa Perangkat Lunak', kelas: '11' },
-    { id: 3, no: 3, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Rekayasa Perangkat Lunak', kelas: '10' },
-    { id: 4, no: 4, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Perhotelan', kelas: '11' },
-    { id: 5, no: 5, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Busana', kelas: '11' },
-    { id: 6, no: 6, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Usaha Layanan Pariwisata', kelas: '11' },
-    { id: 7, no: 7, nama: 'Erwin Abristor Mega', pekerjaan: 'Siswa', jurusan: 'Kuliner', kelas: '11' }
-  ]);
+  const [editData, setEditData] = useState(null)
 
   const [jurusanData, setJurusanData] = useState([
     { id: 1, kompetensiKeahlian: 'Rekayasa Perangkat Lunak', jumlahSiswa: '45' },
@@ -75,7 +57,7 @@ const DashboardRoutes = () => {
   ]);
 
   const handleBackToHome = () => {
-    navigate('/');
+    navigate('/dashboard');
   };
 
   const handleNavigate = (page, data = null) => {
@@ -134,9 +116,6 @@ const DashboardRoutes = () => {
 
   
   const handleAddAsesor = (newData) => {
-    const newId = Math.max(...asesorData.map(a => a.id), 0) + 1;
-    const newNo = Math.max(...asesorData.map(a => a.no), 0) + 1;
-    setAsesorData([...asesorData, { ...newData, id: newId, no: newNo }]);
     navigate('/dashboard/asesor');
   };
 
@@ -153,7 +132,6 @@ const DashboardRoutes = () => {
   };
 
   const handleEditAsesi = (updatedData) => {
-    setAsesiData(asesiData.map(asesi => asesi.id === updatedData.id ? updatedData : asesi));
     navigate('/dashboard/asesi');
   };
 
@@ -242,8 +220,6 @@ const DashboardRoutes = () => {
           <Asesor 
             onBack={handleBackToHome} 
             onNavigate={handleNavigate} 
-            asesorData={asesorData} 
-            setAsesorData={setAsesorData} 
           />
         </DashboardLayout>
       } />
@@ -253,7 +229,7 @@ const DashboardRoutes = () => {
           onCancel={() => navigate('/dashboard/asesor')} 
         />
       } />
-      <Route path="/asesor/edit/:id" element={
+      <Route path="/asesor/edit" element={
         <EditAsesor 
           data={editData} 
           onSave={handleEditAsesor} 
@@ -267,8 +243,6 @@ const DashboardRoutes = () => {
           <Asesi 
             onBack={handleBackToHome} 
             onNavigate={handleNavigate} 
-            asesiData={asesiData} 
-            setAsesiData={setAsesiData} 
           />
         </DashboardLayout>
       } />
@@ -278,7 +252,7 @@ const DashboardRoutes = () => {
           onCancel={() => navigate('/dashboard/asesi')} 
         />
       } />
-      <Route path="/asesi/edit/:id" element={
+      <Route path="/asesi/edit" element={
         <EditAsesi 
           data={editData} 
           onSave={handleEditAsesi} 
