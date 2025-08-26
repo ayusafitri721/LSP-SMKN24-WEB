@@ -83,7 +83,10 @@ const DashboardRoutes = () => {
       'addjurusan': 'jurusan/add',
       'editjurusan': 'jurusan/edit',
       'addskema': 'kompetensi/add-skema',
-      'editskema': 'kompetensi/edit-skema'
+      'editskema': 'kompetensi/edit-skema',
+      // Fix untuk ListAsesmen routes
+      'lihatlistasesmen': 'list-asesmen/lihat',
+      'analytics': 'list-asesmen/analytics'
     };
     
     const route = pageMap[page] || page;
@@ -358,11 +361,14 @@ const DashboardRoutes = () => {
           item={editData} 
         />
       } />
-      <Route path="/list-asesmen/lihat/:id" element={
-        <LihatListAsesmen 
-          onBack={() => navigate('/dashboard/list-asesmen')} 
-          data={editData} 
-        />
+      {/* Fixed route untuk LihatListAsesmen */}
+      <Route path="/list-asesmen/lihat" element={
+        <DashboardLayout>
+          <LihatListAsesmen 
+            onBack={() => navigate('/dashboard/list-asesmen')} 
+            data={editData} 
+          />
+        </DashboardLayout>
       } />
 
       {/* Asesmen Diikuti Routes */}
