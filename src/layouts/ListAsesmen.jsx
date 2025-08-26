@@ -411,9 +411,11 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
                           onMouseEnter={(e) => e.target.style.backgroundColor = '#e96d00'}
                           onMouseLeave={(e) => e.target.style.backgroundColor = '#fd7e14'}
                         >
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="3" y="6" width="4" height="4" rx="1"/>
+                            <rect x="3" y="14" width="4" height="4" rx="1"/>
+                            <line x1="10" y1="8" x2="21" y2="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                            <line x1="10" y1="16" x2="21" y2="16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                           </svg>
                         </button>
                         <button 
