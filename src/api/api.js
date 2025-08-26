@@ -40,6 +40,7 @@ export const deleteAsesor = (id) => api.delete(`/assesor/${id}`);
 
 // Skema CRUD operations
 export const getSkemas = () => api.get("/schema");
+export const postApl02 = (data) => api.post("/apl02/import", data)
 
 // Assesmen CRUD operations
 export const getAssesments = () => api.get("/assesment");

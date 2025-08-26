@@ -129,9 +129,6 @@ const DashboardRoutes = () => {
   };
 
   const handleAddAsesi = (newData) => {
-    const newId = Math.max(...asesiData.map(a => a.id), 0) + 1;
-    const newNo = Math.max(...asesiData.map(a => a.no), 0) + 1;
-    setAsesiData([...asesiData, { ...newData, id: newId, no: newNo }]);
     navigate('/dashboard/asesi');
   };
 

@@ -1,12 +1,25 @@
 import React, { useState } from 'react';
+import { 
+  InputField, 
+  SelectField, 
+  TextareaField, 
+  RadioField, 
+  DateField,
+  GENDER_OPTIONS
+} from '../components/FieldComponents';
+import { useJurusan } from '../context/JurusanContext';
 
 function AddSkema({ onBack, onSave, onCancel }) {
   const [formData, setFormData] = useState({
-    judulSkema: '',
-    jumlahSiswa: ''
+    jurusan_id: ''
   });
+  const{jurusanList} = useJurusan();
 
   const [errors, setErrors] = useState({});
+  const JURUSAN_OPTIONS = jurusanList.map(jurusan => ({
+    value: jurusan.id,
+    label: jurusan.nama_jurusan
+  }));
   const [showAddNotif, setShowAddNotif] = useState(false);
 
   const handleInputChange = (e) => {
@@ -148,99 +161,20 @@ function AddSkema({ onBack, onSave, onCancel }) {
             flexDirection: 'column',
             gap: '30px'
           }}>
-            {/* Judul Skema */}
+            {/* Jurusan Skema */}
             <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Judul Skema
-              </label>
-              <input
-                type="text"
-                name="judulSkema"
-                value={formData.judul_skema}
-                onChange={handleInputChange}
-                placeholder=""
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-              />
-              {errors.judulSkema && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '14px',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0'
-                }}>
-                  {errors.judulSkema}
-                </p>
-              )}
-            </div>
-          </div>
 
-          {/* Right Column */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '30px'
-          }}>
-            {/* Jumlah Siswa */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#333',
-                marginBottom: '12px'
-              }}>
-                Jumlah Siswa
-              </label>
-              <input
-                type="text"
-                name="jumlahSiswa"
-                value={formData.jumlahSiswa}
-                onChange={handleInputChange}
-                placeholder=""
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: '#ffffff',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  fontFamily: 'inherit'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#007bff'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+              <SelectField
+                label={"Jurusan"}
+                value={formData.jurusan_id}
+                onChange={
+                  handleInputChange("jurusan_id", )
+                }
+                options={JURUSAN_OPTIONS}
+                placeholder={"example : Rekayasa Perangkat Lunak"}
+
               />
-              {errors.jumlahSiswa && (
-                <p style={{
-                  color: '#dc3545',
-                  fontSize: '14px',
-                  marginTop: '8px',
-                  margin: '8px 0 0 0'
-                }}>
-                  {errors.jumlahSiswa}
-                </p>
-              )}
+              
             </div>
           </div>
         </div>
@@ -302,101 +236,7 @@ function AddSkema({ onBack, onSave, onCancel }) {
         </div>
       </div>
 
-      {/* Add Success Modal */}
-      {showAddNotif && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: '#ffffff',
-            borderRadius: '20px',
-            padding: '40px 30px',
-            textAlign: 'center',
-            width: '300px',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-            position: 'relative'
-          }}>
-            {/* Check Icon */}
-            <div style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              backgroundColor: '#4A90E2',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 25px auto'
-            }}>
-              <svg width="35" height="35" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M20 6L9 17l-5-5"
-                  stroke="#ffffff"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
 
-            {/* Success Message */}
-            <h2 style={{
-              fontSize: '22px',
-              fontWeight: '600',
-              color: '#333333',
-              margin: '0 0 25px 0',
-              lineHeight: '1.4',
-              paddingBottom: '25px',
-              borderBottom: '1px solid #e0e0e0'
-            }}>
-              Data Berhasil<br />Ditambahkan!
-            </h2>
-
-            {/* OK Text */}
-            <div
-              onClick={() => {
-                setShowAddNotif(false);
-                
-                // Create new item
-                const newItem = {
-                  id: Date.now(),
-                  judulSkema: formData.judulSkema.trim(),
-                  jumlahSiswa: formData.jumlahSiswa.trim()
-                };
-                
-                if (onSave) {
-                  onSave(newItem);
-                }
-                
-                // Reset form after save
-                setFormData({
-                  judulSkema: '',
-                  jumlahSiswa: ''
-                });
-                setErrors({});
-              }}
-              style={{
-                fontSize: '18px',
-                fontWeight: '600',
-                color: '#333333',
-                cursor: 'pointer',
-                fontFamily: 'inherit',
-                userSelect: 'none'
-              }}
-            >
-              Okay!
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

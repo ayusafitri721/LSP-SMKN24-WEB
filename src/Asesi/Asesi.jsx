@@ -8,61 +8,26 @@ function Asesi({ onBack, onNavigate}) {
   
   const dataAsesis = asesis || [];
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [asesi, setAsesi] = useState(null);
   const handleAddClick = () => {
     onNavigate('addasesi');
   };
 
   const handleDelete = (asesi) => {
-    if (window.confirm(`Yakin ingin menghapus data asesi: ${asesi.nama_lengkap}?`)) {
-      removeAsesi(asesi.id)
-        .then(() => {
-          fetchAsesis(); // Refresh data setelah hapus
-        })
-        .catch((err) => {
-          alert(`Gagal menghapus data: ${err.message || err}`);
-        });
-    }
+    
+    removeAsesi(asesi.id)
+      .then(() => {
+        setShowDeleteModal(false);
+        setShowInfoModal(true);
+        fetchAsesis(); // Refresh data setelah hapus
+      })
+      .catch((err) => {
+        alert(`Gagal menghapus data: ${err.message || err}`);
+      });
+    
   };
-
-  const handleEdit = (asesi) => {
-    onNavigate('editasesi', asesi);
-  };
-
-  // Loading Component
-  const LoadingSpinner = () => (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: '80px 20px',
-      flexDirection: 'column',
-      gap: '16px',
-      backgroundColor: 'white'
-    }}>
-      <div style={{
-        width: '40px',
-        height: '40px',
-        border: '4px solid #f3f3f3',
-        borderTop: '4px solid #ff7849',
-        borderRadius: '50%',
-        animation: 'spin 1s linear infinite'
-      }}></div>
-      <p style={{
-        color: '#666',
-        fontSize: '16px',
-        margin: 0,
-        fontWeight: '500'
-      }}>
-        Memuat data asesi...
-      </p>
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
-    </div>
-  );
 
   // Empty State Component
   const EmptyState = () => (
@@ -230,8 +195,6 @@ function Asesi({ onBack, onNavigate}) {
         }}
       >
         {loading ? (
-          <LoadingSpinner />
-        ) : dataAsesis.length === 0 ? (
           <EmptyState />
         ) : (
           <table
@@ -417,7 +380,7 @@ function Asesi({ onBack, onNavigate}) {
                       </button>
 
                       <button
-                        onClick={() => handleDelete(asesi)}
+                        onClick={() =>{ setShowDeleteModal(true), setAsesi(asesi)}}
                         style={{
                           backgroundColor: '#dc3545',
                           color: 'white',
@@ -442,6 +405,42 @@ function Asesi({ onBack, onNavigate}) {
           </table>
         )}
       </div>
+
+      {
+        <ConfirmationModal
+          isVisible = {showDeleteModal}
+          onConfirm = {()=>
+            handleDelete(asesi)
+          }
+          onCancel ={()=>
+            setShowDeleteModal(false)
+          }
+          title = "Hapus Asesi"
+          message = "Yakin ingin menghapus asesi ini"
+          confirmText= "Hapus"
+          cancelText= "Batal"
+        />
+      }
+
+      {
+        <InfoModal
+          isVisible = {showInfoModal}
+          onClose = {()=>
+            setShowInfoModal(false)
+          }
+          title = "Data Berhasil Dihapus!"
+          message = "Data Berhasil\nDihapus!"
+          buttonText= "Tutup"
+        />
+      }
+
+      {
+        loading &&
+        <LoadingModal
+          isVisible={loading}
+          message="Memuat data asesi..."
+        />
+      }
 
       {/* Add Success Modal - Center of screen */}
       {

@@ -249,7 +249,7 @@ const SuccessModal = ({
             userSelect: 'none'
           }}
         >
-          {buttonText}
+          {buttonText}({autoCloseDelay})
         </div>
       )}
     </ModalWrapper>

@@ -1,40 +1,16 @@
 import React, { useState } from 'react';
+import { useSkema } from '../context/SkemaContext';
 
 function Skema({ onBack, onNavigate }) {
-  const [data, setData] = useState([
-    { 
-      id: 1, 
-      kodeSkema: 'A001', 
-      judulSkema: 'USK RPL Pemrograman Dasar', 
-      tanggal: 'MT001',
-      jam: 'Pilihan Ganda',
-      jumlahSiswa: 25 
-    },
-    { 
-      id: 2, 
-      kodeSkema: 'A002', 
-      judulSkema: 'USK RPL Pemrograman Dasar', 
-      tanggal: 'MT002',
-      jam: 'Pilihan Ganda',
-      jumlahSiswa: 30 
-    },
-    { 
-      id: 3, 
-      kodeSkema: 'A003', 
-      judulSkema: 'USK RPL Pemrograman Dasar', 
-      tanggal: 'MT003',
-      jam: 'Pilihan Ganda',
-      jumlahSiswa: 28 
-    }
-  ]);
-
+  const {skemaList, loading, error, fetchSkemas, importFile} = useSkema();
+  const data = skemaList
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
   const handleImportClick = () => {
     // Navigate to edit when import is clicked
-    onNavigate('editskema');
+    onNavigate('addskema');
   };
 
   const handleDeleteClick = (item) => {
@@ -155,6 +131,7 @@ function Skema({ onBack, onNavigate }) {
       </div>
 
       {/* Table Container */}
+      
       <div
         style={{
           backgroundColor: 'white',
@@ -195,7 +172,7 @@ function Skema({ onBack, onNavigate }) {
                   border: '1px solid #dee2e6',
                 }}
               >
-                Kode Skema
+                Nomor Skema
               </th>
               <th
                 style={{
@@ -220,7 +197,7 @@ function Skema({ onBack, onNavigate }) {
                   border: '1px solid #dee2e6',
                 }}
               >
-                Tanggal
+                Jurusan
               </th>
               <th
                 style={{
@@ -233,7 +210,7 @@ function Skema({ onBack, onNavigate }) {
                   border: '1px solid #dee2e6',
                 }}
               >
-                Jam
+                Total Unit
               </th>
               <th
                 style={{
@@ -277,7 +254,7 @@ function Skema({ onBack, onNavigate }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {item.kodeSkema}
+                  {item.nomor_skema}
                 </td>
                 <td
                   style={{
@@ -287,7 +264,7 @@ function Skema({ onBack, onNavigate }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {item.judulSkema}
+                  {item.judul_skema}
                 </td>
                 <td
                   style={{
@@ -297,7 +274,7 @@ function Skema({ onBack, onNavigate }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {item.tanggal}
+                  {item.jurusan.nama_jurusan}
                 </td>
                 <td
                   style={{
@@ -307,7 +284,7 @@ function Skema({ onBack, onNavigate }) {
                     border: '1px solid #dee2e6',
                   }}
                 >
-                  {item.jam}
+                  {item.total_units}
                 </td>
                 <td 
                   style={{ 

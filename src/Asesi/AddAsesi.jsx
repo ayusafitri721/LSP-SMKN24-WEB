@@ -388,8 +388,8 @@ function AddAsesi({ onSave, onCancel }) {
         title={"Berhasil!"}
         message="Data Berhasil Ditambahkan!" 
         buttonText="Tutup"
-        autoClose={false}
-        autoCloseDelay={5000}
+        autoClose={true}
+        autoCloseDelay={7000}
         onClose={() => {
           setShowAddNotif(false);
           resetForm(); // Gunakan function yang sudah dibuat
