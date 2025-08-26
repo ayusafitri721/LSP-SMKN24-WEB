@@ -6,17 +6,28 @@ import {
   TextareaField, 
   RadioField, 
   DateField,
-  JURUSAN_OPTIONS,
   GENDER_OPTIONS
 } from '../components/FieldComponents';
 
+import { useJurusan } from '../context/JurusanContext';
+
+import { ModalWrapper, ConfirmationModal, SuccessModal, InfoModal, LoadingModal } from '../components/Modal';
+
 function AddAsesi({ onSave, onCancel }) {
   const { asesis, loading, error, fetchAsesis, addAsesi, editAsesi } = useAsesi();
-  const [formData, setFormData] = useState({
+  const { jurusanList } = useJurusan();
+
+  const JURUSAN_OPTIONS = jurusanList.map(jurusan => ({
+    value: jurusan.id,
+    label: jurusan.nama_jurusan
+  }));
+  
+  // Konsisten default values
+  const initialFormData = {
     username: '',
     email: '',
     password: '',
-    jurusan_id: 1,
+    jurusan_id: '', // Konsisten dengan reset
     nama_lengkap: '',
     no_ktp: '',
     tempat_lahir: '',
@@ -26,21 +37,12 @@ function AddAsesi({ onSave, onCancel }) {
     jenis_kelamin: '',
     kode_pos: '',
     kualifikasi_pendidikan: ''
-  });
-
-  const handleSubmit = async () => {
-    if (validateForm()) {
-      try {
-        await addAsesi(formData);
-        setShowAddNotif(true);
-      } catch (error) {
-        console.error("Error adding asesi:", error);
-      }
-    }
   };
 
+  const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState({});
   const [showAddNotif, setShowAddNotif] = useState(false);
+  const [submitError, setSubmitError] = useState(''); // Tambah error state
 
   const validateForm = () => {
     const newErrors = {};
@@ -71,8 +73,8 @@ function AddAsesi({ onSave, onCancel }) {
     
     if (!formData.no_ktp.trim()) {
       newErrors.no_ktp = 'Nomor KTP harus diisi';
-    } else if (formData.no_ktp.length !== 16) {
-      newErrors.no_ktp = 'Nomor KTP harus 16 digit';
+    } else if (!/^\d{16}$/.test(formData.no_ktp)) { // Perbaikan validasi KTP
+      newErrors.no_ktp = 'Nomor KTP harus 16 digit angka';
     }
     
     if (!formData.tempat_lahir.trim()) {
@@ -89,6 +91,8 @@ function AddAsesi({ onSave, onCancel }) {
     
     if (!formData.no_telepon.trim()) {
       newErrors.no_telepon = 'Nomor telepon harus diisi';
+    } else if (!/^[0-9+\-\s()]+$/.test(formData.no_telepon)) { // Validasi format telpon
+      newErrors.no_telepon = 'Format nomor telepon tidak valid';
     }
     
     if (!formData.jenis_kelamin) {
@@ -97,6 +101,8 @@ function AddAsesi({ onSave, onCancel }) {
     
     if (!formData.kode_pos.trim()) {
       newErrors.kode_pos = 'Kode pos harus diisi';
+    } else if (!/^\d{5}$/.test(formData.kode_pos)) { // Validasi kode pos
+      newErrors.kode_pos = 'Kode pos harus 5 digit angka';
     }
     
     if (!formData.kualifikasi_pendidikan.trim()) {
@@ -105,6 +111,20 @@ function AddAsesi({ onSave, onCancel }) {
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    setSubmitError(''); // Clear previous error
+    
+    if (validateForm()) {
+      try {
+        await addAsesi(formData);
+        setShowAddNotif(true);
+      } catch (error) {
+        console.error("Error adding asesi:", error);
+        setSubmitError('Gagal menyimpan data. Silakan coba lagi.'); // User feedback
+      }
+    }
   };
 
   const handleChange = (field, value) => {
@@ -116,6 +136,17 @@ function AddAsesi({ onSave, onCancel }) {
         [field]: ''
       }));
     }
+    
+    // Clear submit error ketika user mulai edit
+    if (submitError) {
+      setSubmitError('');
+    }
+  };
+
+  const resetForm = () => {
+    setFormData(initialFormData);
+    setErrors({});
+    setSubmitError('');
   };
 
   return (
@@ -158,6 +189,22 @@ function AddAsesi({ onSave, onCancel }) {
           boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
         }}
       >
+        {/* Error Alert */}
+        {submitError && (
+          <div
+            style={{
+              backgroundColor: '#f8d7da',
+              color: '#721c24',
+              padding: '12px',
+              borderRadius: '6px',
+              marginBottom: '20px',
+              fontSize: '14px'
+            }}
+          >
+            {submitError}
+          </div>
+        )}
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
           {/* Left Column */}
           <div>
@@ -212,7 +259,12 @@ function AddAsesi({ onSave, onCancel }) {
             <InputField
               label="Nomor KTP"
               value={formData.no_ktp}
-              onChange={(e) => handleChange('no_ktp', e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, ''); // Hanya angka
+                if (value.length <= 16) {
+                  handleChange('no_ktp', value);
+                }
+              }}
               placeholder="16 digit nomor KTP"
               maxLength="16"
               required
@@ -272,8 +324,14 @@ function AddAsesi({ onSave, onCancel }) {
             <InputField
               label="Kode Pos"
               value={formData.kode_pos}
-              onChange={(e) => handleChange('kode_pos', e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, ''); // Hanya angka
+                if (value.length <= 5) {
+                  handleChange('kode_pos', value);
+                }
+              }}
               placeholder="Contoh: 12345"
+              maxLength="5"
               required
               error={errors.kode_pos}
             />
@@ -308,139 +366,39 @@ function AddAsesi({ onSave, onCancel }) {
           </button>
           <button
             onClick={handleSubmit}
+            disabled={loading} // Disable saat loading
             style={{
               padding: '10px 20px',
-              backgroundColor: '#ff7849',
+              backgroundColor: loading ? '#ccc' : '#ff7849',
               color: 'white',
               border: 'none',
               borderRadius: '8px',
               fontSize: '13px',
               fontWeight: '500',
-              cursor: 'pointer',
+              cursor: loading ? 'not-allowed' : 'pointer',
             }}
           >
-            Simpan Data
+            {loading ? 'Menyimpan...' : 'Simpan Data'}
           </button>
         </div>
       </div>
 
-      {/* Add Success Modal */}
-      {showAddNotif && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: '#ffffff',
-            borderRadius: '20px',
-            padding: '40px 30px',
-            textAlign: 'center',
-            width: '300px',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-            position: 'relative'
-          }}>
-            {/* Check Icon */}
-            <div style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              backgroundColor: '#4A90E2',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 25px auto'
-            }}>
-              <svg width="35" height="35" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M20 6L9 17l-5-5"
-                  stroke="#ffffff"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-
-            {/* Success Message */}
-            <h2 style={{
-              fontSize: '22px',
-              fontWeight: '600',
-              color: '#333333',
-              margin: '0 0 25px 0',
-              lineHeight: '1.4',
-              paddingBottom: '25px',
-              borderBottom: '1px solid #e0e0e0'
-            }}>
-              Data Berhasil<br />Ditambahkan!
-            </h2>
-
-            {/* OK Text */}
-            <div
-              onClick={() => {
-                setShowAddNotif(false);
-                
-                // Create new item
-                const newItem = {
-                  id: Date.now(),
-                  username: formData.username.trim(),
-                  email: formData.email.trim(),
-                  password: formData.password,
-                  jurusan_id: parseInt(formData.jurusan_id),
-                  nama_lengkap: formData.nama_lengkap.trim(),
-                  no_ktp: formData.no_ktp.trim(),
-                  tempat_lahir: formData.tempat_lahir.trim(),
-                  tanggal_lahir: formData.tanggal_lahir,
-                  alamat: formData.alamat.trim(),
-                  no_telepon: formData.no_telepon.trim(),
-                  jenis_kelamin: formData.jenis_kelamin,
-                  kode_pos: formData.kode_pos.trim(),
-                  kualifikasi_pendidikan: formData.kualifikasi_pendidikan.trim()
-                };
-                
-                if (onSave) {
-                  onSave(newItem);
-                }
-                
-                // Reset form after save
-                setFormData({
-                  username: '',
-                  email: '',
-                  password: '',
-                  jurusan_id: '',
-                  nama_lengkap: '',
-                  no_ktp: '',
-                  tempat_lahir: '',
-                  tanggal_lahir: '',
-                  alamat: '',
-                  no_telepon: '',
-                  jenis_kelamin: '',
-                  kode_pos: '',
-                  kualifikasi_pendidikan: ''
-                });
-                setErrors({});
-              }}
-              style={{
-                fontSize: '18px',
-                fontWeight: '600',
-                color: '#333333',
-                cursor: 'pointer',
-                fontFamily: 'inherit',
-                userSelect: 'none'
-              }}
-            >
-              Okay!
-            </div>
-          </div>
-        </div>
-      )}
+      <SuccessModal 
+        isVisible={showAddNotif}
+        title={"Berhasil!"}
+        message="Data Berhasil Ditambahkan!" 
+        buttonText="Tutup"
+        autoClose={false}
+        autoCloseDelay={5000}
+        onClose={() => {
+          setShowAddNotif(false);
+          resetForm(); // Gunakan function yang sudah dibuat
+          onSave(); // Tidak perlu pass data, karena sudah di-handle oleh addAsesi
+          
+        }} 
+      />
+      
+      <LoadingModal isOpen={loading} message="Menyimpan data..." />
     </div>
   );
 }

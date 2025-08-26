@@ -23,6 +23,7 @@ export const register = (data) => api.post("/auth/register", data);
 export const jurusans = () => api.get("/jurusan");
 export const createJurusan = (data) => api.post("/jurusan",data)
 export const putJurusan = (id, data) => api.put(`/jurusan/${id}`, data)
+export const deleteJurusan = (id) => api.delete(`/jurusan/${id}`)
 
 // Asesi CRUD operations
 export const getAsesis = () => api.get("/assesi");

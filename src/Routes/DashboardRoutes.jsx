@@ -20,7 +20,6 @@ import EditAsesmen from '../Asesmen/editasesmen';
 import Jurusan from '../Jurusan/Jurusan';
 import AddJurusan from '../Jurusan/AddJurusan';
 import EditJurusan from '../Jurusan/EditJurusan';
-import Kompetensi from '../Skema/Kompetensi';
 import AddSkema from '../Skema/AddSkema';
 import EditSkema from '../Skema/EditSkema';
 import AddListAsesmen from '../layouts/AddListAsesmen';
@@ -28,6 +27,7 @@ import EditListAsesmen from '../layouts/EditListAsesmen';
 import LihatListAsesmen from '../layouts/LihatListAsesmen';
 import LihatApprovement from '../Approvment/APL-01/LihatApprovement';
 import ProfileSection from '../layouts/ProfileSection'; // Import ProfileSection
+import Skema from '../Skema/Skema';
 
 const DashboardRoutes = () => {
   const navigate = useNavigate();
@@ -73,7 +73,7 @@ const DashboardRoutes = () => {
       'Asesor': 'asesor', 
       'Asesmen': 'asesmen',
       'Jurusan': 'jurusan',
-      'Kompetensi': 'kompetensi',
+      'Kompetensi': 'skema',
       'addasesi': 'asesi/add',
       'editasesi': 'asesi/edit',
       'addasesor': 'asesor/add',
@@ -82,8 +82,8 @@ const DashboardRoutes = () => {
       'editasesmen': 'asesmen/edit',
       'addjurusan': 'jurusan/add',
       'editjurusan': 'jurusan/edit',
-      'addskema': 'kompetensi/add-skema',
-      'editskema': 'kompetensi/edit-skema'
+      'addskema': 'skema/add-skema',
+      'editskema': 'skema/edit-skema'
     };
     
     const route = pageMap[page] || page;
@@ -158,12 +158,12 @@ const DashboardRoutes = () => {
   const handleAddSkema = (newData) => {
     const newId = Math.max(...skemaData.map(s => s.id), 0) + 1;
     setSkemaData([...skemaData, { ...newData, id: newId }]);
-    navigate('/dashboard/kompetensi');
+    navigate('/dashboard/skema');
   };
 
   const handleEditSkema = (updatedData) => {
     setSkemaData(skemaData.map(skema => skema.id === updatedData.id ? updatedData : skema));
-    navigate('/dashboard/kompetensi');
+    navigate('/dashboard/skema');
   };
 
   const handleImportAsesmen = (newData) => {
@@ -307,10 +307,10 @@ const DashboardRoutes = () => {
         </DashboardLayout>
       } />
 
-      {/* Kompetensi Routes */}
-      <Route path="/kompetensi" element={
+      {/* Skema Routes */}
+      <Route path="/skema" element={
         <DashboardLayout>
-          <Kompetensi 
+          <Skema
             onBack={handleBackToHome} 
             onNavigate={handleNavigate} 
             skemaData={skemaData} 
@@ -319,17 +319,17 @@ const DashboardRoutes = () => {
         </DashboardLayout>
       } />
 
-      <Route path="/kompetensi/add-skema" element={
+      <Route path="/skema/add-skema" element={
         <AddSkema 
           onSave={handleAddSkema} 
-          onCancel={() => navigate('/dashboard/kompetensi')} 
+          onCancel={() => navigate('/dashboard/skema')} 
         />
       } />
-      <Route path="/kompetensi/edit-skema/:id" element={
+      <Route path="/skema/edit-skema" element={
         <EditSkema 
           data={editData} 
           onSave={handleEditSkema} 
-          onCancel={() => navigate('/dashboard/kompetensi')} 
+          onCancel={() => navigate('/dashboard/skema')} 
         />
       } />
 

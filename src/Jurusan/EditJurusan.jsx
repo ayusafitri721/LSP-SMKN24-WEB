@@ -4,7 +4,7 @@ import { InputField, SelectField, TextareaField } from '../components/FieldCompo
 import { useJurusan } from '../context/JurusanContext.jsx';
 
 function EditJurusan({ item, onBack, onSave, onDelete, initialData }) {
-  const { loading, error, updateJurusan,fetchJurusans, deleteJurusan } = useJurusan();
+  const { loading, error, updateJurusan,fetchJurusans, removeJurusan } = useJurusan();
   const [formData, setFormData] = useState({
     kode_jurusan: '',
     nama_jurusan: '',
@@ -97,7 +97,7 @@ function EditJurusan({ item, onBack, onSave, onDelete, initialData }) {
 
   const handleDelete = async () => {
     try {
-      await deleteJurusan(initialData.id);
+      await removeJurusan(initialData.id);
       setShowDeleteConfirm(false);
       setShowDeleteSuccess(true);
     } catch (err) {
@@ -482,7 +482,7 @@ function EditJurusan({ item, onBack, onSave, onDelete, initialData }) {
             <button
               onClick={() => {
                 setShowDeleteSuccess(false);
-                onDelete && onDelete();
+                onSave();
                 setIsSubmitting(false);
               }}
               style={{

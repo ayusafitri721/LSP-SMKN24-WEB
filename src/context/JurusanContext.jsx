@@ -1,12 +1,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { jurusans as apiJurusans, putJurusan } from "../Api/api"; // service ambil jurusan
+import { jurusans as apiJurusans, putJurusan, deleteJurusan } from "../Api/api"; // service ambil jurusan
 import { createJurusan } from "../Api/api";
 
 import { data } from "react-router-dom";
 // Context
 const JurusanContext = createContext();
 
-// Provider
 export function JurusanProvider({ children }) {
   const [jurusanList, setJurusanList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -52,6 +51,18 @@ export function JurusanProvider({ children }) {
     }
   }
 
+  const removeJurusan = async (id) => {
+    setLoading(true);
+    setError(null);
+    try{
+      const res = await deleteJurusan(id);
+      return res.data?.data;
+    }catch(err){
+      setError(err.response?.data?.message || "Gagal menghapus jurusan!");
+      throw err;
+    }
+  }
+
   // Auto load saat pertama
   useEffect(() => {
     fetchJurusans();
@@ -59,7 +70,7 @@ export function JurusanProvider({ children }) {
 
   return (
     <JurusanContext.Provider
-      value={{ jurusanList, loading, error, fetchJurusans, postJurusan, updateJurusan }}
+      value={{ jurusanList, loading, error, fetchJurusans, postJurusan, updateJurusan, removeJurusan }}
     >
       {children}
     </JurusanContext.Provider>

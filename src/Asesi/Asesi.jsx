@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAsesi } from '../context/AsesiContext'; // Import custom hook
+import { ModalWrapper, ConfirmationModal, SuccessModal, InfoModal, LoadingModal } from '../components/Modal';
 
 function Asesi({ onBack, onNavigate}) {
   const [showAddNotif, setShowAddNotif] = useState(false);
@@ -443,82 +444,14 @@ function Asesi({ onBack, onNavigate}) {
       </div>
 
       {/* Add Success Modal - Center of screen */}
-      {showAddNotif && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: '#ffffff',
-            borderRadius: '20px',
-            padding: '40px 30px',
-            textAlign: 'center',
-            width: '300px',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-            position: 'relative'
-          }}>
-            {/* Check Icon */}
-            <div style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              backgroundColor: '#4A90E2',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 25px auto'
-            }}>
-              <svg width="35" height="35" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M20 6L9 17l-5-5"
-                  stroke="#ffffff"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-
-            {/* Success Message */}
-            <h2 style={{
-              fontSize: '22px',
-              fontWeight: '600',
-              color: '#333333',
-              margin: '0 0 25px 0',
-              lineHeight: '1.4',
-              paddingBottom: '25px',
-              borderBottom: '1px solid #e0e0e0'
-            }}>
-              Data Berhasil<br />Ditambahkan!
-            </h2>
-
-            {/* OK Text */}
-            <div
-              onClick={() => {
-                setShowAddNotif(false);
-              }}
-              style={{
-                fontSize: '18px',
-                fontWeight: '600',
-                color: '#333333',
-                cursor: 'pointer',
-                fontFamily: 'inherit',
-                userSelect: 'none'
-              }}
-            >
-              Okay!
-            </div>
-          </div>
-        </div>
-      )}
+      {
+        showAddNotif &&
+        SuccessModal({
+          title: "Data Berhasil Ditambahkan!",
+          message: "Data Berhasil\nDitambahkan!",
+          onClose: () => setShowAddNotif(false)
+        })
+      }
     </div>
   );
 }
