@@ -93,7 +93,8 @@ const DashboardRoutes = () => {
       // Add APL-02 routes
       'approvementapl02': 'approvement/apl-02',
       'lihatapprovement02': 'approvement/apl-02/lihat',
-      'detail-jurusan': 'approvement/apl-02/detail'
+      'detail-jurusan': 'approvement/apl-02/detail',
+      'approvement': 'approvement'
       
     };
     
@@ -409,14 +410,16 @@ const DashboardRoutes = () => {
         </DashboardLayout>
       } />
 
-      <Route path="/approvement/apl-02/detail" element={
+     <Route path="/approvement/apl-02/detail" element={
   <DashboardLayout>
     <DetailJurusan 
       onBack={() => navigate('/dashboard/approvement/apl-02')} 
+      onNavigate={handleNavigate}  // ← TAMBAHKAN INI
       data={editData} 
     />
   </DashboardLayout>
 } />
+
       <Route path="/approvement/apl-02/lihat" element={
   <DashboardLayout>
     <LihatApprovement02 
