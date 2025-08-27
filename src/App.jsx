@@ -25,9 +25,6 @@ import LoginRoutes from './Routes/LoginRoutes';
 import RegisterRoutes from './Routes/RegisterRoutes';
 import DashboardRoutes from './Routes/DashboardRoutes';
 
-// Asesi Dashboard Components
-import LoginAsesi from './Asesi-Dashboard/Login-Asesi';
-
 function App() {
   const [pendingScroll, setPendingScroll] = useState(null);
   
@@ -178,13 +175,6 @@ function App() {
         {/* Auth Routes */}
         <Route path="/auth/login/*" element={<LoginRoutes />} />
         <Route path="/auth/register/*" element={<RegisterRoutes />} />
-
-        {/* Asesi Login Route - TAMBAHAN BARU */}
-        <Route path="/asesi/login" element={
-          <LoginAsesi 
-            goToDashboard={() => handleNavigate('/dashboard')}
-          />
-        } />
 
         {/* Dashboard Routes */}
         <Route path="/dashboard/*" element={<DashboardRoutes />} />
