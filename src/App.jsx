@@ -18,6 +18,7 @@ import TempatUji from './layouts/TempatUji';
 import JadwalAsesmen from './layouts/jadwalasesmen';
 import GaleriFoto from './layouts/GaleriFoto';
 import GaleriVideo from './layouts/GaleriVideo';
+import Download from './layouts/Download'; // Import komponen Download baru
 
 // Route Components
 import LoginRoutes from './Routes/LoginRoutes';
@@ -113,6 +114,17 @@ function App() {
           <div>
             <Navbar onNavClick={scrollToSection} onLoginClick={handleLoginClick} />
             <Berita onBack={() => handleNavigate('/')} />
+          </div>
+        } />
+
+        {/* Route Download - BARU */}
+        <Route path="/download" element={
+          <div>
+            <Navbar onNavClick={scrollToSection} onLoginClick={handleLoginClick} />
+            <Download 
+              onBack={() => handleNavigate('/')} 
+              onNavigate={handleNavigate} 
+            />
           </div>
         } />
 
