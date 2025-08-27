@@ -30,6 +30,7 @@ import EditListAsesmen from '../layouts/EditListAsesmen';
 import LihatListAsesmen from '../layouts/LihatListAsesmen';
 import LihatApprovement from '../Approvment/APL-01/LihatApprovement';
 import ProfileSection from '../layouts/ProfileSection'; // Import ProfileSection
+import DetailJurusan from '../Approvment/APL-02/DetailJurusan';
 import Skema from '../Skema/Skema';
 
 const DashboardRoutes = () => {
@@ -87,14 +88,13 @@ const DashboardRoutes = () => {
       'editjurusan': 'jurusan/edit',
       'addskema': 'skema/add-skema',
       'editskema': 'skema/edit-skema',
-
-      // Fix untuk ListAsesmen routes
       'lihatlistasesmen': 'list-asesmen/lihat',
       'analytics': 'list-asesmen/analytics',
-      
       // Add APL-02 routes
       'approvementapl02': 'approvement/apl-02',
-      'lihatapprovement02': 'approvement/apl-02/lihat'
+      'lihatapprovement02': 'approvement/apl-02/lihat',
+      'detail-jurusan': 'approvement/apl-02/detail'
+      
     };
     
     const route = pageMap[page] || page;
@@ -408,12 +408,23 @@ const DashboardRoutes = () => {
           />
         </DashboardLayout>
       } />
-      <Route path="/approvement/apl-02/lihat/:id" element={
-        <LihatApprovement02 
-          onBack={() => navigate('/dashboard/approvement/apl-02')} 
-          data={editData} 
-        />
-      } />
+
+      <Route path="/approvement/apl-02/detail" element={
+  <DashboardLayout>
+    <DetailJurusan 
+      onBack={() => navigate('/dashboard/approvement/apl-02')} 
+      data={editData} 
+    />
+  </DashboardLayout>
+} />
+      <Route path="/approvement/apl-02/lihat" element={
+  <DashboardLayout>
+    <LihatApprovement02 
+      onBack={() => navigate('/dashboard/approvement/apl-02')} 
+      data={editData} 
+    />
+  </DashboardLayout>
+} />
 
       {/* Test Route for Debugging */}
       <Route path="/test" element={
