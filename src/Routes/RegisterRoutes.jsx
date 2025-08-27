@@ -12,9 +12,9 @@ const RegisterRoutes = () => {
     navigate('/dashboard');
   };
 
-  const goToLoginAsesi = () => {
+  const goToLogin = () => {
     // Path yang sesuai dengan route baru di App.jsx
-    navigate('/asesi/login');
+    navigate('auth/login');
   };
 
   const handleBackToHome = () => {
@@ -30,33 +30,7 @@ const RegisterRoutes = () => {
           <Register 
             onBack={handleBackToHome}
             goToDashboard={goToDashboard}
-            goToLoginAsesi={goToLoginAsesi}
-          />
-        } 
-      />
-      
-      {/* Admin Register Route */}
-      <Route 
-        path="/admin" 
-        element={
-          <Register 
-            onBack={handleBackToHome}
-            goToDashboard={goToDashboard}
-            goToLoginAsesi={goToLoginAsesi}
-            userType="admin"
-          />
-        } 
-      />
-      
-      {/* Asesi Register Route */}
-      <Route 
-        path="/asesi" 
-        element={
-          <Register 
-            onBack={handleBackToHome}
-            goToDashboard={goToDashboard}
-            goToLoginAsesi={goToLoginAsesi}
-            userType="asesi"
+            goToLogin={goToLogin}
           />
         } 
       />

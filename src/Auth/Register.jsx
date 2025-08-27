@@ -4,9 +4,10 @@ import { useAuth } from  '../context/AuthContext';
 // Import gambar dari src/img/
 import registerBackground from '../img/ADM_LOGIN.png';
 
-function Register({ goToDashboard, goToLoginAsesi }) {
+function Register({ goToDashboard, goToLogin }) {
   const {register} = useAuth();
   const {jurusanList, loading} = useJurusan();
+  const [registerLoading, setRegisterLoading] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -49,7 +50,7 @@ function Register({ goToDashboard, goToLoginAsesi }) {
       console.log("API Response:", res.data);
 
       // misalnya langsung ke dashboard
-      goToLoginAsesi?.();
+      goToLogin?.();
     } catch (err) {
       console.error("Register error:", err.response?.data || err.message);
       setError(err.response?.data?.message || "Registration failed");
@@ -334,12 +335,12 @@ function Register({ goToDashboard, goToLoginAsesi }) {
           </div>
 
           {/* Link to LoginAsesi */}
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ fontSize: '13px', color: '#666', marginBottom: '10px' }}>
+          <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+            <p style={{ fontSize: '13px', color: '#666', marginBottom: '0px' }}>
               Already have an account?
             </p>
             <button
-              onClick={goToLoginAsesi}
+              onClick={goToLogin}
               style={{
                 background: 'none',
                 border: 'none',
@@ -350,7 +351,7 @@ function Register({ goToDashboard, goToLoginAsesi }) {
                 fontWeight: '500'
               }}
             >
-              Sign in as Asesi
+              Sign in
             </button>
           </div>
         </div>
