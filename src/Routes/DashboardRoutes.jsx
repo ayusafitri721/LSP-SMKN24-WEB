@@ -6,6 +6,9 @@ import ManajemenData from '../layouts/ManajemenData';
 import ListAsesmen from '../layouts/ListAsesmen';
 import AsesmenDiikuti from '../AsesmenDiikuti/AsesmenDiikuti';
 import Approvement from '../Approvment/APL-01/Approvement';
+// Import APL-02 components
+import ApprovementApl02 from '../Approvment/APL-02/ApprovementApl02';
+import LihatApprovement02 from '../Approvment/APL-02/LihatApprovement02';
 import Asesor from '../Asesor/Asesor';
 import AddAsesor from '../Asesor/AddAsesor';
 import EditAsesor from '../Asesor/EditAsesor';
@@ -32,7 +35,7 @@ import Skema from '../Skema/Skema';
 const DashboardRoutes = () => {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState('Dashboard');
-  const [editData, setEditData] = useState(null)
+  const [editData, setEditData] = useState(null);
 
   const [jurusanData, setJurusanData] = useState([
     { id: 1, kompetensiKeahlian: 'Rekayasa Perangkat Lunak', jumlahSiswa: '45' },
@@ -87,7 +90,11 @@ const DashboardRoutes = () => {
 
       // Fix untuk ListAsesmen routes
       'lihatlistasesmen': 'list-asesmen/lihat',
-      'analytics': 'list-asesmen/analytics'
+      'analytics': 'list-asesmen/analytics',
+      
+      // Add APL-02 routes
+      'approvementapl02': 'approvement/apl-02',
+      'lihatapprovement02': 'approvement/apl-02/lihat'
     };
     
     const route = pageMap[page] || page;
@@ -124,7 +131,7 @@ const DashboardRoutes = () => {
   };
 
   const handleEditAsesor = (updatedData) => {
-    setAsesorData(asesorData.map(asesor => asesor.id === updatedData.id ? updatedData : asesor));
+    // Handle the edit logic here if needed
     navigate('/dashboard/asesor');
   };
 
@@ -175,7 +182,7 @@ const DashboardRoutes = () => {
   const handleAddAsesmen = (newData) => {
     alert('Data berhasil ditambahkan!');
     navigate('/dashboard/asesmen');
-  }
+  };
 
   const handleBarcodeAsesmen = (newData) => {
     alert('Barcode berhasil dibuat!');
@@ -376,7 +383,7 @@ const DashboardRoutes = () => {
         </DashboardLayout>
       } />
 
-      {/* Approvement Routes */}
+      {/* Approvement Routes - APL-01 */}
       <Route path="/approvement" element={
         <DashboardLayout>
           <Approvement 
@@ -388,6 +395,22 @@ const DashboardRoutes = () => {
       <Route path="/approvement/lihat/:id" element={
         <LihatApprovement 
           onBack={() => navigate('/dashboard/approvement')} 
+          data={editData} 
+        />
+      } />
+
+      {/* Approvement Routes - APL-02 - FIXED */}
+      <Route path="/approvement/apl-02" element={
+        <DashboardLayout>
+          <ApprovementApl02 
+            onBack={() => navigate('/dashboard/approvement')} 
+            onNavigate={handleNavigate} 
+          />
+        </DashboardLayout>
+      } />
+      <Route path="/approvement/apl-02/lihat/:id" element={
+        <LihatApprovement02 
+          onBack={() => navigate('/dashboard/approvement/apl-02')} 
           data={editData} 
         />
       } />
