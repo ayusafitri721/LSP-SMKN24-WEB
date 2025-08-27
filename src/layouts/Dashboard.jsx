@@ -781,13 +781,10 @@ function ProfileSection() {
   );
 }
 
-// DASHBOARD CONTENT ONLY (tanpa sidebar, karena sudah di-handle oleh DashboardRoutes)
 function Dashboard({ onBack, onNavigate }) {
   const handleDetailClick = () => {
-    if (onNavigate) {
-      onNavigate("listasesmen");
-    }
-  };
+  window.location.href = '/dashboard/list-asesmen';
+};
 
   return (
     <div
