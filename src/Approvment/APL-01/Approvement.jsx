@@ -1,30 +1,77 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { useApl01 } from '../../context/Apl01Context';
 
 export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' }) {
+  const { apl01s, loading, error, fetchApl01s, approveApl01 } = useApl01();
   const [searchTerm, setSearchTerm] = useState('');
-  // activeTab sekarang diambil dari props currentTab
-  const activeTab = currentTab;
+  const [formData, setFormData] = useState({});
+  const [actionLoading, setActionLoading] = useState({});
+  const [activeTab, setActiveTab] = useState(currentTab); // 'APL-01' or 'APL-02'
 
-  // Sample data untuk APL-01
-  const sampleDataAPL01 = [
-    {
-      id: 1,
-      namaJadwal: 'USK RPL Pemrograman Dasar',
-      tuk: 'Sewaktu/Tempat Kerja/Mandiri',
-      nisn: '0071585059',
-      tanggalUjian: '9/7/2025',
-      status: 'aktif',
-    },
-    {
-      id: 2,
-      namaJadwal: 'USK Jaringan Komputer',
-      tuk: 'Sewaktu/Tempat Kerja/Mandiri',
-      nisn: '0081234567',
-      tanggalUjian: '10/7/2025',
-      status: 'aktif',
-    },
-  ];
+  // Fetch APL-01 data when component mounts
+  useEffect(() => {
+    if (activeTab === 'APL-01') {
+      fetchApl01s();
+    }
+  }, [activeTab, fetchApl01s]);
+
+  // Transform APL-01 data to match table structure
+  const transformApl01Data = (apl01s) => {
+    if (!apl01s || !Array.isArray(apl01s)) return [];
+    
+    return apl01s.map(item => ({
+      id: item.id,
+      namaJadwal: `${item.nama_lengkap} - ${item.jabatan || 'Tidak ada jabatan'}`,
+      tuk: item.nama_institusi || 'Tidak ada institusi',
+      nisn: item.no_ktp,
+      tanggalUjian: new Date(item.created_at).toLocaleDateString('id-ID'),
+      status: item.status,
+      email: item.email,
+      telepon: item.no_telepon,
+      alamat: item.alamat_rumah,
+      pendidikan: item.kualifikasi_pendidikan,
+      tempat_lahir: item.tempat_lahir,
+      tanggal_lahir: item.tanggal_lahir,
+      user_id: item.user_id,
+      user: item.user,
+      nama_lengkap: item.nama_lengkap
+    }));
+  };
+
+  // Handle approve/reject actions
+  const handleStatusChange = async (itemId, newStatus) => {
+    setActionLoading(prev => ({ ...prev, [itemId]: newStatus }));
+    
+    // Update formData with new status
+    setFormData(prev => ({
+      ...prev,
+      [itemId]: {
+        ...prev[itemId],
+        status: newStatus
+      }
+    }));
+
+    try {
+      // Correct parameter order: itemId first, then newStatus
+      await approveApl01(itemId, formData[itemId] || { status: newStatus });
+      // Refresh data after update
+      await fetchApl01s();
+    } catch (error) {
+      console.error(`Error approving APL-01:`, error);
+      alert(`Gagal ${newStatus === 'approved' ? 'menyetujui' : 'menolak'} APL-01`);
+      
+      // Revert formData on error
+      setFormData(prev => ({
+        ...prev,
+        [itemId]: {
+          ...prev[itemId],
+          status: 'pending' // revert to original status
+        }
+      }));
+    } finally {
+      setActionLoading(prev => ({ ...prev, [itemId]: null }));
+    }
+  };
 
   // Sample data untuk APL-02
   const sampleDataAPL02 = [
@@ -47,13 +94,32 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
   ];
 
   // Pilih data berdasarkan tab aktif
-  const currentData = activeTab === 'APL-01' ? sampleDataAPL01 : sampleDataAPL02;
+  const currentData = activeTab === 'APL-01' ? transformApl01Data(apl01s) : sampleDataAPL02;
 
   const filteredData = currentData.filter(item =>
     item.namaJadwal.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.tuk.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (item.nisn && item.nisn.toString().includes(searchTerm.toLowerCase()))
   );
+
+  // Get status color - check formData first, then original status
+  const getStatusColor = (itemId, originalStatus) => {
+    const currentStatus = formData[itemId]?.status || originalStatus;
+    switch (currentStatus) {
+      case 'accepted':
+        return '#28a745'; // green
+      case 'rejected':
+        return '#dc3545'; // red
+      case 'pending':
+      default:
+        return '#ffc107'; // yellow
+    }
+  };
+
+  // Get current status - check formData first, then original status
+  const getCurrentStatus = (itemId, originalStatus) => {
+    return formData[itemId]?.status || originalStatus;
+  };
 
   const SearchIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -66,14 +132,10 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
   const handleTabClick = (tabName) => {
     if (tabName === 'APL-01') {
       // Navigate ke APL-01/Approvement.jsx
-      if (onNavigate) {
-        onNavigate('apl01-approvement');
-      }
+      setActiveTab('APL-01');
     } else if (tabName === 'APL-02') {
       // Navigate ke APL-02/ApprovementApl02.jsx
-      if (onNavigate) {
-        onNavigate('apl02-approvement');
-      }
+      setActiveTab('APL-02');
     }
   };
 
@@ -296,107 +358,205 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
                   fontSize: '14px',
                   fontWeight: '600',
                   color: '#495057',
-                  minWidth: '100px'
-                }}>Detail</th>
+                  minWidth: '200px'
+                }}>Aksi</th>
               </tr>
             </thead>
             <tbody>
               {filteredData.length > 0 ? (
-                filteredData.map((item, index) => (
-                  <tr key={item.id} style={{
-                    borderBottom: '1px solid #dee2e6',
-                    backgroundColor: '#ffffff'
-                  }}>
-                    <td style={{
-                      padding: '20px',
-                      textAlign: 'center',
-                      fontSize: '14px',
-                      color: '#495057',
-                      borderRight: '1px solid #dee2e6',
-                      verticalAlign: 'middle'
+                filteredData.map((item, index) => {
+                  const currentStatus = getCurrentStatus(item.id, item.status);
+                  return (
+                    <tr key={item.id} style={{
+                      borderBottom: '1px solid #dee2e6',
+                      backgroundColor: '#ffffff'
                     }}>
-                      {index + 1}.
-                    </td>
-                    <td style={{
-                      padding: '20px',
-                      fontSize: '14px',
-                      color: '#212529',
-                      fontWeight: '500',
-                      borderRight: '1px solid #dee2e6',
-                      verticalAlign: 'middle'
-                    }}>
-                      {item.namaJadwal}
-                    </td>
-                    <td style={{
-                      padding: '20px',
-                      fontSize: '14px',
-                      color: '#495057',
-                      borderRight: '1px solid #dee2e6',
-                      verticalAlign: 'middle'
-                    }}>
-                      {item.tuk}
-                    </td>
-                    <td style={{
-                      padding: '20px',
-                      textAlign: 'center',
-                      fontSize: '14px',
-                      color: '#495057',
-                      borderRight: '1px solid #dee2e6',
-                      verticalAlign: 'middle'
-                    }}>
-                      {item.nisn}
-                    </td>
-                    <td style={{
-                      padding: '20px',
-                      textAlign: 'center',
-                      fontSize: '14px',
-                      color: '#495057',
-                      borderRight: '1px solid #dee2e6',
-                      verticalAlign: 'middle'
-                    }}>
-                      {item.tanggalUjian}
-                    </td>
-                    <td style={{
-                      padding: '20px',
-                      textAlign: 'center',
-                      borderRight: '1px solid #dee2e6',
-                      verticalAlign: 'middle'
-                    }}>
-                      <div style={{
-                        width: '16px',
-                        height: '16px',
-                        backgroundColor: '#28a745',
-                        borderRadius: '2px',
-                        margin: '0 auto'
-                      }}></div>
-                    </td>
-                    <td style={{
-                      padding: '20px',
-                      textAlign: 'center',
-                      verticalAlign: 'middle'
-                    }}>
-                      <button
-                        onClick={() => onNavigate && onNavigate('lihatapprovement', { ...item, tabType: activeTab })}
-                        style={{
-                          backgroundColor: '#fd7e14',
-                          color: '#ffffff',
-                          border: 'none',
-                          borderRadius: '4px',
-                          padding: '6px 16px',
-                          fontSize: '12px',
-                          cursor: 'pointer',
-                          fontWeight: '500',
-                          minWidth: '60px',
-                          transition: 'background-color 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = '#e96a00'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = '#fd7e14'}
-                      >
-                        Lihat
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                      <td style={{
+                        padding: '20px',
+                        textAlign: 'center',
+                        fontSize: '14px',
+                        color: '#495057',
+                        borderRight: '1px solid #dee2e6',
+                        verticalAlign: 'middle'
+                      }}>
+                        {index + 1}.
+                      </td>
+                      <td style={{
+                        padding: '20px',
+                        fontSize: '14px',
+                        color: '#212529',
+                        fontWeight: '500',
+                        borderRight: '1px solid #dee2e6',
+                        verticalAlign: 'middle'
+                      }}>
+                        {item.namaJadwal}
+                      </td>
+                      <td style={{
+                        padding: '20px',
+                        fontSize: '14px',
+                        color: '#495057',
+                        borderRight: '1px solid #dee2e6',
+                        verticalAlign: 'middle'
+                      }}>
+                        {item.tuk}
+                      </td>
+                      <td style={{
+                        padding: '20px',
+                        textAlign: 'center',
+                        fontSize: '14px',
+                        color: '#495057',
+                        borderRight: '1px solid #dee2e6',
+                        verticalAlign: 'middle'
+                      }}>
+                        {item.nisn}
+                      </td>
+                      <td style={{
+                        padding: '20px',
+                        textAlign: 'center',
+                        fontSize: '14px',
+                        color: '#495057',
+                        borderRight: '1px solid #dee2e6',
+                        verticalAlign: 'middle'
+                      }}>
+                        {item.tanggalUjian}
+                      </td>
+                      <td style={{
+                        padding: '20px',
+                        textAlign: 'center',
+                        borderRight: '1px solid #dee2e6',
+                        verticalAlign: 'middle'
+                      }}>
+                        <div style={{
+                          width: '16px',
+                          height: '16px',
+                          backgroundColor: getStatusColor(item.id, item.status),
+                          borderRadius: '2px',
+                          margin: '0 auto'
+                        }}></div>
+                      </td>
+                      <td style={{
+                        padding: '20px',
+                        textAlign: 'center',
+                        verticalAlign: 'middle'
+                      }}>
+                        {activeTab === 'APL-01' && currentStatus === 'pending' ? (
+                          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                            <button
+                              onClick={() => handleStatusChange(item.id, 'accepted')}
+                              disabled={actionLoading[item.id]}
+                              style={{
+                                backgroundColor: actionLoading[item.id] === 'accepted' ? '#6c757d' : '#28a745',
+                                color: '#ffffff',
+                                border: 'none',
+                                borderRadius: '4px',
+                                padding: '6px 12px',
+                                fontSize: '12px',
+                                cursor: actionLoading[item.id] ? 'not-allowed' : 'pointer',
+                                fontWeight: '500',
+                                minWidth: '70px',
+                                transition: 'background-color 0.2s ease',
+                                opacity: actionLoading[item.id] ? 0.6 : 1
+                              }}
+                              onMouseEnter={(e) => {
+                                if (!actionLoading[item.id]) {
+                                  e.target.style.backgroundColor = '#218838';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (!actionLoading[item.id]) {
+                                  e.target.style.backgroundColor = '#28a745';
+                                }
+                              }}
+                            >
+                              {actionLoading[item.id] === 'accepted' ? 'Loading...' : 'accepted'}
+                            </button>
+                            <button
+                              onClick={() => handleStatusChange(item.id, 'rejected')}
+                              disabled={actionLoading[item.id]}
+                              style={{
+                                backgroundColor: actionLoading[item.id] === 'rejected' ? '#6c757d' : '#dc3545',
+                                color: '#ffffff',
+                                border: 'none',
+                                borderRadius: '4px',
+                                padding: '6px 12px',
+                                fontSize: '12px',
+                                cursor: actionLoading[item.id] ? 'not-allowed' : 'pointer',
+                                fontWeight: '500',
+                                minWidth: '70px',
+                                transition: 'background-color 0.2s ease',
+                                opacity: actionLoading[item.id] ? 0.6 : 1
+                              }}
+                              onMouseEnter={(e) => {
+                                if (!actionLoading[item.id]) {
+                                  e.target.style.backgroundColor = '#c82333';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (!actionLoading[item.id]) {
+                                  e.target.style.backgroundColor = '#dc3545';
+                                }
+                              }}
+                            >
+                              {actionLoading[item.id] === 'rejected' ? 'Loading...' : 'Reject'}
+                            </button>
+                            <button
+                              onClick={() => onNavigate && onNavigate('lihatapprovement', { ...item, tabType: activeTab })}
+                              style={{
+                                backgroundColor: '#fd7e14',
+                                color: '#ffffff',
+                                border: 'none',
+                                borderRadius: '4px',
+                                padding: '6px 12px',
+                                fontSize: '12px',
+                                cursor: 'pointer',
+                                fontWeight: '500',
+                                minWidth: '60px',
+                                transition: 'background-color 0.2s ease'
+                              }}
+                              onMouseEnter={(e) => e.target.style.backgroundColor = '#e96a00'}
+                              onMouseLeave={(e) => e.target.style.backgroundColor = '#fd7e14'}
+                            >
+                              Detail
+                            </button>
+                          </div>
+                        ) : (
+                          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                            <span style={{
+                              backgroundColor: currentStatus === 'accepted' ? '#d4edda' : '#f8d7da',
+                              color: currentStatus === 'accepted' ? '#155724' : '#721c24',
+                              padding: '6px 12px',
+                              borderRadius: '4px',
+                              fontSize: '12px',
+                              fontWeight: '500',
+                              textTransform: 'capitalize'
+                            }}>
+                              {currentStatus === 'accepted' ? 'Disetujui' : currentStatus === 'rejected' ? 'Ditolak' : currentStatus}
+                            </span>
+                            <button
+                              onClick={() => onNavigate && onNavigate('lihatapprovement', { ...item, tabType: activeTab })}
+                              style={{
+                                backgroundColor: '#fd7e14',
+                                color: '#ffffff',
+                                border: 'none',
+                                borderRadius: '4px',
+                                padding: '6px 12px',
+                                fontSize: '12px',
+                                cursor: 'pointer',
+                                fontWeight: '500',
+                                minWidth: '60px',
+                                transition: 'background-color 0.2s ease'
+                              }}
+                              onMouseEnter={(e) => e.target.style.backgroundColor = '#e96a00'}
+                              onMouseLeave={(e) => e.target.style.backgroundColor = '#fd7e14'}
+                            >
+                              Detail
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
                   <td colSpan="7" style={{
@@ -405,7 +565,10 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
                     color: '#999',
                     fontSize: '14px'
                   }}>
-                    {searchTerm ? 'Tidak ada data yang sesuai dengan pencarian' : `Belum ada data asesi untuk ${activeTab}`}
+                    {loading ? 'Memuat data...' : 
+                     error ? 'Terjadi kesalahan saat memuat data' :
+                     searchTerm ? 'Tidak ada data yang sesuai dengan pencarian' : 
+                     `Belum ada data asesi untuk ${activeTab}`}
                   </td>
                 </tr>
               )}

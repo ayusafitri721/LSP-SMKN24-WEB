@@ -7,7 +7,6 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = JSON.parse(localStorage.getItem("user")).token; 
-  console.log("Using token:", token);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -48,4 +47,7 @@ export const createAssesment = (data) => api.post("/assesment", data);
 export const updateAssesment = (id, data) => api.put(`/assesment/${id}`, data);
 export const deleteAssesment = (id) => api.delete(`/assesment/${id}`);
 
+// Apl01 CRUD operations
+export const getApl01s = () => api.get("/assesment/formapl01");
+export const approvementApl01 = (id, data) => api.post(`approvement/assesment/formapl01/${id}`, data);
 export default api;
