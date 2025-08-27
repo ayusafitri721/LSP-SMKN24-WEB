@@ -23,6 +23,8 @@ function Navbar({ onNavClick, onLoginClick }) {
       handleNavigation("/berita");
     } else if (name === "Kontak") {
       handleNavigation("/kontak");
+    } else if (name === "Download") {
+      handleNavigation("/download");
     } else if (name === "Home") {
       // Always go to home page
       handleNavigation("/");
@@ -130,7 +132,7 @@ function Navbar({ onNavClick, onLoginClick }) {
           position: "relative",
         }}
       >
-        {["Home", "Profile", "Sertifikasi", "Berita", "Galeri", "Kontak"].map(
+        {["Home", "Profile", "Sertifikasi", "Berita", "Galeri", "Download", "Kontak"].map(
           (name) => (
             <div
               key={name}
