@@ -31,6 +31,7 @@ import LihatListAsesmen from '../layouts/LihatListAsesmen';
 import LihatApprovement from '../Approvment/APL-01/LihatApprovement';
 import ProfileSection from '../layouts/ProfileSection'; // Import ProfileSection
 import DetailJurusan from '../Approvment/APL-02/DetailJurusan';
+import DetailJurusanApl01 from '../Approvment/APL-01/DetailJurusanApl01';
 import Skema from '../Skema/Skema';
 
 const DashboardRoutes = () => {
@@ -90,11 +91,14 @@ const DashboardRoutes = () => {
       'editskema': 'skema/edit-skema',
       'lihatlistasesmen': 'list-asesmen/lihat',
       'analytics': 'list-asesmen/analytics',
+      // APL-01
+      'approvement': 'approvement',
+      'detail-jurusan-apl01': 'approvement/detail',
+      'lihatapprovement': 'approvement/lihat',
       // Add APL-02 routes
       'approvementapl02': 'approvement/apl-02',
       'lihatapprovement02': 'approvement/apl-02/lihat',
-      'detail-jurusan': 'approvement/apl-02/detail',
-      'approvement': 'approvement'
+      'detail-jurusan': 'approvement/apl-02/detail'
       
     };
     
@@ -393,12 +397,15 @@ const DashboardRoutes = () => {
           />
         </DashboardLayout>
       } />
-      <Route path="/approvement/lihat/:id" element={
-        <LihatApprovement 
-          onBack={() => navigate('/dashboard/approvement')} 
-          data={editData} 
-        />
-      } />
+
+      <Route path="/approvement/lihat" element={
+  <DashboardLayout>
+    <LihatApprovement
+      onBack={() => navigate('/dashboard/approvement/detail')} 
+      data={editData} 
+    />
+  </DashboardLayout>
+} />
 
       {/* Approvement Routes - APL-02 - FIXED */}
       <Route path="/approvement/apl-02" element={
@@ -424,6 +431,16 @@ const DashboardRoutes = () => {
   <DashboardLayout>
     <LihatApprovement02 
       onBack={() => navigate('/dashboard/approvement/apl-02')} 
+      data={editData} 
+    />
+  </DashboardLayout>
+} />
+
+     <Route path="/approvement/detail" element={
+  <DashboardLayout>
+    <DetailJurusanApl01
+      onBack={() => navigate('/dashboard/approvement/apl-01')} 
+      onNavigate={handleNavigate}  // ← TAMBAHKAN INI
       data={editData} 
     />
   </DashboardLayout>
