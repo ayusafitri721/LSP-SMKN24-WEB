@@ -185,6 +185,7 @@ function LihatApprovement({ onBack, onNavigate, data }) {
               FR.APL.02
             </button>
             <button
+            onClick={() => onNavigate && onNavigate("approvement/AK-01/lihat")}
               style={{
                 padding: '12px 20px',
                 fontSize: '14px',
