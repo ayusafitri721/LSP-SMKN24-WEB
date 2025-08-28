@@ -54,25 +54,34 @@ function Kontak({ onBack }) {
       {/* Breadcrumb */}
       <div style={{
         padding: '20px 60px',
-        backgroundColor: '#fff',
-        borderBottom: '1px solid #e0e0e0'
+        backgroundColor: '#fff'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '10px'
+        }}>
           <span onClick={onBack} style={{
             background: 'none',
-            border: '1px solid #333',
+            border: 'none',
             color: '#333',
             padding: '8px 16px',
-            borderRadius: '4px',
             fontSize: '14px',
             cursor: 'pointer',
-            textDecoration: 'none',
+            textDecoration: 'underline',
+            textDecorationColor: '#666',
             transition: 'all 0.3s ease'
           }}>
             Home
           </span>
           <span style={{ fontSize: '14px', color: '#666' }}>{'>'}</span>
-          <span style={{ fontSize: '14px', color: '#333', fontWeight: '500' }}>
+          <span style={{ 
+            fontSize: '14px', 
+            color: '#333', 
+            fontWeight: '500',
+            textDecoration: 'underline',
+            textDecorationColor: '#666'
+          }}>
             Kontak
           </span>
         </div>
