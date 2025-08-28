@@ -49,7 +49,7 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
 
 const handleCardClick = (jurusan) => {
   if (onNavigate) {
-    onNavigate("detail-jurusan", jurusan);
+    onNavigate("detail-jurusan-apl02", jurusan);
   }
 };
 
@@ -97,7 +97,7 @@ const handleCardClick = (jurusan) => {
           </svg>
         </button>
 
-        {/* Tab Navigation */}
+        {/* Tab Navigation - Only APL-02 */}
         <div
           style={{
             display: "flex",
@@ -106,23 +106,6 @@ const handleCardClick = (jurusan) => {
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <button
-            onClick={() => onNavigate && onNavigate("approvement")}
-            style={{
-              padding: "12px 20px",
-              fontSize: "14px",
-              fontWeight: "600",
-              border: "none",
-              backgroundColor: "transparent",
-              color: "#666",
-              borderRadius: "8px",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              margin: "4px",
-            }}
-          >
-            FR.APL.01
-          </button>
           <button
             style={{
               padding: "12px 20px",

@@ -6,9 +6,10 @@ import ManajemenData from '../layouts/ManajemenData';
 import ListAsesmen from '../layouts/ListAsesmen';
 import AsesmenDiikuti from '../AsesmenDiikuti/AsesmenDiikuti';
 import Approvement from '../Approvment/APL-01/Approvement';
-// Import APL-02 components
-import ApprovementApl02 from '../Approvment/APL-02/ApprovementApl02';
-import LihatApprovement02 from '../Approvment/APL-02/LihatApprovement02';
+// Import APL-02 components - FIXED PATHS: now from Detail folder
+import ApprovementApl02 from '../Detail/APL-02/ApprovementApl02';
+import LihatApprovement02 from '../Detail/APL-02/LihatApprovement02';
+import DetailJurusan from '../Detail/APL-02/DetailJurusan';
 import Asesor from '../Asesor/Asesor';
 import AddAsesor from '../Asesor/AddAsesor';
 import EditAsesor from '../Asesor/EditAsesor';
@@ -30,7 +31,6 @@ import EditListAsesmen from '../layouts/EditListAsesmen';
 import LihatListAsesmen from '../layouts/LihatListAsesmen';
 import LihatApprovement from '../Approvment/APL-01/LihatApprovement';
 import ProfileSection from '../layouts/ProfileSection'; // Import ProfileSection
-import DetailJurusan from '../Approvment/APL-02/DetailJurusan';
 import DetailJurusanApl01 from '../Approvment/APL-01/DetailJurusanApl01';
 import Skema from '../Skema/Skema';
 
@@ -91,15 +91,14 @@ const DashboardRoutes = () => {
       'editskema': 'skema/edit-skema',
       'lihatlistasesmen': 'list-asesmen/lihat',
       'analytics': 'list-asesmen/analytics',
-      // APL-01
+      // APL-01 - now only under Approvement
       'approvement': 'approvement',
       'detail-jurusan-apl01': 'approvement/detail',
       'lihatapprovement': 'approvement/lihat',
-      // Add APL-02 routes
-      'approvementapl02': 'approvement/apl-02',
-      'lihatapprovement02': 'approvement/apl-02/lihat',
-      'detail-jurusan': 'approvement/apl-02/detail'
-      
+      // APL-02 - now moved to Detail menu
+      'detail-apl02': 'detail/apl-02',
+      'detail-jurusan-apl02': 'detail/apl-02/detail',
+      'lihatdetail02': 'detail/apl-02/lihat'
     };
     
     const route = pageMap[page] || page;
@@ -121,7 +120,8 @@ const DashboardRoutes = () => {
       ManajemenData: 'manajemen-data',
       ListAsesmen: 'list-asesmen',
       AsesmenDiikuti: 'asesmen-diikuti',
-      Approvement: 'approvement',
+      Approvement: 'approvement', // Now only handles APL-01
+      Detail: 'detail', // New menu for APL-02
       Profile: 'profile',
     };
     
@@ -136,7 +136,6 @@ const DashboardRoutes = () => {
   };
 
   const handleEditAsesor = (updatedData) => {
-    // Handle the edit logic here if needed
     navigate('/dashboard/asesor');
   };
 
@@ -371,7 +370,6 @@ const DashboardRoutes = () => {
           item={editData} 
         />
       } />
-      {/* Fixed route untuk LihatListAsesmen */}
       <Route path="/list-asesmen/lihat" element={
         <DashboardLayout>
           <LihatListAsesmen 
@@ -388,7 +386,7 @@ const DashboardRoutes = () => {
         </DashboardLayout>
       } />
 
-      {/* Approvement Routes - APL-01 */}
+      {/* Approvement Routes - APL-01 ONLY */}
       <Route path="/approvement" element={
         <DashboardLayout>
           <Approvement 
@@ -399,52 +397,68 @@ const DashboardRoutes = () => {
       } />
 
       <Route path="/approvement/lihat" element={
-  <DashboardLayout>
-    <LihatApprovement
-      onBack={() => navigate('/dashboard/approvement/detail')} 
-      data={editData} 
-    />
-  </DashboardLayout>
-} />
+        <DashboardLayout>
+          <LihatApprovement
+            onBack={() => navigate('/dashboard/approvement/detail')} 
+            data={editData} 
+          />
+        </DashboardLayout>
+      } />
 
-      {/* Approvement Routes - APL-02 - FIXED */}
-      <Route path="/approvement/apl-02" element={
+      <Route path="/approvement/detail" element={
+        <DashboardLayout>
+          <DetailJurusanApl01
+            onBack={() => navigate('/dashboard/approvement')} 
+            onNavigate={handleNavigate}
+            data={editData} 
+          />
+        </DashboardLayout>
+      } />
+
+      {/* NEW Detail Menu Routes - APL-02 moved here */}
+      <Route path="/detail" element={
         <DashboardLayout>
           <ApprovementApl02 
-            onBack={() => navigate('/dashboard/approvement')} 
+            onBack={handleBackToHome} 
             onNavigate={handleNavigate} 
           />
         </DashboardLayout>
       } />
 
-     <Route path="/approvement/apl-02/detail" element={
-  <DashboardLayout>
-    <DetailJurusan 
-      onBack={() => navigate('/dashboard/approvement/apl-02')} 
-      onNavigate={handleNavigate}  // ← TAMBAHKAN INI
-      data={editData} 
-    />
-  </DashboardLayout>
-} />
+      <Route path="/detail/apl-02" element={
+        <DashboardLayout>
+          <ApprovementApl02 
+            onBack={() => navigate('/dashboard/detail')} 
+            onNavigate={handleNavigate} 
+          />
+        </DashboardLayout>
+      } />
 
-      <Route path="/approvement/apl-02/lihat" element={
-  <DashboardLayout>
-    <LihatApprovement02 
-      onBack={() => navigate('/dashboard/approvement/apl-02')} 
-      data={editData} 
-    />
-  </DashboardLayout>
-} />
+      <Route path="/detail/apl-02/detail" element={
+        <DashboardLayout>
+          <DetailJurusan 
+            onBack={() => navigate('/dashboard/detail')} 
+            onNavigate={handleNavigate}
+            data={editData} 
+          />
+        </DashboardLayout>
+      } />
 
-     <Route path="/approvement/detail" element={
-  <DashboardLayout>
-    <DetailJurusanApl01
-      onBack={() => navigate('/dashboard/approvement/apl-01')} 
-      onNavigate={handleNavigate}  // ← TAMBAHKAN INI
-      data={editData} 
-    />
-  </DashboardLayout>
-} />
+      <Route path="/detail/apl-02/lihat" element={
+        <DashboardLayout>
+          <LihatApprovement02 
+            onBack={() => navigate('/dashboard/detail')} 
+            data={editData} 
+          />
+        </DashboardLayout>
+      } />
+
+      {/* Profile Route */}
+      <Route path="/profile" element={
+        <DashboardLayout>
+          <ProfileSection />
+        </DashboardLayout>
+      } />
 
       {/* Test Route for Debugging */}
       <Route path="/test" element={
@@ -453,13 +467,6 @@ const DashboardRoutes = () => {
           <p>If you can see this, routing is working correctly.</p>
           <button onClick={() => navigate('/dashboard/')}>Go to Dashboard</button>
         </div>
-      } />
-
-      {/* Profile Route */}
-      <Route path="/profile" element={
-        <DashboardLayout>
-          <ProfileSection />
-        </DashboardLayout>
       } />
     </Routes>
   );
