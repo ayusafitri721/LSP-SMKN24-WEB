@@ -10,6 +10,9 @@ import Approvement from '../Approvment/APL-01/Approvement';
 import ApprovementApl02 from '../Detail/APL-02/ApprovementApl02';
 import LihatApprovement02 from '../Detail/APL-02/LihatApprovement02';
 import DetailJurusan from '../Detail/APL-02/DetailJurusan';
+import ApprovementAk01 from '../Detail/AK-01/ApprovementAk01'; // Added AK-01 component
+import LihatApprovementAk01 from '../Detail/AK-01/LihatApprovementAk01'; // Assuming this exists or will be created
+import DetailJurusanAk01 from '../Detail/AK-01/DetailJurusanAk01'; // Assuming this exists or will be created
 import Asesor from '../Asesor/Asesor';
 import AddAsesor from '../Asesor/AddAsesor';
 import EditAsesor from '../Asesor/EditAsesor';
@@ -98,7 +101,11 @@ const DashboardRoutes = () => {
       // APL-02 - now moved to Detail menu
       'detail-apl02': 'detail/apl-02',
       'detail-jurusan-apl02': 'detail/apl-02/detail',
-      'lihatdetail02': 'detail/apl-02/lihat'
+      'lihatdetail02': 'detail/apl-02/lihat',
+      // AK-01 - added to Detail menu
+      'detail-ak01': 'detail/ak-01',
+      'detail-jurusan-ak01': 'detail/ak-01/detail',
+      'lihatdetailak01': 'detail/ak-01/lihat'
     };
     
     const route = pageMap[page] || page;
@@ -121,7 +128,7 @@ const DashboardRoutes = () => {
       ListAsesmen: 'list-asesmen',
       AsesmenDiikuti: 'asesmen-diikuti',
       Approvement: 'approvement', // Now only handles APL-01
-      Detail: 'detail', // New menu for APL-02
+      Detail: 'detail', // New menu for APL-02 and AK-01
       Profile: 'profile',
     };
     
@@ -415,7 +422,7 @@ const DashboardRoutes = () => {
         </DashboardLayout>
       } />
 
-      {/* NEW Detail Menu Routes - APL-02 moved here */}
+      {/* Detail Menu Routes - APL-02 and AK-01 */}
       <Route path="/detail" element={
         <DashboardLayout>
           <ApprovementApl02 
@@ -447,6 +454,34 @@ const DashboardRoutes = () => {
       <Route path="/detail/apl-02/lihat" element={
         <DashboardLayout>
           <LihatApprovement02 
+            onBack={() => navigate('/dashboard/detail')} 
+            data={editData} 
+          />
+        </DashboardLayout>
+      } />
+
+      <Route path="/detail/ak-01" element={
+        <DashboardLayout>
+          <ApprovementAk01 
+            onBack={() => navigate('/dashboard/detail')} 
+            onNavigate={handleNavigate} 
+          />
+        </DashboardLayout>
+      } />
+
+      <Route path="/detail/ak-01/detail" element={
+        <DashboardLayout>
+          <DetailJurusanAk01 
+            onBack={() => navigate('/dashboard/detail')} 
+            onNavigate={handleNavigate}
+            data={editData} 
+          />
+        </DashboardLayout>
+      } />
+
+      <Route path="/detail/ak-01/lihat" element={
+        <DashboardLayout>
+          <LihatApprovementAk01 
             onBack={() => navigate('/dashboard/detail')} 
             data={editData} 
           />

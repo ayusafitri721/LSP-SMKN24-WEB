@@ -1,7 +1,7 @@
-// ApprovementApl02.js (No change needed, already has all tabs)
+// ApprovementAk01.js (Updated to include FR.IA.01 tab for consistency)
 import React, { useState } from "react";
 
-export default function ApprovementApl02({ onBack, onNavigate }) {
+export default function ApprovementAk01({ onBack, onNavigate }) {
   const [selectedCard, setSelectedCard] = useState(null);
 
   // Data untuk cards jurusan
@@ -50,13 +50,13 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
 
   const handleCardClick = (jurusan) => {
     if (onNavigate) {
-      onNavigate("detail-jurusan-apl02", jurusan);
+      onNavigate("detail-jurusan-ak01", jurusan);
     }
   };
 
-  const handleNavigateToAk01 = () => {
+  const handleNavigateToApl02 = () => {
     if (onNavigate) {
-      onNavigate("detail/ak-01");
+      onNavigate("detail/apl-02");
     }
   };
 
@@ -120,13 +120,14 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
           }}
         >
           <button
+            onClick={handleNavigateToApl02}
             style={{
               padding: "12px 20px",
               fontSize: "14px",
               fontWeight: "600",
               border: "none",
-              backgroundColor: "#ff6b35",
-              color: "white",
+              backgroundColor: "transparent",
+              color: "#666",
               cursor: "pointer",
               transition: "all 0.2s ease",
               margin: "4px",
@@ -136,14 +137,13 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
             FR.APL.02
           </button>
           <button
-            onClick={handleNavigateToAk01}
             style={{
               padding: "12px 20px",
               fontSize: "14px",
               fontWeight: "600",
               border: "none",
-              backgroundColor: "transparent",
-              color: "#666",
+              backgroundColor: "#ff6b35",
+              color: "white",
               cursor: "pointer",
               transition: "all 0.2s ease",
               margin: "4px",
