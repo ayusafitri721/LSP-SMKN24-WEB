@@ -17,7 +17,7 @@ function Kontak({ onBack }) {
   return (
     <div style={{
       fontFamily: 'Poppins, sans-serif',
-      backgroundColor: '#f8f9fa',
+      backgroundColor: '#fff',
       minHeight: '100vh'
     }}>
       {/* Hero Section */}
@@ -91,7 +91,8 @@ function Kontak({ onBack }) {
       <div style={{
         padding: '80px 60px',
         maxWidth: '1200px',
-        margin: '0 auto'
+        margin: '0 auto',
+        backgroundColor: '#fff'
       }}>
         <div style={{
           display: 'flex',
