@@ -555,38 +555,6 @@ function LihatApprovement({ onBack, data }) {
                   </div>
                 </div>
               </div>
-
-              {/* Tombol Aksi */}
-              <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '24px' }}>
-                <button
-                  style={{
-                    padding: '12px 24px',
-                    backgroundColor: '#28a745',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontWeight: '500',
-                    fontSize: '16px'
-                  }}
-                >
-                  Setujui
-                </button>
-                <button
-                  style={{
-                    padding: '12px 24px',
-                    backgroundColor: '#dc3545',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontWeight: '500',
-                    fontSize: '16px'
-                  }}
-                >
-                  Tolak
-                </button>
-              </div>
             </div>
 
             {/* Kolom Kanan */}
