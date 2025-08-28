@@ -82,7 +82,6 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
-<<<<<<< HEAD
         <div style={{ display: 'flex', backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
           <button 
             style={{ 
@@ -135,8 +134,6 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
             FR.AK.01
           </button>
         </div>
-=======
->>>>>>> 342dc8f4ae79c4fbc99d1de18000a0bc079a7560
       </div>
       
       {/* Page Title */}

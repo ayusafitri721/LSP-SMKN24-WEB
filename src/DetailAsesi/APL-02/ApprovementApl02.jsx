@@ -136,53 +136,41 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
             FR.APL.02
           </button>
           <button
-<<<<<<< HEAD:src/Approvment/APL-02/ApprovementApl02.jsx
-          onClick={() => onNavigate && onNavigate("approvement/AK-01")}
-=======
-            onClick={handleNavigateToAk01}
->>>>>>> 342dc8f4ae79c4fbc99d1de18000a0bc079a7560:src/Detail/APL-02/ApprovementApl02.jsx
-            style={{
-              padding: "12px 20px",
-              fontSize: "14px",
-              fontWeight: "600",
-              border: "none",
-              backgroundColor: "transparent",
-              color: "#666",
-<<<<<<< HEAD:src/Approvment/APL-02/ApprovementApl02.jsx
-              borderRadius: "8px",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              margin: "4px",
-=======
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              margin: "4px",
-              borderRadius: "8px",
->>>>>>> 342dc8f4ae79c4fbc99d1de18000a0bc079a7560:src/Detail/APL-02/ApprovementApl02.jsx
-            }}
-          >
-            FR.AK.01
-          </button>
-<<<<<<< HEAD:src/Approvment/APL-02/ApprovementApl02.jsx
-=======
-          <button
-            onClick={handleNavigateToIa01}
-            style={{
-              padding: "12px 20px",
-              fontSize: "14px",
-              fontWeight: "600",
-              border: "none",
-              backgroundColor: "transparent",
-              color: "#666",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              margin: "4px",
-              borderRadius: "8px",
-            }}
-          >
-            FR.IA.01
-          </button>
->>>>>>> 342dc8f4ae79c4fbc99d1de18000a0bc079a7560:src/Detail/APL-02/ApprovementApl02.jsx
+  onClick={handleNavigateToAk01}
+  style={{
+    padding: "12px 20px",
+    fontSize: "14px",
+    fontWeight: "600",
+    border: "none",
+    backgroundColor: "transparent",
+    color: "#666",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    margin: "4px",
+    borderRadius: "8px",
+  }}
+>
+  FR.AK.01
+</button>
+
+<button
+  onClick={handleNavigateToIa01}
+  style={{
+    padding: "12px 20px",
+    fontSize: "14px",
+    fontWeight: "600",
+    border: "none",
+    backgroundColor: "transparent",
+    color: "#666",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    margin: "4px",
+    borderRadius: "8px",
+  }}
+>
+  FR.IA.01
+</button>
+
         </div>
       </div>
 

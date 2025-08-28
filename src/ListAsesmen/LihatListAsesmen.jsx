@@ -1,6 +1,6 @@
 import React from 'react';
 
-function LihatListAsesmen({ onBack, data }) {
+function LihatListAsesmen({ onBack, onNavigate, data }) {
   const handleBackClick = () => {
     if (onBack && typeof onBack === 'function') {
       onBack();
@@ -43,6 +43,10 @@ function LihatListAsesmen({ onBack, data }) {
       ]
     }
   ];
+
+    const handleNavigateToApl01 = () => {
+    onNavigate('approvement/lihat');
+  };
 
   return (
     <div style={{
@@ -244,6 +248,7 @@ function LihatListAsesmen({ onBack, data }) {
                     }}>
                       {student.nama && (
                         <button 
+                          onClick={handleNavigateToApl01}
                           style={{
                             backgroundColor: 'transparent',
                             color: '#666',

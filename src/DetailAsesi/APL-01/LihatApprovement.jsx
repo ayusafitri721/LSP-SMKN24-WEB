@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function LihatApprovement({ onBack, data }) {
+function LihatApprovement({ onBack, onNavigate, data }) {
   const [formData, setFormData] = useState({
     namaJadwal: '',
     tuk: '',
@@ -89,6 +89,12 @@ function LihatApprovement({ onBack, data }) {
     setFormData(prev => ({ ...prev, [type]: newData }));
   };
 
+    const handleNavigateToApl02 = () => {
+    if (onNavigate) {
+      onNavigate("detail/ia-01");
+    }
+  };
+
   return (
     <div style={{ 
       backgroundColor: '#f5f5f5',
@@ -108,35 +114,94 @@ function LihatApprovement({ onBack, data }) {
           margin: '0',
           minHeight: '100vh'
         }}>
-          {/* Bagian Header */}
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            marginBottom: '24px',
-            width: '100%'
-          }}>
-            <h1 style={{ 
-              fontSize: '24px', 
-              fontWeight: '600', 
-              color: '#333',
-              margin: '0'
-            }}>Data Asesmen</h1>
+        {/* Header Navigation */}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
+          {/* Back Button */}
+          <button
+            onClick={onBack}
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              marginRight: '20px',
+              padding: '10px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#666"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          
+          {/* Nav Tabs */}
+          <div
+            style={{
+              display: 'flex',
+              backgroundColor: '#ffffff',
+              borderRadius: '8px',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+              padding: '4px'
+            }}
+          >
             <button
-              onClick={onBack}
               style={{
-                padding: '8px 16px',
-                backgroundColor: '#fd7e14',
-                color: 'white',
+                padding: '12px 20px',
+                fontSize: '14px',
+                fontWeight: '600',
                 border: 'none',
-                borderRadius: '6px',
+                backgroundColor: '#ff6b35', // aktif
+                color: 'white',
+                borderRadius: '8px',
                 cursor: 'pointer',
-                fontWeight: '500'
+                margin: '4px'
               }}
             >
-              Kembali
+              FR.APL.01
+            </button>
+            <button
+            onClick={() => onNavigate && onNavigate("approvement/APL-02/lihat")}
+              style={{
+                padding: '12px 20px',
+                fontSize: '14px',
+                fontWeight: '600',
+                border: 'none',
+                backgroundColor: 'transparent',
+                color: '#666',
+                cursor: 'pointer',
+                margin: '4px',
+                borderRadius: '8px'
+              }}
+            >
+              FR.APL.02
+            </button>
+            <button
+              style={{
+                padding: '12px 20px',
+                fontSize: '14px',
+                fontWeight: '600',
+                border: 'none',
+                backgroundColor: 'transparent',
+                color: '#666',
+                cursor: 'pointer',
+                margin: '4px',
+                borderRadius: '8px'
+              }}
+            >
+              FR.AK.01
             </button>
           </div>
+        </div>
+            
 
           {/* Kontainer Form Utama - Mulai dari atas */}
           <div style={{ display: 'flex', gap: '24px', width: '100%', alignItems: 'flex-start' }}>
@@ -555,7 +620,80 @@ function LihatApprovement({ onBack, data }) {
                   </div>
                 </div>
               </div>
-            </div>
+              {/* Upload Barcode */}
+              <div style={{ 
+                marginBottom: '24px',
+                border: '2px solid #fd7e14',
+                borderRadius: '8px',
+                padding: '24px',
+                backgroundColor: 'white',
+                textAlign: 'center'
+              }}>
+              {/* Frame Preview */}
+              <div style={{
+                width: '240px',
+                height: '240px',
+                backgroundColor: '#ddd',
+                margin: '0 auto 20px auto',
+                borderRadius: '8px',
+              }}>
+                {/* nanti bisa isi <img src={preview} alt="barcode" style={{ width: "100%", height: "100%", objectFit: "contain" }} /> */}
+              </div>
+            
+              {/* Tombol Upload */}
+              <label 
+                htmlFor="barcodeUpload" 
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: '#fd7e14',
+                  color: 'white',
+                  padding: '10px 20px',
+                  borderRadius: '20px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  marginBottom: '24px'
+                }}
+              >
+                Upload Barcode
+                </label>
+                <input 
+                  id="barcodeUpload" 
+                  type="file" 
+                  style={{ display: 'none' }} 
+                />
+
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
+                  <button
+                    style={{
+                      padding: '10px 20px',
+                      backgroundColor: '#28a745',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontWeight: '500'
+                    }}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    style={{
+                      padding: '10px 20px',
+                      backgroundColor: '#dc3545',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontWeight: '500'
+                    }}
+                  >
+                    Decline
+                  </button>
+                </div>
+              </div>
+           </div>
 
             {/* Kolom Kanan */}
             <div style={{ flex: 1, minWidth: '500px' }}>

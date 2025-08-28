@@ -3,20 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { DashboardSidebar } from '../layouts/Dashboard';
 import Dashboard from '../layouts/Dashboard'; // Default import
 import ManajemenData from '../layouts/ManajemenData';
-import ListAsesmen from '../layouts/ListAsesmen';
-import AsesmenDiikuti from '../AsesmenDiikuti/AsesmenDiikuti';
-import Approvement from '../Approvment/APL-01/Approvement';
-// Import APL-02 components
-import ApprovementApl02 from '../Approvment/APL-02/ApprovementApl02';
-import LihatApprovement02 from '../Approvment/APL-02/LihatApprovement02';
-import Approvement from '../DetailAsesi/APL-01/Approvement';
-// Import APL-02 components - FIXED PATHS: now from Detail folder
-import ApprovementApl02 from '../DetailAsesi/APL-02/ApprovementApl02';
-import LihatApprovement02 from '../DetailAsesi/APL-02/LihatApprovement02';
-import DetailJurusan from '../DetailAsesi/APL-02/DetailJurusan';
-import ApprovementAk01 from '../Detail/AK-01/ApprovementAk01'; // Added AK-01 component
-import LihatApprovementAk01 from '../Detail/AK-01/LihatApprovementAk01'; // Assuming this exists or will be created
-import DetailJurusanAk01 from '../Detail/AK-01/DetailJurusanAk01'; // Assuming this exists or will be created
+import ListAsesmen from '../ListAsesmen/ListAsesmen';
 import Asesor from '../Asesor/Asesor';
 import AddAsesor from '../Asesor/AddAsesor';
 import EditAsesor from '../Asesor/EditAsesor';
@@ -35,17 +22,18 @@ import AddSkema from '../Skema/AddSkema';
 import EditSkema from '../Skema/EditSkema';
 import AddListAsesmen from '../layouts/AddListAsesmen';
 import EditListAsesmen from '../layouts/EditListAsesmen';
-import LihatListAsesmen from '../layouts/LihatListAsesmen';
-import LihatApprovement from '../Approvment/APL-01/LihatApprovement';
 import LihatListAsesmen from '../ListAsesmen/LihatListAsesmen';
-import LihatApprovement from '../DetailAsesi/APL-01/LihatApprovement';
 import ProfileSection from '../layouts/ProfileSection'; // Import ProfileSection
-import DetailJurusan from '../Approvment/APL-02/DetailJurusan';
-import DetailJurusanApl01 from '../Approvment/APL-01/DetailJurusanApl01';
-import ApprovementAK01 from '../Approvment/AK-01/ApprovementAk01';
-import LihatApprovementAK01 from '../Approvment/AK-01/LihatApprovementAK01';
-import DetailJurusanAK01 from '../Approvment/AK-01/DetailJurusanAK01';
+import Approvement from '../DetailAsesi/APL-01/Approvement';
+import LihatApprovement from '../DetailAsesi/APL-01/LihatApprovement';
 import DetailJurusanApl01 from '../DetailAsesi/APL-01/DetailJurusanApl01';
+import ApprovementApl02 from '../DetailAsesi/APL-02/ApprovementApl02';
+import LihatApprovement02 from '../DetailAsesi/APL-02/LihatApprovement02';
+import DetailJurusan from '../DetailAsesi/APL-02/DetailJurusan';
+import ApprovementAK01 from '../Detail/AK-01/ApprovementAk01';
+import LihatApprovementAK01 from '../Detail/AK-01/LihatApprovementAk01';
+import DetailJurusanAK01 from '../Detail/AK-01/DetailJurusanAk01';
+import AsesmenDiikuti from "../AsesmenDiikuti/AsesmenDiikuti"; 
 import Skema from '../Skema/Skema';
 
 const DashboardRoutes = () => {
@@ -393,6 +381,7 @@ const DashboardRoutes = () => {
         <DashboardLayout>
           <LihatListAsesmen 
             onBack={() => navigate('/dashboard/list-asesmen')} 
+            onNavigate={handleNavigate} 
             data={editData} 
           />
         </DashboardLayout>
@@ -419,6 +408,7 @@ const DashboardRoutes = () => {
   <DashboardLayout>
     <LihatApprovement
       onBack={() => navigate('/dashboard/approvement/detail')} 
+      onNavigate={handleNavigate}
       data={editData} 
     />
   </DashboardLayout>
@@ -448,6 +438,7 @@ const DashboardRoutes = () => {
     <DashboardLayout>
       <LihatApprovementAK01
       onBack={() => navigate('/dashboard/approvement/ak-01')} 
+      onNavigate={handleNavigate} 
       data={editData} 
       />
         </DashboardLayout>
@@ -476,6 +467,7 @@ const DashboardRoutes = () => {
   <DashboardLayout>
     <LihatApprovement02 
       onBack={() => navigate('/dashboard/approvement/apl-02')} 
+      onNavigate={handleNavigate}
       data={editData} 
     />
   </DashboardLayout>

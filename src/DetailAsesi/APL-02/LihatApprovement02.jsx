@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function LihatApprovement02({ onBack, data }) {
+function LihatApprovement02({ onBack, data, onNavigate }) {
   const [formData, setFormData] = useState({
     judulUnit: "",
     kodeUnit: "",
@@ -465,6 +465,25 @@ function LihatApprovement02({ onBack, data }) {
     ]
   });
 
+  // State untuk mengelola dropdown unit kompetensi
+  const [openUnits, setOpenUnits] = useState({
+    unit1: false,
+    unit2: false,
+    unit3: false,
+    unit4: false,
+    unit5: false,
+    unit6: false,
+    unit7: false,
+    unit8: false
+  });
+
+  const toggleUnit = (unit) => {
+    setOpenUnits(prev => ({
+      ...prev,
+      [unit]: !prev[unit]
+    }));
+  };
+
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -487,7 +506,6 @@ function LihatApprovement02({ onBack, data }) {
     border: "1px solid #ccc",
     borderRadius: "10px",
     fontSize: "12px",
-    // backgroundColor: "white",
   };
 
   const labelStyle = {
@@ -498,10 +516,11 @@ function LihatApprovement02({ onBack, data }) {
     display: "inline-block",
   };
 
-  const renderKompetensiTable = (data, unitName, unitTitle) => (
-    <div style={{ marginBottom: "24px" }}>
-      {/* Header Unit Kompetensi */}
+  const renderKompetensiTable = (data, unitName, unitTitle, unitKey) => (
+    <div style={{ marginBottom: "16px" }}>
+      {/* Dropdown Header Unit Kompetensi */}
       <div
+        onClick={() => toggleUnit(unitKey)}
         style={{
           backgroundColor: "#ff8c42",
           color: "white",
@@ -511,148 +530,157 @@ function LihatApprovement02({ onBack, data }) {
           textAlign: "left",
           marginBottom: "12px",
           borderRadius: "12px",
+          cursor: "pointer",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        {unitTitle}
+        <span>{unitTitle}</span>
+        <span style={{ fontSize: "18px", transition: "transform 0.3s", transform: openUnits[unitKey] ? "rotate(180deg)" : "rotate(0deg)" }}>
+          ▼
+        </span>
       </div>
 
-      {/* Tabel Kompetensi */}
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "separate",
-          borderSpacing: 0,
-          fontSize: "11px",
-          border: "2px solid #ff8c42",
-          borderRadius: "12px",
-          overflow: "hidden",
-          marginBottom: "16px",
-        }}
-      >
-        <thead>
-          <tr style={{ backgroundColor: "#e6f3ff" }}>
-            <th
-              style={{
-                border: "1px solid #ff8c42",
-                padding: "6px",
-                textAlign: "center",
-                width: "50%",
-                fontWeight: "600",
-                fontSize: "11px",
-              }}
-            >
-             Dapatkah Asesi?
-            </th>
-            <th
-              style={{
-                border: "1px solid #ff8c42",
-                padding: "6px",
-                textAlign: "center",
-                width: "8%",
-                fontWeight: "600",
-                fontSize: "11px",
-              }}
-            >
-              K
-            </th>
-            <th
-              style={{
-                border: "1px solid #ff8c42",
-                padding: "6px",
-                textAlign: "center",
-                width: "8%",
-                fontWeight: "600",
-                fontSize: "11px",
-              }}
-            >
-              BK
-            </th>
-            <th
-              style={{
-                border: "1px solid #ff8c42",
-                padding: "6px",
-                textAlign: "center",
-                width: "34%",
-                fontWeight: "600",
-                fontSize: "11px",
-              }}
-            >
-              Bukti yang Relevan
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, index) => (
-            <tr key={index}>
-              <td
-                style={{
-                  border: "1px solid #ff8c42",
-                  padding: "6px",
-                  fontSize: "10px",
-                  lineHeight: "1.3",
-                  fontWeight: item.isHeader ? "600" : "normal",
-                  backgroundColor: item.isHeader ? "#f8f9fa" : "white",
-                }}
-              >
-                {item.kriteria}
-              </td>
-              <td
+      {/* Tabel Kompetensi (Hanya ditampilkan jika dropdown terbuka) */}
+      {openUnits[unitKey] && (
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "separate",
+            borderSpacing: 0,
+            fontSize: "11px",
+            border: "2px solid #ff8c42",
+            borderRadius: "12px",
+            overflow: "hidden",
+            marginBottom: "16px",
+          }}
+        >
+          <thead>
+            <tr style={{ backgroundColor: "#e6f3ff" }}>
+              <th
                 style={{
                   border: "1px solid #ff8c42",
                   padding: "6px",
                   textAlign: "center",
+                  width: "50%",
+                  fontWeight: "600",
+                  fontSize: "11px",
                 }}
               >
-                {!item.isHeader && (
-                  <input
-                    type="checkbox"
-                    checked={item.dapatkah}
-                    onChange={() =>
-                      handleCheckboxChange(unitName, index, "dapatkah")
-                    }
-                    style={{ transform: "scale(1.0)" }}
-                  />
-                )}
-              </td>
-              <td
+               Dapatkah Asesi?
+              </th>
+              <th
                 style={{
                   border: "1px solid #ff8c42",
                   padding: "6px",
                   textAlign: "center",
+                  width: "8%",
+                  fontWeight: "600",
+                  fontSize: "11px",
                 }}
               >
-                {!item.isHeader && (
-                  <input
-                    type="checkbox"
-                    checked={item.bukti}
-                    onChange={() => handleCheckboxChange(unitName, index, "bukti")}
-                    style={{ transform: "scale(1.0)" }}
-                  />
-                )}
-              </td>
-              <td
+                K
+              </th>
+              <th
                 style={{
                   border: "1px solid #ff8c42",
                   padding: "6px",
+                  textAlign: "center",
+                  width: "8%",
+                  fontWeight: "600",
+                  fontSize: "11px",
                 }}
               >
-                {!item.isHeader && (
-                  <input
-                    type="text"
-                    style={{
-                      width: "100%",
-                      border: "none",
-                      background: "transparent",
-                      fontSize: "10px",
-                      padding: "1px",
-                    }}
-                  />
-                )}
-              </td>
+                BK
+              </th>
+              <th
+                style={{
+                  border: "1px solid #ff8c42",
+                  padding: "6px",
+                  textAlign: "center",
+                  width: "34%",
+                  fontWeight: "600",
+                  fontSize: "11px",
+                }}
+              >
+                Bukti yang Relevan
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((item, index) => (
+              <tr key={index}>
+                <td
+                  style={{
+                    border: "1px solid #ff8c42",
+                    padding: "6px",
+                    fontSize: "10px",
+                    lineHeight: "1.3",
+                    fontWeight: item.isHeader ? "600" : "normal",
+                    backgroundColor: item.isHeader ? "#f8f9fa" : "white",
+                  }}
+                >
+                  {item.kriteria}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ff8c42",
+                    padding: "6px",
+                    textAlign: "center",
+                  }}
+                >
+                  {!item.isHeader && (
+                    <input
+                      type="checkbox"
+                      checked={item.dapatkah}
+                      onChange={() =>
+                        handleCheckboxChange(unitName, index, "dapatkah")
+                      }
+                      style={{ transform: "scale(1.0)" }}
+                    />
+                  )}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ff8c42",
+                    padding: "6px",
+                    textAlign: "center",
+                  }}
+                >
+                  {!item.isHeader && (
+                    <input
+                      type="checkbox"
+                      checked={item.bukti}
+                      onChange={() => handleCheckboxChange(unitName, index, "bukti")}
+                      style={{ transform: "scale(1.0)" }}
+                    />
+                  )}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ff8c42",
+                    padding: "6px",
+                  }}
+                >
+                  {!item.isHeader && (
+                    <input
+                      type="text"
+                      style={{
+                        width: "100%",
+                        border: "none",
+                        background: "transparent",
+                        fontSize: "10px",
+                        padding: "1px",
+                      }}
+                    />
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 
@@ -665,6 +693,104 @@ function LihatApprovement02({ onBack, data }) {
         fontFamily: "Arial, sans-serif",
       }}
     >
+      {/* Header with back + nav buttons */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          marginBottom: "20px",
+          justifyContent: "space-between",
+        }}
+      >
+        {/* Tombol Back */}
+        <button
+          onClick={onBack}
+          style={{
+            backgroundColor: "transparent",
+            border: "none",
+            cursor: "pointer",
+            marginRight: "20px",
+            padding: "10px",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#666"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        {/* Navigation Tabs */}
+        <div
+          style={{
+            display: "flex",
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <button
+            onClick={() => onNavigate && onNavigate("approvement/lihat")}
+            style={{
+              padding: "12px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "none",
+              backgroundColor: "transparent",
+              color: "#666",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              margin: "4px",
+              borderRadius: "8px",
+            }}
+          >
+            FR.APL.01
+          </button>
+          <button
+            style={{
+              padding: "12px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "none",
+              backgroundColor: "#ff6b35",
+              color: "white",
+              borderRadius: "8px",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              margin: "4px",
+            }}
+          >
+            FR.APL.02
+          </button>
+          <button
+            onClick={() => onNavigate && onNavigate("approvement/ak-01/lihat")}
+            style={{
+              padding: "12px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "none",
+              backgroundColor: "transparent",
+              color: "#666",
+              borderRadius: "8px",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              margin: "4px",
+            }}
+          >
+            FR.AK.01
+          </button>
+        </div>
+      </div>
+
       <div
         style={{
           backgroundColor: "white",
@@ -673,40 +799,6 @@ function LihatApprovement02({ onBack, data }) {
           overflow: "hidden",
         }}
       >
-        {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "16px 20px",
-            borderBottom: "1px solid #eee",
-          }}
-        >
-          <button
-            onClick={onBack}
-            style={{
-              backgroundColor: "transparent",
-              border: "none",
-              cursor: "pointer",
-              padding: "8px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#666"
-              strokeWidth="2"
-            >
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-          </button>
-        </div>
-
         {/* Content - 2 Column Layout */}
         <div
           style={{
@@ -744,117 +836,195 @@ function LihatApprovement02({ onBack, data }) {
                 <label style={labelStyle}>Nama Jadwal</label>
                 <span style={{ margin: "0 6px" }}>:</span>
                 <input
-                  type="text"
-                  value={formData.judulUnit}
-                  onChange={(e) =>
-                    handleInputChange("judulUnit", e.target.value)
-                  }
-                  style={{ ...inputStyle, width: "180px" }}
-                />
-              </div>
+                type="text"
+                value={formData.judulUnit}
+                onChange={(e) =>
+                  handleInputChange("judulUnit", e.target.value)
+                }
+                style={{ ...inputStyle, width: "180px" }}
+              />
+            </div>
 
+            <div
+              style={{
+                marginBottom: "8px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <label style={labelStyle}>TUK</label>
+              <span style={{ margin: "0 6px" }}>:</span>
+              <input
+                type="text"
+                value={formData.kodeUnit}
+                onChange={(e) =>
+                  handleInputChange("kodeUnit", e.target.value)
+                }
+                style={{ ...inputStyle, width: "180px" }}
+              />
+            </div>    
+            
+             <div
+              style={{
+                marginBottom: "8px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <label style={labelStyle}>Tanggal Ujian</label>
+              <span style={{ margin: "0 6px" }}>:</span>
+              <input
+                type="text"
+                value={formData.judulUnit}
+                onChange={(e) =>
+                  handleInputChange("judulUnit", e.target.value)
+                }
+                style={{ ...inputStyle, width: "180px" }}
+              />
+            </div>
+          </div>
+          
+          {/* Bagian Barcode Asesor & Asesi */}
+          <div
+            style={{
+              marginTop: "auto", // Posisikan di bagian bawah kolom kiri
+              display: "flex",
+              gap: "10px",
+              flexDirection: "column",
+            }}
+          >
+            {/* Barcode Asesor */}
+            <div
+              style={{
+                border: "2px dashed #ff8c42",
+                borderRadius: "12px",
+                padding: "12px",
+                textAlign: "center",
+                backgroundColor: "white",
+              }}
+            >
+              <p style={{ fontWeight: "600", fontSize: "12px", marginBottom: "8px" }}>
+                Barcode Asesor
+              </p>
               <div
                 style={{
-                  marginBottom: "8px",
+                  height: "80px",
+                  backgroundColor: "#f5f5f5",
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: "8px",
+                  border: "1px solid #ddd"
                 }}
               >
-                <label style={labelStyle}>TUK</label>
-                <span style={{ margin: "0 6px" }}>:</span>
-                <input
-                  type="text"
-                  value={formData.kodeUnit}
-                  onChange={(e) =>
-                    handleInputChange("kodeUnit", e.target.value)
-                  }
-                  style={{ ...inputStyle, width: "180px" }}
-                />
-              </div>    
-              
-               <div
+                <span style={{ fontSize: "11px", color: "#666" }}>
+                  [Barcode Asesor]
+                </span>
+              </div>
+            </div>
+
+            {/* Barcode Asesi */}
+            <div
+              style={{
+                border: "2px dashed #ff8c42",
+                borderRadius: "12px",
+                padding: "12px",
+                textAlign: "center",
+                backgroundColor: "white",
+              }}
+            >
+              <p style={{ fontWeight: "600", fontSize: "12px", marginBottom: "8px" }}>
+                Barcode Asesi
+              </p>
+              <div
                 style={{
-                  marginBottom: "8px",
+                  height: "80px",
+                  backgroundColor: "#f5f5f5",
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: "8px",
+                  border: "1px solid #ddd"
                 }}
               >
-                <label style={labelStyle}>Tanggal Ujian</label>
-                <span style={{ margin: "0 6px" }}>:</span>
-                <input
-                  type="text"
-                  value={formData.judulUnit}
-                  onChange={(e) =>
-                    handleInputChange("judulUnit", e.target.value)
-                  }
-                  style={{ ...inputStyle, width: "180px" }}
-                />
+                <span style={{ fontSize: "11px", color: "#666" }}>
+                  [Barcode Asesi]
+                </span>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Kolom Kanan - Patokan Asesmen */}
-          <div style={{ padding: "16px", overflowY: "auto", maxHeight: "80vh" }}>
-            {/* Unit Kompetensi 1 */}
-            {renderKompetensiTable(
-              formData.unitKompetensi, 
-              "unitKompetensi", 
-              "Unit Kompetensi 1: Menggunakan Struktur Data"
-            )}
+        {/* Kolom Kanan - Patokan Asesmen */}
+        <div style={{ padding: "16px", overflowY: "auto", maxHeight: "80vh" }}>
+          {/* Unit Kompetensi 1 */}
+          {renderKompetensiTable(
+            formData.unitKompetensi, 
+            "unitKompetensi", 
+            "Unit Kompetensi 1: Menggunakan Struktur Data",
+            "unit1"
+          )}
 
-            {/* Unit Kompetensi 2 */}
-            {renderKompetensiTable(
-              formData.unitKompetensi2, 
-              "unitKompetensi2", 
-              "Unit Kompetensi 2: Menggunakan Spesifikasi Program"
-            )}
+          {/* Unit Kompetensi 2 */}
+          {renderKompetensiTable(
+            formData.unitKompetensi2, 
+            "unitKompetensi2", 
+            "Unit Kompetensi 2: Menggunakan Spesifikasi Program",
+            "unit2"
+          )}
 
-            {/* Unit Kompetensi 3 */}
-            {renderKompetensiTable(
-              formData.unitKompetensi3, 
-              "unitKompetensi3", 
-              "Unit Kompetensi 3: Menulis Kode dengan Prinsip-Prinsip Guidelines dan Best Practices"
-            )}
+          {/* Unit Kompetensi 3 */}
+          {renderKompetensiTable(
+            formData.unitKompetensi3, 
+            "unitKompetensi3", 
+            "Unit Kompetensi 3: Menulis Kode dengan Prinsip-Prinsip Guidelines dan Best Practices",
+            "unit3"
+          )}
 
-            {/* Unit Kompetensi 4 */}
-            {renderKompetensiTable(
-              formData.unitKompetensi4, 
-              "unitKompetensi4", 
-              "Unit Kompetensi 4: Menulis Kode Dengan Prinsip Sesuai Guidelines dan Best Practices"
-            )}
+          {/* Unit Kompetensi 4 */}
+          {renderKompetensiTable(
+            formData.unitKompetensi4, 
+            "unitKompetensi4", 
+            "Unit Kompetensi 4: Menulis Kode Dengan Prinsip Sesuai Guidelines dan Best Practices",
+            "unit4"
+          )}
 
-            {/* Unit Kompetensi 5 */}
-            {renderKompetensiTable(
-              formData.unitKompetensi5, 
-              "unitKompetensi5", 
-              "Unit Kompetensi 5: Mengimplementasikan Pemrograman Terstruktur"
-            )}
+          {/* Unit Kompetensi 5 */}
+          {renderKompetensiTable(
+            formData.unitKompetensi5, 
+            "unitKompetensi5", 
+            "Unit Kompetensi 5: Mengimplementasikan Pemrograman Terstruktur",
+            "unit5"
+          )}
 
-            
-            {/* Unit Kompetensi 6 */}
-            {renderKompetensiTable(
-              formData.unitKompetensi6, 
-              "unitKompetensi6", 
-              "Unit Kompetensi 6: Membuat Dokumen Kode Program"
-            )}
+          
+          {/* Unit Kompetensi 6 */}
+          {renderKompetensiTable(
+            formData.unitKompetensi6, 
+            "unitKompetensi6", 
+            "Unit Kompetensi 6: Membuat Dokumen Kode Program",
+            "unit6"
+          )}
 
-             {/* Unit Kompetensi 7 */}
-            {renderKompetensiTable(
-              formData.unitKompetensi7, 
-              "unitKompetensi7", 
-              "Unit Kompetensi 7: Membuat Dokumen Kode Program"
-            )}
+           {/* Unit Kompetensi 7 */}
+          {renderKompetensiTable(
+            formData.unitKompetensi7, 
+            "unitKompetensi7", 
+            "Unit Kompetensi 7: Membuat Dokumen Kode Program",
+            "unit7"
+          )}
 
-             {/* Unit Kompetensi 8 */}
-            {renderKompetensiTable(
-              formData.unitKompetensi8, 
-              "unitKompetensi8", 
-              "Unit Kompetensi 8: Melaksanakan Pengujian Unit Program"
-            )}
-          </div>
+           {/* Unit Kompetensi 8 */}
+          {renderKompetensiTable(
+            formData.unitKompetensi8, 
+            "unitKompetensi8", 
+            "Unit Kompetensi 8: Melaksanakan Pengujian Unit Program",
+            "unit8"
+          )}
         </div>
       </div>
     </div>
+  </div>
   );
 }
 
