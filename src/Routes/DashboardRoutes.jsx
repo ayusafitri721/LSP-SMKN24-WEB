@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { DashboardSidebar } from '../layouts/Dashboard';
 import Dashboard from '../layouts/Dashboard'; // Default import
 import ManajemenData from '../layouts/ManajemenData';
-import ListAsesmen from '../layouts/ListAsesmen';
+import ListAsesmen from '../ListAsesmen/ListAsesmen';
 import AsesmenDiikuti from '../AsesmenDiikuti/AsesmenDiikuti';
 import Approvement from '../Approvment/APL-01/Approvement';
 // Import APL-02 components - FIXED PATHS: now from Detail folder
@@ -31,7 +31,7 @@ import AddSkema from '../Skema/AddSkema';
 import EditSkema from '../Skema/EditSkema';
 import AddListAsesmen from '../layouts/AddListAsesmen';
 import EditListAsesmen from '../layouts/EditListAsesmen';
-import LihatListAsesmen from '../layouts/LihatListAsesmen';
+import LihatListAsesmen from '../ListAsesmen/LihatListAsesmen';
 import LihatApprovement from '../Approvment/APL-01/LihatApprovement';
 import ProfileSection from '../layouts/ProfileSection'; // Import ProfileSection
 import DetailJurusanApl01 from '../Approvment/APL-01/DetailJurusanApl01';
