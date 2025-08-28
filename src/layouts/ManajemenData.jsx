@@ -5,72 +5,71 @@ function ManajemenData({ onNavigate }) {
     container: {
       width: '100%',
       minHeight: '100vh',
-      backgroundColor: '#fafafa',
+      backgroundColor: '#f8f9fa',
       fontFamily: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       padding: '0',
       margin: '0'
     },
     header: {
       backgroundColor: '#ffffff',
-      padding: '1.2rem 0',
+      padding: '2rem 0',
       textAlign: 'center',
-      marginBottom: '1.5rem',
-      borderBottom: '1px solid #e5e7eb',
-      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+      marginBottom: '2rem',
+      borderBottom: 'none',
+      boxShadow: 'none'
     },
     headerTitle: {
-      fontSize: '1.4rem',
-      fontWeight: '600',
-      color: '#111827',
+      fontSize: '2.5rem',
+      fontWeight: '700',
+      color: '#000000',
       margin: 0,
-      letterSpacing: '0.5px'
+      letterSpacing: '1px'
     },
     content: {
-      maxWidth: '900px',
-      margin: '0 auto',
-      padding: '0 1.5rem',
+      width: '100%',
+      margin: '0',
+      padding: '0 2rem',
       paddingBottom: '2rem'
     },
     section: {
       backgroundColor: '#ffffff',
-      padding: '1.5rem',
-      marginBottom: '1rem',
-      borderRadius: '12px',
-      border: '1px solid #e5e7eb',
-      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
-      transition: 'all 0.2s ease'
-    },
-    sectionHover: {
-      transform: 'translateY(-1px)',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12)'
+      padding: '2rem',
+      marginBottom: '1px',
+      borderRadius: '0',
+      border: 'none',
+      borderBottom: '2px solid #d0d0d0',
+      boxShadow: 'none',
+      transition: 'none'
     },
     sectionTitle: {
-      fontSize: '1.1rem',
-      fontWeight: '600',
+      fontSize: '1.5rem',
+      fontWeight: '700',
       color: '#000000',
-      marginBottom: '1.2rem',
-      margin: '0 0 1.2rem 0'
+      marginBottom: '1.5rem',
+      margin: '0 0 1.5rem 0'
     },
     statsContainer: {
       display: 'flex',
-      gap: '2rem',
-      marginBottom: '1.5rem',
-      flexWrap: 'wrap'
+      gap: '6rem',
+      marginBottom: '2rem',
+      flexWrap: 'wrap',
+      justifyContent: 'flex-start'
     },
     statItem: {
       display: 'flex',
-      flexDirection: 'column',
-      gap: '0.2rem'
+      flexDirection: 'row',
+      gap: '0',
+      alignItems: 'baseline'
     },
     statLabel: {
-      fontSize: '0.85rem',
+      fontSize: '1rem',
       fontWeight: '400',
       color: '#000000',
       display: 'inline'
     },
     statValue: {
-      fontSize: '0.85rem',
-      fontWeight: '400',
+      fontSize: '1rem',
+      fontWeight: '600',
       color: '#000000',
       display: 'inline',
       marginLeft: '0.3rem'
@@ -80,34 +79,24 @@ function ManajemenData({ onNavigate }) {
       justifyContent: 'flex-start'
     },
     button: {
-      backgroundColor: '#ff9500',
+      backgroundColor: '#ffb366',
       color: '#000000',
-      padding: '0.6rem 1.5rem',
-      borderRadius: '6px',
+      padding: '0.8rem 2rem',
+      borderRadius: '8px',
       border: 'none',
-      fontWeight: '500',
+      fontWeight: '600',
       cursor: 'pointer',
-      fontSize: '0.8rem',
+      fontSize: '1rem',
       transition: 'all 0.2s ease',
       fontFamily: "'Poppins', sans-serif"
     },
     buttonHover: {
-      backgroundColor: '#e6850e'
+      backgroundColor: '#ff9500'
     }
   };
 
   const handleButtonHover = (e, isHover) => {
     e.target.style.backgroundColor = isHover ? styles.buttonHover.backgroundColor : styles.button.backgroundColor;
-  };
-
-  const handleSectionHover = (e, isHover) => {
-    if (isHover) {
-      e.currentTarget.style.transform = styles.sectionHover.transform;
-      e.currentTarget.style.boxShadow = styles.sectionHover.boxShadow;
-    } else {
-      e.currentTarget.style.transform = '';
-      e.currentTarget.style.boxShadow = styles.section.boxShadow;
-    }
   };
 
   const handleNavigation = (page) => {
@@ -122,45 +111,43 @@ function ManajemenData({ onNavigate }) {
     {
       title: 'ASESOR',
       stats: [
-        { label: 'Peserta', value: '67' },
-        { label: 'Aktif', value: '67' },
-        { label: 'Tervalidasi', value: '61' }
+        { label: 'Peserta:', value: '67' },
+        { label: 'Aktif:', value: '67' },
+        { label: 'Tervalidasi:', value: '61' }
       ],
       route: 'Asesor'
     },
     {
       title: 'ASESI',
       stats: [
-        { label: 'Peserta', value: '4,000' },
-        { label: 'Aktif', value: '3,842' },
-        { label: 'Selesai', value: '2,156' }
+        { label: 'Peserta:', value: '4000' },
+        { label: 'Lorem Ipsum', value: '' },
+        { label: 'Lorem Ipsum', value: '' }
       ],
       route: 'Asesi'
     },
     {
       title: 'ASESMEN',
       stats: [
-        { label: 'Skema', value: '4,000' },
-        { label: 'Aktif', value: '3,500' },
-        { label: 'Selesai', value: '500' }
+        { label: 'Skema:', value: '4000' }
       ],
       route: 'Asesmen'
     },
     {
       title: 'JURUSAN',
       stats: [
-        { label: 'Program', value: '5' },
-        { label: 'Aktif', value: '5' },
-        { label: 'Mahasiswa', value: '1,250' }
+        { label: 'Program:', value: '5' },
+        { label: 'Aktif:', value: '5' },
+        { label: 'Mahasiswa:', value: '1,250' }
       ],
       route: 'Jurusan'
     },
     {
       title: 'SKEMA',
       stats: [
-        { label: 'Program', value: '5' },
-        { label: 'Kompetensi', value: '45' },
-        { label: 'Unit', value: '180' }
+        { label: 'Program:', value: '5' },
+        { label: 'Kompetensi:', value: '45' },
+        { label: 'Unit:', value: '180' }
       ],
       route: 'Kompetensi'
     }
@@ -186,8 +173,6 @@ function ManajemenData({ onNavigate }) {
             <div 
               key={index} 
               style={styles.section}
-              onMouseEnter={(e) => handleSectionHover(e, true)}
-              onMouseLeave={(e) => handleSectionHover(e, false)}
             >
               <h2 style={styles.sectionTitle}>
                 {section.title}
@@ -197,7 +182,7 @@ function ManajemenData({ onNavigate }) {
                 {section.stats.map((stat, statIndex) => (
                   <div key={statIndex} style={styles.statItem}>
                     <span style={styles.statLabel}>{stat.label}</span>
-                    <span style={styles.statValue}>{stat.value}</span>
+                    {stat.value && <span style={styles.statValue}>{stat.value}</span>}
                   </div>
                 ))}
               </div>

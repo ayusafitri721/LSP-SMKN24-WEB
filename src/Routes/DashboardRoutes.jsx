@@ -5,11 +5,11 @@ import Dashboard from '../layouts/Dashboard'; // Default import
 import ManajemenData from '../layouts/ManajemenData';
 import ListAsesmen from '../ListAsesmen/ListAsesmen';
 import AsesmenDiikuti from '../AsesmenDiikuti/AsesmenDiikuti';
-import Approvement from '../Approvment/APL-01/Approvement';
+import Approvement from '../DetailAsesi/APL-01/Approvement';
 // Import APL-02 components - FIXED PATHS: now from Detail folder
-import ApprovementApl02 from '../Detail/APL-02/ApprovementApl02';
-import LihatApprovement02 from '../Detail/APL-02/LihatApprovement02';
-import DetailJurusan from '../Detail/APL-02/DetailJurusan';
+import ApprovementApl02 from '../DetailAsesi/APL-02/ApprovementApl02';
+import LihatApprovement02 from '../DetailAsesi/APL-02/LihatApprovement02';
+import DetailJurusan from '../DetailAsesi/APL-02/DetailJurusan';
 import ApprovementAk01 from '../Detail/AK-01/ApprovementAk01'; // Added AK-01 component
 import LihatApprovementAk01 from '../Detail/AK-01/LihatApprovementAk01'; // Assuming this exists or will be created
 import DetailJurusanAk01 from '../Detail/AK-01/DetailJurusanAk01'; // Assuming this exists or will be created
@@ -32,9 +32,9 @@ import EditSkema from '../Skema/EditSkema';
 import AddListAsesmen from '../layouts/AddListAsesmen';
 import EditListAsesmen from '../layouts/EditListAsesmen';
 import LihatListAsesmen from '../ListAsesmen/LihatListAsesmen';
-import LihatApprovement from '../Approvment/APL-01/LihatApprovement';
+import LihatApprovement from '../DetailAsesi/APL-01/LihatApprovement';
 import ProfileSection from '../layouts/ProfileSection'; // Import ProfileSection
-import DetailJurusanApl01 from '../Approvment/APL-01/DetailJurusanApl01';
+import DetailJurusanApl01 from '../DetailAsesi/APL-01/DetailJurusanApl01';
 import Skema from '../Skema/Skema';
 
 const DashboardRoutes = () => {
