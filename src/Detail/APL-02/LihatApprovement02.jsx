@@ -127,6 +127,341 @@ function LihatApprovement02({ onBack, data }) {
         dapatkah: false,
         bukti: false,
       }
+    ],
+    unitKompetensi4: [
+      // Unit Kompetensi 4
+      {
+        kriteria: "Dapatkah Anda?",
+        dapatkah: false,
+        bukti: false,
+        isHeader: true
+      },
+      {
+        kriteria: "Mengidentifikasi yang menggunakan coding guidelines dan best practices",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Membuat struktur program yang sesuai dengan konsep paradigmanya",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menangani Galat/Error",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menghitung efisiensi penggunaan resources dan waktu",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Selalu Mengimplementasikan kemudahan informasi sesuai standar yang berlaku",
+        dapatkah: false,
+        bukti: false,
+      }
+    ],
+    unitKompetensi5: [
+      // Unit Kompetensi 5
+      {
+        kriteria: "Dapatkah Anda?",
+        dapatkah: false,
+        bukti: false,
+        isHeader: true
+      },
+      {
+        kriteria: "Menentukan tipe data yang sesuai standar",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menggunakan sintaksis program yang dikutakutip sesuai standar",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menggunakan struktur kontrol program yang dikutakutip sesuai standar",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Membuat Program baru hits untuk memfasilitasi data dari keyboard dan menampilkan informasi ke layar dan variabelnye sesuai standar instruksi keluaran",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menggunakan Struktur kontrol percabangan dan penggunaan dalam membuat program",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Membuat Program dengan menggunakan prosedur sesuai aturan penulisan program",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Membuat Program dengan menggunakan fungsi sesuai aturan penulisan program",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Membuat Program dengan menggunakan array dan fungsi sesuai berdasarkan penulisan program yang efektif",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Memberikan keterangan untuk setiap prosedur dan fungsi",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menentukan Element array",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menentukan Tipe data array",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menentukan Panjang array",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menggunakan Pengurutan array",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Membuat Program untuk menulis data dalam media penyimpan",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Membuat Program untuk membaca data dari media penyimpan",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Mengontrol kesalahan program",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Membebaskan kesalahan syntax dalam program",
+        dapatkah: false,
+        bukti: false,
+      }
+    ],
+    unitKompetensi6: [
+      // Unit Kompetensi 5
+      {
+        kriteria: "Dapatkah Asesi?",
+        dapatkah: false,
+        bukti: false,
+        isHeader: true
+      },
+      {
+        kriteria: "Mengidentifikasi Modul Program",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Mengidentifikasi parameter yang dipergunakan",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menjelaskan cara kerja algoritma",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Memberikan komentar setiap baris kode termasuk data, eksepsi, fungsi, prosedur dan class (bila ada)",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Membuat dokumentasi modul sesuai dengan identitas untuk memudahkan pelacakan",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menerapkan identifikasi dokumentasim",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menjelaskan kegunaan modul",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Merevisi dokumen sesuai perubahan kode program",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Membuat dokumentasi fungsi, prosedur atau method",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menjelaskan kemungkinan eksepsi",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Merevisi dokumen sesuai perubahan kode program",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Mengidentifikasi Tools untuk generate dokumentasi",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Melakukan Generate dokumentasi",
+        dapatkah: false,
+        bukti: false,
+      }
+    ],
+    unitKompetensi7: [
+      // Unit Kompetensi 5
+      {
+        kriteria: "Dapatkah Asesi?",
+        dapatkah: false,
+        bukti: false,
+        isHeader: true
+      },
+      {
+        kriteria: "Menyiapkan kode program sesuai spesifikasi",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menyiapkan Debugging tools untuk melihat proses suatu modul",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Mengunakan kode program dikompilasi sesuai bahasa pemrograman",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menganalisis kriteria lulus build",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menganalisis kriteria eksekusi aplikasi",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Mencatat kode kesalahan",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Merumuskan Perbaikan terhadap kesalahan kompilasi maupun build",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Melakukan Perbaikan",
+        dapatkah: false,
+        bukti: false,
+      }
+    ],
+     unitKompetensi8: [
+      // Unit Kompetensi 5
+      {
+        kriteria: "Dapatkah Asesi?",
+        dapatkah: false,
+        bukti: false,
+        isHeader: true
+      },
+      {
+        kriteria: "Mengidentifikasikan prosedur uji coba aplikasi sesuai dengan software development life cycle.",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menentukan Tools uji coba",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Mengidentifikasi Standar dan kondisi uji coba",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menentukan kebutuhan untuk uji coba.",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Dapat melaksanakan uji coba dengan variasi kondisi",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Membuat skenario uji coba",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Mengidentifikasi data uji unit tes",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Membangkitkan data uji unit tes",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Mendisain Skenario uji coba",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Mendisain prosedur uji coba dalam algoritma.",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Melaksanakan Uji coba",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Mencatat hasil uji coba",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menganalisis hasil uji coba",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Melaporkan prosedur uji coba.",
+        dapatkah: false,
+        bukti: false,
+      },
+      {
+        kriteria: "Menyelesaikan kesalahan/error.",
+        dapatkah: false,
+        bukti: false,
+      },
     ]
   });
 
@@ -152,7 +487,7 @@ function LihatApprovement02({ onBack, data }) {
     border: "1px solid #ccc",
     borderRadius: "10px",
     fontSize: "12px",
-    backgroundColor: "white",
+    // backgroundColor: "white",
   };
 
   const labelStyle = {
@@ -206,7 +541,7 @@ function LihatApprovement02({ onBack, data }) {
                 fontSize: "11px",
               }}
             >
-              Dapatkah Saya?
+             Dapatkah Asesi?
             </th>
             <th
               style={{
@@ -406,7 +741,7 @@ function LihatApprovement02({ onBack, data }) {
                   alignItems: "center",
                 }}
               >
-                <label style={labelStyle}>Judul Unit</label>
+                <label style={labelStyle}>Nama Jadwal</label>
                 <span style={{ margin: "0 6px" }}>:</span>
                 <input
                   type="text"
@@ -425,13 +760,32 @@ function LihatApprovement02({ onBack, data }) {
                   alignItems: "center",
                 }}
               >
-                <label style={labelStyle}>Kode Unit</label>
+                <label style={labelStyle}>TUK</label>
                 <span style={{ margin: "0 6px" }}>:</span>
                 <input
                   type="text"
                   value={formData.kodeUnit}
                   onChange={(e) =>
                     handleInputChange("kodeUnit", e.target.value)
+                  }
+                  style={{ ...inputStyle, width: "180px" }}
+                />
+              </div>    
+              
+               <div
+                style={{
+                  marginBottom: "8px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <label style={labelStyle}>Tanggal Ujian</label>
+                <span style={{ margin: "0 6px" }}>:</span>
+                <input
+                  type="text"
+                  value={formData.judulUnit}
+                  onChange={(e) =>
+                    handleInputChange("judulUnit", e.target.value)
                   }
                   style={{ ...inputStyle, width: "180px" }}
                 />
@@ -460,6 +814,42 @@ function LihatApprovement02({ onBack, data }) {
               formData.unitKompetensi3, 
               "unitKompetensi3", 
               "Unit Kompetensi 3: Menulis Kode dengan Prinsip-Prinsip Guidelines dan Best Practices"
+            )}
+
+            {/* Unit Kompetensi 4 */}
+            {renderKompetensiTable(
+              formData.unitKompetensi4, 
+              "unitKompetensi4", 
+              "Unit Kompetensi 4: Menulis Kode Dengan Prinsip Sesuai Guidelines dan Best Practices"
+            )}
+
+            {/* Unit Kompetensi 5 */}
+            {renderKompetensiTable(
+              formData.unitKompetensi5, 
+              "unitKompetensi5", 
+              "Unit Kompetensi 5: Mengimplementasikan Pemrograman Terstruktur"
+            )}
+
+            
+            {/* Unit Kompetensi 6 */}
+            {renderKompetensiTable(
+              formData.unitKompetensi6, 
+              "unitKompetensi6", 
+              "Unit Kompetensi 6: Membuat Dokumen Kode Program"
+            )}
+
+             {/* Unit Kompetensi 7 */}
+            {renderKompetensiTable(
+              formData.unitKompetensi7, 
+              "unitKompetensi7", 
+              "Unit Kompetensi 7: Membuat Dokumen Kode Program"
+            )}
+
+             {/* Unit Kompetensi 8 */}
+            {renderKompetensiTable(
+              formData.unitKompetensi8, 
+              "unitKompetensi8", 
+              "Unit Kompetensi 8: Melaksanakan Pengujian Unit Program"
             )}
           </div>
         </div>
