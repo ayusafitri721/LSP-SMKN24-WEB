@@ -54,7 +54,7 @@ export default function DetailJurusanApl01({ onBack, onNavigate, currentTab = 'A
       maxWidth: 'calc(100vw - 250px)',
       margin: '0',
     }}>
-      {/* Header with back button and tabs */}
+      {/* Header with back button */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '40px' }}>
         <button
           onClick={onBack}
@@ -72,41 +72,6 @@ export default function DetailJurusanApl01({ onBack, onNavigate, currentTab = 'A
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
-        <div style={{ display: 'flex', backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
-          <button 
-            style={{ 
-              padding: '12px 20px', 
-              fontSize: '14px', 
-              fontWeight: '600', 
-              border: 'none', 
-              backgroundColor: '#ff6b35', 
-              color: 'white', 
-              borderRadius: '8px', 
-              cursor: 'pointer', 
-              transition: 'all 0.2s ease', 
-              margin: '4px' 
-            }}
-          >
-            FR.APL.01
-          </button>
-          <button 
-          onClick={handleNavigateToApl02}
-            style={{ 
-              padding: '12px 20px', 
-              fontSize: '14px', 
-              fontWeight: '600', 
-              border: 'none', 
-              backgroundColor: 'transparent', 
-              color: '#666', 
-              cursor: 'pointer', 
-              transition: 'all 0.2s ease', 
-              margin: '4px', 
-              borderRadius: '8px' 
-            }}
-          >
-            FR.APL.02
-          </button>
-        </div>
       </div>
       
       {/* Page Title */}

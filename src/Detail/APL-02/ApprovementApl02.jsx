@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+// ApprovementApl02.js (No change needed, already has all tabs)
+import React, { useState } from "react";
 
-export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' }) {
+export default function ApprovementApl02({ onBack, onNavigate }) {
   const [selectedCard, setSelectedCard] = useState(null);
 
   // Data untuk cards jurusan
@@ -49,76 +50,97 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
 
   const handleCardClick = (jurusan) => {
     if (onNavigate) {
-      onNavigate("detail-jurusan-apl01", jurusan);
+      onNavigate("detail-jurusan-apl02", jurusan);
+    }
+  };
+
+  const handleNavigateToAk01 = () => {
+    if (onNavigate) {
+      onNavigate("detail/ak-01");
+    }
+  };
+
+  const handleNavigateToIa01 = () => {
+    if (onNavigate) {
+      onNavigate("detail/ia-01");
     }
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: '#f5f5f5',
-      fontFamily: 'Arial, sans-serif',
-      padding: '40px',
-      boxSizing: 'border-box',
-      width: '100%',
-      maxWidth: 'calc(100vw - 250px)',
-      margin: '0',
-    }}>
-      {/* Header with back button */}
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '40px' }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#f8f9fa",
+        fontFamily: "Arial, sans-serif",
+        padding: "40px",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* Header dengan back button */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          marginBottom: "40px",
+        }}
+      >
         <button
           onClick={onBack}
           style={{
-            backgroundColor: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            marginRight: '20px',
-            padding: '10px',
-            display: 'flex',
-            alignItems: 'center'
+            backgroundColor: "transparent",
+            border: "none",
+            cursor: "pointer",
+            marginRight: "20px",
+            padding: "10px",
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#666"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
-<<<<<<< HEAD
-        <div style={{ display: 'flex', backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
-          <button 
-            style={{ 
-              padding: '12px 20px', 
-              fontSize: '14px', 
-              fontWeight: '600', 
-              border: 'none', 
-              backgroundColor: '#ff6b35', 
-              color: 'white', 
-              borderRadius: '8px', 
-              cursor: 'pointer', 
-              transition: 'all 0.2s ease', 
-              margin: '4px' 
-            }}
-          >
-            FR.APL.01
-          </button>
-          <button 
-            onClick={() => onNavigate && onNavigate("approvement/APL-02")}
-            style={{ 
-              padding: '12px 20px', 
-              fontSize: '14px', 
-              fontWeight: '600', 
-              border: 'none', 
-              backgroundColor: 'transparent', 
-              color: '#666', 
-              cursor: 'pointer', 
-              transition: 'all 0.2s ease', 
-              margin: '4px', 
-              borderRadius: '8px' 
+
+        {/* Tab Navigation */}
+        <div
+          style={{
+            display: "flex",
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <button
+            style={{
+              padding: "12px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "none",
+              backgroundColor: "#ff6b35",
+              color: "white",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              margin: "4px",
+              borderRadius: "8px",
             }}
           >
             FR.APL.02
           </button>
           <button
+<<<<<<< HEAD:src/Approvment/APL-02/ApprovementApl02.jsx
           onClick={() => onNavigate && onNavigate("approvement/AK-01")}
+=======
+            onClick={handleNavigateToAk01}
+>>>>>>> 342dc8f4ae79c4fbc99d1de18000a0bc079a7560:src/Detail/APL-02/ApprovementApl02.jsx
             style={{
               padding: "12px 20px",
               fontSize: "14px",
@@ -126,19 +148,44 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
               border: "none",
               backgroundColor: "transparent",
               color: "#666",
+<<<<<<< HEAD:src/Approvment/APL-02/ApprovementApl02.jsx
               borderRadius: "8px",
               cursor: "pointer",
               transition: "all 0.2s ease",
               margin: "4px",
+=======
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              margin: "4px",
+              borderRadius: "8px",
+>>>>>>> 342dc8f4ae79c4fbc99d1de18000a0bc079a7560:src/Detail/APL-02/ApprovementApl02.jsx
             }}
           >
             FR.AK.01
           </button>
-        </div>
+<<<<<<< HEAD:src/Approvment/APL-02/ApprovementApl02.jsx
 =======
->>>>>>> 342dc8f4ae79c4fbc99d1de18000a0bc079a7560
+          <button
+            onClick={handleNavigateToIa01}
+            style={{
+              padding: "12px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "none",
+              backgroundColor: "transparent",
+              color: "#666",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              margin: "4px",
+              borderRadius: "8px",
+            }}
+          >
+            FR.IA.01
+          </button>
+>>>>>>> 342dc8f4ae79c4fbc99d1de18000a0bc079a7560:src/Detail/APL-02/ApprovementApl02.jsx
+        </div>
       </div>
-      
+
       {/* Page Title */}
       <h1
         style={{

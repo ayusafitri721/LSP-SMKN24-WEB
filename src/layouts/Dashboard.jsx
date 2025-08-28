@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ManajemenData from "./ManajemenData";
-import ListAsesmen from "./ListAsesmen";
+import ListAsesmen from "../ListAsesmen/ListAsesmen";
 import AsesmenDiikuti from "../AsesmenDiikuti/AsesmenDiikuti";
 import Approvement from '../Approvment/APL-01/Approvement';
 import logoImage from "/src/img/image 12.png";
@@ -314,7 +314,7 @@ export function DashboardSidebar({ activeMenu, onMenuClick }) {
             />
           </svg>
           <span style={{ fontSize: "15px", fontWeight: "500" }}>
-            Approvement
+            Detail Asesi
           </span>
         </div>
       </div>

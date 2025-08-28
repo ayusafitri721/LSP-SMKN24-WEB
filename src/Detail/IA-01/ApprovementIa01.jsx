@@ -1,6 +1,7 @@
+// ApprovementIa01.js (No change needed, already has all tabs)
 import React, { useState } from "react";
 
-export default function ApprovementApl02({ onBack, onNavigate }) {
+export default function ApprovementIa01({ onBack, onNavigate }) {
   const [selectedCard, setSelectedCard] = useState(null);
 
   // Data untuk cards jurusan
@@ -47,11 +48,23 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
     },
   ];
 
-const handleCardClick = (jurusan) => {
-  if (onNavigate) {
-    onNavigate("detail-jurusan", jurusan);
-  }
-};
+  const handleCardClick = (jurusan) => {
+    if (onNavigate) {
+      onNavigate("detail-jurusan-ia01", jurusan);
+    }
+  };
+
+  const handleNavigateToApl02 = () => {
+    if (onNavigate) {
+      onNavigate("detail/apl-02");
+    }
+  };
+
+  const handleNavigateToAk01 = () => {
+    if (onNavigate) {
+      onNavigate("detail/ak-01");
+    }
+  };
 
   return (
     <div
@@ -107,7 +120,7 @@ const handleCardClick = (jurusan) => {
           }}
         >
           <button
-            onClick={() => onNavigate && onNavigate("approvement")}
+            onClick={handleNavigateToApl02}
             style={{
               padding: "12px 20px",
               fontSize: "14px",
@@ -115,13 +128,30 @@ const handleCardClick = (jurusan) => {
               border: "none",
               backgroundColor: "transparent",
               color: "#666",
-              borderRadius: "8px",
               cursor: "pointer",
               transition: "all 0.2s ease",
               margin: "4px",
+              borderRadius: "8px",
             }}
           >
-            FR.APL.01
+            FR.APL.02
+          </button>
+          <button
+            onClick={handleNavigateToAk01}
+            style={{
+              padding: "12px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "none",
+              backgroundColor: "transparent",
+              color: "#666",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              margin: "4px",
+              borderRadius: "8px",
+            }}
+          >
+            FR.AK.01
           </button>
           <button
             style={{
@@ -137,24 +167,7 @@ const handleCardClick = (jurusan) => {
               borderRadius: "8px",
             }}
           >
-            FR.APL.02
-          </button>
-          <button
-          onClick={() => onNavigate && onNavigate("approvement/AK-01")}
-            style={{
-              padding: "12px 20px",
-              fontSize: "14px",
-              fontWeight: "600",
-              border: "none",
-              backgroundColor: "transparent",
-              color: "#666",
-              borderRadius: "8px",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              margin: "4px",
-            }}
-          >
-            FR.AK.01
+            FR.IA.01
           </button>
         </div>
       </div>
@@ -261,7 +274,7 @@ const handleCardClick = (jurusan) => {
                     e.target.parentElement.style.alignItems = "center";
                     e.target.parentElement.style.justifyContent = "center";
                     e.target.parentElement.innerHTML = `
-                      <div style="width: 80px; height: 80px; background-color: #adb5bd; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                      <div style="width: 80px; height: 80px; background-color: #adb5bd; border-radius: 8px; display: flex; alignItems: "center", justifyContent: "center">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6c757d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                           <circle cx="8.5" cy="8.5" r="1.5"></circle>
