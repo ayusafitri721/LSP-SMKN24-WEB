@@ -13,11 +13,6 @@ export default function DetailJurusan({ onBack, onNavigate, currentTab = 'APL-02
 
   const kelasList = ['Semua', 'XII Rpl 1', 'XII Rpl 2', 'XII Rpl 3'];
 
-  // Navigate to APL-01
-  const handleNavigateToApl01 = () => {
-    onNavigate('approvement');
-  };
-
   // Filter data berdasarkan search dan kelas
   const filteredData = siswaData.filter(item => {
     const matchesSearch = item.nama.toLowerCase().includes(searchTerm.toLowerCase());
@@ -54,7 +49,7 @@ export default function DetailJurusan({ onBack, onNavigate, currentTab = 'APL-02
       maxWidth: 'calc(100vw - 250px)',
       margin: '0',
     }}>
-      {/* Header with back button and tabs */}
+      {/* Header with back button and tab */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '40px' }}>
         <button
           onClick={onBack}
@@ -72,24 +67,8 @@ export default function DetailJurusan({ onBack, onNavigate, currentTab = 'APL-02
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
+        {/* Tab Navigation - Only APL-02 */}
         <div style={{ display: 'flex', backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
-          <button 
-            onClick={handleNavigateToApl01}
-            style={{ 
-              padding: '12px 20px', 
-              fontSize: '14px', 
-              fontWeight: '600', 
-              border: 'none', 
-              backgroundColor: 'transparent', 
-              color: '#666', 
-              borderRadius: '8px', 
-              cursor: 'pointer', 
-              transition: 'all 0.2s ease', 
-              margin: '4px' 
-            }}
-          >
-            FR.APL.01
-          </button>
           <button 
             style={{ 
               padding: '12px 20px', 
@@ -194,7 +173,7 @@ export default function DetailJurusan({ onBack, onNavigate, currentTab = 'APL-02
                     </td>
                     <td style={{ padding: '16px', textAlign: 'center', verticalAlign: 'middle' }}>
                       <button
-                        onClick={() => onNavigate && onNavigate('lihatapprovement02', item)}
+                        onClick={() => onNavigate && onNavigate('lihatdetail02', item)}
                         style={{
                           backgroundColor: '#ff6b35',
                           color: '#ffffff',
@@ -223,7 +202,7 @@ export default function DetailJurusan({ onBack, onNavigate, currentTab = 'APL-02
               )}
             </tbody>
           </table>
-        </div>
+        </div>  
       </div>
     </div>
   );

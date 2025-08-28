@@ -317,6 +317,75 @@ export function DashboardSidebar({ activeMenu, onMenuClick }) {
             Approvement
           </span>
         </div>
+        
+        {/* Detail Menu */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "15px 20px",
+            marginBottom: "8px",
+            backgroundColor:
+              activeMenu === "Detail" ? "#ff6b35" : "transparent",
+            borderRadius: "12px",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            color: activeMenu === "Detail" ? "white" : "#666",
+          }}
+          onClick={() => onMenuClick("Detail")}
+          onMouseEnter={(e) => {
+            if (activeMenu !== "Detail") {
+              e.currentTarget.style.backgroundColor = "#f8f9fa";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (activeMenu !== "Detail") {
+              e.currentTarget.style.backgroundColor = "transparent";
+            }
+          }}
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            style={{ marginRight: "15px" }}
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <line
+              x1="12"
+              y1="16"
+              x2="12"
+              y2="12"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <line
+              x1="12"
+              y1="8"
+              x2="12.01"
+              y2="8"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span style={{ fontSize: "15px", fontWeight: "500" }}>
+            Detail
+          </span>
+        </div>
+        
       </div>
 
       {/* Bottom Menu Items */}
