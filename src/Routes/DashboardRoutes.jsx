@@ -32,6 +32,9 @@ import LihatApprovement from '../Approvment/APL-01/LihatApprovement';
 import ProfileSection from '../layouts/ProfileSection'; // Import ProfileSection
 import DetailJurusan from '../Approvment/APL-02/DetailJurusan';
 import DetailJurusanApl01 from '../Approvment/APL-01/DetailJurusanApl01';
+import ApprovementAK01 from '../Approvment/AK-01/ApprovementAk01';
+import LihatApprovementAK01 from '../Approvment/AK-01/LihatApprovementAK01';
+import DetailJurusanAK01 from '../Approvment/AK-01/DetailJurusanAK01';
 import Skema from '../Skema/Skema';
 
 const DashboardRoutes = () => {
@@ -98,8 +101,11 @@ const DashboardRoutes = () => {
       // Add APL-02 routes
       'approvementapl02': 'approvement/apl-02',
       'lihatapprovement02': 'approvement/apl-02/lihat',
-      'detail-jurusan': 'approvement/apl-02/detail'
-      
+      'detail-jurusan': 'approvement/apl-02/detail',
+      // AK - 01
+      'approvementak01': 'approvement/ak-01',
+      'lihatapprovementak01': 'approvement/ak-01/lihat',
+      'detail-jurusan-ak01': 'approvement/ak-01/detail'
     };
     
     const route = pageMap[page] || page;
@@ -421,6 +427,34 @@ const DashboardRoutes = () => {
   <DashboardLayout>
     <DetailJurusan 
       onBack={() => navigate('/dashboard/approvement/apl-02')} 
+      onNavigate={handleNavigate}  // ← TAMBAHKAN INI
+      data={editData} 
+    />
+  </DashboardLayout>
+} />
+
+      <Route path="/approvement/ak-01/lihat" element={
+    <DashboardLayout>
+      <LihatApprovementAK01
+      onBack={() => navigate('/dashboard/approvement/ak-01')} 
+      data={editData} 
+      />
+        </DashboardLayout>
+      } />
+
+      <Route path="/approvement/ak-01" element={
+        <DashboardLayout>
+          <ApprovementAK01
+            onBack={() => navigate('/dashboard/approvement')} 
+            onNavigate={handleNavigate} 
+          />
+        </DashboardLayout>
+      } />
+
+     <Route path="/approvement/ak-01/detail" element={
+  <DashboardLayout>
+    <DetailJurusanAK01 
+      onBack={() => navigate('/dashboard/approvement/ak-01')} 
       onNavigate={handleNavigate}  // ← TAMBAHKAN INI
       data={editData} 
     />

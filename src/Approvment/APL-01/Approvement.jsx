@@ -123,6 +123,23 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
           >
             FR.APL.02
           </button>
+          <button
+          onClick={() => onNavigate && onNavigate("approvement/AK-01")}
+            style={{
+              padding: "12px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "none",
+              backgroundColor: "transparent",
+              color: "#666",
+              borderRadius: "8px",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              margin: "4px",
+            }}
+          >
+            FR.AK.01
+          </button>
         </div>
       </div>
       
