@@ -192,7 +192,7 @@ export default function DetailJurusan({ onBack, onNavigate, currentTab = 'APL-02
                     </td>
                     <td style={{ padding: '16px', textAlign: 'center', verticalAlign: 'middle' }}>
                       <button
-                        onClick={() => onNavigate && onNavigate('lihatapprovement02', item)}
+                        onClick={() => onNavigate && onNavigate('lihatapprovement', item)}
                         style={{
                           backgroundColor: '#ff6b35',
                           color: '#ffffff',
