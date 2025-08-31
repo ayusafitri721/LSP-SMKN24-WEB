@@ -126,7 +126,7 @@ const DashboardRoutes = () => {
       ManajemenData: 'manajemen-data',
       ListAsesmen: 'list-asesmen',
       AsesmenDiikuti: 'asesmen-diikuti',
-      Approvement: 'approvement',
+      Approvement: 'approvement/apl-02', // ← UBAH INI DARI 'approvement' MENJADI 'approvement/apl-02'
       Profile: 'profile',
     };
     
@@ -405,45 +405,46 @@ const DashboardRoutes = () => {
       } />
 
       <Route path="/approvement/lihat" element={
-  <DashboardLayout>
-    <LihatApprovement
-      onBack={() => navigate('/dashboard/approvement/detail')} 
-      onNavigate={handleNavigate}
-      data={editData} 
-    />
-  </DashboardLayout>
-} />
+        <DashboardLayout>
+          <LihatApprovement
+            onBack={() => navigate('/dashboard/approvement/detail')} 
+            onNavigate={handleNavigate}
+            data={editData} 
+          />
+        </DashboardLayout>
+      } />
 
-      {/* Approvement Routes - APL-02 - FIXED */}
+      {/* Approvement Routes - APL-02 - MAIN ROUTE (yang dipanggil dari sidebar) */}
       <Route path="/approvement/apl-02" element={
         <DashboardLayout>
           <ApprovementApl02 
-            onBack={() => navigate('/dashboard/approvement')} 
+            onBack={handleBackToHome} 
             onNavigate={handleNavigate} 
           />
         </DashboardLayout>
       } />
 
-     <Route path="/approvement/apl-02/detail" element={
-  <DashboardLayout>
-    <DetailJurusan 
-      onBack={() => navigate('/dashboard/approvement/apl-02')} 
-      onNavigate={handleNavigate}  // ← TAMBAHKAN INI
-      data={editData} 
-    />
-  </DashboardLayout>
-} />
-
-      <Route path="/approvement/ak-01/lihat" element={
-    <DashboardLayout>
-      <LihatApprovementAK01
-      onBack={() => navigate('/dashboard/approvement/ak-01')} 
-      onNavigate={handleNavigate} 
-      data={editData} 
-      />
+      <Route path="/approvement/apl-02/detail" element={
+        <DashboardLayout>
+          <DetailJurusan 
+            onBack={() => navigate('/dashboard/approvement/apl-02')} 
+            onNavigate={handleNavigate}
+            data={editData} 
+          />
         </DashboardLayout>
       } />
 
+      <Route path="/approvement/apl-02/lihat" element={
+        <DashboardLayout>
+          <LihatApprovement02 
+            onBack={() => navigate('/dashboard/approvement/apl-02')} 
+            onNavigate={handleNavigate}
+            data={editData} 
+          />
+        </DashboardLayout>
+      } />
+
+      {/* Approvement Routes - AK-01 */}
       <Route path="/approvement/ak-01" element={
         <DashboardLayout>
           <ApprovementAK01
@@ -453,35 +454,35 @@ const DashboardRoutes = () => {
         </DashboardLayout>
       } />
 
-     <Route path="/approvement/ak-01/detail" element={
-  <DashboardLayout>
-    <DetailJurusanAK01 
-      onBack={() => navigate('/dashboard/approvement/ak-01')} 
-      onNavigate={handleNavigate}  // ← TAMBAHKAN INI
-      data={editData} 
-    />
-  </DashboardLayout>
-} />
+      <Route path="/approvement/ak-01/detail" element={
+        <DashboardLayout>
+          <DetailJurusanAK01 
+            onBack={() => navigate('/dashboard/approvement/ak-01')} 
+            onNavigate={handleNavigate}
+            data={editData} 
+          />
+        </DashboardLayout>
+      } />
 
-      <Route path="/approvement/apl-02/lihat" element={
-  <DashboardLayout>
-    <LihatApprovement02 
-      onBack={() => navigate('/dashboard/approvement/apl-02')} 
-      onNavigate={handleNavigate}
-      data={editData} 
-    />
-  </DashboardLayout>
-} />
+      <Route path="/approvement/ak-01/lihat" element={
+        <DashboardLayout>
+          <LihatApprovementAK01
+            onBack={() => navigate('/dashboard/approvement/ak-01')} 
+            onNavigate={handleNavigate} 
+            data={editData} 
+          />
+        </DashboardLayout>
+      } />
 
-     <Route path="/approvement/detail" element={
-  <DashboardLayout>
-    <DetailJurusanApl01
-      onBack={() => navigate('/dashboard/approvement/apl-01')} 
-      onNavigate={handleNavigate}  // ← TAMBAHKAN INI
-      data={editData} 
-    />
-  </DashboardLayout>
-} />
+      <Route path="/approvement/detail" element={
+        <DashboardLayout>
+          <DetailJurusanApl01
+            onBack={() => navigate('/dashboard/approvement/apl-01')} 
+            onNavigate={handleNavigate}
+            data={editData} 
+          />
+        </DashboardLayout>
+      } />
 
       {/* Test Route for Debugging */}
       <Route path="/test" element={

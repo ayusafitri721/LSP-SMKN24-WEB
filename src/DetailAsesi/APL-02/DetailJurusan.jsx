@@ -6,9 +6,9 @@ export default function DetailJurusan({ onBack, onNavigate, currentTab = 'APL-02
 
   // Sample data siswa - sesuai dengan gambar yang diberikan
   const siswaData = [
-    { id: 1, nama: 'Ya fitulah ya namanya', kelas: 'XII Rpl 1', status: 'aktif' },
-    { id: 2, nama: 'Ya fitulah ya namanya', kelas: 'XII Rpl 1', status: 'pending' },
-    { id: 3, nama: 'Ya fitulah ya namanya', kelas: 'XII Rpl 1', status: 'pending' },
+    { id: 1, nama: 'Ya fitulah ya namanya', kelas: 'XII Rpl 1', status: 'aktif', rekomendasi: 'Tidak Lanjut' },
+    { id: 2, nama: 'Faiq Naufal Aziz', kelas: 'XII Rpl 1', status: 'aktif', rekomendasi: 'Lanjut' },
+    { id: 3, nama: 'Angger Fitama', kelas: 'XII Rpl 1', status: 'aktif', rekomendasi: 'Lanjut' },
   ];
 
   const kelasList = ['Semua', 'XII Rpl 1', 'XII Rpl 2', 'XII Rpl 3'];
@@ -38,6 +38,38 @@ export default function DetailJurusan({ onBack, onNavigate, currentTab = 'APL-02
     }
   };
 
+  const getRekomendasiStyle = (rekomendasi) => {
+    switch (rekomendasi) {
+      case 'Lanjut':
+        return {
+          backgroundColor: '#28a745',
+          color: 'white',
+          padding: '4px 8px',
+          borderRadius: '4px',
+          fontSize: '11px',
+          fontWeight: '500'
+        };
+      case 'Tidak Lanjut':
+        return {
+          backgroundColor: '#dc3545',
+          color: 'white',
+          padding: '4px 8px',
+          borderRadius: '4px',
+          fontSize: '11px',
+          fontWeight: '500'
+        };
+      default:
+        return {
+          backgroundColor: '#6c757d',
+          color: 'white',
+          padding: '4px 8px',
+          borderRadius: '4px',
+          fontSize: '11px',
+          fontWeight: '500'
+        };
+    }
+  };
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -49,7 +81,7 @@ export default function DetailJurusan({ onBack, onNavigate, currentTab = 'APL-02
       maxWidth: 'calc(100vw - 250px)',
       margin: '0',
     }}>
-      {/* Header with back button and tab */}
+      {/* Header with back button */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '40px' }}>
         <button
           onClick={onBack}
@@ -67,25 +99,6 @@ export default function DetailJurusan({ onBack, onNavigate, currentTab = 'APL-02
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
-        {/* Tab Navigation - Only APL-02 */}
-        <div style={{ display: 'flex', backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
-          <button 
-            style={{ 
-              padding: '12px 20px', 
-              fontSize: '14px', 
-              fontWeight: '600', 
-              border: 'none', 
-              backgroundColor: '#ff6b35', 
-              color: 'white', 
-              cursor: 'pointer', 
-              transition: 'all 0.2s ease', 
-              margin: '4px', 
-              borderRadius: '8px' 
-            }}
-          >
-            FR.APL.02
-          </button>
-        </div>
       </div>
       
       {/* Page Title */}
@@ -141,9 +154,10 @@ export default function DetailJurusan({ onBack, onNavigate, currentTab = 'APL-02
             <thead>
               <tr style={{ backgroundColor: '#f8f9fa' }}>
                 <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '13px', fontWeight: '600', color: '#495057', width: '60px', borderRight: '1px solid #e0e0e0' }}>No</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '13px', fontWeight: '600', color: '#495057', minWidth: '250px', borderRight: '1px solid #e0e0e0' }}>Nama Siswa</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '13px', fontWeight: '600', color: '#495057', minWidth: '120px', borderRight: '1px solid #e0e0e0' }}>Kelas</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '13px', fontWeight: '600', color: '#495057', minWidth: '200px', borderRight: '1px solid #e0e0e0' }}>Nama Siswa</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '13px', fontWeight: '600', color: '#495057', minWidth: '100px', borderRight: '1px solid #e0e0e0' }}>Kelas</th>
                 <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '13px', fontWeight: '600', color: '#495057', minWidth: '80px', borderRight: '1px solid #e0e0e0' }}>Status</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '13px', fontWeight: '600', color: '#495057', minWidth: '120px', borderRight: '1px solid #e0e0e0' }}>Rekomendasi</th>
                 <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '13px', fontWeight: '600', color: '#495057', minWidth: '80px' }}>Detail</th>
               </tr>
             </thead>
@@ -171,9 +185,14 @@ export default function DetailJurusan({ onBack, onNavigate, currentTab = 'APL-02
                         }}
                       ></div>
                     </td>
+                    <td style={{ padding: '16px', textAlign: 'center', verticalAlign: 'middle', borderRight: '1px solid #e0e0e0' }}>
+                      <span style={getRekomendasiStyle(item.rekomendasi)}>
+                        {item.rekomendasi}
+                      </span>
+                    </td>
                     <td style={{ padding: '16px', textAlign: 'center', verticalAlign: 'middle' }}>
                       <button
-                        onClick={() => onNavigate && onNavigate('lihatdetail02', item)}
+                        onClick={() => onNavigate && onNavigate('lihatapprovement02', item)}
                         style={{
                           backgroundColor: '#ff6b35',
                           color: '#ffffff',
@@ -195,7 +214,7 @@ export default function DetailJurusan({ onBack, onNavigate, currentTab = 'APL-02
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" style={{ padding: '30px', textAlign: 'center', color: '#999', fontSize: '13px' }}>
+                  <td colSpan="6" style={{ padding: '30px', textAlign: 'center', color: '#999', fontSize: '13px' }}>
                     {searchTerm || selectedKelas !== 'Semua' ? 'Tidak ada data yang sesuai dengan filter' : 'Belum ada data siswa'}
                   </td>
                 </tr>

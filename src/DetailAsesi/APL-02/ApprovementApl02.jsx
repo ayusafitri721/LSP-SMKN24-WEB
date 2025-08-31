@@ -1,4 +1,3 @@
-// ApprovementApl02.js (No change needed, already has all tabs)
 import React, { useState } from "react";
 
 export default function ApprovementApl02({ onBack, onNavigate }) {
@@ -49,11 +48,10 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
   ];
 
   const handleCardClick = (jurusan) => {
-    if (onNavigate) {
-      onNavigate("detail-jurusan-apl02", jurusan);
-    }
-  };
-
+  if (onNavigate) {
+    onNavigate("detail-jurusan", jurusan);
+  }
+};
   const handleNavigateToAk01 = () => {
     if (onNavigate) {
       onNavigate("detail/ak-01");
@@ -110,68 +108,7 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
           </svg>
         </button>
 
-        {/* Tab Navigation */}
-        <div
-          style={{
-            display: "flex",
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <button
-            style={{
-              padding: "12px 20px",
-              fontSize: "14px",
-              fontWeight: "600",
-              border: "none",
-              backgroundColor: "#ff6b35",
-              color: "white",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              margin: "4px",
-              borderRadius: "8px",
-            }}
-          >
-            FR.APL.02
-          </button>
-          <button
-  onClick={handleNavigateToAk01}
-  style={{
-    padding: "12px 20px",
-    fontSize: "14px",
-    fontWeight: "600",
-    border: "none",
-    backgroundColor: "transparent",
-    color: "#666",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-    margin: "4px",
-    borderRadius: "8px",
-  }}
->
-  FR.AK.01
-</button>
 
-<button
-  onClick={handleNavigateToIa01}
-  style={{
-    padding: "12px 20px",
-    fontSize: "14px",
-    fontWeight: "600",
-    border: "none",
-    backgroundColor: "transparent",
-    color: "#666",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-    margin: "4px",
-    borderRadius: "8px",
-  }}
->
-  FR.IA.01
-</button>
-
-        </div>
       </div>
 
       {/* Page Title */}

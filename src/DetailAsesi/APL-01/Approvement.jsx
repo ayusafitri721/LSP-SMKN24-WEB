@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' }) {
+export default function Approvement({ onBack, onNavigate }) {
   const [selectedCard, setSelectedCard] = useState(null);
 
   // Data untuk cards jurusan
@@ -64,7 +64,7 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
       maxWidth: 'calc(100vw - 250px)',
       margin: '0',
     }}>
-      {/* Header with back button */}
+      {/* Header with back button - TANPA TAB NAVIGATION */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '40px' }}>
         <button
           onClick={onBack}
@@ -82,58 +82,6 @@ export default function Approvement({ onBack, onNavigate, currentTab = 'APL-01' 
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
-        <div style={{ display: 'flex', backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
-          <button 
-            style={{ 
-              padding: '12px 20px', 
-              fontSize: '14px', 
-              fontWeight: '600', 
-              border: 'none', 
-              backgroundColor: '#ff6b35', 
-              color: 'white', 
-              borderRadius: '8px', 
-              cursor: 'pointer', 
-              transition: 'all 0.2s ease', 
-              margin: '4px' 
-            }}
-          >
-            FR.APL.01
-          </button>
-          <button 
-            onClick={() => onNavigate && onNavigate("approvement/APL-02")}
-            style={{ 
-              padding: '12px 20px', 
-              fontSize: '14px', 
-              fontWeight: '600', 
-              border: 'none', 
-              backgroundColor: 'transparent', 
-              color: '#666', 
-              cursor: 'pointer', 
-              transition: 'all 0.2s ease', 
-              margin: '4px', 
-              borderRadius: '8px' 
-            }}
-          >
-            FR.APL.02
-          </button>
-          <button
-          onClick={() => onNavigate && onNavigate("approvement/AK-01")}
-            style={{
-              padding: "12px 20px",
-              fontSize: "14px",
-              fontWeight: "600",
-              border: "none",
-              backgroundColor: "transparent",
-              color: "#666",
-              borderRadius: "8px",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              margin: "4px",
-            }}
-          >
-            FR.AK.01
-          </button>
-        </div>
       </div>
       
       {/* Page Title */}
