@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
 function VisiMisi({ onBack }) {
   const contentRef = useRef(null);
@@ -46,7 +47,7 @@ function VisiMisi({ onBack }) {
           left: 0,
           width: "100%",
           height: "100%",
-          backgroundColor: "rgba(44, 148, 255, 0.6)",
+          backgroundColor: "rgba(44, 148, 255, 0.3)",
           zIndex: 1
         }}></div>
       </div>
@@ -168,7 +169,6 @@ function VisiMisi({ onBack }) {
         </div>
       </div>
 
-      {/* Footer - Copy from Berita.jsx */}
       <footer style={{
         background: 'linear-gradient(135deg, #f97316 0%, #f97316 40%, #2C94FF 40%, #2C94FF 100%)',
         padding: '40px 60px',
@@ -283,14 +283,13 @@ function VisiMisi({ onBack }) {
               margin: 0
             }}>
               {[
-                'Tentang Kami',
-                'Visi dan Misi',
-                'Struktur Organisasi',
-                'Skema Sertifikasi'
+                { text: 'Tentang Kami', path: '/#profile' },
+                { text: 'Visi dan Misi', path: '/visi-misi' },
+                { text: 'Skema Sertifikasi', path: '/detail-sertifikasi' }
               ].map((item, index) => (
                 <li key={index} style={{ marginBottom: '8px' }}>
-                  <a 
-                    href="#" 
+                  <Link 
+                    to={item.path}
                     style={{
                       color: 'white',
                       textDecoration: 'none',
@@ -304,8 +303,8 @@ function VisiMisi({ onBack }) {
                     onMouseOut={(e) => e.target.style.opacity = '0.9'}
                   >
                     <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
-                    {item}
-                  </a>
+                    {item.text}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -318,14 +317,13 @@ function VisiMisi({ onBack }) {
                 margin: 0
               }}>
                 {[
-                  'Syarat dan Ketentuan',
-                  'Jadwal Asesmen',
-                  'Berita',
-                  'Kirim Foto dan Video'
+                  { text: 'Jadwal Asesmen', path: '/jadwal-asesmen' },
+                  { text: 'Berita', path: '/berita' },
+                  { text: 'Lihat Foto dan Video', path: '/galeri-foto' }
                 ].map((item, index) => (
                   <li key={index} style={{ marginBottom: '8px' }}>
-                    <a 
-                      href="#" 
+                    <Link 
+                      to={item.path}
                       style={{
                         color: 'white',
                         textDecoration: 'none',
@@ -339,8 +337,8 @@ function VisiMisi({ onBack }) {
                       onMouseOut={(e) => e.target.style.opacity = '0.9'}
                     >
                       <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
-                      {item}
-                    </a>
+                      {item.text}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -360,7 +358,8 @@ function VisiMisi({ onBack }) {
             }}>
               Contact Us:
             </h3>
-            <button 
+            <Link 
+              to="/kontak"
               style={{
                 backgroundColor: '#6B7280',
                 color: 'white',
@@ -370,6 +369,8 @@ function VisiMisi({ onBack }) {
                 fontSize: '14px',
                 fontWeight: '600',
                 cursor: 'pointer',
+                textDecoration: 'none',
+                display: 'inline-block',
                 transition: 'all 0.3s ease'
               }}
               onMouseOver={(e) => {
@@ -382,7 +383,7 @@ function VisiMisi({ onBack }) {
               }}
             >
               Contact Us
-            </button>
+            </Link>
           </div>
         </div>
       </footer>
