@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useJurusan } from '../context/JurusanContext';
 import { useAuth } from  '../context/AuthContext';
 // Import gambar dari src/img/
@@ -6,6 +7,7 @@ import registerBackground from '../img/ADM_LOGIN.png';
 
 function Register({ goToDashboard, goToLogin }) {
   const {register} = useAuth();
+  const navigate = useNavigate();
   const {jurusanList, loading} = useJurusan();
   const [registerLoading, setRegisterLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -18,6 +20,14 @@ function Register({ goToDashboard, goToLogin }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // Fallback function jika goToLogin tidak di-pass dari parent atau salah route
+  const handleGoToLogin = () => {
+    if (goToLogin) {
+      goToLogin();
+    } else {
+      navigate('/auth/login'); // Navigate ke login yang benar
+    }
+  };
 
   const handleInputChange = (e) => {
     setFormData({
@@ -44,21 +54,27 @@ function Register({ goToDashboard, goToLogin }) {
       return;
     }
 
+    setRegisterLoading(true);
+
     try {
       const res = await register(formData);
       setSuccess("Registration successful!");
       console.log("API Response:", res.data);
 
-      // misalnya langsung ke dashboard
-      goToLogin?.();
+      // Setelah register berhasil, ke login page
+      setTimeout(() => {
+        handleGoToLogin();
+      }, 1500); // Delay 1.5 detik biar user liat success message
     } catch (err) {
       console.error("Register error:", err.response?.data || err.message);
       setError(err.response?.data?.message || "Registration failed");
+    } finally {
+      setRegisterLoading(false);
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !registerLoading) {
       handleSubmit(e);
     }
   };
@@ -78,9 +94,56 @@ function Register({ goToDashboard, goToLogin }) {
             height: 100%;
             overflow-x: hidden;
           }
+          
+          /* Loading spinner animation */
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          
+          .spinner {
+            animation: spin 1s linear infinite;
+          }
+          
+          /* Mobile responsive */
+          @media (max-width: 768px) {
+            .main-container {
+              padding: 15px !important;
+            }
+            .form-container {
+              width: 95vw !important;
+              height: auto !important;
+              padding: 30px 25px !important;
+            }
+            .background-layer {
+              width: 95vw !important;
+              height: auto !important;
+              min-height: 500px;
+            }
+            .form-title {
+              font-size: 24px !important;
+            }
+            .submit-button {
+              width: 100% !important;
+              max-width: 200px;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .form-container {
+              width: 98vw !important;
+              padding: 25px 20px !important;
+            }
+            .background-layer {
+              width: 98vw !important;
+            }
+            .form-title {
+              font-size: 22px !important;
+            }
+          }
         `
       }} />
-      <div style={{
+      <div className="main-container" style={{
         minHeight: '100vh',
         height: '100vh',
         // Gunakan imported image
@@ -103,7 +166,7 @@ function Register({ goToDashboard, goToLogin }) {
         bottom: '0'
       }}>
         {/* Background layer/shadow box */}
-        <div style={{
+        <div className="background-layer" style={{
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(10px)',
           padding: '20px',
@@ -117,7 +180,7 @@ function Register({ goToDashboard, goToLogin }) {
         </div>
 
         {/* Main form container */}
-        <div style={{
+        <div className="form-container" style={{
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(15px)',
           padding: '50px 60px',
@@ -134,7 +197,7 @@ function Register({ goToDashboard, goToLogin }) {
           flexDirection: 'column',
           justifyContent: 'center'
         }}>
-          <h1 style={{
+          <h1 className="form-title" style={{
             fontSize: '28px',
             fontWeight: '600',
             color: '#333',
@@ -162,7 +225,9 @@ function Register({ goToDashboard, goToLogin }) {
               padding: '10px',
               marginBottom: '15px',
               fontSize: '11px',
-              color: '#dc2626'
+              color: '#dc2626',
+              textAlign: 'center',
+              fontWeight: '500'
             }}>
               {error}
             </div>
@@ -177,7 +242,9 @@ function Register({ goToDashboard, goToLogin }) {
               padding: '10px',
               marginBottom: '15px',
               fontSize: '11px',
-              color: '#16a34a'
+              color: '#16a34a',
+              textAlign: 'center',
+              fontWeight: '500'
             }}>
               {success}
             </div>
@@ -195,6 +262,7 @@ function Register({ goToDashboard, goToLogin }) {
                 value={formData.username}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
+                disabled={registerLoading}
                 style={{
                   width: '100%',
                   padding: '14px 18px',
@@ -204,10 +272,11 @@ function Register({ goToDashboard, goToLogin }) {
                   backgroundColor: 'transparent',
                   outline: 'none',
                   fontFamily: 'inherit',
-                  color: '#333',
-                  transition: 'border-color 0.3s ease'
+                  color: registerLoading ? '#999' : '#333',
+                  transition: 'border-color 0.3s ease',
+                  cursor: registerLoading ? 'not-allowed' : 'text'
                 }}
-                onFocus={(e) => e.target.style.borderBottomColor = '#f97316'}
+                onFocus={(e) => !registerLoading && (e.target.style.borderBottomColor = '#f97316')}
                 onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
               />
             </div>
@@ -221,6 +290,7 @@ function Register({ goToDashboard, goToLogin }) {
                 value={formData.email}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
+                disabled={registerLoading}
                 style={{
                   width: '100%',
                   padding: '14px 18px',
@@ -230,16 +300,17 @@ function Register({ goToDashboard, goToLogin }) {
                   backgroundColor: 'transparent',
                   outline: 'none',
                   fontFamily: 'inherit',
-                  color: '#333',
-                  transition: 'border-color 0.3s ease'
+                  color: registerLoading ? '#999' : '#333',
+                  transition: 'border-color 0.3s ease',
+                  cursor: registerLoading ? 'not-allowed' : 'text'
                 }}
-                onFocus={(e) => e.target.style.borderBottomColor = '#f97316'}
+                onFocus={(e) => !registerLoading && (e.target.style.borderBottomColor = '#f97316')}
                 onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
               />
             </div>
 
             {/* Password */}
-            <div style={{ textAlign: 'left' }}>
+            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
               <input
                 type="password"
                 name="password"
@@ -247,6 +318,7 @@ function Register({ goToDashboard, goToLogin }) {
                 value={formData.password}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
+                disabled={registerLoading}
                 style={{
                   width: '100%',
                   padding: '14px 18px',
@@ -256,91 +328,119 @@ function Register({ goToDashboard, goToLogin }) {
                   backgroundColor: 'transparent',
                   outline: 'none',
                   fontFamily: 'inherit',
-                  color: '#333',
-                  transition: 'border-color 0.3s ease'
+                  color: registerLoading ? '#999' : '#333',
+                  transition: 'border-color 0.3s ease',
+                  cursor: registerLoading ? 'not-allowed' : 'text'
                 }}
-                onFocus={(e) => e.target.style.borderBottomColor = '#f97316'}
+                onFocus={(e) => !registerLoading && (e.target.style.borderBottomColor = '#f97316')}
                 onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
               />
             </div>
-          </div>
 
-          {/* Select Jurusan - Updated to match other inputs */}
-          <div style={{ marginBottom: '20px', textAlign: 'left' }}>
-            <select
-              name="jurusan_id"
-              value={formData.jurusan_id}
-              onChange={handleInputChange}
-              style={{
-                width: '100%',
-                padding: '14px 18px',
-                border: 'none',
-                borderBottom: '2px solid #e5e7eb',
-                fontSize: '15px',
-                backgroundColor: 'transparent',
-                outline: 'none',
-                fontFamily: 'inherit',
-                color: '#333',
-                transition: 'border-color 0.3s ease',
-                appearance: 'none', // Remove default arrow
-                cursor: 'pointer'
-              }}
-              onFocus={(e) => e.target.style.borderBottomColor = '#f97316'}
-              onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
-            >
-              <option value="" disabled style={{ color: '#999' }}>
-                Select Jurusan
-              </option>
-              {loading ? (
-                <option disabled>Loading...</option>
-              ) : (
-                jurusanList.map((jurusan) => (
-                  <option key={jurusan.id} value={jurusan.id}>
-                    {jurusan.kode_jurusan} - {jurusan.nama_jurusan}
-                  </option>
-                ))
-              )}
-            </select>
+            {/* Select Jurusan */}
+            <div style={{ textAlign: 'left' }}>
+              <select
+                name="jurusan_id"
+                value={formData.jurusan_id}
+                onChange={handleInputChange}
+                disabled={registerLoading || loading}
+                style={{
+                  width: '100%',
+                  padding: '14px 18px',
+                  border: 'none',
+                  borderBottom: '2px solid #e5e7eb',
+                  fontSize: '15px',
+                  backgroundColor: 'transparent',
+                  outline: 'none',
+                  fontFamily: 'inherit',
+                  color: (registerLoading || loading) ? '#999' : '#333',
+                  transition: 'border-color 0.3s ease',
+                  appearance: 'none',
+                  cursor: (registerLoading || loading) ? 'not-allowed' : 'pointer'
+                }}
+                onFocus={(e) => !(registerLoading || loading) && (e.target.style.borderBottomColor = '#f97316')}
+                onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
+              >
+                <option value="" disabled style={{ color: '#999' }}>
+                  Select Jurusan
+                </option>
+                {loading ? (
+                  <option disabled>Loading...</option>
+                ) : (
+                  jurusanList.map((jurusan) => (
+                    <option key={jurusan.id} value={jurusan.id}>
+                      {jurusan.kode_jurusan} - {jurusan.nama_jurusan}
+                    </option>
+                  ))
+                )}
+              </select>
+            </div>
           </div>
 
           {/* Submit Button */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
             <button
+              className="submit-button"
               onClick={handleSubmit}
+              disabled={registerLoading || loading}
               style={{
                 width: '200px',
                 padding: '14px',
-                background: 'linear-gradient(135deg, #ff7f50, #ff6b35)',
+                background: (registerLoading || loading)
+                  ? 'linear-gradient(135deg, #d1d5db, #9ca3af)' 
+                  : 'linear-gradient(135deg, #ff7f50, #ff6b35)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '25px',
                 fontSize: '16px',
                 fontWeight: '600',
-                cursor: 'pointer',
+                cursor: (registerLoading || loading) ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease',
-                boxShadow: '0 4px 15px rgba(255, 107, 53, 0.4)',
-                letterSpacing: '0.5px'
+                boxShadow: (registerLoading || loading)
+                  ? '0 4px 15px rgba(156, 163, 175, 0.4)' 
+                  : '0 4px 15px rgba(255, 107, 53, 0.4)',
+                letterSpacing: '0.5px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
               }}
               onMouseOver={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 6px 20px rgba(255, 107, 53, 0.6)';
+                if (!(registerLoading || loading)) {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 6px 20px rgba(255, 107, 53, 0.6)';
+                }
               }}
               onMouseOut={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 15px rgba(255, 107, 53, 0.4)';
+                if (!(registerLoading || loading)) {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 15px rgba(255, 107, 53, 0.4)';
+                }
               }}
             >
-              Sign up
+              {registerLoading && (
+                <div
+                  className="spinner"
+                  style={{
+                    width: '16px',
+                    height: '16px',
+                    border: '2px solid rgba(255, 255, 255, 0.3)',
+                    borderTop: '2px solid white',
+                    borderRadius: '50%'
+                  }}
+                />
+              )}
+              {registerLoading ? 'Signing up...' : 'Sign up'}
             </button>
           </div>
 
-          {/* Link to LoginAsesi */}
+          {/* Link to Login */}
           <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
             <p style={{ fontSize: '13px', color: '#666', marginBottom: '0px' }}>
               Already have an account?
             </p>
             <button
-              onClick={goToLogin}
+              onClick={handleGoToLogin}
               style={{
                 background: 'none',
                 border: 'none',

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const JadwalAsesmen = () => {
   return (
@@ -253,69 +254,59 @@ const JadwalAsesmen = () => {
               margin: 0
             }}>
               {[
-                'Tentang Kami',
-                'Visi dan Misi',
-                'Struktur Organisasi',
-                'Skema Sertifikasi'
-              ].map((item, index) => (
-                <li key={index} style={{ marginBottom: '8px' }}>
-                  <a 
-                    href="#" 
-                    style={{
-                      color: 'white',
-                      textDecoration: 'none',
-                      fontSize: '14px',
-                      opacity: '0.9',
-                      transition: 'opacity 0.3s ease',
-                      display: 'flex',
-                      alignItems: 'center'
-                    }}
-                    onMouseOver={(e) => e.target.style.opacity = '1'}
-                    onMouseOut={(e) => e.target.style.opacity = '0.9'}
-                  >
-                    <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
-                    {item}
-                  </a>
-                </li>
+                  { text: 'Tentang Kami', path: '/#profile' },
+                  { text: 'Visi dan Misi', path: '/visi-misi' },
+                  { text: 'Skema Sertifikasi', path: '/detail-sertifikasi' }
+                ].map((item, index) => (
+                 <li key={index} style={{ marginBottom: '8px' }}>
+                   <Link to={item.path} style={{
+                     color: 'white',
+                     textDecoration: 'none',
+                     fontSize: '14px',
+                     opacity: '0.9',
+                     transition: 'opacity 0.3s ease',
+                     display: 'flex',
+                     alignItems: 'center'
+                   }}
+                     onMouseOver={(e) => e.target.style.opacity = '1'}
+                     onMouseOut={(e) => e.target.style.opacity = '0.9'}
+                   >
+                     <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
+                     {item.text}
+                   </Link>
+                 </li>
               ))}
             </ul>
 
             {/* Additional Links */}
             <div style={{ marginTop: '25px' }}>
-              <ul style={{
-                listStyle: 'none',
-                padding: 0,
-                margin: 0
-              }}>
-                {[
-                  'Syarat dan Ketentuan',
-                  'Jadwal Asesmen',
-                  'Berita',
-                  'Kirim Foto dan Video'
-                ].map((item, index) => (
-                  <li key={index} style={{ marginBottom: '8px' }}>
-                    <a 
-                      href="#" 
-                      style={{
-                        color: 'white',
-                        textDecoration: 'none',
-                        fontSize: '14px',
-                        opacity: '0.9',
-                        transition: 'opacity 0.3s ease',
-                        display: 'flex',
-                        alignItems: 'center'
-                      }}
-                      onMouseOver={(e) => e.target.style.opacity = '1'}
-                      onMouseOut={(e) => e.target.style.opacity = '0.9'}
-                    >
-                      <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
-                      {item}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+                    <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                      {[
+                        { text: 'Jadwal Asesmen', path: '/jadwal-asesmen' },
+                        { text: 'Berita', path: '/berita' },
+                        { text: 'Lihat Foto dan Video', path: '/galeri-foto' }
+                      ].map((item, index) => (
+                        <li key={index} style={{ marginBottom: '8px' }}>
+                          <Link to={item.path} style={{
+                            color: 'white',
+                            textDecoration: 'none',
+                            fontSize: '14px',
+                            opacity: '0.9',
+                            transition: 'opacity 0.3s ease',
+                            display: 'flex',
+                            alignItems: 'center'
+                          }}
+                            onMouseOver={(e) => e.target.style.opacity = '1'}
+                            onMouseOut={(e) => e.target.style.opacity = '0.9'}
+                          >
+                            <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
+                            {item.text}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
 
           {/* Contact Us Section */}
           <div style={{

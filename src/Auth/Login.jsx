@@ -1,15 +1,26 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; // Import custom hook
 import loginBackground from '../img/ADM_LOGIN.png';
 
-function Login({ goToDashboard }) {
+function Login({ goToDashboard, goToRegister }) {
   const { login, register } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     input: "",
     password: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Fallback function jika goToRegister tidak di-pass dari parent
+  const handleGoToRegister = () => {
+    if (goToRegister) {
+      goToRegister();
+    } else {
+      navigate('/auth/register');
+    }
+  };
 
   const handleInputChange = (e) => {
     setFormData({
@@ -88,7 +99,7 @@ function Login({ goToDashboard }) {
             }
             .form-container {
               width: 95vw !important;
-              min-height: auto !important;
+              height: auto !important;
               padding: 30px 25px !important;
             }
             .background-layer {
@@ -98,12 +109,6 @@ function Login({ goToDashboard }) {
             }
             .form-title {
               font-size: 24px !important;
-            }
-            .demo-credentials {
-              padding: 10px !important;
-            }
-            .demo-credentials p {
-              font-size: 9px !important;
             }
             .submit-button {
               width: 100% !important;
@@ -154,7 +159,7 @@ function Login({ goToDashboard }) {
           padding: '20px',
           borderRadius: '30px',
           width: '700px',
-          height: '450px',
+          height: '480px',
           maxWidth: '95vw',
           position: 'absolute',
           boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25), 0 10px 25px rgba(0, 0, 0, 0.15)',
@@ -165,10 +170,10 @@ function Login({ goToDashboard }) {
         <div className="form-container" style={{
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(15px)',
-          padding: '40px 50px',
+          padding: '50px 60px',
           borderRadius: '25px',
           width: '650px',
-          minHeight: '400px',
+          height: '430px',
           maxWidth: '90vw',
           boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15), 0 0 100px rgba(255, 255, 255, 0.1)',
           textAlign: 'center',
@@ -177,7 +182,7 @@ function Login({ goToDashboard }) {
           zIndex: 2,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between'
+          justifyContent: 'center'
         }}>
           <div>
             <h1 className="form-title" style={{
@@ -200,107 +205,85 @@ function Login({ goToDashboard }) {
             </p>
           </div>
 
-          <div>
-            {/* Demo credentials info */}
-            <div className="demo-credentials" style={{
-              backgroundColor: '#f0f9ff',
-              border: '1px solid #0ea5e9',
+          {/* Error message */}
+          {error && (
+            <div style={{
+              backgroundColor: '#fef2f2',
+              border: '1px solid #f87171',
               borderRadius: '10px',
-              padding: '12px',
-              marginBottom: '20px',
-              textAlign: 'left'
+              padding: '10px',
+              marginBottom: '15px',
+              fontSize: '11px',
+              color: '#dc2626',
+              textAlign: 'center',
+              fontWeight: '500'
             }}>
-              <p style={{ fontSize: '11px', color: '#0369a1', fontWeight: '600', marginBottom: '6px' }}>
-                Demo Credentials:
-              </p>
-              <p style={{ fontSize: '10px', color: '#0369a1', margin: '2px 0' }}>
-                Email: admin@admin.com | Pass: admin123
-              </p>
-              <p style={{ fontSize: '10px', color: '#0369a1', margin: '2px 0' }}>
-                Email: user@user.com | Pass: user123
-              </p>
+              {error}
+            </div>
+          )}
+
+          <div style={{
+            marginBottom: '25px'
+          }}>
+            {/* Email */}
+            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
+              <input
+                type="email"
+                name="input"
+                placeholder="Email / Username"
+                value={formData.input}
+                onChange={handleInputChange}
+                onKeyPress={handleKeyPress}
+                disabled={loading}
+                style={{
+                  width: '100%',
+                  padding: '14px 18px',
+                  border: 'none',
+                  borderBottom: '2px solid #e5e7eb',
+                  fontSize: '15px',
+                  backgroundColor: 'transparent',
+                  outline: 'none',
+                  fontFamily: 'inherit',
+                  color: loading ? '#999' : '#333',
+                  transition: 'border-color 0.3s ease',
+                  cursor: loading ? 'not-allowed' : 'text'
+                }}
+                onFocus={(e) => !loading && (e.target.style.borderBottomColor = '#f97316')}
+                onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
+              />
             </div>
 
-            {/* Error message */}
-            {error && (
-              <div style={{
-                backgroundColor: '#fef2f2',
-                border: '1px solid #f87171',
-                borderRadius: '10px',
-                padding: '10px',
-                marginBottom: '15px',
-                fontSize: '12px',
-                color: '#dc2626',
-                textAlign: 'center',
-                fontWeight: '500'
-              }}>
-                {error}
-              </div>
-            )}
-
-            <div style={{
-              marginBottom: '25px'
-            }}>
-              {/* Email */}
-              <div style={{ marginBottom: '20px', textAlign: 'left' }}>
-                <input
-                  type="email"
-                  name="input"
-                  placeholder="Email / Username"
-                  value={formData.input}
-                  onChange={handleInputChange}
-                  onKeyPress={handleKeyPress}
-                  disabled={loading}
-                  style={{
-                    width: '100%',
-                    padding: '14px 18px',
-                    border: 'none',
-                    borderBottom: '2px solid #e5e7eb',
-                    fontSize: '15px',
-                    backgroundColor: 'transparent',
-                    outline: 'none',
-                    fontFamily: 'inherit',
-                    color: loading ? '#999' : '#333',
-                    transition: 'border-color 0.3s ease',
-                    cursor: loading ? 'not-allowed' : 'text'
-                  }}
-                  onFocus={(e) => !loading && (e.target.style.borderBottomColor = '#f97316')}
-                  onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
-                />
-              </div>
-
-              {/* Password */}
-              <div style={{ textAlign: 'left' }}>
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  onKeyPress={handleKeyPress}
-                  disabled={loading}
-                  style={{
-                    width: '100%',
-                    padding: '14px 18px',
-                    border: 'none',
-                    borderBottom: '2px solid #e5e7eb',
-                    fontSize: '15px',
-                    backgroundColor: 'transparent',
-                    outline: 'none',
-                    fontFamily: 'inherit',
-                    color: loading ? '#999' : '#333',
-                    transition: 'border-color 0.3s ease',
-                    cursor: loading ? 'not-allowed' : 'text'
-                  }}
-                  onFocus={(e) => !loading && (e.target.style.borderBottomColor = '#f97316')}
-                  onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
-                />
-              </div>
+            {/* Password */}
+            <div style={{ textAlign: 'left' }}>
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleInputChange}
+                onKeyPress={handleKeyPress}
+                disabled={loading}
+                style={{
+                  width: '100%',
+                  padding: '14px 18px',
+                  border: 'none',
+                  borderBottom: '2px solid #e5e7eb',
+                  fontSize: '15px',
+                  backgroundColor: 'transparent',
+                  outline: 'none',
+                  fontFamily: 'inherit',
+                  color: loading ? '#999' : '#333',
+                  transition: 'border-color 0.3s ease',
+                  cursor: loading ? 'not-allowed' : 'text'
+                }}
+                onFocus={(e) => !loading && (e.target.style.borderBottomColor = '#f97316')}
+                onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
+              />
             </div>
           </div>
 
           {/* Submit Button */}
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
             <button
               className="submit-button"
               onClick={handleSubmit}
@@ -353,6 +336,27 @@ function Login({ goToDashboard }) {
                 />
               )}
               {loading ? 'Signing in...' : 'Sign in'}
+            </button>
+          </div>
+
+          {/* Link to Register */}
+          <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+            <p style={{ fontSize: '13px', color: '#666', marginBottom: '0px' }}>
+              Don't have an account?
+            </p>
+            <button
+              onClick={handleGoToRegister}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#f97316',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '500'
+              }}
+            >
+              Sign up
             </button>
           </div>
         </div>

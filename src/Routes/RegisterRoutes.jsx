@@ -11,12 +11,10 @@ const RegisterRoutes = () => {
   const goToDashboard = () => {
     navigate('/dashboard');
   };
-
-  const goToLogin = () => {
-    // Path yang sesuai dengan route baru di App.jsx
-    navigate('auth/login');
-  };
-
+const goToLogin = () => {
+  // Ganti path ini ke login yang benar (yang ada goToRegister prop)
+  navigate('/auth/login'); // atau path yang benar ke Login dengan goToRegister
+};
   const handleBackToHome = () => {
     navigate('/');
   };
