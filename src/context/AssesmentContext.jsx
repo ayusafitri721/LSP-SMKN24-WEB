@@ -69,9 +69,6 @@ export const AssesmentProvider = ({ children }) => {
         }
     }
 
-    useEffect(() => {
-        fetchAssesments();
-    }, []);
 
     return (
         <AssesmentContext.Provider value={{ assesments, loading, error, fetchAssesments, addAssesment, editAssesment, removeAssesment }}>

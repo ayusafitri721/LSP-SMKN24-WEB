@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useJurusan } from '../context/JurusanContext';
 import { useAuth } from  '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 // Import gambar dari src/img/
 import registerBackground from '../img/ADM_LOGIN.png';
 
-function Register({ goToDashboard, goToLogin }) {
+function Register({ goToLogin }) {
   const {register} = useAuth();
-  const {jurusanList, loading} = useJurusan();
-  const [registerLoading, setRegisterLoading] = useState(false);
+  const {jurusanList, loading, fetchJurusans} = useJurusan();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -17,6 +17,11 @@ function Register({ goToDashboard, goToLogin }) {
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchJurusans()
+  },[])
 
 
   const handleInputChange = (e) => {
@@ -47,13 +52,12 @@ function Register({ goToDashboard, goToLogin }) {
     try {
       const res = await register(formData);
       setSuccess("Registration successful!");
-      console.log("API Response:", res.data);
+      console.log("API Response:", res.message);
 
-      // misalnya langsung ke dashboard
-      goToLogin?.();
+      navigate('/auth/login');
     } catch (err) {
       console.error("Register error:", err.response?.data || err.message);
-      setError(err.response?.data?.message || "Registration failed");
+      setError(err.message || "Registration failed");
     }
   };
 

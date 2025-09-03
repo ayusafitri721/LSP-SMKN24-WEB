@@ -80,10 +80,6 @@ export const AsesorProvider = ({ children }) => {
     }
   };
 
-  // fetch saat provider mount
-  useEffect(() => {
-    fetchAsesors();
-  }, []);
 
   return (
     <AsesorContext.Provider

@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext'; // Import custom hook
 import loginBackground from '../img/ADM_LOGIN.png';
 
 function Login({ goToDashboard }) {
-  const { login, register } = useAuth();
+  const { login} = useAuth();
   const [formData, setFormData] = useState({
     input: "",
     password: "",
@@ -43,7 +43,7 @@ function Login({ goToDashboard }) {
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError("Terjadi kesalahan. Silakan coba lagi.");
+      setError(err.message);
     } finally {
       setLoading(false);
     }

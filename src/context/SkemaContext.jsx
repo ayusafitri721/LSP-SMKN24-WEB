@@ -1,5 +1,5 @@
 import {createContext, useContext, useState, useEffect} from "react";
-import { getSkemas, postApl02 } from "../Api/api"; // service ambil skema
+import { deleteSkema, getSkemas, postApl02 } from "../Api/api"; // service ambil skema
 
 const SkemaContext = createContext();
 
@@ -26,22 +26,33 @@ export function SkemaProvider({ children }) {
     const importFile = async (data) => {
         setLoading(true);
         setError(null);
-        try{
+        try {
             const res = await postApl02(data);
-        }catch(err){
-            setError(err.response?.data?.message || "gagal import data");
-        }finally{
-            setLoading(false)
+            return res.data; // <— penting: balikin response
+        } catch (err) {
+            const message = err.response?.data?.message || err.message || "Gagal import data!";
+            setError(message);
+            throw new Error(message); // <— lempar error biar bisa ditangkap
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
-    useEffect(() => {
-        fetchSkemas();
-    }, []);
+    const removeSkema = async (id) => {
+        setLoading(true);
+        setError(null);
+        try{
+          const res = await deleteSkema(id);
+          return res.data?.data;
+        }catch(err){
+          setError(err.response?.data?.message || "Gagal menghapus jurusan!");
+          throw err;
+        }
+      }
 
     return (
         <SkemaContext.Provider
-            value={{ skemaList, loading, error, fetchSkemas, importFile }}
+            value={{ skemaList, loading, error, fetchSkemas, importFile, removeSkema }}
         >
             {children}
         </SkemaContext.Provider>

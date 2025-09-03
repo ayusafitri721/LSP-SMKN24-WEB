@@ -12,23 +12,19 @@ import { SkemaProvider } from "./context/SkemaContext.jsx";
 import { Apl01Provider } from "./context/Apl01Context.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <AuthProvider>
-      <JurusanProvider>
-        <AsesiProvider>
-          <AsesorProvider>
-            <AssesmentProvider>
-              <JurusanProvider>
-                <SkemaProvider>
-                  <Apl01Provider> 
-                    <App />
-                  </Apl01Provider>
-                </SkemaProvider>
-              </JurusanProvider>
-            </AssesmentProvider>
-          </AsesorProvider>
-        </AsesiProvider>
-      </JurusanProvider>
-    </AuthProvider>
-  </React.StrictMode>
+  <AuthProvider>
+      <AsesiProvider>
+        <AsesorProvider>
+          <AssesmentProvider>
+            <JurusanProvider>
+              <SkemaProvider>
+                <Apl01Provider>
+                  <App />
+                </Apl01Provider>
+              </SkemaProvider>
+            </JurusanProvider>
+          </AssesmentProvider>
+        </AsesorProvider>
+      </AsesiProvider>
+  </AuthProvider>
 );

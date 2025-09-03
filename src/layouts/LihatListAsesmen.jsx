@@ -9,6 +9,8 @@ function LihatListAsesmen({ onBack, data }) {
     }
   };
 
+  console.log(data);
+  
   return (
     <div style={{
       minHeight: '100vh',
@@ -97,12 +99,12 @@ function LihatListAsesmen({ onBack, data }) {
               lineHeight: '1.5'
             }}>
               <div><strong>ID:</strong> {data.id}</div>
-              <div><strong>Nama Assessment:</strong> {data.namaAssessment}</div>
-              <div><strong>Kode:</strong> {data.kode}</div>
-              <div><strong>Skema:</strong> {data.skema}</div>
-              <div><strong>Tanggal Ujian:</strong> {data.tanggalUjian}</div>
+              <div><strong>Nama Assessment:</strong> {data.schema.judul_skema}</div>
+              <div><strong>Kode:</strong> {data.schema.nomor_skema}</div>
+              <div><strong>Skema:</strong> {data.schema.judul_skema}</div>
+              <div><strong>Tanggal Ujian:</strong> {data.tanggal_assesment}</div>
               <div><strong>TUK:</strong> {data.tuk}</div>
-              <div><strong>Asesor:</strong> {data.asesor}</div>
+              <div><strong>Asesor:</strong> {data.assesor.nama_lengkap}</div>
             </div>
           </div>
         )}

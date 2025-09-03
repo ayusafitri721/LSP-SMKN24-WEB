@@ -77,11 +77,6 @@ export const AsesiProvider = ({ children }) => {
     }
   }, []);
 
-  // Fetch saat provider mount
-  useEffect(() => {
-    fetchAsesis();
-  }, [fetchAsesis]);
-
   return (
     <AsesiContext.Provider
       value={{

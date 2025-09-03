@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { useAssesment } from "../context/AssesmentContext";
 import {useAsesor} from "../context/AsesorContext";
@@ -14,10 +14,12 @@ import {
 const AddAsesmen = ({ onSubmit, onBack }) => {
     const navigate = useNavigate();
     const { addAssesment } = useAssesment();
-    const { asesors } = useAsesor();
+    const { asesors, fetchAsesors } = useAsesor();
     const { jurusanList } = useJurusan();
-    const {skemaList} = useSkema();
+    const {skemaList, fetchSkemas} = useSkema();
     const [loading, setLoading] = useState(false);
+    console.log(localStorage.getItem("user"));
+    
 
     const skemaOptions = skemaList.map((s) => ({
         value: s.id,
@@ -26,7 +28,7 @@ const AddAsesmen = ({ onSubmit, onBack }) => {
     
     const [formData, setFormData] = useState({
         skema_id: "",
-        admin_id: 1, // Ganti dengan ID admin yang sesuai
+        admin_id: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).id : "",
         assesor_id: "",
         tanggal_assesment: "",
         status: "",
@@ -96,6 +98,11 @@ const AddAsesmen = ({ onSubmit, onBack }) => {
         { value: "expired", label: "Selesai" },
         { value: "dibatalkan", label: "Dibatalkan" }
     ];
+
+    useEffect(() => {
+        fetchSkemas();
+        fetchAsesors();
+    }, []);
 
     return (
         <div style={{

@@ -51,8 +51,8 @@ function AddAsesor({ onBack, onSave, onCancel }) {
         const data = new FormData();
         Object.keys(formData).forEach(key => data.append(key, formData[key]));
 
-        if (ktpFile) data.append('attachments[]', ktpFile);
-        if (kkFile) data.append('attachments[]', kkFile);
+        if (ktpFile) data.append('attachments[0]', ktpFile);
+        if (kkFile) data.append('attachments[0]', kkFile);
         sertifikasiFiles.forEach(file => data.append('attachments[]', file));
 
         await addAsesor(data);
@@ -149,7 +149,6 @@ function AddAsesor({ onBack, onSave, onCancel }) {
             value={formData.jenis_kelamin} 
             onChange={handleChange} 
             options={[
-              { value: '', label: 'Pilih Jenis Kelamin' },
               { value: 'Laki-laki', label: 'Laki-laki' },
               { value: 'Perempuan', label: 'Perempuan' }
             ]}

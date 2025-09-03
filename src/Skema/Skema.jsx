@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSkema } from '../context/SkemaContext';
 import { LoadingModal } from '../components/Modal';
 
 function Skema({ onBack, onNavigate }) {
-  const {skemaList, loading, error, fetchSkemas, importFile} = useSkema();
+  const {skemaList, loading, error, fetchSkemas, importFile, removeSkema} = useSkema();
   const data = skemaList
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
+
+  useEffect(() => {
+    fetchSkemas();
+  }, []);
   const handleImportClick = () => {
     // Navigate to edit when import is clicked
     onNavigate('addskema');
@@ -19,12 +23,19 @@ function Skema({ onBack, onNavigate }) {
     setShowDeleteConfirm(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async(itemToDelete) => {
     if (itemToDelete) {
-      setData(data.filter(item => item.id !== itemToDelete.id));
       setShowDeleteConfirm(false);
       setShowDeleteSuccess(true);
       
+      await removeSkema(itemToDelete.id)
+      .then(() => {
+        alert("Skema berhasil dihapus");
+        fetchSkemas();
+      })
+      .catch((err) => {
+        console.error("Error deleting skema:", err);
+      });
       // Auto close success modal after 2 seconds
       setTimeout(() => {
         setShowDeleteSuccess(false);
@@ -701,7 +712,7 @@ function Skema({ onBack, onNavigate }) {
               borderTop: '1px solid #e0e0e0'
             }}>
               <button
-                onClick={() => setShowDeleteConfirm(false)}
+                onClick={() => confirmDelete(itemToDelete)}
                 style={{
                   backgroundColor: 'transparent',
                   border: 'none',

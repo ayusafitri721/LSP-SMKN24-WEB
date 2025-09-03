@@ -65,6 +65,10 @@ const DashboardRoutes = () => {
     navigate('/dashboard');
   };
 
+  const handleBackToManagement = () => {
+    navigate('/dashboard/manajemen-data');
+  };
+
   const handleNavigate = (page, data = null) => {
     if (data) {
       setEditData(data);
@@ -234,7 +238,7 @@ const DashboardRoutes = () => {
       <Route path="/asesor" element={
         <DashboardLayout>
           <Asesor 
-            onBack={handleBackToHome} 
+            onBack={handleBackToManagement} 
             onNavigate={handleNavigate} 
           />
         </DashboardLayout>
@@ -257,7 +261,7 @@ const DashboardRoutes = () => {
       <Route path="/asesi" element={
         <DashboardLayout>
           <Asesi 
-            onBack={handleBackToHome} 
+            onBack={handleBackToManagement} 
             onNavigate={handleNavigate} 
           />
         </DashboardLayout>
@@ -279,7 +283,7 @@ const DashboardRoutes = () => {
       {/* Asesmen Routes */}
       <Route path="/asesmen" element={
         <DashboardLayout>
-          <Asesmen onBack={handleBackToHome} onNavigate={handleNavigate} />
+          <Asesmen onBack={handleBackToManagement} onNavigate={handleNavigate} />
         </DashboardLayout>
       } />
       <Route path="/asesmen/add" element={
@@ -312,7 +316,7 @@ const DashboardRoutes = () => {
       <Route path="/jurusan" element={
         <DashboardLayout>
           <Jurusan 
-            onBack={handleBackToHome} 
+            onBack={handleBackToManagement} 
             onNavigate={handleNavigate} 
             jurusanData={jurusanData} 
             setJurusanData={setJurusanData} 
@@ -324,7 +328,7 @@ const DashboardRoutes = () => {
       <Route path="/skema" element={
         <DashboardLayout>
           <Skema
-            onBack={handleBackToHome} 
+            onBack={handleBackToManagement} 
             onNavigate={handleNavigate} 
             skemaData={skemaData} 
             setSkemaData={setSkemaData} 

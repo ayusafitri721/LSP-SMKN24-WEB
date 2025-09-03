@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import { jurusans as apiJurusans, putJurusan, deleteJurusan } from "../Api/api"; // service ambil jurusan
 import { createJurusan } from "../Api/api";
 
@@ -62,11 +62,6 @@ export function JurusanProvider({ children }) {
       throw err;
     }
   }
-
-  // Auto load saat pertama
-  useEffect(() => {
-    fetchJurusans();
-  }, []);
 
   return (
     <JurusanContext.Provider

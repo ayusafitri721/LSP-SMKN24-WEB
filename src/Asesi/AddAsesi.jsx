@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAsesi } from '../context/AsesiContext';
 import { 
   InputField, 
@@ -15,8 +15,10 @@ import { ModalWrapper, ConfirmationModal, SuccessModal, InfoModal, LoadingModal 
 
 function AddAsesi({ onSave, onCancel }) {
   const { asesis, loading, error, fetchAsesis, addAsesi, editAsesi } = useAsesi();
-  const { jurusanList } = useJurusan();
-
+  const { jurusanList, fetchJurusans } = useJurusan();
+  useEffect(() => {
+    fetchJurusans()
+  },[])
   const JURUSAN_OPTIONS = jurusanList.map(jurusan => ({
     value: jurusan.id,
     label: jurusan.nama_jurusan
@@ -122,7 +124,7 @@ function AddAsesi({ onSave, onCancel }) {
         setShowAddNotif(true);
       } catch (error) {
         console.error("Error adding asesi:", error);
-        setSubmitError('Gagal menyimpan data. Silakan coba lagi.'); // User feedback
+        setSubmitError( error.response.data.message || 'Gagal menyimpan data. Silakan coba lagi.'); // User feedback
       }
     }
   };

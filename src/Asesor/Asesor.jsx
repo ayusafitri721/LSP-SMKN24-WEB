@@ -1,7 +1,88 @@
-import React from 'react';
-import {useAsesor} from '../context/AsesorContext';
-function Asesor({ onBack, onNavigate, setAsesorDataEdit }) {
-  const {asesors, loading, error, fetchAsesors, addAsesor, editAsesor, removeAsesor} = useAsesor();
+import React, { useState, useEffect } from 'react';
+import { getAsesors, createAsesor, updateAsesor, deleteAsesor } from '../Api/api';
+
+export default function Asesor({ onBack, onNavigate }) {
+  const [asesors, setAsesors] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // ================== FETCH ==================
+  const fetchAsesors = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await getAsesors(1, 100);
+      setAsesors(res.data?.data.data || []);
+      console.log("Fetched asesors:", res.data);
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || "Gagal fetch data asesor");
+      setAsesors([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ================== CREATE ==================
+  const addAsesor = async (data) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await createAsesor(data);
+      const newAsesor = res.data?.data;
+      if (newAsesor) setAsesors((prev) => [...prev, newAsesor]);
+      return newAsesor;
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || "Gagal tambah asesor");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ================== UPDATE ==================
+  const editAsesor = async (id, data) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await updateAsesor(id, data);
+      const updated = res.data?.data;
+      setAsesors((prev) =>
+        prev.map((a) => (a.id === id ? updated : a))
+      );
+      return updated;
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || "Gagal update asesor");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ================== DELETE ==================
+  const removeAsesor = async (id) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await deleteAsesor(id);
+      setAsesors((prev) => prev.filter((a) => a.id !== id));
+      return true;
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || "Gagal hapus asesor");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load data on component mount
+  useEffect(() => {
+    fetchAsesors();
+  }, []);
+
   const asesorList = asesors || [];
 
   const handleAddClick = () => {
@@ -9,7 +90,6 @@ function Asesor({ onBack, onNavigate, setAsesorDataEdit }) {
   };
 
   const handleEdit = (asesor) => {
-
     onNavigate('editasesor', asesor);
   };
 
@@ -25,6 +105,40 @@ function Asesor({ onBack, onNavigate, setAsesorDataEdit }) {
       });
     }
   };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        }}
+      >
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        }}
+      >
+        <div style={{ color: '#dc3545' }}>Error: {error}</div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -329,5 +443,3 @@ function Asesor({ onBack, onNavigate, setAsesorDataEdit }) {
     </div>
   );
 }
-
-export default Asesor;

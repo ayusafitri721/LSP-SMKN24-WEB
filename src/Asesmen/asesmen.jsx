@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAssesment } from '../context/AssesmentContext';
 
 function Asesmen({ onBack, onNavigate, data }) {
@@ -8,6 +8,10 @@ function Asesmen({ onBack, onNavigate, data }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+
+  useEffect(() => {
+    fetchAssesments();
+  }, []);
 
   const handleDeleteClick = (item) => {
     setSelectedItem(item);

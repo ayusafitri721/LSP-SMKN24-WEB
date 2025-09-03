@@ -1,43 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from "react";
+import { useApl01 } from '../../context/Apl01Context';
 
 function LihatApprovement({ onBack, data }) {
+  const { approveApl01 } = useApl01();
+
   const [formData, setFormData] = useState({
-    namaJadwal: '',
-    tuk: '',
-    tanggalUjian: '',
-    namaLengkap: '',
-    nik: '',
-    prodi: '',
-    ttl: '',
-    jenisKelamin: 'laki',
-    kewarganegaraan: '',
-    alamatRumah: '',
-    noTelepon: '',
-    kualifikasi: '',
-    namaInstitusi: '',
-    jabatan: '',
-    namaMentor: '',
-    noTeleponEmail: '',
-    skemaSertifikasi: '',
-    judul: '',
-    nomor: '',
-    tujuan: '',
-    units: [{ no: 1, kodeUnit: '', judulUnit: '', standarKompetensi: '' }],
+    namaJadwal: "",
+    tuk: "",
+    tanggalUjian: "",
+    namaLengkap: data?.nama_lengkap || "",
+    nik: data?.no_ktp || "",
+    prodi: data?.jurusan_id || "",
+    ttl: data ? `${data.tempat_lahir}, ${data.tanggal_lahir}` : "",
+    jenisKelamin:
+      data?.jenis_kelamin?.toLowerCase() === "perempuan" ? "perempuan" : "laki",
+    kewarganegaraan: data?.kebangsaan || "",
+    alamatRumah: data?.alamat_rumah || "",
+    noTelepon: data?.no_telepon || data?.email || "",
+    kualifikasi: data?.kualifikasi_pendidikan || "",
+    namaInstitusi: data?.nama_institusi || "",
+    jabatan: data?.jabatan || "",
+    namaMentor: "",
+    noTeleponEmail: data?.no_telepon_kantor || data?.email_kantor || "",
+    skemaSertifikasi: "",
+    judul: "",
+    nomor: "",
+    tujuan: "",
+    units: [{ no: 1, kodeUnit: "", judulUnit: "", standarKompetensi: "" }],
     buktiPersyaratan: [
       {
         no: 1,
-        bukti: "Salinan legalisir KK dan Kartu Komputer Keluarga Rekayasa Perangkat Lunak semester 1 s.d. 5 yang telah menyertakan nilai pengetahuan mata pelajaran Konfigurasi Perangkat Keras dan Jaringan Perangkat Lunak",
+        bukti:
+          "Salinan legalisir KK dan Kartu Komputer Keluarga Rekayasa Perangkat Lunak semester 1 s.d. 5 ...",
         memenuhi: false,
         tidakMemenuhi: false,
-        tidakAda: false
+        tidakAda: false,
       },
-      {
-        no: 2,
-        bukti: "Salinan sertifikat/surat keterangan tentang kursus atau kursus singkat (PKL) atau pelatihan pengembangan perangkat lunak",
-        memenuhi: false,
-        tidakMemenuhi: false,
-        tidakAda: false
-      }
     ],
     buktiAdministratif: [
       {
@@ -45,24 +43,58 @@ function LihatApprovement({ onBack, data }) {
         bukti: "Salinan Kartu Pelajar",
         memenuhi: false,
         tidakMemenuhi: false,
-        tidakAda: false
+        tidakAda: false,
       },
-      {
-        no: 2,
-        bukti: "Salinan Kartu Pelajar/KTP",
-        memenuhi: false,
-        tidakMemenuhi: false,
-        tidakAda: false
-      },
-      {
-        no: 3,
-        bukti: "Pas foto 3 x 4 berwarna sebanyak 2 lembar",
-        memenuhi: false,
-        tidakMemenuhi: false,
-        tidakAda: false
-      }
-    ]
+    ],
   });
+
+  const handleApproval = async (status) => {
+    try {
+      if (!data?.id) {
+        alert("ID APL01 tidak ditemukan");
+        return;
+      }
+
+      await approveApl01(data.id, {
+        status: status, // bisa "accepted" atau "rejected"
+        catatan: status === "accepted"
+          ? "Permohonan disetujui oleh asesor"
+          : "Permohonan ditolak oleh asesor",
+      });
+
+      alert(
+        status === "accepted"
+          ? "Permohonan berhasil disetujui ✅"
+          : "Permohonan berhasil ditolak ❌"
+      );
+      onBack();
+    } catch (err) {
+      console.error("Gagal update status APL01:", err);
+      alert("Terjadi kesalahan saat update status");
+    }
+  };
+
+
+  // optional: kalau datanya baru datang setelah render pertama
+  useEffect(() => {
+    if (data) {
+      setFormData(prev => ({
+        ...prev,
+        namaLengkap: data.nama_lengkap || '',
+        nik: data.no_ktp || '',
+        prodi: data.jurusan_id || '',
+        ttl: `${data.tempat_lahir}, ${data.tanggal_lahir}`,
+        jenisKelamin: data.jenis_kelamin?.toLowerCase() === 'perempuan' ? 'perempuan' : 'laki',
+        kewarganegaraan: data.kebangsaan || '',
+        alamatRumah: data.alamat_rumah || '',
+        noTelepon: data.no_telepon || data.email || '',
+        kualifikasi: data.kualifikasi_pendidikan || '',
+        namaInstitusi: data.nama_institusi || '',
+        jabatan: data.jabatan || '',
+        noTeleponEmail: data.no_telepon_kantor || data.email_kantor || ''
+      }));
+    }
+  }, [data]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -557,36 +589,41 @@ function LihatApprovement({ onBack, data }) {
               </div>
 
               {/* Tombol Aksi */}
+              {data.status === "pending" && (
               <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '24px' }}>
-                <button
-                  style={{
-                    padding: '12px 24px',
-                    backgroundColor: '#28a745',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontWeight: '500',
-                    fontSize: '16px'
-                  }}
-                >
-                  Setujui
-                </button>
-                <button
-                  style={{
-                    padding: '12px 24px',
-                    backgroundColor: '#dc3545',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontWeight: '500',
-                    fontSize: '16px'
-                  }}
-                >
-                  Tolak
-                </button>
-              </div>
+                              <button
+                                onClick={() => handleApproval("accepted")}
+                                style={{
+                                  padding: '12px 24px',
+                                  backgroundColor: '#28a745',
+                                  color: 'white',
+                                  border: 'none',
+                                  borderRadius: '6px',
+                                  cursor: 'pointer',
+                                  fontWeight: '500',
+                                  fontSize: '16px'
+                                }}
+                              >
+                                Setujui
+                              </button>
+                              <button
+                                onClick={() => handleApproval("rejected")}
+                                style={{
+                                  padding: '12px 24px',
+                                  backgroundColor: '#dc3545',
+                                  color: 'white',
+                                  border: 'none',
+                                  borderRadius: '6px',
+                                  cursor: 'pointer',
+                                  fontWeight: '500',
+                                  fontSize: '16px'
+                                }}
+                              >
+                                Tolak
+                              </button>
+                            </div>
+                            )}
+              
             </div>
 
             {/* Kolom Kanan */}

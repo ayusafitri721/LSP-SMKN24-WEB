@@ -17,7 +17,7 @@ function EditAsesmen({ data, onSave, onCancel, onDelete }) {
   const [formData, setFormData] = useState({
     id: data?.id || "",
     skema_id: data?.skema_id || "",
-    admin_id: data?.admin_id || 1,
+    admin_id: data?.admin_id || localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).id : "",
     assesor_id: data?.assesor_id || "",
     tanggal_assesment: data?.tanggal_assesment || "",
     status: data?.status || "",

@@ -5,15 +5,20 @@ const api = axios.create({
   baseURL: "http://127.0.0.1:8000/api",
 });
 
-api.interceptors.request.use((config) => {
-  const token = JSON.parse(localStorage.getItem("user")).token; 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-}, (error) => {
-  return Promise.reject(error);
-});
+api.interceptors.request.use(
+  (config) => {
+    const user = localStorage.getItem("user");
+    const parsedUser = user ? JSON.parse(user) : null;
+
+    if (parsedUser && parsedUser.token) {
+      config.headers.Authorization = `Bearer ${parsedUser.token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 
 // Endpoint
 export const getUsers = () => api.get("/users");
@@ -40,6 +45,7 @@ export const deleteAsesor = (id) => api.delete(`/assesor/${id}`);
 // Skema CRUD operations
 export const getSkemas = () => api.get("/schema");
 export const postApl02 = (data) => api.post("/apl02/import", data)
+export const deleteSkema = (id) => api.delete(`/apl02/${id}`);
 
 // Assesmen CRUD operations
 export const getAssesments = () => api.get("/assesment");

@@ -1,36 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useApl01 } from '../../context/Apl01Context';
 
 export default function DetailJurusanApl01({ onBack, onNavigate, currentTab = 'APL-01' }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedKelas, setSelectedKelas] = useState('Semua');
+  const { apl01s, loading, error, fetchApl01s } = useApl01();
 
-  // Sample data siswa - sesuai dengan gambar yang diberikan
-  const siswaData = [
-    { id: 1, nama: 'Ya fitulah ya namanya', kelas: 'XII Rpl 1', status: 'aktif' },
-    { id: 2, nama: 'Ya fitulah ya namanya', kelas: 'XII Rpl 1', status: 'pending' },
-    { id: 3, nama: 'Ya fitulah ya namanya', kelas: 'XII Rpl 1', status: 'pending' },
-  ];
-
-  const kelasList = ['Semua', 'XII Rpl 1', 'XII Rpl 2', 'XII Rpl 3'];
-
-  // Navigate to APL-01
-  const handleNavigateToApl02 = () => {
-    onNavigate('approvement/APL-02');
+  // mapping jurusan_id ke nama kelas
+  const jurusanMap = {
+    1: 'XII RPL 1',
+    2: 'XII RPL 2',
+    3: 'XII RPL 3'
   };
 
-  // Filter data berdasarkan search dan kelas
-  const filteredData = siswaData.filter(item => {
-    const matchesSearch = item.nama.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesKelas = selectedKelas === 'Semua' || item.kelas === selectedKelas;
+  const kelasList = ['Semua', ...Object.values(jurusanMap)];
+
+  useEffect(() => {
+    fetchApl01s();
+  }, []);
+
+  // filter data berdasarkan search dan kelas
+  const filteredData = (apl01s || []).filter(item => {
+    const matchesSearch = item.nama_lengkap?.toLowerCase().includes(searchTerm.toLowerCase());
+    const kelas = jurusanMap[item.user?.jurusan_id] || '-';
+    const matchesKelas = selectedKelas === 'Semua' || kelas === selectedKelas;
     return matchesSearch && matchesKelas;
   });
-
-  const SearchIcon = () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="8"></circle>
-      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-    </svg>
-  );
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -43,6 +38,22 @@ export default function DetailJurusanApl01({ onBack, onNavigate, currentTab = 'A
     }
   };
 
+  if (loading) {
+    return (
+      <div style={{ padding: '60px', textAlign: 'center' }}>
+        <p>Sedang memuat data siswa...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: '60px', textAlign: 'center', color: 'red' }}>
+        <p>Terjadi kesalahan saat memuat data: {error}</p>
+      </div>
+    );
+  }
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -54,7 +65,7 @@ export default function DetailJurusanApl01({ onBack, onNavigate, currentTab = 'A
       maxWidth: 'calc(100vw - 250px)',
       margin: '0',
     }}>
-      {/* Header with back button and tabs */}
+      {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '40px' }}>
         <button
           onClick={onBack}
@@ -83,14 +94,13 @@ export default function DetailJurusanApl01({ onBack, onNavigate, currentTab = 'A
               color: 'white', 
               borderRadius: '8px', 
               cursor: 'pointer', 
-              transition: 'all 0.2s ease', 
               margin: '4px' 
             }}
           >
             FR.APL.01
           </button>
           <button 
-          onClick={handleNavigateToApl02}
+            onClick={() => onNavigate('approvement/APL-02')}
             style={{ 
               padding: '12px 20px', 
               fontSize: '14px', 
@@ -99,7 +109,6 @@ export default function DetailJurusanApl01({ onBack, onNavigate, currentTab = 'A
               backgroundColor: 'transparent', 
               color: '#666', 
               cursor: 'pointer', 
-              transition: 'all 0.2s ease', 
               margin: '4px', 
               borderRadius: '8px' 
             }}
@@ -116,108 +125,86 @@ export default function DetailJurusanApl01({ onBack, onNavigate, currentTab = 'A
 
       {/* Filter Kelas */}
       <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6c757d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 6h18l-2 13H5L3 6z"></path>
-          <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-        </svg>
-        <div style={{ position: 'relative' }}>
-          <select
-            value={selectedKelas}
-            onChange={(e) => setSelectedKelas(e.target.value)}
-            style={{
-              padding: '6px 24px 6px 8px',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              fontSize: '13px',
-              backgroundColor: '#ffffff',
-              cursor: 'pointer',
-              minWidth: '80px',
-              appearance: 'none',
-              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
-              backgroundPosition: 'right 6px center',
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: '12px'
-            }}
-          >
-            {kelasList.map((kelas) => (
-              <option key={kelas} value={kelas}>
-                {kelas === 'Semua' ? 'Kelas' : kelas}
-              </option>
-            ))}
-          </select>
-        </div>
+        <select
+          value={selectedKelas}
+          onChange={(e) => setSelectedKelas(e.target.value)}
+          style={{
+            padding: '6px 24px 6px 8px',
+            border: '1px solid #ddd',
+            borderRadius: '4px',
+            fontSize: '13px',
+            backgroundColor: '#ffffff',
+            cursor: 'pointer',
+            minWidth: '80px',
+          }}
+        >
+          {kelasList.map((kelas) => (
+            <option key={kelas} value={kelas}>
+              {kelas === 'Semua' ? 'Kelas' : kelas}
+            </option>
+          ))}
+        </select>
       </div>
       
-      {/* Daftar Siswa Header */}
-      <div style={{ marginBottom: '20px' }}>
-        <h2 style={{ fontSize: '18px', fontWeight: '600', color: '#1a1a1a', margin: 0 }}>
-          Daftar Siswa
-        </h2>
-      </div>
-
       {/* Table */}
       <div style={{ backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ backgroundColor: '#f8f9fa' }}>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '13px', fontWeight: '600', color: '#495057', width: '60px', borderRight: '1px solid #e0e0e0' }}>No</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '13px', fontWeight: '600', color: '#495057', minWidth: '250px', borderRight: '1px solid #e0e0e0' }}>Nama Siswa</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '13px', fontWeight: '600', color: '#495057', minWidth: '120px', borderRight: '1px solid #e0e0e0' }}>Kelas</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '13px', fontWeight: '600', color: '#495057', minWidth: '80px', borderRight: '1px solid #e0e0e0' }}>Status</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '13px', fontWeight: '600', color: '#495057', minWidth: '80px' }}>Detail</th>
+                <th style={{ padding: '12px 16px' }}>No</th>
+                <th style={{ padding: '12px 16px' }}>Nama Lengkap</th>
+                <th style={{ padding: '12px 16px' }}>Kelas</th>
+                <th style={{ padding: '12px 16px' }}>Status</th>
+                <th style={{ padding: '12px 16px' }}>Detail</th>
               </tr>
             </thead>
             <tbody>
               {filteredData.length > 0 ? (
-                filteredData.map((item, index) => (
-                  <tr key={item.id} style={{ borderBottom: '1px solid #e0e0e0' }}>
-                    <td style={{ padding: '16px', fontSize: '13px', color: '#495057', verticalAlign: 'middle', borderRight: '1px solid #e0e0e0' }}>
-                      {index + 1}.
-                    </td>
-                    <td style={{ padding: '16px', fontSize: '13px', color: '#212529', fontWeight: '400', verticalAlign: 'middle', borderRight: '1px solid #e0e0e0' }}>
-                      {item.nama}
-                    </td>
-                    <td style={{ padding: '16px', textAlign: 'center', fontSize: '13px', color: '#495057', verticalAlign: 'middle', borderRight: '1px solid #e0e0e0' }}>
-                      {item.kelas}
-                    </td>
-                    <td style={{ padding: '16px', textAlign: 'center', verticalAlign: 'middle', borderRight: '1px solid #e0e0e0' }}>
-                      <div 
-                        style={{ 
-                          width: '14px', 
-                          height: '14px', 
-                          backgroundColor: getStatusColor(item.status), 
-                          borderRadius: '2px', 
-                          margin: '0 auto' 
-                        }}
-                      ></div>
-                    </td>
-                    <td style={{ padding: '16px', textAlign: 'center', verticalAlign: 'middle' }}>
-                      <button
-                        onClick={() => onNavigate && onNavigate('lihatapprovement', item)}
-                        style={{
-                          backgroundColor: '#ff6b35',
-                          color: '#ffffff',
-                          border: 'none',
-                          borderRadius: '4px',
-                          padding: '5px 12px',
-                          fontSize: '12px',
-                          cursor: 'pointer',
-                          fontWeight: '500',
-                          transition: 'background-color 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = '#e96a00'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = '#ff6b35'}
-                      >
-                        Lihat
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                filteredData.map((item, index) => {
+                  const kelas = jurusanMap[item.user?.jurusan_id] || '-';
+                  return (
+                    <tr key={item.id}>
+                      <td style={{ padding: '12px 16px' }}>{index + 1}.</td>
+                      <td style={{ padding: '12px 16px' }}>{item.nama_lengkap}</td>
+                      <td style={{ padding: '12px 16px', textAlign: 'center' }}>{kelas}</td>
+                      <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                        <div 
+                          style={{ 
+                            width: '14px', 
+                            height: '14px', 
+                            backgroundColor: getStatusColor(item.status), 
+                            borderRadius: '2px', 
+                            margin: '0 auto' 
+                          }}
+                        ></div>
+                      </td>
+                      <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                        <button
+                          onClick={() => onNavigate('lihatapprovement', item)} 
+                          style={{
+                            backgroundColor: '#ff6b35',
+                            color: '#ffffff',
+                            border: 'none',
+                            borderRadius: '4px',
+                            padding: '5px 12px',
+                            fontSize: '12px',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                          }}
+                        >
+                          Lihat
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
-                  <td colSpan="5" style={{ padding: '30px', textAlign: 'center', color: '#999', fontSize: '13px' }}>
-                    {searchTerm || selectedKelas !== 'Semua' ? 'Tidak ada data yang sesuai dengan filter' : 'Belum ada data siswa'}
+                  <td colSpan="5" style={{ padding: '30px', textAlign: 'center', color: '#999' }}>
+                    {searchTerm || selectedKelas !== 'Semua' 
+                      ? 'Tidak ada data yang sesuai dengan filter' 
+                      : 'Belum ada data siswa'}
                   </td>
                 </tr>
               )}

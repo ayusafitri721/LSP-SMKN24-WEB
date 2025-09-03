@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect ,useState } from 'react';
 import { useAsesi } from '../context/AsesiContext'; // Import custom hook
 import { ModalWrapper, ConfirmationModal, SuccessModal, InfoModal, LoadingModal } from '../components/Modal';
+import { getAsesis } from '../Api/api';
 
 function Asesi({ onBack, onNavigate}) {
   const [showAddNotif, setShowAddNotif] = useState(false);
-  const { asesis, loading, error, fetchAsesis, addAsesi, editAsesi, removeAsesi } = useAsesi();
+  const [asesis, setAsesis] = useState([]);
+  const [loading, setLoading] = useState([]);
+  const [dataFetched, setDataFetched] = useState(false);
+  const [error, setError] = useState([]);
+  const { addAsesi, editAsesi, removeAsesi } = useAsesi();
   
   const dataAsesis = asesis || [];
 
@@ -14,6 +19,29 @@ function Asesi({ onBack, onNavigate}) {
   const handleAddClick = () => {
     onNavigate('addasesi');
   };
+
+  // ================== FETCH ==================
+    const fetchAsesis = async () => {
+      setLoading(true);
+      setError(null);
+  
+      try {
+        const res = await getAsesis();
+        setAsesis(res.data?.data || []);
+        console.log(res);
+        setDataFetched(true);
+        
+      } catch (err) {
+        setError(err.response?.data?.message || err.message || "Gagal fetch data asesi");
+        console.log(err);
+        setDataFetched(false);
+        
+        setAsesis([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
 
   const handleDelete = (asesi) => {
     
@@ -28,6 +56,11 @@ function Asesi({ onBack, onNavigate}) {
       });
     
   };
+
+  // Load data on component mount
+    useEffect(() => {
+      fetchAsesis();
+    }, []);
 
   // Empty State Component
   const EmptyState = () => (
@@ -194,9 +227,7 @@ function Asesi({ onBack, onNavigate}) {
           minHeight: 'calc(100vh - 81px)' // Adjust for header height
         }}
       >
-        {loading ? (
-          <EmptyState />
-        ) : (
+        {dataFetched && asesis.length > 0 ? (
           <table
             style={{
               width: '100%',
@@ -403,6 +434,8 @@ function Asesi({ onBack, onNavigate}) {
               ))}
             </tbody>
           </table>
+        ) : (
+          <EmptyState />
         )}
       </div>
 

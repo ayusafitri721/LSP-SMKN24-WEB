@@ -15,10 +15,12 @@ export const Apl01Provider = ({ children }) => {
     try {
       const res = await getApl01s();
       setApl01s(res.data?.data || []);
+      return res.data?.data || [];
     } catch (err) {
       setError(
         err.response?.data?.message || err.message || "Gagal fetch data apl01"
       );
+      return err;
       setApl01s([]);
     } finally {
       setLoading(false);
@@ -48,9 +50,6 @@ export const Apl01Provider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    fetchApl01s();
-  }, []);
 
   return (
     <Apl01Context.Provider

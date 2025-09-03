@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AddJurusan from './AddJurusan';
 import EditJurusan from './EditJurusan';
 
@@ -19,6 +19,10 @@ function Jurusan({ onBack }) {
     setEditItem(data);
     setHalaman('edit');
   };
+
+  useEffect(() => {
+    fetchJurusans();
+  }, []);
 
   // Loading Component
   const LoadingSpinner = () => (

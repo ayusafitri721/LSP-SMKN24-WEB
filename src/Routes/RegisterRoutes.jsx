@@ -14,7 +14,7 @@ const RegisterRoutes = () => {
 
   const goToLogin = () => {
     // Path yang sesuai dengan route baru di App.jsx
-    navigate('auth/login');
+    navigate('/auth/login');
   };
 
   const handleBackToHome = () => {
