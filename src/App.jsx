@@ -19,6 +19,7 @@ import JadwalAsesmen from './layouts/jadwalasesmen';
 import GaleriFoto from './layouts/GaleriFoto';
 import GaleriVideo from './layouts/GaleriVideo';
 import Download from './layouts/Download'; // Import komponen Download baru
+import VisiMisi from './layouts/VisiMisi'; // Import komponen Visi Misi baru
 
 // Route Components
 import LoginRoutes from './Routes/LoginRoutes';
@@ -111,6 +112,14 @@ function App() {
           <div>
             <Navbar onNavClick={scrollToSection} onLoginClick={handleLoginClick} />
             <Berita onBack={() => handleNavigate('/')} />
+          </div>
+        } />
+
+        {/* Route Visi Misi - BARU */}
+        <Route path="/visi-misi" element={
+          <div>
+            <Navbar onNavClick={scrollToSection} onLoginClick={handleLoginClick} />
+            <VisiMisi onBack={() => handleNavigate('/')} />
           </div>
         } />
 

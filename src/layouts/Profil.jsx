@@ -138,7 +138,8 @@ function Profil() {
             April 2022 Nomor BNSP-LSP-2121-ID Surat Keputusan
             KEP.0868/BNSP/IV/2022 dan berlaku hingga 25 April 2027.
           </p>
-          <button
+            <button
+            onClick={() => window.location.href = "/visi-misi"}
             style={{
               backgroundColor: "white",
               border: "5px solid #2C94FF",

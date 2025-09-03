@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 function Navbar({ onNavClick, onLoginClick }) {
   const [isSertifikasiOpen, setIsSertifikasiOpen] = useState(false);
   const [isGaleriOpen, setIsGaleriOpen] = useState(false);
+  const [isProfilOpen, setIsProfilOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   // Check if we're on the landing page
@@ -140,15 +141,17 @@ function Navbar({ onNavClick, onLoginClick }) {
               onMouseEnter={() => {
                 if (name === "Sertifikasi") setIsSertifikasiOpen(true);
                 if (name === "Galeri") setIsGaleriOpen(true);
+                if (name === "Profile") setIsProfilOpen(true);
               }}
               onMouseLeave={() => {
                 if (name === "Sertifikasi") setIsSertifikasiOpen(false);
                 if (name === "Galeri") setIsGaleriOpen(false);
+                if (name === "Profile") setIsProfilOpen(false);
               }}
             >
               <button
                 onClick={() => {
-                  if (name !== "Sertifikasi" && name !== "Galeri") {
+                  if (name !== "Sertifikasi" && name !== "Galeri" && name !== "Profile") {
                     handleMainNavClick(name);
                   }
                 }}
@@ -167,6 +170,68 @@ function Navbar({ onNavClick, onLoginClick }) {
                   <span style={{ fontSize: "10px" }}>▼</span>
                 )}
               </button>
+              
+              {/* Dropdown Profile */}
+              {name === "Profile" && isProfilOpen && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    backgroundColor: "white",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    borderRadius: "4px",
+                    minWidth: "150px",
+                    zIndex: 1001,
+                    padding: "8px 0",
+                  }}
+                >
+                  <button
+                    onClick={() => {
+                      if (isLandingPage) {
+                        onNavClick('profile');
+                      } else {
+                        handleNavigation("/#profile");
+                      }
+                    }}
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      padding: "8px 16px",
+                      background: "none",
+                      border: "none",
+                      textAlign: "left",
+                      fontSize: "14px",
+                      color: "#333",
+                      cursor: "pointer",
+                      transition: "background-color 0.2s",
+                    }}
+                    onMouseOver={(e) => (e.target.style.backgroundColor = "#f5f5f5")}
+                    onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
+                  >
+                    Tentang Kami
+                  </button>
+                  <button
+                    onClick={() => handleNavigation("/visi-misi")}
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      padding: "8px 16px",
+                      background: "none",
+                      border: "none",
+                      textAlign: "left",
+                      fontSize: "14px",
+                      color: "#333",
+                      cursor: "pointer",
+                      transition: "background-color 0.2s",
+                    }}
+                    onMouseOver={(e) => (e.target.style.backgroundColor = "#f5f5f5")}
+                    onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
+                  >
+                    Visi Misi
+                  </button>
+                </div>
+              )}
               
               {/* Dropdown Sertifikasi */}
               {name === "Sertifikasi" && isSertifikasiOpen && (
