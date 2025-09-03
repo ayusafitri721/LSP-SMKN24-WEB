@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Berita() {
   const [selectedNews, setSelectedNews] = useState(null);
@@ -351,14 +352,13 @@ function Berita() {
                 margin: 0
               }}>
                 {[
-                  'Tentang Kami',
-                  'Visi dan Misi',
-                  'Struktur Organisasi',
-                  'Skema Sertifikasi'
+                  { text: 'Tentang Kami', path: '/#profile' },
+                  { text: 'Visi dan Misi', path: '/visi-misi' },
+                  { text: 'Skema Sertifikasi', path: '/detail-sertifikasi' }
                 ].map((item, index) => (
                   <li key={index} style={{ marginBottom: '8px' }}>
-                    <a 
-                      href="#" 
+                    <Link 
+                      to={item.path}
                       style={{
                         color: 'white',
                         textDecoration: 'none',
@@ -372,8 +372,8 @@ function Berita() {
                       onMouseOut={(e) => e.target.style.opacity = '0.9'}
                     >
                       <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
-                      {item}
-                    </a>
+                      {item.text}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -386,14 +386,13 @@ function Berita() {
                   margin: 0
                 }}>
                   {[
-                    'Syarat dan Ketentuan',
-                    'Jadwal Asesmen',
-                    'Berita',
-                    'Kirim Foto dan Video'
+                    { text: 'Jadwal Asesmen', path: '/jadwal-asesmen' },
+                    { text: 'Berita', path: '/berita' },
+                    { text: 'Lihat Foto dan Video', path: '/galeri-foto' }
                   ].map((item, index) => (
                     <li key={index} style={{ marginBottom: '8px' }}>
-                      <a 
-                        href="#" 
+                      <Link 
+                        to={item.path}
                         style={{
                           color: 'white',
                           textDecoration: 'none',
@@ -407,8 +406,8 @@ function Berita() {
                         onMouseOut={(e) => e.target.style.opacity = '0.9'}
                       >
                         <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
-                        {item}
-                      </a>
+                        {item.text}
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -428,7 +427,8 @@ function Berita() {
               }}>
                 Contact Us:
               </h3>
-              <button 
+              <Link 
+                to="/kontak"
                 style={{
                   backgroundColor: '#6B7280',
                   color: 'white',
@@ -438,6 +438,8 @@ function Berita() {
                   fontSize: '14px',
                   fontWeight: '600',
                   cursor: 'pointer',
+                  textDecoration: 'none',
+                  display: 'inline-block',
                   transition: 'all 0.3s ease'
                 }}
                 onMouseOver={(e) => {
@@ -450,7 +452,7 @@ function Berita() {
                 }}
               >
                 Contact Us
-              </button>
+              </Link>
             </div>
           </div>
         </footer>
@@ -519,7 +521,7 @@ function Berita() {
         <div style={{
           display: "flex",
           gap: "50px",
-          alignItems: "flex-start" // Ensure alignment starts from the top
+          alignItems: "flex-start"
         }}>
           {/* Left Content - News Grid */}
           <div style={{ flex: "2.2" }}>
@@ -527,7 +529,7 @@ function Berita() {
               display: "grid",
               gridTemplateColumns: "repeat(2, 1fr)",
               gap: "25px",
-              marginTop: "0" // Aligned with sidebar top
+              marginTop: "0"
             }}>
               {newsData.map((news) => (
                 <div
@@ -755,14 +757,13 @@ function Berita() {
               margin: 0
             }}>
               {[
-                'Tentang Kami',
-                'Visi dan Misi',
-                'Struktur Organisasi',
-                'Skema Sertifikasi'
+                { text: 'Tentang Kami', path: '/#profile' },
+                { text: 'Visi dan Misi', path: '/visi-misi' },
+                { text: 'Skema Sertifikasi', path: '/detail-sertifikasi' }
               ].map((item, index) => (
                 <li key={index} style={{ marginBottom: '8px' }}>
-                  <a 
-                    href="#" 
+                  <Link 
+                    to={item.path}
                     style={{
                       color: 'white',
                       textDecoration: 'none',
@@ -776,8 +777,8 @@ function Berita() {
                     onMouseOut={(e) => e.target.style.opacity = '0.9'}
                   >
                     <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
-                    {item}
-                  </a>
+                    {item.text}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -790,14 +791,13 @@ function Berita() {
                 margin: 0
               }}>
                 {[
-                  'Syarat dan Ketentuan',
-                  'Jadwal Asesmen',
-                  'Berita',
-                  'Kirim Foto dan Video'
+                  { text: 'Jadwal Asesmen', path: '/jadwal-asesmen' },
+                  { text: 'Berita', path: '/berita' },
+                  { text: 'Lihat Foto dan Video', path: '/galeri-foto' }
                 ].map((item, index) => (
                   <li key={index} style={{ marginBottom: '8px' }}>
-                    <a 
-                      href="#" 
+                    <Link 
+                      to={item.path}
                       style={{
                         color: 'white',
                         textDecoration: 'none',
@@ -811,8 +811,8 @@ function Berita() {
                       onMouseOut={(e) => e.target.style.opacity = '0.9'}
                     >
                       <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
-                      {item}
-                    </a>
+                      {item.text}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -832,7 +832,8 @@ function Berita() {
             }}>
               Contact Us:
             </h3>
-            <button 
+            <Link 
+              to="/kontak"
               style={{
                 backgroundColor: '#6B7280',
                 color: 'white',
@@ -842,6 +843,8 @@ function Berita() {
                 fontSize: '14px',
                 fontWeight: '600',
                 cursor: 'pointer',
+                textDecoration: 'none',
+                display: 'inline-block',
                 transition: 'all 0.3s ease'
               }}
               onMouseOver={(e) => {
@@ -854,7 +857,7 @@ function Berita() {
               }}
             >
               Contact Us
-            </button>
+            </Link>
           </div>
         </div>
       </footer>
