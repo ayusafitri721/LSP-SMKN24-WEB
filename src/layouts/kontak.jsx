@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Kontak({ onBack }) {
   const [formData, setFormData] = useState({
@@ -12,16 +13,6 @@ function Kontak({ onBack }) {
       ...formData,
       [e.target.name]: e.target.value
     });
-  };
-
-  const scrollToProfile = () => {
-    const element = document.getElementById('profile');
-    if (element) {
-      window.scrollTo({
-        top: element.offsetTop,
-        behavior: 'smooth'
-      });
-    }
   };
 
   return (
@@ -138,149 +129,148 @@ function Kontak({ onBack }) {
               flexDirection: "column",
               justifyContent: "center"
             }}>
-
-            {/* Address */}
-            <div style={{
-              display: "flex",
-              alignItems: "flex-start",
-              marginBottom: "35px",
-              gap: "20px",
-              position: "relative",
-              borderBottom: "2px solid #7EB3E9",
-              paddingBottom: "15px"
-            }}>
+              {/* Address */}
               <div style={{
-                width: "60px",
-                height: "60px",
+                display: "flex",
+                alignItems: "flex-start",
+                marginBottom: "35px",
+                gap: "20px",
+                position: "relative",
+                borderBottom: "2px solid #7EB3E9",
+                paddingBottom: "15px"
+              }}>
+                <div style={{
+                  width: "60px",
+                  height: "60px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  color: "#fff"
+                }}>
+                  <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <p style={{
+                    margin: 0,
+                    fontSize: "15px",
+                    lineHeight: "1.6",
+                    color: "#000",
+                    fontWeight: "400"
+                  }}>
+                    Jl. Bambu Hitam No.3, RT.3/RW.1, Bambu Apus,<br />
+                    Kec. Cipayung, Kota Jakarta Timur, Daerah<br />
+                    Khusus Ibukota Jakarta 13890
+                  </p>
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                color: "#fff"
+                marginBottom: "35px",
+                gap: "20px",
+                position: "relative",
+                borderBottom: "2px solid #7EB3E9",
+                paddingBottom: "15px"
               }}>
-                <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
-              </div>
-              <div style={{ flex: 1 }}>
+                <div style={{
+                  width: "60px",
+                  height: "60px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  color: "#fff"
+                }}>
+                  <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                  </svg>
+                </div>
                 <p style={{
                   margin: 0,
                   fontSize: "15px",
-                  lineHeight: "1.6",
                   color: "#000",
-                  fontWeight: "400"
+                  fontWeight: "400",
+                  flex: 1
                 }}>
-                  Jl. Bambu Hitam No.3, RT.3/RW.1, Bambu Apus,<br />
-                  Kec. Cipayung, Kota Jakarta Timur, Daerah<br />
-                  Khusus Ibukota Jakarta 13890
+                  (021)8441976
                 </p>
               </div>
-            </div>
 
-            {/* Phone */}
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "35px",
-              gap: "20px",
-              position: "relative",
-              borderBottom: "2px solid #7EB3E9",
-              paddingBottom: "15px"
-            }}>
+              {/* Email */}
               <div style={{
-                width: "60px",
-                height: "60px",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                color: "#fff"
+                marginBottom: "35px",
+                gap: "20px",
+                position: "relative",
+                borderBottom: "2px solid #7EB3E9",
+                paddingBottom: "15px"
               }}>
-                <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                </svg>
+                <div style={{
+                  width: "60px",
+                  height: "60px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  color: "#fff"
+                }}>
+                  <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <path d="m2 7 10 6 10-6"/>
+                  </svg>
+                </div>
+                <p style={{
+                  margin: 0,
+                  fontSize: "15px",
+                  color: "#000",
+                  fontWeight: "400",
+                  flex: 1
+                }}>
+                  info@smkn24jkt.sch.id
+                </p>
               </div>
-              <p style={{
-                margin: 0,
-                fontSize: "15px",
-                color: "#000",
-                fontWeight: "400",
-                flex: 1
-              }}>
-                (021)8441976
-              </p>
-            </div>
 
-            {/* Email */}
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "35px",
-              gap: "20px",
-              position: "relative",
-              borderBottom: "2px solid #7EB3E9",
-              paddingBottom: "15px"
-            }}>
+              {/* Website */}
               <div style={{
-                width: "60px",
-                height: "60px",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                color: "#fff"
+                gap: "20px"
               }}>
-                <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <rect x="2" y="4" width="20" height="16" rx="2"/>
-                  <path d="m2 7 10 6 10-6"/>
-                </svg>
+                <div style={{
+                  width: "60px",
+                  height: "60px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  color: "#fff"
+                }}>
+                  <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <rect x="6" y="6" width="5" height="2" rx="1"/>
+                    <rect x="6" y="9" width="5" height="2" rx="1"/>
+                    <rect x="6" y="12" width="5" height="2" rx="1"/>
+                    <rect x="13" y="6" width="5" height="10" rx="1"/>
+                    <rect x="15" y="8" width="1" height="6"/>
+                  </svg>
+                </div>
+                <p style={{
+                  margin: 0,
+                  fontSize: "15px",
+                  color: "#000",
+                  fontWeight: "400",
+                  flex: 1
+                }}>
+                  https://smkn24jkt.sch.id/
+                </p>
               </div>
-              <p style={{
-                margin: 0,
-                fontSize: "15px",
-                color: "#000",
-                fontWeight: "400",
-                flex: 1
-              }}>
-                info@smkn24jkt.sch.id
-              </p>
-            </div>
-
-            {/* Website */}
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "20px"
-            }}>
-              <div style={{
-                width: "60px",
-                height: "60px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                color: "#fff"
-              }}>
-                <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                  <rect x="6" y="6" width="5" height="2" rx="1"/>
-                  <rect x="6" y="9" width="5" height="2" rx="1"/>
-                  <rect x="6" y="12" width="5" height="2" rx="1"/>
-                  <rect x="13" y="6" width="5" height="10" rx="1"/>
-                  <rect x="15" y="8" width="1" height="6"/>
-                </svg>
-              </div>
-              <p style={{
-                margin: 0,
-                fontSize: "15px",
-                color: "#000",
-                fontWeight: "400",
-                flex: 1
-              }}>
-                https://smkn24jkt.sch.id/
-              </p>
-            </div>
             </div>
           </div>
 
@@ -308,107 +298,106 @@ function Kontak({ onBack }) {
               flexDirection: "column",
               justifyContent: "center"
             }}>
-
-            <div style={{
-              backgroundColor: '#fff',
-              borderRadius: '15px',
-              padding: '20px',
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-              border: '1px solid #e0e0e0'
-            }}>
-              {/* Email Field */}
-              <div style={{ marginBottom: "20px" }}>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Your Email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    border: "2px solid #666",
-                    borderRadius: "10px",
-                    fontSize: "16px",
-                    fontFamily: "Poppins, sans-serif",
-                    outline: "none",
-                    boxSizing: "border-box",
-                    backgroundColor: "#fff"
-                  }}
-                />
-              </div>
-
-              {/* Subject Field */}
-              <div style={{ marginBottom: "20px" }}>
-                <input
-                  type="text"
-                  name="subject"
-                  placeholder="Subject"
-                  value={formData.subject}
-                  onChange={handleInputChange}
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    border: "2px solid #666",
-                    borderRadius: "10px",
-                    fontSize: "16px",
-                    fontFamily: "Poppins, sans-serif",
-                    outline: "none",
-                    boxSizing: "border-box",
-                    backgroundColor: "#fff"
-                  }}
-                />
-              </div>
-
-              {/* Message Field */}
-              <div style={{ marginBottom: "20px" }}>
-                <textarea
-                  name="message"
-                  placeholder="Message"
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  rows="8"
-                  style={{
-                    width: "100%",
-                    minHeight: "200px",
-                    padding: "12px",
-                    border: "2px solid #666",
-                    borderRadius: "10px",
-                    fontSize: "16px",
-                    fontFamily: "Poppins, sans-serif",
-                    outline: "none",
-                    resize: "vertical",
-                    boxSizing: "border-box",
-                    backgroundColor: "#fff"
-                  }}
-                />
-              </div>
-
-              {/* Send Button */}
-              <div style={{ 
-                textAlign: "right",
-                borderTop: "2px solid #e0e0e0",
-                paddingTop: "15px",
-                marginTop: "10px"
+              <div style={{
+                backgroundColor: '#fff',
+                borderRadius: '15px',
+                padding: '20px',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                border: '1px solid #e0e0e0'
               }}>
-                <button
-                  type="button"
-                  style={{
-                    backgroundColor: "#fff",
-                    color: "#2C94FF",
-                    padding: "12px 30px",
-                    border: "2px solid #2C94FF",
-                    borderRadius: "20px",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease"
-                  }}
-                >
-                  Send
-                </button>
+                {/* Email Field */}
+                <div style={{ marginBottom: "20px" }}>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Your Email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      border: "2px solid #666",
+                      borderRadius: "10px",
+                      fontSize: "16px",
+                      fontFamily: "Poppins, sans-serif",
+                      outline: "none",
+                      boxSizing: "border-box",
+                      backgroundColor: "#fff"
+                    }}
+                  />
+                </div>
+
+                {/* Subject Field */}
+                <div style={{ marginBottom: "20px" }}>
+                  <input
+                    type="text"
+                    name="subject"
+                    placeholder="Subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      border: "2px solid #666",
+                      borderRadius: "10px",
+                      fontSize: "16px",
+                      fontFamily: "Poppins, sans-serif",
+                      outline: "none",
+                      boxSizing: "border-box",
+                      backgroundColor: "#fff"
+                    }}
+                  />
+                </div>
+
+                {/* Message Field */}
+                <div style={{ marginBottom: "20px" }}>
+                  <textarea
+                    name="message"
+                    placeholder="Message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    rows="8"
+                    style={{
+                      width: "100%",
+                      minHeight: "200px",
+                      padding: "12px",
+                      border: "2px solid #666",
+                      borderRadius: "10px",
+                      fontSize: "16px",
+                      fontFamily: "Poppins, sans-serif",
+                      outline: "none",
+                      resize: "vertical",
+                      boxSizing: "border-box",
+                      backgroundColor: "#fff"
+                    }}
+                  />
+                </div>
+
+                {/* Send Button */}
+                <div style={{ 
+                  textAlign: "right",
+                  borderTop: "2px solid #e0e0e0",
+                  paddingTop: "15px",
+                  marginTop: "10px"
+                }}>
+                  <button
+                    type="button"
+                    style={{
+                      backgroundColor: "#fff",
+                      color: "#2C94FF",
+                      padding: "12px 30px",
+                      border: "2px solid #2C94FF",
+                      borderRadius: "20px",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      transition: "all 0.3s ease"
+                    }}
+                  >
+                    Send
+                  </button>
+                </div>
               </div>
-            </div>
             </div>
           </div>
         </div>
@@ -436,7 +425,7 @@ function Kontak({ onBack }) {
         />
       </div>
 
-      {/* Footer - Updated to match exactly with the original Footer component */}
+      {/* Footer */}
       <footer style={{
         background: 'linear-gradient(135deg, #f97316 0%, #f97316 40%, #2C94FF 40%, #2C94FF 100%)',
         padding: '40px 60px',
@@ -551,19 +540,13 @@ function Kontak({ onBack }) {
               margin: 0
             }}>
               {[
-                { text: 'Tentang Kami', path: '/#profile', onClick: scrollToProfile },
+                { text: 'Tentang Kami', path: '/#profile' },
                 { text: 'Visi dan Misi', path: '/visi-misi' },
                 { text: 'Skema Sertifikasi', path: '/detail-sertifikasi' }
               ].map((item, index) => (
                 <li key={index} style={{ marginBottom: '8px' }}>
-                  <a 
-                    href={item.path}
-                    onClick={(e) => {
-                      if (item.onClick) {
-                        e.preventDefault();
-                        item.onClick();
-                      }
-                    }}
+                  <Link 
+                    to={item.path}
                     style={{
                       color: 'white',
                       textDecoration: 'none',
@@ -578,7 +561,7 @@ function Kontak({ onBack }) {
                   >
                     <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
                     {item.text}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -596,8 +579,8 @@ function Kontak({ onBack }) {
                   { text: 'Lihat Foto dan Video', path: '/galeri-foto' }
                 ].map((item, index) => (
                   <li key={index} style={{ marginBottom: '8px' }}>
-                    <a 
-                      href={item.path}
+                    <Link 
+                      to={item.path}
                       style={{
                         color: 'white',
                         textDecoration: 'none',
@@ -612,7 +595,7 @@ function Kontak({ onBack }) {
                     >
                       <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
                       {item.text}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -632,8 +615,8 @@ function Kontak({ onBack }) {
             }}>
               Contact Us:
             </h3>
-            <a 
-              href="/kontak"
+            <Link 
+              to="/kontak"
               style={{
                 backgroundColor: '#6B7280',
                 color: 'white',
@@ -657,7 +640,7 @@ function Kontak({ onBack }) {
               }}
             >
               Contact Us
-            </a>
+            </Link>
           </div>
         </div>
       </footer>
