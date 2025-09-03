@@ -1,4 +1,3 @@
-// App.jsx - Only for Landing Page Routes
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -79,7 +78,9 @@ function App() {
               />
             </div>
             <div ref={profileRef}>
-              <Profil />
+              <section id="profile">
+                <Profil />
+              </section>
             </div>
             <div ref={sertifikasiRef}>
               <MengapaKami />

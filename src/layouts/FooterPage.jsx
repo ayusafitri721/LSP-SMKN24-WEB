@@ -128,7 +128,7 @@ function Footer() {
           }}>
             {[
               { text: 'Tentang Kami', path: '/#profile', onClick: scrollToProfile },
-              { text: 'Visi dan Misi', path: '/#profile', onClick: scrollToProfile },
+              { text: 'Visi dan Misi', path: '/visi-misi' },
               { text: 'Skema Sertifikasi', path: '/detail-sertifikasi' }
             ].map((item, index) => (
               <li key={index} style={{ marginBottom: '8px' }}>
