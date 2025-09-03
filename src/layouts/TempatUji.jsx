@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import labImage from "../img/komputer.png";
 
 const TempatUji = ({ onNavigate }) => {
@@ -7,6 +8,16 @@ const TempatUji = ({ onNavigate }) => {
     // Panggil onNavigate jika tersedia
     if (onNavigate) {
       onNavigate(menuItem);
+    }
+  };
+
+  const scrollToProfile = () => {
+    const element = document.getElementById('profile');
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop,
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -28,7 +39,7 @@ const TempatUji = ({ onNavigate }) => {
       <div className="breadcrumb">
         <span 
           className="breadcrumb-home" 
-          onClick={() => handleMenuClick('Home')}
+          onClick={() => handleMenuClick('/')}
         >
           Home
         </span>
@@ -78,21 +89,21 @@ const TempatUji = ({ onNavigate }) => {
           
           {/* Social Media Icons */}
           <div className="social-icons">
-            <div className="social-icon">
+            <a href="#" className="social-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4c0 3.2-2.6 5.8-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8C2 4.6 4.6 2 7.8 2zM7.6 4C5.61 4 4 5.61 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8c1.99 0 3.6-1.61 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6zM17.25 5.5c.69 0 1.25.56 1.25 1.25S17.94 8 17.25 8 16 7.44 16 6.75s.56-1.25 1.25-1.25zM12 7c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5zm0 2c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
               </svg>
-            </div>
-            <div className="social-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
-              </svg>
-            </div>
-            <div className="social-icon">
+            </a>
+            <a href="#" className="social-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
-            </div>
+            </a>
+            <a href="#" className="social-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
+              </svg>
+            </a>
           </div>
         </div>
 
@@ -102,21 +113,109 @@ const TempatUji = ({ onNavigate }) => {
           <div className="footer-column">
             <h4 className="footer-title">Know More About:</h4>
             <ul className="footer-links">
-              <li>▶ Tentang Kami</li>
-              <li>▶ Visi dan Misi</li>
-              <li>▶ Struktur Organisasi</li>
-              <li>▶ Skema Sertifikasi</li>
-              <li>▶ Tempat Uji Kompetensi</li>
-              <li>▶ Jadwal Asesmen</li>
-              <li>▶ Berita</li>
-              <li>▶ Galeri Foto dan Video</li>
+              <li>
+                <Link 
+                  to="/#profile" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (onNavigate) {
+                      onNavigate('/');
+                      setTimeout(() => scrollToProfile(), 100);
+                    }
+                  }}
+                  className="footer-link"
+                >
+                  <span className="footer-arrow">▶</span> Tentang Kami
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/visi-misi" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (onNavigate) {
+                      onNavigate('/visi-misi');
+                    }
+                  }}
+                  className="footer-link"
+                >
+                  <span className="footer-arrow">▶</span> Visi dan Misi
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/detail-sertifikasi" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (onNavigate) {
+                      onNavigate('/detail-sertifikasi');
+                    }
+                  }}
+                  className="footer-link"
+                >
+                  <span className="footer-arrow">▶</span> Skema Sertifikasi
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/jadwal-asesmen" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (onNavigate) {
+                      onNavigate('/jadwal-asesmen');
+                    }
+                  }}
+                  className="footer-link"
+                >
+                  <span className="footer-arrow">▶</span> Jadwal Asesmen
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/berita" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (onNavigate) {
+                      onNavigate('/berita');
+                    }
+                  }}
+                  className="footer-link"
+                >
+                  <span className="footer-arrow">▶</span> Berita
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/galeri-foto" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (onNavigate) {
+                      onNavigate('/galeri-foto');
+                    }
+                  }}
+                  className="footer-link"
+                >
+                  <span className="footer-arrow">▶</span> Lihat Foto dan Video
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Contact Us */}
           <div className="footer-column contact-column">
             <h4 className="footer-title">Contact Us:</h4>
-            <button className="contact-btn">Contact Us</button>
+            <Link 
+              to="/kontak"
+              onClick={(e) => {
+                e.preventDefault();
+                if (onNavigate) {
+                  onNavigate('/kontak');
+                }
+              }}
+              className="contact-btn"
+            >
+              Contact Us
+            </Link>
           </div>
         </div>
       </footer>
@@ -314,6 +413,8 @@ const TempatUji = ({ onNavigate }) => {
           justify-content: center;
           cursor: pointer;
           transition: background-color 0.3s ease;
+          text-decoration: none;
+          color: white;
         }
 
         .social-icon:hover {
@@ -355,19 +456,48 @@ const TempatUji = ({ onNavigate }) => {
         }
 
         .footer-links li {
-          font-size: 14px;
-          color: white;
           margin-bottom: 8px;
-          cursor: pointer;
-          transition: opacity 0.3s ease;
         }
 
         .footer-links li:last-child {
           margin-bottom: 30px;
         }
 
-        .footer-links li:hover {
+        .footer-link {
+          font-size: 14px;
+          color: white;
+          text-decoration: none;
+          cursor: pointer;
+          transition: opacity 0.3s ease;
+          display: flex;
+          align-items: center;
+        }
+
+        .footer-link:hover {
           opacity: 0.8;
+        }
+
+        .footer-link-inactive {
+          font-size: 14px;
+          color: white;
+          opacity: 0.6;
+          cursor: not-allowed;
+          display: flex;
+          align-items: center;
+        }
+
+        .footer-link-current {
+          font-size: 14px;
+          color: white;
+          font-weight: 600;
+          opacity: 1;
+          display: flex;
+          align-items: center;
+        }
+
+        .footer-arrow {
+          margin-right: 8px;
+          font-size: 12px;
         }
 
         .contact-btn {
@@ -380,6 +510,9 @@ const TempatUji = ({ onNavigate }) => {
           font-weight: 500;
           cursor: pointer;
           transition: background-color 0.3s ease;
+          text-decoration: none;
+          display: inline-block;
+          text-align: center;
         }
 
         .contact-btn:hover {
@@ -408,6 +541,10 @@ const TempatUji = ({ onNavigate }) => {
 
           .tempat-uji-section {
             padding: 40px 20px;
+          }
+
+          .breadcrumb {
+            padding: 16px 20px;
           }
         }
       `}</style>

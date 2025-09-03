@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function GaleriVideo({ onBack }) {
+function GaleriVideo({onBack}) {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [imageLoadStates, setImageLoadStates] = useState({});
 
@@ -309,7 +309,6 @@ function GaleriVideo({ onBack }) {
         <p style={{
           fontSize: '18px',
           color: '#666',
-          margin: '0 0 40px 0',
           maxWidth: '600px',
           margin: '0 auto 40px'
         }}>
