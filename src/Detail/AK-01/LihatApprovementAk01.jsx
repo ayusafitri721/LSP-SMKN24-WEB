@@ -75,13 +75,14 @@ function LihatApprovementAk01({ onBack, data, onNavigate }) {
         fontFamily: "Arial, sans-serif",
       }}
     >
-      {/* Header with back + nav buttons */}
+   {/* Header with back + nav buttons */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
           marginBottom: "20px",
-          justifyContent: "space-between",
+          justifyContent: "flex-start", // Changed from space-between
+          gap: "20px", // Added gap between back button and tabs
         }}
       >
         {/* Tombol Back */}
@@ -91,7 +92,6 @@ function LihatApprovementAk01({ onBack, data, onNavigate }) {
             backgroundColor: "transparent",
             border: "none",
             cursor: "pointer",
-            marginRight: "20px",
             padding: "10px",
             display: "flex",
             alignItems: "center",
@@ -111,7 +111,7 @@ function LihatApprovementAk01({ onBack, data, onNavigate }) {
           </svg>
         </button>
 
-        {/* Navigation Tabs */}
+        {/* Navigation Tabs - Now positioned next to back button */}
         <div
           style={{
             display: "flex",
@@ -172,7 +172,7 @@ function LihatApprovementAk01({ onBack, data, onNavigate }) {
           </button>
         </div>
       </div>
-
+      
       <div
         style={{
           backgroundColor: "white",
