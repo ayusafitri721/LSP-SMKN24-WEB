@@ -123,7 +123,7 @@ function VisiMisi({ onBack }) {
               lineHeight: "1.8",
               textAlign: "justify"
             }}>
-              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus imperdiet nulla malesuada pellentesque elit eget gravida cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo integer malesuada nunc vel risus commodo viverra maecenas accumsan lacus vel facilisis volutpat est velit egestas dui id ornare arcu odio ut sem nulla pharetra diam sit amet nisl suscipit adipiscing bibendum est ultricies integer quis auctor elit sed vulputate mi sit.
+              Menjadi lembaga sertifikasi profesi yang unggul, terpercaya, dan berdaya saing global dalam menyiapkan tenaga kerja kompeten sesuai standar industri dan SKKNI.
             </p>
           </div>
 
@@ -153,16 +153,16 @@ function VisiMisi({ onBack }) {
               margin: 0
             }}>
               <li style={{ marginBottom: "16px" }}>
-                Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus.
+                Menyelenggarakan proses sertifikasi yang obyektif, transparan, dan akuntabel sesuai dengan pedoman Badan Nasional Sertifikasi Profesi (BNSP).
               </li>
               <li style={{ marginBottom: "16px" }}>
-                Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus.
+                Menyiapkan asesor kompetensi yang profesional dan berintegritas dalam melakukan uji kompetensi.
               </li>
               <li style={{ marginBottom: "16px" }}>
-                Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus.
+                Memastikan peserta didik dan tenaga kerja memiliki kompetensi sesuai standar industri dan kebutuhan dunia kerja.
               </li>
               <li style={{ marginBottom: "0" }}>
-                Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus.
+                Menjalin kerja sama dengan industri, asosiasi profesi, dan pemangku kepentingan untuk meningkatkan kualitas sertifikasi.
               </li>
             </ol>
           </div>

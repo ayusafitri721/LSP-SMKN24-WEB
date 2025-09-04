@@ -307,7 +307,7 @@ function GaleriFoto({ onBack }) {
                   paddingTop: '16px'
                 }}>
                   <span style={{ color: '#FF8303', fontWeight: '600' }}>
-                    📅 {image.date}
+                     {image.date}
                   </span>
                   <div style={{ 
                     backgroundColor: '#FF8303',

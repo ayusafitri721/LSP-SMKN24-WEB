@@ -9,7 +9,7 @@ import MengapaKami from './layouts/MengapaKami';
 import Skema from './layouts/Skema';
 import CariSkema from './layouts/CariSkema';
 import FooterPage from './layouts/FooterPage';
-import SertifikasiCTA from './layouts/SertifikasiCTA';
+// import SertifikasiCTA from './layouts/SertifikasiCTA';
 import LandingPage from './layouts/DetailSertifikasi';
 import Kontak from './layouts/kontak';
 import Berita from './layouts/Berita';
@@ -88,10 +88,10 @@ function App() {
             <div>
               <Skema />
             </div>
-            <SertifikasiCTA 
+            {/* <SertifikasiCTA 
               goToRegister={() => handleNavigate('/auth/register')} 
               goToDashboard={goToDashboard} 
-            />
+            /> */}
             <div ref={galeriRef}>
               <CariSkema goToLandingPage={goToLandingPage} />
             </div>

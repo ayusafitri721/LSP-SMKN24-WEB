@@ -8,44 +8,44 @@ function Berita() {
     {
       id: 1,
       title: "Uji Sertifikasi Kompetensi (USK) di SMK",
-      excerpt: "",
-      fullContent: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      excerpt: "Pelaksanaan Uji Sertifikasi Kompetensi bagi siswa kelas XII program keahlian di SMKN 24 Jakarta.",
+      fullContent: "Uji Sertifikasi Kompetensi (USK) merupakan proses penting untuk mengukur kemampuan siswa kelas XII dalam bidang keahlian yang mereka pelajari. Kegiatan ini bekerja sama dengan Lembaga Sertifikasi Profesi (LSP) yang berlisensi BNSP. Melalui USK, siswa diharapkan mendapatkan pengakuan resmi atas kompetensinya yang siap digunakan dalam dunia kerja, baik di tingkat nasional maupun internasional.",
       image: "src/img/kotak1 kiri.jpg"
     },
     {
       id: 2,
       title: "Tes Kemampuan Akademik (TKA) di SMK",
-      excerpt: "",
-      fullContent: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      excerpt: "TKA dilaksanakan untuk memetakan kemampuan akademik siswa sebagai persiapan menghadapi ujian nasional dan dunia kerja.",
+      fullContent: "Tes Kemampuan Akademik (TKA) bertujuan untuk mengevaluasi pemahaman siswa dalam mata pelajaran umum dan produktif. Hasil dari tes ini akan digunakan sebagai dasar pembinaan dan pembekalan siswa agar siap menghadapi Ujian Sekolah, USK, dan tantangan di dunia kerja.",
       image: "src/img/kotak2 kanan.png"
     },
     {
       id: 3,
       title: "AAS (Assemen Akhir Sekolah)",
-      excerpt: "",
-      fullContent: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+      excerpt: "Sosialisasi dan persiapan SBMPTN untuk memberikan peluang lulusan SMK melanjutkan pendidikan ke perguruan tinggi.",
+      fullContent: "SMKN 24 Jakarta memberikan pendampingan dan pembinaan kepada siswa yang berminat melanjutkan pendidikan ke perguruan tinggi melalui jalur SBMPTN. Program ini mencakup tryout, bimbingan belajar, dan motivasi agar lulusan memiliki kesempatan bersaing dalam seleksi nasional.",
       image: "src/img/kotak3 kiri.png"
     },
     {
       id: 4,
       title: "SBMPTN untuk siswa SMA/SMK",
-      excerpt: "",
-      fullContent: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.",
+      excerpt: "Sosialisasi dan persiapan SBMPTN untuk memberikan peluang lulusan SMK melanjutkan pendidikan ke perguruan tinggi.",
+       fullContent: "SMKN 24 Jakarta memberikan pendampingan dan pembinaan kepada siswa yang berminat melanjutkan pendidikan ke perguruan tinggi melalui jalur SBMPTN. Program ini mencakup tryout, bimbingan belajar, dan motivasi agar lulusan memiliki kesempatan bersaing dalam seleksi nasional.",
       image: "src/img/kotak3 kiri.png"
     }
   ];
 
   const sidebarNews = [
     {
-      title: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+     title: "SMKN 24 Jakarta Berhasil Meraih Juara 1 Lomba Kompetensi Siswa Tingkat Provinsi",
       image: "src/img/sidebarnews.jpg"
     },
     {
-      title: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+      title: "LSP SMKN 24 Jakarta Resmi Mendapatkan Lisensi dari BNSP",
       image: "src/img/sidebarnews.jpg"
     },
     {
-      title: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+       title: "Sosialisasi Sertifikasi Kompetensi Bagi Siswa Kelas XI dan XII",
       image: "src/img/sidebarnews.jpg"
     }
   ];

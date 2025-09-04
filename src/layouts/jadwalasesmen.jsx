@@ -69,75 +69,72 @@ const JadwalAsesmen = () => {
           </button>
         </div>
 
-        {/* Horizontal Line */}
-        <div style={styles.horizontalLine}></div>
-
-        {/* Cards Section - Full Screen Width */}
-        <div style={styles.cardsContainer}>
-          {/* Card 1 */}
-          <div style={styles.card}>
-            <div style={styles.cardContent}>
-              <h3 style={styles.cardTitle}>
-                Lorem ipsum dolor sit amet consectetur adipiscing elit.
-              </h3>
-              {/* Line after Lorem ipsum */}
-              <div style={styles.cardSeparatorLine}></div>
-              <div style={styles.cardDetails}>
-                <p>Lokasi: Lorem Ipsum</p>
-                <p>Tanggat: DD/MM/YY</p>
-                <p>Waktu: 00.00</p>
-              </div>
-            </div>
-            <div style={styles.cardButtonContainer}>
-              <button style={styles.cardButton}>
-                Daftar
-              </button>
-            </div>
-          </div>
-
-          {/* Card 2 */}
-          <div style={styles.card}>
-            <div style={styles.cardContent}>
-              <h3 style={styles.cardTitle}>
-                Lorem ipsum dolor sit amet consectetur adipiscing elit.
-              </h3>
-              {/* Line after Lorem ipsum */}
-              <div style={styles.cardSeparatorLine}></div>
-              <div style={styles.cardDetails}>
-                <p>Lokasi: Lorem Ipsum</p>
-                <p>Tanggat: DD/MM/YY</p>
-                <p>Waktu: 00.00</p>
-              </div>
-            </div>
-            <div style={styles.cardButtonContainer}>
-              <button style={styles.cardButton}>
-                Daftar
-              </button>
-            </div>
-          </div>
-
-          {/* Card 3 */}
-          <div style={styles.card}>
-            <div style={styles.cardContent}>
-              <h3 style={styles.cardTitle}>
-                Lorem ipsum dolor sit amet consectetur adipiscing elit.
-              </h3>
-              {/* Line after Lorem ipsum */}
-              <div style={styles.cardSeparatorLine}></div>
-              <div style={styles.cardDetails}>
-                <p>Lokasi: Lorem Ipsum</p>
-                <p>Tanggat: DD/MM/YY</p>
-                <p>Waktu: 00.00</p>
-              </div>
-            </div>
-            <div style={styles.cardButtonContainer}>
-              <button style={styles.cardButton}>
-                Daftar
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Cards Section - Full Screen Width */}
+<div style={styles.cardsContainer}>
+  {/* Card 1 */}
+  <div style={styles.card}>
+    <div style={styles.cardContent}>
+      <h3 style={styles.cardTitle}>
+        Uji Sertifikasi Kompetensi Bidang Rekayasa Perangkat Lunak
+      </h3>
+      {/* Line after title */}
+      <div style={styles.cardSeparatorLine}></div>
+      <div style={styles.cardDetails}>
+        <p>Lokasi: Lab RPL, SMKN 24 Jakarta</p>
+        <p>Tanggal: 10/09/2025</p>
+        <p>Waktu: 08.00 - 12.00 WIB</p>
       </div>
+    </div>
+    <div style={styles.cardButtonContainer}>
+      <button style={styles.cardButton}>
+        Daftar
+      </button>
+    </div>
+  </div>
+
+  {/* Card 2 */}
+  <div style={styles.card}>
+    <div style={styles.cardContent}>
+      <h3 style={styles.cardTitle}>
+        Asesmen Kompetensi Keahlian Teknik Jaringan Komputer
+      </h3>
+      {/* Line after title */}
+      <div style={styles.cardSeparatorLine}></div>
+      <div style={styles.cardDetails}>
+        <p>Lokasi: Lab TKJ, SMKN 24 Jakarta</p>
+        <p>Tanggal: 15/09/2025</p>
+        <p>Waktu: 09.00 - 13.00 WIB</p>
+      </div>
+    </div>
+    <div style={styles.cardButtonContainer}>
+      <button style={styles.cardButton}>
+        Daftar
+      </button>
+    </div>
+  </div>
+
+  {/* Card 3 */}
+  <div style={styles.card}>
+    <div style={styles.cardContent}>
+      <h3 style={styles.cardTitle}>
+        Uji Kompetensi Keahlian Multimedia dan Desain Grafis
+      </h3>
+      {/* Line after title */}
+      <div style={styles.cardSeparatorLine}></div>
+      <div style={styles.cardDetails}>
+        <p>Lokasi: Studio Multimedia, SMKN 24 Jakarta</p>
+        <p>Tanggal: 20/09/2025</p>
+        <p>Waktu: 10.00 - 14.00 WIB</p>
+      </div>
+    </div>
+    <div style={styles.cardButtonContainer}>
+      <button style={styles.cardButton}>
+        Daftar
+      </button>
+    </div>
+  </div>
+</div>
+</div>
 
       {/* Footer */}
       <footer style={{

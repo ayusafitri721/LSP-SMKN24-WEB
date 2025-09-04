@@ -105,7 +105,7 @@ const DetailSertifikasi = ({ onNavigate }) => {
           <div className="info-row">
             <span className="info-label">Jenis</span>
             <span className="info-colon">:</span>
-            <span className="info-value">Lorem Ipsum</span>
+            <span className="info-value">Sertifikasi Kompetensi Keahlian</span>
           </div>
           <div className="info-row">
             <span className="info-label">Harga</span>
@@ -121,12 +121,9 @@ const DetailSertifikasi = ({ onNavigate }) => {
             <span className="info-label">Ringkasan</span>
             <span className="info-colon">:</span>
             <span className="info-value description">
-              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien 
-              vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus 
-              leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus 
-              bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut 
-              hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra 
-              inceptos himenaeos.
+              Skema sertifikasi Rekayasa Perangkat Lunak (RPL) bertujuan untuk memastikan peserta didik memiliki kompetensi yang sesuai dengan standar industri dalam bidang pengembangan perangkat lunak.
+              Melalui sertifikasi ini, peserta akan dinilai kemampuan teknisnya dalam analisis kebutuhan, desain sistem, pemrograman, pengujian perangkat lunak, hingga pemeliharaan sistem.
+              Hasil sertifikasi ini diakui oleh Badan Nasional Sertifikasi Profesi (BNSP) dan dapat digunakan sebagai bukti kompetensi dalam dunia kerja, baik di tingkat nasional maupun internasional.
             </span>
           </div>
         </div>

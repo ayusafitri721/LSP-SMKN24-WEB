@@ -14,27 +14,27 @@ function ImageSlider() {
     },
     {
       image: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1200&h=600&fit=crop',
-      title: 'SERTIFIKASI KOMPETENSI',
-      subtitle: 'PROFESIONAL',
+      title: 'UJI KOMPETENSI',
+      subtitle: 'ADMINISTRASI PERKANTORAN',
       organization: 'LEMBAGA SERTIFIKASI PROFESI',
-      institute: 'Institut Teknologi Indonesia',
-      date: 'Jakarta, 25 Januari 2025'
+      institute: 'Universitas Trunojoyo Madura',
+      date: 'Bangkalan, 25 Januari 2025'
     },
     {
       image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=1200&h=600&fit=crop',
-      title: 'WORKSHOP PELATIHAN',
-      subtitle: 'DIGITAL MARKETING',
+      title: 'PELATIHAN ASSESSOR',
+      subtitle: 'KOMPETENSI KEAHLIAN',
       organization: 'LEMBAGA SERTIFIKASI PROFESI',
-      institute: 'Universitas Indonesia',
-      date: 'Depok, 26 Januari 2025'
+      institute: 'Politeknik Negeri Madura',
+      date: 'Sampang, 26 Januari 2025'
     },
     {
       image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1200&h=600&fit=crop',
-      title: 'SEMINAR NASIONAL',
-      subtitle: 'TEKNOLOGI INFORMASI',
+      title: 'VERIFIKASI DAN VALIDASI',
+      subtitle: 'SISTEM SERTIFIKASI',
       organization: 'LEMBAGA SERTIFIKASI PROFESI',
-      institute: 'Institut Teknologi Bandung',
-      date: 'Bandung, 27 Januari 2025'
+      institute: 'STAIN Pamekasan',
+      date: 'Pamekasan, 27 Januari 2025'
     }
   ];
 
