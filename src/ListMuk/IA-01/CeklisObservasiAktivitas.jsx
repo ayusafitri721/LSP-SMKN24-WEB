@@ -30,18 +30,20 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 ],
                 standar: "SKKNI",
                 pencapaian: { ya: false, tidak: false },
-                penilaianLanjut: false
+                penilaianLanjut: ""
             },
             {
                 no: 2,
                 elemen: "Menerapkan struktur data dan akses terhadap struktur data tersebut",
                 kriteria: [
                     "Mengimplementasikan struktur data sesuai dengan bahasa pemrograman yang akan dipergunakan.",
-                    "Menyatakan akses terhadap data dalam algoritma yang efisien sesuai bahasa pemrograman yang akan dipakai."
+                    "Menyatakan akses terhadap data dalam algoritma yang efisien sesuai bahasa pemrograman yang akan dipakai.",
+                    "Efisien sesuai bahasa pemrograman yang akan dipakai. "
+
                 ],
                 standar: "SKKNI",
                 pencapaian: { ya: false, tidak: false },
-                penilaianLanjut: false
+                penilaianLanjut: ""
             }
         ],
         aktivitas2: [
@@ -54,7 +56,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 ],
                 standar: "SKKNI",
                 pencapaian: { ya: false, tidak: false },
-                penilaianLanjut: false
+                penilaianLanjut: ""
             },
             {
                 no: 2,
@@ -65,7 +67,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 ],
                 standar: "SKKNI",
                 pencapaian: { ya: false, tidak: false },
-                penilaianLanjut: false
+                penilaianLanjut: ""
             },
             {
                 no: 3,
@@ -76,16 +78,52 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 ],
                 standar: "SKKNI",
                 pencapaian: { ya: false, tidak: false },
-                penilaianLanjut: false
+                penilaianLanjut: ""
+            }
+        ],
+        aktivitas3: [
+            {
+                no: 1,
+                elemen: "Mengidentifikasi mekanisme running atau eksekusi source code",
+                kriteria: [
+                    "Mengidentifikasi Cara dan tools untuk mengeksekusi source code",
+                    "Mengidentifikasi Parameter untuk mengeksekusi source code",
+                    "Mengidentifikasi Peletakan source code sehingga bisa dieksekusi dengan benar"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            },
+            {
+                no: 2,
+                elemen: "Mengeksekusi source code",
+                kriteria: [
+                    "Mengeksekusi Source code sesuai dengan mekanisme eksekusi source code dari tools pemrograman yang digunakan.",
+                    "Mengidentifikasi Perbedaan antara running, debugging, atau membuat executable file"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            },
+            {
+                no: 3,
+                elemen: "Mengidentifikasi hasil eksekusi",
+                kriteria: [
+                    "Mengeksekusi Source code sesuai skenario yang direncanakan.",
+                    "Mengidentifikasi sumber permasalahan Jika eksekusi source code gagal/tidak berhasil"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
             }
         ],
         kelompokPekerjaan2: [
-    { no: 1, kode: "J.620100.009.01", judul: "Menggunakan Spesifikasi Program" },
-    { no: 2, kode: "J.620100.010.01", judul: "Menerapkan Perintah Eksekusi Bahasa Pemrograman Berbasis Teks, Grafik, dan Multimedia" },
-    { no: 3, kode: "J.620100.016.01", judul: "Menulis Kode Dengan Prinsip Sesuai Guidelines dan Best Practices" },
-    { no: 4, kode: "J.620100.017.02", judul: "Mengimplementasikan Pemrograman Terstruktur" },
-    { no: 5, kode: "J.620100.023.02", judul: "Membuat Dokumen Kode Program" },
-    ],
+            { no: 1, kode: "J.620100.009.01", judul: "Menggunakan Spesifikasi Program" },
+            { no: 2, kode: "J.620100.010.01", judul: "Menerapkan Perintah Eksekusi Bahasa Pemrograman Berbasis Teks, Grafik, dan Multimedia" },
+            { no: 3, kode: "J.620100.016.01", judul: "Menulis Kode Dengan Prinsip Sesuai Guidelines dan Best Practices" },
+            { no: 4, kode: "J.620100.017.02", judul: "Mengimplementasikan Pemrograman Terstruktur" },
+            { no: 5, kode: "J.620100.023.02", judul: "Membuat Dokumen Kode Program" },
+        ],
         umpanBalik: ""
     });
 
@@ -96,10 +134,10 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         }));
     };
 
-    const handlePencapaianChange = (index, value) => {
+    const handlePencapaianChange = (section, index, value) => {
         setFormData((prev) => ({
             ...prev,
-            aktivitas: prev.aktivitas.map((item, i) =>
+            [section]: prev[section].map((item, i) =>
                 i === index
                     ? {
                         ...item,
@@ -113,12 +151,12 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         }));
     };
 
-    const handlePenilaianLanjutChange = (index, checked) => {
+    const handlePenilaianLanjutChange = (section, index, value) => {
         setFormData((prev) => ({
             ...prev,
-            aktivitas: prev.aktivitas.map((item, i) =>
+            [section]: prev[section].map((item, i) =>
                 i === index
-                    ? { ...item, penilaianLanjut: checked }
+                    ? { ...item, penilaianLanjut: value }
                     : item
             )
         }));
@@ -155,6 +193,121 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         textAlign: "center",
         fontSize: "11px"
     };
+
+    const renderAssessmentTable = (aktivitasData, sectionName, unitTitle) => (
+        <>
+            {/* Unit Kompetensi Detail */}
+            <table style={{ ...tableStyle, marginTop: "20px" }}>
+                <tbody>
+                    <tr>
+                        <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "150px" }}>
+                            {unitTitle}
+                        </td>
+                        <td style={{ ...subHeaderStyle, width: "100px" }}>Kode Unit</td>
+                        <td style={cellStyle}>
+                            {sectionName === 'aktivitas' && formData.unitKompetensi.kode}
+                            {sectionName === 'aktivitas2' && formData.unitKompetensi2.kode}
+                            {sectionName === 'aktivitas3' && formData.unitKompetensi3.kode}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style={{ ...cellStyle, backgroundColor: "#2c3e50" }}></td>
+                        <td style={subHeaderStyle}>Judul Unit</td>
+                        <td style={cellStyle}>
+                            {sectionName === 'aktivitas' && formData.unitKompetensi.judul}
+                            {sectionName === 'aktivitas2' && formData.unitKompetensi2.judul}
+                            {sectionName === 'aktivitas3' && formData.unitKompetensi3.judul}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            {/* Assessment Table */}
+            <table style={tableStyle}>
+                <thead>
+                    <tr>
+                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "50px" }}>No.</th>
+                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "200px" }}>Elemen</th>
+                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "300px" }}>Kriteria Unjuk Kerja</th>
+                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "120px" }}>
+                            Standar Industri atau Tempat Kerja
+                        </th>
+                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>Pencapaian</th>
+                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "100px" }}>
+                            Penilaian Lanjut
+                        </th>
+                    </tr>
+                    <tr>
+                        <th style={subHeaderStyle}></th>
+                        <th style={subHeaderStyle}></th>
+                        <th style={subHeaderStyle}></th>
+                        <th style={subHeaderStyle}></th>
+                        <th style={subHeaderStyle}>
+                            <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                <span>Ya</span>
+                                <span>Tidak</span>
+                            </div>
+                        </th>
+                        <th style={subHeaderStyle}></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {aktivitasData.map((aktivitas, index) => (
+                        <React.Fragment key={index}>
+                            <tr>
+                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.length}>
+                                    {aktivitas.no}
+                                </td>
+                                <td style={cellStyle} rowSpan={aktivitas.kriteria.length}>
+                                    {aktivitas.elemen}
+                                </td>
+                                <td style={cellStyle}>{aktivitas.kriteria[0]}</td>
+                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.length}>
+                                    {aktivitas.standar}
+                                </td>
+                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.length}>
+                                    <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center" }}>
+                                        <input
+                                            type="radio"
+                                            name={`${sectionName}-${index}`}
+                                            checked={aktivitas.pencapaian.ya}
+                                            onChange={() => handlePencapaianChange(sectionName, index, "ya")}
+                                        />
+                                        <input
+                                            type="radio"
+                                            name={`${sectionName}-${index}`}
+                                            checked={aktivitas.pencapaian.tidak}
+                                            onChange={() => handlePencapaianChange(sectionName, index, "tidak")}
+                                        />
+                                    </div>
+                                </td>
+                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.length}>
+                                    <input
+                                        type="text"
+                                        value={aktivitas.penilaianLanjut}
+                                        onChange={(e) => handlePenilaianLanjutChange(sectionName, index, e.target.value)}
+                                        style={{
+                                            border: "none",
+                                            width: "100%",
+                                            backgroundColor: "transparent",
+                                            textAlign: "center",
+                                            fontSize: "12px"
+                                        }}
+                                        placeholder="Catatan"
+                                    />
+                                </td>
+                            </tr>
+                            {aktivitas.kriteria.slice(1).map((kriteria, kriteriaIndex) => (
+                                <tr key={kriteriaIndex}>
+                                    <td style={cellStyle}>{kriteria}</td>
+                                </tr>
+                            ))}
+                        </React.Fragment>
+                    ))}
+                </tbody>
+            </table>
+        </>
+    );
 
     return (
         <div
@@ -277,100 +430,10 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 </tbody>
             </table>
 
-            {/* Unit Kompetensi Detail */}
-            <table style={tableStyle}>
-                <tbody>
-                    <tr>
-                        <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "150px" }}>Unit Kompetensi 1</td>
-                        <td style={{ ...subHeaderStyle, width: "100px" }}>Kode Unit</td>
-                        <td style={cellStyle}>{formData.unitKompetensi.kode}</td>
-                    </tr>
-                    <tr>
-                        <td style={{ ...cellStyle, backgroundColor: "#2c3e50" }}></td>
-                        <td style={subHeaderStyle}>Judul Unit</td>
-                        <td style={cellStyle}>{formData.unitKompetensi.judul}</td>
-                    </tr>
-                </tbody>
-            </table>
+            {/* Unit Kompetensi 1 Assessment */}
+            {renderAssessmentTable(formData.aktivitas, 'aktivitas', 'Unit Kompetensi 1')}
 
-            {/* Main Assessment Table */}
-            <table style={tableStyle}>
-                <thead>
-                    <tr>
-                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "50px" }}>No.</th>
-                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "200px" }}>Elemen</th>
-                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "300px" }}>Kriteria Unjuk Kerja</th>
-                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "120px" }}>
-                            Standar Industri atau Tempat Kerja
-                        </th>
-                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>Pencapaian</th>
-                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "100px" }}>
-                            Penilaian Lanjut
-                        </th>
-                    </tr>
-                    <tr>
-                        <th style={subHeaderStyle}></th>
-                        <th style={subHeaderStyle}></th>
-                        <th style={subHeaderStyle}></th>
-                        <th style={subHeaderStyle}></th>
-                        <th style={subHeaderStyle}>
-                            <div style={{ display: "flex", justifyContent: "space-around" }}>
-                                <span>Ya</span>
-                                <span>Tidak</span>
-                            </div>
-                        </th>
-                        <th style={subHeaderStyle}></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {formData.aktivitas.map((aktivitas, index) => (
-                        <React.Fragment key={index}>
-                            <tr>
-                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.length}>
-                                    {aktivitas.no}
-                                </td>
-                                <td style={cellStyle} rowSpan={aktivitas.kriteria.length}>
-                                    {aktivitas.elemen}
-                                </td>
-                                <td style={cellStyle}>{aktivitas.kriteria[0]}</td>
-                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.length}>
-                                    {aktivitas.standar}
-                                </td>
-                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.length}>
-                                    <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center" }}>
-                                        <input
-                                            type="radio"
-                                            name={`aktivitas-${index}`}
-                                            checked={aktivitas.pencapaian.ya}
-                                            onChange={() => handlePencapaianChange(index, "ya")}
-                                        />
-                                        <input
-                                            type="radio"
-                                            name={`aktivitas-${index}`}
-                                            checked={aktivitas.pencapaian.tidak}
-                                            onChange={() => handlePencapaianChange(index, "tidak")}
-                                        />
-                                    </div>
-                                </td>
-                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.length}>
-                                    <input
-                                        type="checkbox"
-                                        checked={aktivitas.penilaianLanjut}
-                                        onChange={(e) => handlePenilaianLanjutChange(index, e.target.checked)}
-                                    />
-                                </td>
-                            </tr>
-                            {aktivitas.kriteria.slice(1).map((kriteria, kriteriaIndex) => (
-                                <tr key={kriteriaIndex}>
-                                    <td style={cellStyle}>{kriteria}</td>
-                                </tr>
-                            ))}
-                        </React.Fragment>
-                    ))}
-                </tbody>
-            </table>
-
-            {/* Umpan Balik */}
+            {/* Umpan Balik after Unit Kompetensi 1 */}
             <table style={tableStyle}>
                 <tbody>
                     <tr>
@@ -397,164 +460,48 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 </tbody>
             </table>
 
-           {/* Kelompok Pekerjaan 2 */}
-<table style={{ borderCollapse: "collapse", width: "100%", marginTop: "20px" }}>
-  <thead>
-    <tr>
-      <th style={{ border: "1px solid black", padding: "8px", width: "20%", backgroundColor: "#2c3e50", color: "white" }}></th>
-      <th style={{ border: "1px solid black", padding: "8px", width: "5%", backgroundColor: "#2c3e50", color: "white" }}>No.</th>
-      <th style={{ border: "1px solid black", padding: "8px", width: "25%", backgroundColor: "#2c3e50", color: "white" }}>Kode Unit</th>
-      <th style={{ border: "1px solid black", padding: "8px", backgroundColor: "#2c3e50", color: "white" }}>Judul Unit</th>
-    </tr>
-  </thead>
-  <tbody>
-    {formData.kelompokPekerjaan2.map((item, index) => (
-      <tr key={index}>
-        {index === 0 && (
-          <td
-            rowSpan={formData.kelompokPekerjaan2.length}
-            style={{
-              border: "1px solid black",
-              padding: "8px",
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: "12px",
-              backgroundColor: "#2c3e50",
-              color: "white"
-            }}
-          >
-            Kelompok <br /> Pekerjaan 2
-          </td>
-        )}
-        <td style={{ border: "1px solid black", padding: "8px", textAlign: "center", fontSize: "12px" }}>{item.no}</td>
-        <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>{item.kode}</td>
-        <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>{item.judul}</td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-
-
-
-                {/* Unit Kompetensi Detail 2 */}
-            <table style={{ ...tableStyle, marginTop: "20px" }}>
-            <tbody>
-                <tr>
-                <td
-                    style={{
-                    ...headerCellStyle,
-                    backgroundColor: "#2c3e50",
-                    width: "150px",
-                    }}
-                >
-                    Unit Kompetensi 2
-                </td>
-                <td style={{ ...subHeaderStyle, width: "100px" }}>Kode Unit</td>
-                <td style={cellStyle}>{formData.unitKompetensi2.kode}</td>
-                </tr>
-                <tr>
-                <td style={{ ...cellStyle, backgroundColor: "#2c3e50" }}></td>
-                <td style={subHeaderStyle}>Judul Unit</td>
-                <td style={cellStyle}>{formData.unitKompetensi2.judul}</td>
-                </tr>
-            </tbody>
-            </table>
-
-            {/* Main Assessment Table */}
-            <table style={tableStyle}>
+            {/* Kelompok Pekerjaan 2 */}
+            <table style={{ borderCollapse: "collapse", width: "100%", marginTop: "20px" }}>
                 <thead>
                     <tr>
-                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "50px" }}>No.</th>
-                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "200px" }}>Elemen</th>
-                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "300px" }}>Kriteria Unjuk Kerja</th>
-                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "120px" }}>
-                            Standar Industri atau Tempat Kerja
-                        </th>
-                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>Pencapaian</th>
-                        <th style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "100px" }}>
-                            Penilaian Lanjut
-                        </th>
-                    </tr>
-                    <tr>
-                        <th style={subHeaderStyle}></th>
-                        <th style={subHeaderStyle}></th>
-                        <th style={subHeaderStyle}></th>
-                        <th style={subHeaderStyle}></th>
-                        <th style={subHeaderStyle}>
-                            <div style={{ display: "flex", justifyContent: "space-around" }}>
-                                <span>Ya</span>
-                                <span>Tidak</span>
-                            </div>
-                        </th>
-                        <th style={subHeaderStyle}></th>
+                        <th style={{ border: "1px solid black", padding: "8px", width: "20%", backgroundColor: "#2c3e50", color: "white" }}></th>
+                        <th style={{ border: "1px solid black", padding: "8px", width: "5%", backgroundColor: "#2c3e50", color: "white" }}>No.</th>
+                        <th style={{ border: "1px solid black", padding: "8px", width: "25%", backgroundColor: "#2c3e50", color: "white" }}>Kode Unit</th>
+                        <th style={{ border: "1px solid black", padding: "8px", backgroundColor: "#2c3e50", color: "white" }}>Judul Unit</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {formData.aktivitas2.map((aktivitas2, index) => (
-                        <React.Fragment key={index}>
-                            <tr>
-                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas2.kriteria.length}>
-                                    {aktivitas2.no}
+                    {formData.kelompokPekerjaan2.map((item, index) => (
+                        <tr key={index}>
+                            {index === 0 && (
+                                <td
+                                    rowSpan={formData.kelompokPekerjaan2.length}
+                                    style={{
+                                        border: "1px solid black",
+                                        padding: "8px",
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        fontSize: "12px",
+                                        backgroundColor: "#2c3e50",
+                                        color: "white"
+                                    }}
+                                >
+                                    Kelompok <br /> Pekerjaan 2
                                 </td>
-                                <td style={cellStyle} rowSpan={aktivitas2.kriteria.length}>
-                                    {aktivitas2.elemen}
-                                </td>
-                                <td style={cellStyle}>{aktivitas2.kriteria[0]}</td>
-                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas2.kriteria.length}>
-                                    {aktivitas2.standar}
-                                </td>
-                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas2.kriteria.length}>
-                                    <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center" }}>
-                                        <input
-                                            type="radio"
-                                            name={`aktivitas2-${index}`}
-                                            checked={aktivitas2.pencapaian.ya}
-                                            onChange={() => handlePencapaianChange(index, "ya")}
-                                        />
-                                        <input
-                                            type="radio"
-                                            name={`aktivitas2-${index}`}
-                                            checked={aktivitas2.pencapaian.tidak}
-                                            onChange={() => handlePencapaianChange(index, "tidak")}
-                                        />
-                                    </div>
-                                </td>
-                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas2.kriteria.length}>
-                                    <input
-                                        type="checkbox"
-                                        checked={aktivitas2.penilaianLanjut}
-                                        onChange={(e) => handlePenilaianLanjutChange(index, e.target.checked)}
-                                    />
-                                </td>
-                            </tr>
-                            {aktivitas2.kriteria.slice(1).map((kriteria, kriteriaIndex) => (
-                                <tr key={kriteriaIndex}>
-                                    <td style={cellStyle}>{kriteria}</td>
-                                </tr>
-                            ))}
-                        </React.Fragment>
+                            )}
+                            <td style={{ border: "1px solid black", padding: "8px", textAlign: "center", fontSize: "12px" }}>{item.no}</td>
+                            <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>{item.kode}</td>
+                            <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>{item.judul}</td>
+                        </tr>
                     ))}
                 </tbody>
             </table>
 
-            {/* Unit Kompetensi Detail 3 */}
-            <table style={tableStyle}>
-                <tbody>
-                    <tr>
-                        <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "150px" }}>Unit Kompetensi 3</td>
-                        <td style={{ ...subHeaderStyle, width: "100px" }}>Kode Unit</td>
-                        <td style={cellStyle}>{formData.unitKompetensi3.kode}</td>
-                    </tr>
-                    <tr>
-                        <td style={{ ...cellStyle, backgroundColor: "#2c3e50" }}></td>
-                        <td style={subHeaderStyle}>Judul Unit</td>
-                        <td style={cellStyle}>{formData.unitKompetensi3.judul}</td>
-                    </tr>
-                </tbody>
-            </table>
-            
+            {/* Unit Kompetensi 2 Assessment */}
+            {renderAssessmentTable(formData.aktivitas2, 'aktivitas2', 'Unit Kompetensi 2')}
 
-
+            {/* Unit Kompetensi 3 Assessment */}
+            {renderAssessmentTable(formData.aktivitas3, 'aktivitas3', 'Unit Kompetensi 3')}
 
             {/* Navigation Buttons */}
             <div
@@ -633,4 +580,3 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
 }
 
 export default CeklisObservasiAktivitas;
-
