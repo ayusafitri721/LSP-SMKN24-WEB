@@ -20,6 +20,18 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             kode: "J.620100.010.01",
             judul: "Menerapkan Perintah Eksekusi Bahasa Pemrograman Berbasis Teks, Grafik, dan Multimedia"
         },
+        unitKompetensi4: {
+            kode: "J.620100.016.01",
+            judul: "Menulis Kode Dengan Prinsip Sesuai Guidelines dan Best Practices"
+        },
+        unitKompetensi5: {
+            kode: "J.620100.017.02",
+            judul: "Mengimplementasikan Pemrograman Terstruktur"
+        },
+        unitKompetensi6: {
+            kode: "J.620100.023.02",
+            judul: "Membuat Dokumen Kode Program"
+        },
         aktivitas: [
             {
                 no: 1,
@@ -39,7 +51,54 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                     "Mengimplementasikan struktur data sesuai dengan bahasa pemrograman yang akan dipergunakan.",
                     "Menyatakan akses terhadap data dalam algoritma yang efisien sesuai bahasa pemrograman yang akan dipakai.",
                     "Efisien sesuai bahasa pemrograman yang akan dipakai. "
-
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            }
+        ],
+        aktivitas6: [
+            {
+                no: 1,
+                elemen: "Mengidentifikasi Model dokumentasi kode program",
+                kriteria: [
+                    "Mengidentifikasi parameter untuk dokumentasi setiap kelas",
+                    "Mengidentifikasi cara kerja Program",
+                    "Memberikan komentar setiap baris kode tersendiri, data, fungsi, dan lain lain-lain"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            },
+            {
+                no: 2,
+                elemen: "Membuat dokumentasi modul program",
+                kriteria: [
+                    "Membuat dokumentasi modul untuk keperluan program untuk penerbitan dokumentasi",
+                    "Menggunakan metode dokumentasi untuk cercabang kode program",
+                    "Membuat dokumentasi fungsi Program dan parameter dengan menggunakan notasi standar"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            },
+            {
+                no: 3,
+                elemen: "Membuat dokumentasi rancang prosedur dan membuat dokumentasi",
+                kriteria: [
+                    "Membuat dokumentasi sesuai parameter kode program",
+                    "Membuat dokumen sesuai cercabang kode program"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            },
+            {
+                no: 4,
+                elemen: "Men-generate dokumentasi",
+                kriteria: [
+                    "Generate dokumentasi",
+                    "Kesesuaian Generate dokumentasi"
                 ],
                 standar: "SKKNI",
                 pencapaian: { ya: false, tidak: false },
@@ -111,6 +170,104 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 kriteria: [
                     "Mengeksekusi Source code sesuai skenario yang direncanakan.",
                     "Mengidentifikasi sumber permasalahan Jika eksekusi source code gagal/tidak berhasil"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            }
+        ],
+        aktivitas4: [
+            {
+                no: 1,
+                elemen: "Menerapkan coding guidelines dan best practices dalam penulisan program (kode sumber)",
+                kriteria: [
+                    "Menuliskan kode sumber mengikuti coding-guidelines dan best practices.",
+                    "Membuat struktur program yang sesuai dengan konsep paradigmanya",
+                    "Menangani Galat/Error"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            },
+            {
+                no: 2,
+                elemen: "Menggunakan ukuran performansi dalam menuliskan kode sumber",
+                kriteria: [
+                    "Menghitung efisiensi penggunaan resources oleh kode",
+                    "Selalu Mengimplementasi kemudahan interaksi sesuai standar yang berlaku"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            }
+        ],
+        aktivitas5: [
+            {
+                no: 1,
+                elemen: "Menggunakan tipe data dan variabel program",
+                kriteria: [
+                    "Menentukan tipe data yang tepat sesuai standar",
+                    "Menggunakan variabel/konstanta yang disusun sesuai standar",
+                    "Menggunakan struktur kontrol program yang disusun sesuai standar"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            },
+            {
+                no: 2,
+                elemen: "Membuat program sederhana",
+                kriteria: [
+                    "Membuat Program baca tulis untuk memasukkan data dari keyboard dan menampilkan ke layar monitor termasuk variasinya sesuai standar masukan/keluaran",
+                    "Menggunakan Struktur kontrol percabangan dan pengulangan dalam membuat program"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            },
+            {
+                no: 3,
+                elemen: "Membuat program menggunakan prosedur dan fungsi",
+                kriteria: [
+                    "Membuat Program dengan menggunakan prosedur sesuai aturan pembuatan program",
+                    "Membuat Program dengan menggunakan fungsi sesuai aturan pembuatan program",
+                    "Membuat Program dengan menggunakan prosedur dan fungsi secara bersamaan sesuai standar",
+                    "Membentuk Keterangan untuk setiap prosedur dan fungsi"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            },
+            {
+                no: 4,
+                elemen: "Membuat program dengan menggunakan array",
+                kriteria: [
+                    "Menentukan Dimensi array",
+                    "Mendeklarasikan Tipe data array",
+                    "Menggunakan Tipe indeks array",
+                    "Menggunakan Pengurutan array"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            },
+            {
+                no: 5,
+                elemen: "Membuat program untuk akses file",
+                kriteria: [
+                    "Membuat Program untuk menulis data dalam media penyimpan",
+                    "Membuat Program untuk membaca data dari media penyimpan"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            },
+            {
+                no: 6,
+                elemen: "Mengkompilasi program",
+                kriteria: [
+                    "Mengoreksi kesalahan program",
+                    "Membebaskan Kesalahan syntax dalam program"
                 ],
                 standar: "SKKNI",
                 pencapaian: { ya: false, tidak: false },
@@ -208,6 +365,9 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                             {sectionName === 'aktivitas' && formData.unitKompetensi.kode}
                             {sectionName === 'aktivitas2' && formData.unitKompetensi2.kode}
                             {sectionName === 'aktivitas3' && formData.unitKompetensi3.kode}
+                            {sectionName === 'aktivitas4' && formData.unitKompetensi4.kode}
+                            {sectionName === 'aktivitas5' && formData.unitKompetensi5.kode}
+                            {sectionName === 'aktivitas6' && formData.unitKompetensi6.kode}
                         </td>
                     </tr>
                     <tr>
@@ -217,6 +377,9 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                             {sectionName === 'aktivitas' && formData.unitKompetensi.judul}
                             {sectionName === 'aktivitas2' && formData.unitKompetensi2.judul}
                             {sectionName === 'aktivitas3' && formData.unitKompetensi3.judul}
+                            {sectionName === 'aktivitas4' && formData.unitKompetensi4.judul}
+                            {sectionName === 'aktivitas5' && formData.unitKompetensi5.judul}
+                            {sectionName === 'aktivitas6' && formData.unitKompetensi6.judul}
                         </td>
                     </tr>
                 </tbody>
@@ -255,17 +418,17 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                     {aktivitasData.map((aktivitas, index) => (
                         <React.Fragment key={index}>
                             <tr>
-                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.length}>
+                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.filter(k => k.trim() !== "").length}>
                                     {aktivitas.no}
                                 </td>
-                                <td style={cellStyle} rowSpan={aktivitas.kriteria.length}>
+                                <td style={cellStyle} rowSpan={aktivitas.kriteria.filter(k => k.trim() !== "").length}>
                                     {aktivitas.elemen}
                                 </td>
                                 <td style={cellStyle}>{aktivitas.kriteria[0]}</td>
-                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.length}>
+                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.filter(k => k.trim() !== "").length}>
                                     {aktivitas.standar}
                                 </td>
-                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.length}>
+                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.filter(k => k.trim() !== "").length}>
                                     <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center" }}>
                                         <input
                                             type="radio"
@@ -281,7 +444,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                                         />
                                     </div>
                                 </td>
-                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.length}>
+                                <td style={{ ...cellStyle, textAlign: "center" }} rowSpan={aktivitas.kriteria.filter(k => k.trim() !== "").length}>
                                     <input
                                         type="text"
                                         value={aktivitas.penilaianLanjut}
@@ -297,7 +460,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                                     />
                                 </td>
                             </tr>
-                            {aktivitas.kriteria.slice(1).map((kriteria, kriteriaIndex) => (
+                            {aktivitas.kriteria.slice(1).filter(k => k.trim() !== "").map((kriteria, kriteriaIndex) => (
                                 <tr key={kriteriaIndex}>
                                     <td style={cellStyle}>{kriteria}</td>
                                 </tr>
@@ -318,6 +481,184 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 fontFamily: "Arial, sans-serif",
             }}
         >
+            {/* Nav Tabs */}
+            <div style={{ marginBottom: "20px" }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        backgroundColor: '#ffffff',
+                        borderRadius: '8px',
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                        padding: '4px',
+                        alignItems: 'center'
+                    }}
+                >
+                    {/* Back Arrow */}
+                    <button
+                        onClick={onBack}
+                        style={{
+                            padding: '8px',
+                            fontSize: '16px',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            borderRadius: '8px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            margin: '4px'
+                        }}
+                    >
+                        ←
+                    </button>
+                    
+                    <button
+                        onClick={() => onNavigate && onNavigate("list-muk")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            borderRadius: '8px',
+                            flexShrink: 0,
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.AK.02
+                    </button>
+                    <button
+                        onClick={() => onNavigate && onNavigate("listmuk/AK-03/UmpanBalik")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            borderRadius: '8px',
+                            flexShrink: '0',
+                            minWidth: 'fit-content'
+                        }}  
+                    >
+                        FR.AK.03
+                    </button>
+                    <button
+                        onClick={() => onNavigate && onNavigate("listmuk/AK-04/BandingkanAsesmen")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            borderRadius: '8px',
+                            flexShrink: '0',
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.AK.04
+                    </button>
+                    <button
+                        onClick={() => onNavigate && onNavigate("listmuk/AK-05/LaporanAsesment")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            borderRadius: '8px',
+                            flexShrink: 0,
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.AK.05
+                    </button>
+                    <button
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: '#ff6b35',
+                            color: 'white',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            flexShrink: '0',
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.IA.01
+                    </button>
+                    <button
+                        onClick={() => onNavigate && onNavigate("listmuk/ia02")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            borderRadius: '8px',
+                            flexShrink: '0',
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.IA.02
+                    </button>
+                    <button
+                        onClick={() => onNavigate && onNavigate("listmuk/ia05b")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            borderRadius: '8px',
+                            flexShrink: '0',
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.IA.05.B
+                    </button>
+                    <button
+                        onClick={() => onNavigate && onNavigate("listmuk/ia05c")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            borderRadius: '8px',
+                            flexShrink: '0',
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.IA.05.C
+                    </button>
+                </div>
+            </div>
+
             {/* Header */}
             <h2 style={{
                 textAlign: "center",
@@ -503,17 +844,23 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             {/* Unit Kompetensi 3 Assessment */}
             {renderAssessmentTable(formData.aktivitas3, 'aktivitas3', 'Unit Kompetensi 3')}
 
-            {/* Navigation Buttons */}
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginTop: "20px",
-                }}
-            >
+            {/* Unit Kompetensi 4 Assessment */}
+            {renderAssessmentTable(formData.aktivitas4, 'aktivitas4', 'Unit Kompetensi 4')}
+
+            {/* Unit Kompetensi 5 Assessment */}
+            {renderAssessmentTable(formData.aktivitas5, 'aktivitas5', 'Unit Kompetensi 5')}
+
+            {/* Unit Kompetensi 6 Assessment */}
+            {renderAssessmentTable(formData.aktivitas6, 'aktivitas6', 'Unit Kompetensi 6')}
+
+            {/* Action Buttons */}
+            <div style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "12px",
+                marginTop: "20px",
+            }}>
                 <button
-                    onClick={() => onNavigate && onNavigate('FR.AK.03')}
                     style={{
                         padding: "10px 20px",
                         fontSize: "14px",
@@ -525,42 +872,9 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                         cursor: "pointer",
                     }}
                 >
-                    ← Sebelumnya
+                    Batal
                 </button>
-
-                <div style={{ display: "flex", gap: "12px" }}>
-                    <button
-                        style={{
-                            padding: "10px 20px",
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            border: "2px solid #ff8c42",
-                            backgroundColor: "white",
-                            color: "#ff8c42",
-                            borderRadius: "8px",
-                            cursor: "pointer",
-                        }}
-                    >
-                        Batal
-                    </button>
-                    <button
-                        style={{
-                            padding: "10px 20px",
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            border: "none",
-                            backgroundColor: "#ff8c42",
-                            color: "white",
-                            borderRadius: "8px",
-                            cursor: "pointer",
-                        }}
-                    >
-                        Simpan
-                    </button>
-                </div>
-
                 <button
-                    onClick={() => onNavigate && onNavigate('FR.AK.05')}
                     style={{
                         padding: "10px 20px",
                         fontSize: "14px",
@@ -572,9 +886,10 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                         cursor: "pointer",
                     }}
                 >
-                    Selanjutnya →
+                    Simpan
                 </button>
             </div>
+
         </div>
     );
 }
