@@ -512,464 +512,701 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
     );
 
     return (
-        <div
+      <div
+        style={{
+          backgroundColor: "#f5f5f5",
+          padding: "20px",
+          minHeight: "100vh",
+          fontFamily: "Arial, sans-serif",
+        }}
+      >
+        {/* Nav Tabs */}
+        <div style={{ marginBottom: "20px" }}>
+          <div
             style={{
-                backgroundColor: "#f5f5f5",
-                padding: "20px",
-                minHeight: "100vh",
-                fontFamily: "Arial, sans-serif",
+              display: "flex",
+              backgroundColor: "#ffffff",
+              borderRadius: "8px",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+              padding: "4px",
+              alignItems: "center",
             }}
-        >
-            {/* Nav Tabs */}
-            <div style={{ marginBottom: "20px" }}>
-                <div
-                    style={{
-                        display: 'flex',
-                        backgroundColor: '#ffffff',
-                        borderRadius: '8px',
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                        padding: '4px',
-                        alignItems: 'center'
-                    }}
-                >
-                    {/* Back Arrow */}
-                    <button
-                        onClick={onBack}
-                        style={{
-                            padding: '8px',
-                            fontSize: '16px',
-                            border: 'none',
-                            backgroundColor: 'transparent',
-                            color: '#666',
-                            cursor: 'pointer',
-                            borderRadius: '8px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            margin: '4px'
-                        }}
-                    >
-                        ←
-                    </button>
-                    
-                    <button
-                        onClick={() => onNavigate && onNavigate("list-muk")}
-                        style={{
-                            padding: '12px 20px',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            border: 'none',
-                            backgroundColor: 'transparent',
-                            color: '#666',
-                            cursor: 'pointer',
-                            margin: '4px',
-                            borderRadius: '8px',
-                            flexShrink: 0,
-                            minWidth: 'fit-content'
-                        }}
-                    >
-                        FR.AK.02
-                    </button>
-                    <button
-                        onClick={() => onNavigate && onNavigate("listmuk/AK-03/UmpanBalik")}
-                        style={{
-                            padding: '12px 20px',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            border: 'none',
-                            backgroundColor: 'transparent',
-                            color: '#666',
-                            cursor: 'pointer',
-                            margin: '4px',
-                            borderRadius: '8px',
-                            flexShrink: '0',
-                            minWidth: 'fit-content'
-                        }}  
-                    >
-                        FR.AK.03
-                    </button>
-                    <button
-                        onClick={() => onNavigate && onNavigate("listmuk/AK-04/BandingkanAsesmen")}
-                        style={{
-                            padding: '12px 20px',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            border: 'none',
-                            backgroundColor: 'transparent',
-                            color: '#666',
-                            cursor: 'pointer',
-                            margin: '4px',
-                            borderRadius: '8px',
-                            flexShrink: '0',
-                            minWidth: 'fit-content'
-                        }}
-                    >
-                        FR.AK.04
-                    </button>
-                    <button
-                        onClick={() => onNavigate && onNavigate("listmuk/AK-05/LaporanAsesment")}
-                        style={{
-                            padding: '12px 20px',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            border: 'none',
-                            backgroundColor: 'transparent',
-                            color: '#666',
-                            cursor: 'pointer',
-                            margin: '4px',
-                            borderRadius: '8px',
-                            flexShrink: 0,
-                            minWidth: 'fit-content'
-                        }}
-                    >
-                        FR.AK.05
-                    </button>
-                    <button
-                        style={{
-                            padding: '12px 20px',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            border: 'none',
-                            backgroundColor: '#ff6b35',
-                            color: 'white',
-                            borderRadius: '8px',
-                            cursor: 'pointer',
-                            margin: '4px',
-                            flexShrink: '0',
-                            minWidth: 'fit-content'
-                        }}
-                    >
-                        FR.IA.01
-                    </button>
-                    <button
-                        onClick={() => onNavigate && onNavigate("listmuk/ia02")}
-                        style={{
-                            padding: '12px 20px',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            border: 'none',
-                            backgroundColor: 'transparent',
-                            color: '#666',
-                            cursor: 'pointer',
-                            margin: '4px',
-                            borderRadius: '8px',
-                            flexShrink: '0',
-                            minWidth: 'fit-content'
-                        }}
-                    >
-                        FR.IA.02
-                    </button>
-                    <button
-                        onClick={() => onNavigate && onNavigate("listmuk/ia05b")}
-                        style={{
-                            padding: '12px 20px',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            border: 'none',
-                            backgroundColor: 'transparent',
-                            color: '#666',
-                            cursor: 'pointer',
-                            margin: '4px',
-                            borderRadius: '8px',
-                            flexShrink: '0',
-                            minWidth: 'fit-content'
-                        }}
-                    >
-                        FR.IA.05.B
-                    </button>
-                    <button
-                        onClick={() => onNavigate && onNavigate("listmuk/ia05c")}
-                        style={{
-                            padding: '12px 20px',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            border: 'none',
-                            backgroundColor: 'transparent',
-                            color: '#666',
-                            cursor: 'pointer',
-                            margin: '4px',
-                            borderRadius: '8px',
-                            flexShrink: '0',
-                            minWidth: 'fit-content'
-                        }}
-                    >
-                        FR.IA.05.C
-                    </button>
-                </div>
-            </div>
-
-            {/* Header */}
-            <h2 style={{
-                textAlign: "center",
-                color: "white",
-                backgroundColor: "#2c3e50",
-                padding: "10px",
-                margin: "0 0 20px 0",
-                fontSize: "14px",
-                fontWeight: "bold"
-            }}>
-                FR.IA.01. CL - CEKLIS OBSERVASI AKTIVITAS DI TEMPAT KERJA ATAU TEMPAT KERJA SIMULASI
-            </h2>
-
-            {/* Info Table */}
-            <table style={tableStyle}>
-                <tbody>
-                    <tr>
-                        <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "200px" }}>
-                            Skema Sertifikasi (KKN/Okupasi/Klaster)
-                        </td>
-                        <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "80px" }}>Judul</td>
-                        <td style={cellStyle}>{formData.skemaKualifikasi}</td>
-                    </tr>
-                    <tr>
-                        <td style={{ ...cellStyle, backgroundColor: "#2c3e50", color: "white", fontWeight: "600" }}></td>
-                        <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>Nomor</td>
-                        <td style={cellStyle}>{formData.nomorSkema}</td>
-                    </tr>
-                    <tr>
-                        <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>TUK</td>
-                        <td style={{ ...cellStyle, backgroundColor: "#2c3e50" }}></td>
-                        <td style={cellStyle}>{formData.tuk}</td>
-                    </tr>
-                    <tr>
-                        <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>Nama Asesor</td>
-                        <td style={{ ...cellStyle, backgroundColor: "#2c3e50" }}></td>
-                        <td style={cellStyle}>
-                            <input
-                                type="text"
-                                value={formData.namaAsesor}
-                                onChange={(e) => handleInputChange("namaAsesor", e.target.value)}
-                                style={{ border: "none", width: "100%", backgroundColor: "transparent" }}
-                            />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>Nama Asesi</td>
-                        <td style={{ ...cellStyle, backgroundColor: "#2c3e50" }}></td>
-                        <td style={cellStyle}>
-                            <input
-                                type="text"
-                                value={formData.namaAsesi}
-                                onChange={(e) => handleInputChange("namaAsesi", e.target.value)}
-                                style={{ border: "none", width: "100%", backgroundColor: "transparent" }}
-                            />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>Tanggal</td>
-                        <td style={{ ...cellStyle, backgroundColor: "#2c3e50" }}></td>
-                        <td style={cellStyle}>
-                            <input
-                                type="date"
-                                value={formData.tanggal}
-                                onChange={(e) => handleInputChange("tanggal", e.target.value)}
-                                style={{ border: "none", width: "100%", backgroundColor: "transparent" }}
-                            />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            {/* Note */}
-            <p style={{ fontSize: "12px", marginBottom: "20px" }}>*Coret yang tidak perlu</p>
-
-            {/* Panduan */}
-            <div style={{
-                backgroundColor: "#2c3e50",
-                color: "white",
-                padding: "15px",
-                marginBottom: "20px"
-            }}>
-                <h3 style={{ margin: "0 0 15px 0", fontSize: "16px" }}>PANDUAN BAGI ASESOR</h3>
-                <ul style={{ margin: 0, paddingLeft: "20px", fontSize: "12px" }}>
-                    <li style={{ marginBottom: "8px" }}>Lengkapi nama unit kompetensi, elemen, dan kriteria unjuk kerja sesuai kolom dalam tabel.</li>
-                    <li style={{ marginBottom: "8px" }}>Isilah standar industri atau tempat kerja</li>
-                    <li style={{ marginBottom: "8px" }}>Beri tanda centang (√) pada kolom "YA" jika Anda yakin asesi dapat melakukan/mendemonstrasikan tugas sesuai KUK, atau centang (√) pada kolom "Tidak" bila sebaliknya.</li>
-                    <li style={{ marginBottom: "8px" }}>Penilaian Lanjut diisi bila hasil belum dapat disimpulkan, untuk itu gunakan metode lain sehingga keputusan dapat dibuat.</li>
-                    <li>Isilah kolom KUK sesuai dengan Unit Kompetensi/ SKKNI</li>
-                </ul>
-            </div>
-
-            {/* Unit Kompetensi Table */}
-            <table style={tableStyle}>
-                <tbody>
-                    <tr>
-                        <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50", width: "150px" }}>
-                            Kelompok Pekerjaan 1
-                        </td>
-                        <td style={{ ...subHeaderStyle, width: "50px" }}>No.</td>
-                        <td style={{ ...subHeaderStyle, width: "150px" }}>Kode Unit</td>
-                        <td style={{ ...subHeaderStyle }}>Judul Unit</td>
-                    </tr>
-                    <tr>
-                        <td style={{ ...cellStyle, backgroundColor: "#2c3e50", color: "white" }}></td>
-                        <td style={{ ...cellStyle, textAlign: "center" }}>1.</td>
-                        <td style={cellStyle}>{formData.unitKompetensi.kode}</td>
-                        <td style={cellStyle}>{formData.unitKompetensi.judul}</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            {/* Unit Kompetensi 1 Assessment */}
-            {renderAssessmentTable(formData.aktivitas, 'aktivitas', 'Unit Kompetensi 1')}
-
-            {/* Umpan Balik after Unit Kompetensi 1 */}
-            <table style={tableStyle}>
-                <tbody>
-                    <tr>
-                        <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>
-                            Umpan Balik untuk asesi:
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style={{ ...cellStyle, height: "100px" }}>
-                            <textarea
-                                value={formData.umpanBalik}
-                                onChange={(e) => handleInputChange("umpanBalik", e.target.value)}
-                                style={{
-                                    width: "100%",
-                                    height: "80px",
-                                    border: "none",
-                                    resize: "none",
-                                    backgroundColor: "transparent"
-                                }}
-                                placeholder="Masukkan umpan balik untuk asesi..."
-                            />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            {/* Kelompok Pekerjaan 2 */}
-            <table style={{ borderCollapse: "collapse", width: "100%", marginTop: "20px" }}>
-                <thead>
-                    <tr>
-                        <th style={{ border: "1px solid black", padding: "8px", width: "20%", backgroundColor: "#2c3e50", color: "white" }}></th>
-                        <th style={{ border: "1px solid black", padding: "8px", width: "5%", backgroundColor: "#2c3e50", color: "white" }}>No.</th>
-                        <th style={{ border: "1px solid black", padding: "8px", width: "25%", backgroundColor: "#2c3e50", color: "white" }}>Kode Unit</th>
-                        <th style={{ border: "1px solid black", padding: "8px", backgroundColor: "#2c3e50", color: "white" }}>Judul Unit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {formData.kelompokPekerjaan2.map((item, index) => (
-                        <tr key={index}>
-                            {index === 0 && (
-                                <td
-                                    rowSpan={formData.kelompokPekerjaan2.length}
-                                    style={{
-                                        border: "1px solid black",
-                                        padding: "8px",
-                                        textAlign: "center",
-                                        fontWeight: "bold",
-                                        fontSize: "12px",
-                                        backgroundColor: "#2c3e50",
-                                        color: "white"
-                                    }}
-                                >
-                                    Kelompok <br /> Pekerjaan 2
-                                </td>
-                            )}
-                            <td style={{ border: "1px solid black", padding: "8px", textAlign: "center", fontSize: "12px" }}>{item.no}</td>
-                            <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>{item.kode}</td>
-                            <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>{item.judul}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            {/* Unit Kompetensi 2 Assessment */}
-            {renderAssessmentTable(formData.aktivitas2, 'aktivitas2', 'Unit Kompetensi 2')}
-
-            {/* Unit Kompetensi 3 Assessment */}
-            {renderAssessmentTable(formData.aktivitas3, 'aktivitas3', 'Unit Kompetensi 3')}
-
-            {/* Unit Kompetensi 4 Assessment */}
-            {renderAssessmentTable(formData.aktivitas4, 'aktivitas4', 'Unit Kompetensi 4')}
-
-            {/* Unit Kompetensi 5 Assessment */}
-            {renderAssessmentTable(formData.aktivitas5, 'aktivitas5', 'Unit Kompetensi 5')}
-
-            {/* Unit Kompetensi 6 Assessment */}
-            {renderAssessmentTable(formData.aktivitas6, 'aktivitas6', 'Unit Kompetensi 6')}
-
-            {/* Kelompok Pekerjaan 3 */}
-            <table style={{ borderCollapse: "collapse", width: "100%", marginTop: "20px" }}>
-                <thead>
-                    <tr>
-                        <th style={{ border: "1px solid black", padding: "8px", width: "20%", backgroundColor: "#2c3e50", color: "white" }}></th>
-                        <th style={{ border: "1px solid black", padding: "8px", width: "5%", backgroundColor: "#2c3e50", color: "white" }}>No.</th>
-                        <th style={{ border: "1px solid black", padding: "8px", width: "25%", backgroundColor: "#2c3e50", color: "white" }}>Kode Unit</th>
-                        <th style={{ border: "1px solid black", padding: "8px", backgroundColor: "#2c3e50", color: "white" }}>Judul Unit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {formData.kelompokPekerjaan3.map((item, index) => (
-                        <tr key={index}>
-                            {index === 0 && (
-                                <td
-                                    rowSpan={formData.kelompokPekerjaan3.length}
-                                    style={{
-                                        border: "1px solid black",
-                                        padding: "8px",
-                                        textAlign: "center",
-                                        fontWeight: "bold",
-                                        fontSize: "12px",
-                                        backgroundColor: "#2c3e50",
-                                        color: "white"
-                                    }}
-                                >
-                                    Kelompok <br /> Pekerjaan 3
-                                </td>
-                            )}
-                            <td style={{ border: "1px solid black", padding: "8px", textAlign: "center", fontSize: "12px" }}>{item.no}</td>
-                            <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>{item.kode}</td>
-                            <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>{item.judul}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            {/* Unit Kompetensi 7 Assessment */}
-            {renderAssessmentTable(formData.aktivitas7, 'aktivitas7', 'Unit Kompetensi 7')}
-
-            {/* Action Buttons */}
-            <div style={{
+          >
+            {/* Back Arrow */}
+            <button
+              onClick={onBack}
+              style={{
+                padding: "8px",
+                fontSize: "16px",
+                border: "none",
+                backgroundColor: "transparent",
+                color: "#666",
+                cursor: "pointer",
+                borderRadius: "8px",
                 display: "flex",
+                alignItems: "center",
                 justifyContent: "center",
-                gap: "12px",
-                marginTop: "20px",
-            }}>
-                <button
-                    style={{
-                        padding: "10px 20px",
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        border: "2px solid #ff8c42",
-                        backgroundColor: "white",
-                        color: "#ff8c42",
-                        borderRadius: "8px",
-                        cursor: "pointer",
-                    }}
-                >
-                    Batal
-                </button>
-                <button
-                    style={{
-                        padding: "10px 20px",
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        border: "none",
-                        backgroundColor: "#ff8c42",
-                        color: "white",
-                        borderRadius: "8px",
-                        cursor: "pointer",
-                    }}
-                >
-                    Simpan
-                </button>
-            </div>
+                margin: "4px",
+              }}
+            >
+              ←
+            </button>
 
+            <button
+              onClick={() => onNavigate && onNavigate("list-muk")}
+              style={{
+                padding: "12px 20px",
+                fontSize: "14px",
+                fontWeight: "600",
+                border: "none",
+                backgroundColor: "transparent",
+                color: "#666",
+                cursor: "pointer",
+                margin: "4px",
+                borderRadius: "8px",
+                flexShrink: 0,
+                minWidth: "fit-content",
+              }}
+            >
+              FR.AK.02
+            </button>
+            <button
+              onClick={() =>
+                onNavigate && onNavigate("listmuk/AK-03/UmpanBalik")
+              }
+              style={{
+                padding: "12px 20px",
+                fontSize: "14px",
+                fontWeight: "600",
+                border: "none",
+                backgroundColor: "transparent",
+                color: "#666",
+                cursor: "pointer",
+                margin: "4px",
+                borderRadius: "8px",
+                flexShrink: "0",
+                minWidth: "fit-content",
+              }}
+            >
+              FR.AK.03
+            </button>
+            <button
+              onClick={() =>
+                onNavigate && onNavigate("listmuk/AK-04/BandingkanAsesmen")
+              }
+              style={{
+                padding: "12px 20px",
+                fontSize: "14px",
+                fontWeight: "600",
+                border: "none",
+                backgroundColor: "transparent",
+                color: "#666",
+                cursor: "pointer",
+                margin: "4px",
+                borderRadius: "8px",
+                flexShrink: "0",
+                minWidth: "fit-content",
+              }}
+            >
+              FR.AK.04
+            </button>
+            <button
+              onClick={() =>
+                onNavigate && onNavigate("listmuk/AK-05/LaporanAsesment")
+              }
+              style={{
+                padding: "12px 20px",
+                fontSize: "14px",
+                fontWeight: "600",
+                border: "none",
+                backgroundColor: "transparent",
+                color: "#666",
+                cursor: "pointer",
+                margin: "4px",
+                borderRadius: "8px",
+                flexShrink: 0,
+                minWidth: "fit-content",
+              }}
+            >
+              FR.AK.05
+            </button>
+            <button
+              style={{
+                padding: "12px 20px",
+                fontSize: "14px",
+                fontWeight: "600",
+                border: "none",
+                backgroundColor: "#ff6b35",
+                color: "white",
+                borderRadius: "8px",
+                cursor: "pointer",
+                margin: "4px",
+                flexShrink: "0",
+                minWidth: "fit-content",
+              }}
+            >
+              FR.IA.01
+            </button>
+            <button
+              onClick={() => onNavigate && onNavigate("listmuk/ia02")}
+              style={{
+                padding: "12px 20px",
+                fontSize: "14px",
+                fontWeight: "600",
+                border: "none",
+                backgroundColor: "transparent",
+                color: "#666",
+                cursor: "pointer",
+                margin: "4px",
+                borderRadius: "8px",
+                flexShrink: "0",
+                minWidth: "fit-content",
+              }}
+            >
+              FR.IA.02
+            </button>
+            <button
+              onClick={() =>
+                onNavigate && onNavigate("listmuk/IA-05C/LembarJawabanPG")
+              }
+              style={{
+                padding: "12px 20px",
+                fontSize: "14px",
+                fontWeight: "600",
+                border: "none",
+                backgroundColor: "transparent",
+                color: "#666",
+                cursor: "pointer",
+                margin: "4px",
+                borderRadius: "8px",
+                flexShrink: "0",
+                minWidth: "fit-content",
+              }}
+            >
+              FR.IA.05.B
+            </button>
+          </div>
         </div>
+
+        {/* Header */}
+        <h2
+          style={{
+            textAlign: "center",
+            color: "white",
+            backgroundColor: "#2c3e50",
+            padding: "10px",
+            margin: "0 0 20px 0",
+            fontSize: "14px",
+            fontWeight: "bold",
+          }}
+        >
+          FR.IA.01. CL - CEKLIS OBSERVASI AKTIVITAS DI TEMPAT KERJA ATAU TEMPAT
+          KERJA SIMULASI
+        </h2>
+
+        {/* Info Table */}
+        <table style={tableStyle}>
+          <tbody>
+            <tr>
+              <td
+                style={{
+                  ...headerCellStyle,
+                  backgroundColor: "#2c3e50",
+                  width: "200px",
+                }}
+              >
+                Skema Sertifikasi (KKN/Okupasi/Klaster)
+              </td>
+              <td
+                style={{
+                  ...headerCellStyle,
+                  backgroundColor: "#2c3e50",
+                  width: "80px",
+                }}
+              >
+                Judul
+              </td>
+              <td style={cellStyle}>{formData.skemaKualifikasi}</td>
+            </tr>
+            <tr>
+              <td
+                style={{
+                  ...cellStyle,
+                  backgroundColor: "#2c3e50",
+                  color: "white",
+                  fontWeight: "600",
+                }}
+              ></td>
+              <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>
+                Nomor
+              </td>
+              <td style={cellStyle}>{formData.nomorSkema}</td>
+            </tr>
+            <tr>
+              <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>
+                TUK
+              </td>
+              <td style={{ ...cellStyle, backgroundColor: "#2c3e50" }}></td>
+              <td style={cellStyle}>{formData.tuk}</td>
+            </tr>
+            <tr>
+              <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>
+                Nama Asesor
+              </td>
+              <td style={{ ...cellStyle, backgroundColor: "#2c3e50" }}></td>
+              <td style={cellStyle}>
+                <input
+                  type="text"
+                  value={formData.namaAsesor}
+                  onChange={(e) =>
+                    handleInputChange("namaAsesor", e.target.value)
+                  }
+                  style={{
+                    border: "none",
+                    width: "100%",
+                    backgroundColor: "transparent",
+                  }}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>
+                Nama Asesi
+              </td>
+              <td style={{ ...cellStyle, backgroundColor: "#2c3e50" }}></td>
+              <td style={cellStyle}>
+                <input
+                  type="text"
+                  value={formData.namaAsesi}
+                  onChange={(e) =>
+                    handleInputChange("namaAsesi", e.target.value)
+                  }
+                  style={{
+                    border: "none",
+                    width: "100%",
+                    backgroundColor: "transparent",
+                  }}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>
+                Tanggal
+              </td>
+              <td style={{ ...cellStyle, backgroundColor: "#2c3e50" }}></td>
+              <td style={cellStyle}>
+                <input
+                  type="date"
+                  value={formData.tanggal}
+                  onChange={(e) => handleInputChange("tanggal", e.target.value)}
+                  style={{
+                    border: "none",
+                    width: "100%",
+                    backgroundColor: "transparent",
+                  }}
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        {/* Note */}
+        <p style={{ fontSize: "12px", marginBottom: "20px" }}>
+          *Coret yang tidak perlu
+        </p>
+
+        {/* Panduan */}
+        <div
+          style={{
+            backgroundColor: "#2c3e50",
+            color: "white",
+            padding: "15px",
+            marginBottom: "20px",
+          }}
+        >
+          <h3 style={{ margin: "0 0 15px 0", fontSize: "16px" }}>
+            PANDUAN BAGI ASESOR
+          </h3>
+          <ul style={{ margin: 0, paddingLeft: "20px", fontSize: "12px" }}>
+            <li style={{ marginBottom: "8px" }}>
+              Lengkapi nama unit kompetensi, elemen, dan kriteria unjuk kerja
+              sesuai kolom dalam tabel.
+            </li>
+            <li style={{ marginBottom: "8px" }}>
+              Isilah standar industri atau tempat kerja
+            </li>
+            <li style={{ marginBottom: "8px" }}>
+              Beri tanda centang (√) pada kolom "YA" jika Anda yakin asesi dapat
+              melakukan/mendemonstrasikan tugas sesuai KUK, atau centang (√)
+              pada kolom "Tidak" bila sebaliknya.
+            </li>
+            <li style={{ marginBottom: "8px" }}>
+              Penilaian Lanjut diisi bila hasil belum dapat disimpulkan, untuk
+              itu gunakan metode lain sehingga keputusan dapat dibuat.
+            </li>
+            <li>Isilah kolom KUK sesuai dengan Unit Kompetensi/ SKKNI</li>
+          </ul>
+        </div>
+
+        {/* Unit Kompetensi Table */}
+        <table style={tableStyle}>
+          <tbody>
+            <tr>
+              <td
+                style={{
+                  ...headerCellStyle,
+                  backgroundColor: "#2c3e50",
+                  width: "150px",
+                }}
+              >
+                Kelompok Pekerjaan 1
+              </td>
+              <td style={{ ...subHeaderStyle, width: "50px" }}>No.</td>
+              <td style={{ ...subHeaderStyle, width: "150px" }}>Kode Unit</td>
+              <td style={{ ...subHeaderStyle }}>Judul Unit</td>
+            </tr>
+            <tr>
+              <td
+                style={{
+                  ...cellStyle,
+                  backgroundColor: "#2c3e50",
+                  color: "white",
+                }}
+              ></td>
+              <td style={{ ...cellStyle, textAlign: "center" }}>1.</td>
+              <td style={cellStyle}>{formData.unitKompetensi.kode}</td>
+              <td style={cellStyle}>{formData.unitKompetensi.judul}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        {/* Unit Kompetensi 1 Assessment */}
+        {renderAssessmentTable(
+          formData.aktivitas,
+          "aktivitas",
+          "Unit Kompetensi 1"
+        )}
+
+        {/* Umpan Balik after Unit Kompetensi 1 */}
+        <table style={tableStyle}>
+          <tbody>
+            <tr>
+              <td style={{ ...headerCellStyle, backgroundColor: "#2c3e50" }}>
+                Umpan Balik untuk asesi:
+              </td>
+            </tr>
+            <tr>
+              <td style={{ ...cellStyle, height: "100px" }}>
+                <textarea
+                  value={formData.umpanBalik}
+                  onChange={(e) =>
+                    handleInputChange("umpanBalik", e.target.value)
+                  }
+                  style={{
+                    width: "100%",
+                    height: "80px",
+                    border: "none",
+                    resize: "none",
+                    backgroundColor: "transparent",
+                  }}
+                  placeholder="Masukkan umpan balik untuk asesi..."
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        {/* Kelompok Pekerjaan 2 */}
+        <table
+          style={{
+            borderCollapse: "collapse",
+            width: "100%",
+            marginTop: "20px",
+          }}
+        >
+          <thead>
+            <tr>
+              <th
+                style={{
+                  border: "1px solid black",
+                  padding: "8px",
+                  width: "20%",
+                  backgroundColor: "#2c3e50",
+                  color: "white",
+                }}
+              ></th>
+              <th
+                style={{
+                  border: "1px solid black",
+                  padding: "8px",
+                  width: "5%",
+                  backgroundColor: "#2c3e50",
+                  color: "white",
+                }}
+              >
+                No.
+              </th>
+              <th
+                style={{
+                  border: "1px solid black",
+                  padding: "8px",
+                  width: "25%",
+                  backgroundColor: "#2c3e50",
+                  color: "white",
+                }}
+              >
+                Kode Unit
+              </th>
+              <th
+                style={{
+                  border: "1px solid black",
+                  padding: "8px",
+                  backgroundColor: "#2c3e50",
+                  color: "white",
+                }}
+              >
+                Judul Unit
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {formData.kelompokPekerjaan2.map((item, index) => (
+              <tr key={index}>
+                {index === 0 && (
+                  <td
+                    rowSpan={formData.kelompokPekerjaan2.length}
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      textAlign: "center",
+                      fontWeight: "bold",
+                      fontSize: "12px",
+                      backgroundColor: "#2c3e50",
+                      color: "white",
+                    }}
+                  >
+                    Kelompok <br /> Pekerjaan 2
+                  </td>
+                )}
+                <td
+                  style={{
+                    border: "1px solid black",
+                    padding: "8px",
+                    textAlign: "center",
+                    fontSize: "12px",
+                  }}
+                >
+                  {item.no}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid black",
+                    padding: "8px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {item.kode}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid black",
+                    padding: "8px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {item.judul}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Unit Kompetensi 2 Assessment */}
+        {renderAssessmentTable(
+          formData.aktivitas2,
+          "aktivitas2",
+          "Unit Kompetensi 2"
+        )}
+
+        {/* Unit Kompetensi 3 Assessment */}
+        {renderAssessmentTable(
+          formData.aktivitas3,
+          "aktivitas3",
+          "Unit Kompetensi 3"
+        )}
+
+        {/* Unit Kompetensi 4 Assessment */}
+        {renderAssessmentTable(
+          formData.aktivitas4,
+          "aktivitas4",
+          "Unit Kompetensi 4"
+        )}
+
+        {/* Unit Kompetensi 5 Assessment */}
+        {renderAssessmentTable(
+          formData.aktivitas5,
+          "aktivitas5",
+          "Unit Kompetensi 5"
+        )}
+
+        {/* Unit Kompetensi 6 Assessment */}
+        {renderAssessmentTable(
+          formData.aktivitas6,
+          "aktivitas6",
+          "Unit Kompetensi 6"
+        )}
+
+        {/* Kelompok Pekerjaan 3 */}
+        <table
+          style={{
+            borderCollapse: "collapse",
+            width: "100%",
+            marginTop: "20px",
+          }}
+        >
+          <thead>
+            <tr>
+              <th
+                style={{
+                  border: "1px solid black",
+                  padding: "8px",
+                  width: "20%",
+                  backgroundColor: "#2c3e50",
+                  color: "white",
+                }}
+              ></th>
+              <th
+                style={{
+                  border: "1px solid black",
+                  padding: "8px",
+                  width: "5%",
+                  backgroundColor: "#2c3e50",
+                  color: "white",
+                }}
+              >
+                No.
+              </th>
+              <th
+                style={{
+                  border: "1px solid black",
+                  padding: "8px",
+                  width: "25%",
+                  backgroundColor: "#2c3e50",
+                  color: "white",
+                }}
+              >
+                Kode Unit
+              </th>
+              <th
+                style={{
+                  border: "1px solid black",
+                  padding: "8px",
+                  backgroundColor: "#2c3e50",
+                  color: "white",
+                }}
+              >
+                Judul Unit
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {formData.kelompokPekerjaan3.map((item, index) => (
+              <tr key={index}>
+                {index === 0 && (
+                  <td
+                    rowSpan={formData.kelompokPekerjaan3.length}
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      textAlign: "center",
+                      fontWeight: "bold",
+                      fontSize: "12px",
+                      backgroundColor: "#2c3e50",
+                      color: "white",
+                    }}
+                  >
+                    Kelompok <br /> Pekerjaan 3
+                  </td>
+                )}
+                <td
+                  style={{
+                    border: "1px solid black",
+                    padding: "8px",
+                    textAlign: "center",
+                    fontSize: "12px",
+                  }}
+                >
+                  {item.no}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid black",
+                    padding: "8px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {item.kode}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid black",
+                    padding: "8px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {item.judul}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Unit Kompetensi 7 Assessment */}
+        {renderAssessmentTable(
+          formData.aktivitas7,
+          "aktivitas7",
+          "Unit Kompetensi 7"
+        )}
+
+        {/* Action Buttons */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "12px",
+            marginTop: "20px",
+          }}
+        >
+          <button
+            style={{
+              padding: "10px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "2px solid #ff8c42",
+              backgroundColor: "white",
+              color: "#ff8c42",
+              borderRadius: "8px",
+              cursor: "pointer",
+            }}
+          >
+            Batal
+          </button>
+          <button
+            style={{
+              padding: "10px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "none",
+              backgroundColor: "#ff8c42",
+              color: "white",
+              borderRadius: "8px",
+              cursor: "pointer",
+            }}
+          >
+            Simpan
+          </button>
+        </div>
+      </div>
     );
 }
 

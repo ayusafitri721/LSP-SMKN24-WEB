@@ -236,7 +236,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
             FR.IA.02
           </button>
           <button
-            onClick={() => onNavigate && onNavigate("listmuk/ia05c")}
+            onClick={() => onNavigate && onNavigate("listmuk/IA-05C/LembarJawabanPG")}
             style={{
               padding: "12px 20px",
               fontSize: "14px",
