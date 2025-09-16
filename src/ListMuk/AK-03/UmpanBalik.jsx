@@ -258,24 +258,6 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
                 FR.IA.02
               </button>
               <button
-                onClick={() => onNavigate && onNavigate("listmuk/ia05b")}
-                style={{
-                  padding: '12px 20px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                  color: '#666',
-                  cursor: 'pointer',
-                  margin: '4px',
-                  borderRadius: '8px',
-                  flexShrink: 0,
-                  minWidth: 'fit-content'
-                }}
-              >
-                FR.IA.05.B
-              </button>
-              <button
                 onClick={() => onNavigate && onNavigate("listmuk/ia05c")}
                 style={{
                   padding: '12px 20px',
