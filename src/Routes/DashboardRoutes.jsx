@@ -34,13 +34,14 @@ import DetailJurusan from '../DetailAsesi/APL-02/DetailJurusan';
 import ApprovementAK01 from '../Detail/AK-01/ApprovementAk01';
 import LihatApprovementAK01 from '../Detail/AK-01/LihatApprovementAk01';
 import DetailJurusanAK01 from '../Detail/AK-01/DetailJurusanAk01';
-import AsesmenDiikuti from "../AsesmenDiikuti/AsesmenDiikuti"; 
+import AsesmenDiikuti from "../AsesmenDiikuti/AsesmenDiikuti";
 import Skema from '../Skema/Skema';
 import ListMuk from '../ListMuk/ListMuk';
 import BandingkanAsesmen from '../ListMuk/AK-04/BandingkanAsesmen'; // Import BandingkanAsesmen
 import UmpanBalik from '../ListMuk/AK-03/UmpanBalik';
 import AK05Form from '../ListMuk/AK-05/LaporanAsesment';
 import CeklisObservasiAktivitas from '../ListMuk/IA-01/CeklisObservasiAktivitas';
+import LembarJawabanPG from '../Detail/IA-05C/LembarJawabanPG'; // ADD: Import LembarJawabanPG
 
 const DashboardRoutes = () => {
   const navigate = useNavigate();
@@ -79,11 +80,12 @@ const DashboardRoutes = () => {
     } else {
       setEditData(null);
     }
-    
+
+    // Map page names to correct routes
     // Map page names to correct routes
     const pageMap = {
       'Asesi': 'asesi',
-      'Asesor': 'asesor', 
+      'Asesor': 'asesor',
       'Asesmen': 'asesmen',
       'Jurusan': 'jurusan',
       'Kompetensi': 'skema',
@@ -112,17 +114,18 @@ const DashboardRoutes = () => {
       'approvementak01': 'approvement/ak-01',
       'lihatapprovementak01': 'approvement/ak-01/lihat',
       'detail-jurusan-ak01': 'approvement/ak-01/detail',
-      // List MUK routes - TAMBAHAN BARU
+      // List MUK routes
       'listmuk/ak02': 'list-muk/ak-02',
-      'listmuk/AK-03/UmpanBalik': 'list-muk/ak-03/umpanbalik', 
-      'listmuk/AK-04/BandingkanAsesmen': 'list-muk/ak-04/banding-asesmen', // FIX ROUTE INI
+      'listmuk/AK-03/UmpanBalik': 'list-muk/ak-03/umpanbalik',
+      'listmuk/AK-04/BandingkanAsesmen': 'list-muk/ak-04/banding-asesmen',
       'listmuk/AK-05/LaporanAsesment': 'list-muk/ak-05/laporan-asesment',
       'listmuk/IA-01/CeklisObservasiAktivitas': 'list-muk/ia-01/ceklis-observasi-aktivitas',
       'listmuk/ia02': 'list-muk/ia-02',
       'listmuk/ia05b': 'list-muk/ia-05b',
-      'listmuk/ia05c': 'list-muk/ia-05c'
+      'listmuk/ia05c': 'list-muk/ia-05c',
+      // FIX: Tambahkan mapping yang benar untuk FR.IA.05.C
+      'listmuk/IA-05C/LembarJawabanPG': 'list-muk/ia-05c/lembar-jawaban-pg'
     };
-    
     const route = pageMap[page] || page;
     navigate(`/dashboard/${route}`);
   };
@@ -135,7 +138,7 @@ const DashboardRoutes = () => {
       }
       return;
     }
-    
+
     setActiveMenu(menuName);
     const pageMap = {
       Dashboard: '',
@@ -145,13 +148,13 @@ const DashboardRoutes = () => {
       Approvement: 'approvement/apl-02',
       Profile: 'profile',
     };
-    
+
     if (pageMap[menuName] !== undefined) {
       navigate(`/dashboard/${pageMap[menuName]}`);
     }
   };
 
-  
+
   const handleAddAsesor = (newData) => {
     navigate('/dashboard/asesor');
   };
@@ -220,13 +223,13 @@ const DashboardRoutes = () => {
     navigate('/dashboard/asesmen');
   };
 
-  
+
   const DashboardLayout = ({ children }) => (
-    <div style={{ 
-      display: 'flex', 
-      minHeight: '100vh', 
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', 
-      backgroundColor: '#f5f5f5' 
+    <div style={{
+      display: 'flex',
+      minHeight: '100vh',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      backgroundColor: '#f5f5f5'
     }}>
       <DashboardSidebar activeMenu={activeMenu} onMenuClick={handleSidebarMenuClick} />
       <div style={{ flex: 1, backgroundColor: '#fafafa', padding: '20px' }}>
@@ -254,27 +257,27 @@ const DashboardRoutes = () => {
       {/* Asesor Routes */}
       <Route path="/asesor" element={
         <DashboardLayout>
-          <Asesor 
-            onBack={handleBackToHome} 
-            onNavigate={handleNavigate} 
+          <Asesor
+            onBack={handleBackToHome}
+            onNavigate={handleNavigate}
           />
         </DashboardLayout>
       } />
       <Route path="/asesor/add" element={
-        <AddAsesor 
-          onSave={handleAddAsesor} 
-          onCancel={() => navigate('/dashboard/asesor')} 
+        <AddAsesor
+          onSave={handleAddAsesor}
+          onCancel={() => navigate('/dashboard/asesor')}
         />
       } />
       <Route path="/asesor/edit" element={
-        <EditAsesor 
-          data={editData} 
-          onSave={handleEditAsesor} 
-          onCancel={() => navigate('/dashboard/asesor')} 
+        <EditAsesor
+          data={editData}
+          onSave={handleEditAsesor}
+          onCancel={() => navigate('/dashboard/asesor')}
         />
       } />
 
-      {}
+      { }
       <Route path="/detail-ia02" element={
         <DashboardLayout>
           <FRIA02 onBack={() => navigate('/dashboard/asesi')} onNavigate={handleNavigate} />
@@ -284,23 +287,23 @@ const DashboardRoutes = () => {
       {/* Asesi Routes */}
       <Route path="/asesi" element={
         <DashboardLayout>
-          <Asesi 
-            onBack={handleBackToHome} 
-            onNavigate={handleNavigate} 
+          <Asesi
+            onBack={handleBackToHome}
+            onNavigate={handleNavigate}
           />
         </DashboardLayout>
       } />
       <Route path="/asesi/add" element={
-        <AddAsesi 
-          onSave={handleAddAsesi} 
-          onCancel={() => navigate('/dashboard/asesi')} 
+        <AddAsesi
+          onSave={handleAddAsesi}
+          onCancel={() => navigate('/dashboard/asesi')}
         />
       } />
       <Route path="/asesi/edit" element={
-        <EditAsesi 
-          data={editData} 
-          onSave={handleEditAsesi} 
-          onCancel={() => navigate('/dashboard/asesi')} 
+        <EditAsesi
+          data={editData}
+          onSave={handleEditAsesi}
+          onCancel={() => navigate('/dashboard/asesi')}
         />
       } />
 
@@ -311,101 +314,101 @@ const DashboardRoutes = () => {
         </DashboardLayout>
       } />
       <Route path="/asesmen/add" element={
-        <AddAsesmen 
-          onSubmit={handleAddAsesmen} 
-          onBack={() => navigate('/dashboard/asesmen')} 
+        <AddAsesmen
+          onSubmit={handleAddAsesmen}
+          onBack={() => navigate('/dashboard/asesmen')}
         />
       } />
       <Route path="/asesmen/import" element={
-        <ImportAsesmen 
-          onSubmit={handleImportAsesmen} 
-          onBack={() => navigate('/dashboard/asesmen')} 
+        <ImportAsesmen
+          onSubmit={handleImportAsesmen}
+          onBack={() => navigate('/dashboard/asesmen')}
         />
       } />
       <Route path="/asesmen/barcode" element={
-        <BarcodeAsesmen 
-          onSubmit={handleBarcodeAsesmen} 
-          onBack={() => navigate('/dashboard/asesmen')} 
+        <BarcodeAsesmen
+          onSubmit={handleBarcodeAsesmen}
+          onBack={() => navigate('/dashboard/asesmen')}
         />
       } />
       <Route path="/asesmen/edit" element={
-        <EditAsesmen 
-          data={editData} 
-          onSave={handleEditAsesmen} 
-          onCancel={() => navigate('/dashboard/asesmen')} 
+        <EditAsesmen
+          data={editData}
+          onSave={handleEditAsesmen}
+          onCancel={() => navigate('/dashboard/asesmen')}
         />
       } />
 
       {/* Jurusan Routes */}
       <Route path="/jurusan" element={
         <DashboardLayout>
-          <Jurusan 
-            onBack={handleBackToHome} 
-            onNavigate={handleNavigate} 
-            jurusanData={jurusanData} 
-            setJurusanData={setJurusanData} 
+          <Jurusan
+            onBack={handleBackToHome}
+            onNavigate={handleNavigate}
+            jurusanData={jurusanData}
+            setJurusanData={setJurusanData}
           />
         </DashboardLayout>
-      } />  
+      } />
 
       {/* Skema Routes */}
       <Route path="/skema" element={
         <DashboardLayout>
           <Skema
-            onBack={handleBackToHome} 
-            onNavigate={handleNavigate} 
-            skemaData={skemaData} 
-            setSkemaData={setSkemaData} 
+            onBack={handleBackToHome}
+            onNavigate={handleNavigate}
+            skemaData={skemaData}
+            setSkemaData={setSkemaData}
           />
         </DashboardLayout>
       } />
 
       <Route path="/skema/add-skema" element={
-        <AddSkema 
-          onSave={handleAddSkema} 
-          onCancel={() => navigate('/dashboard/skema')} 
+        <AddSkema
+          onSave={handleAddSkema}
+          onCancel={() => navigate('/dashboard/skema')}
         />
       } />
       <Route path="/skema/edit-skema" element={
-        <EditSkema 
-          data={editData} 
-          onSave={handleEditSkema} 
-          onCancel={() => navigate('/dashboard/skema')} 
+        <EditSkema
+          data={editData}
+          onSave={handleEditSkema}
+          onCancel={() => navigate('/dashboard/skema')}
         />
       } />
 
       {/* List Asesmen Routes */}
       <Route path="/list-asesmen" element={
         <DashboardLayout>
-          <ListAsesmen 
-            onBack={handleBackToHome} 
-            onNavigate={handleNavigate} 
-            assessmentData={assessmentData} 
-            setAssessmentData={setAssessmentData} 
+          <ListAsesmen
+            onBack={handleBackToHome}
+            onNavigate={handleNavigate}
+            assessmentData={assessmentData}
+            setAssessmentData={setAssessmentData}
           />
         </DashboardLayout>
       } />
       <Route path="/list-asesmen/add" element={
-        <AddListAsesmen 
-          onBack={() => navigate('/dashboard/list-asesmen')} 
-          onSave={handleAddAssessment} 
-          assessmentData={assessmentData} 
+        <AddListAsesmen
+          onBack={() => navigate('/dashboard/list-asesmen')}
+          onSave={handleAddAssessment}
+          assessmentData={assessmentData}
         />
       } />
       <Route path="/list-asesmen/edit/:id" element={
-        <EditListAsesmen 
-          onBack={() => navigate('/dashboard/list-asesmen')} 
-          onSave={handleEditAssessment} 
-          item={editData} 
+        <EditListAsesmen
+          onBack={() => navigate('/dashboard/list-asesmen')}
+          onSave={handleEditAssessment}
+          item={editData}
         />
       } />
       {/* Fixed route untuk LihatListAsesmen */}
       <Route path="/list-asesmen/lihat" element={
         <DashboardLayout>
-          <LihatListAsesmen 
-            onBack={() => navigate('/dashboard/list-asesmen')} 
-            onNavigate={handleNavigate} 
-            data={editData} 
+          <LihatListAsesmen
+            onBack={() => navigate('/dashboard/list-asesmen')}
+            onNavigate={handleNavigate}
+            data={editData}
           />
         </DashboardLayout>
       } />
@@ -420,9 +423,9 @@ const DashboardRoutes = () => {
       {/* Approvement Routes - APL-01 */}
       <Route path="/approvement" element={
         <DashboardLayout>
-          <Approvement 
-            onBack={handleBackToHome} 
-            onNavigate={handleNavigate} 
+          <Approvement
+            onBack={handleBackToHome}
+            onNavigate={handleNavigate}
           />
         </DashboardLayout>
       } />
@@ -430,9 +433,9 @@ const DashboardRoutes = () => {
       <Route path="/approvement/lihat" element={
         <DashboardLayout>
           <LihatApprovement
-            onBack={() => navigate('/dashboard/approvement/detail')} 
+            onBack={() => navigate('/dashboard/approvement/detail')}
             onNavigate={handleNavigate}
-            data={editData} 
+            data={editData}
           />
         </DashboardLayout>
       } />
@@ -440,29 +443,29 @@ const DashboardRoutes = () => {
       {/* Approvement Routes - APL-02 - MAIN ROUTE (yang dipanggil dari sidebar) */}
       <Route path="/approvement/apl-02" element={
         <DashboardLayout>
-          <ApprovementApl02 
-            onBack={handleBackToHome} 
-            onNavigate={handleNavigate} 
+          <ApprovementApl02
+            onBack={handleBackToHome}
+            onNavigate={handleNavigate}
           />
         </DashboardLayout>
       } />
 
       <Route path="/approvement/apl-02/detail" element={
         <DashboardLayout>
-          <DetailJurusan 
-            onBack={() => navigate('/dashboard/approvement/apl-02')} 
+          <DetailJurusan
+            onBack={() => navigate('/dashboard/approvement/apl-02')}
             onNavigate={handleNavigate}
-            data={editData} 
+            data={editData}
           />
         </DashboardLayout>
       } />
 
       <Route path="/approvement/apl-02/lihat" element={
         <DashboardLayout>
-          <LihatApprovement02 
-            onBack={() => navigate('/dashboard/approvement/apl-02')} 
+          <LihatApprovement02
+            onBack={() => navigate('/dashboard/approvement/apl-02')}
             onNavigate={handleNavigate}
-            data={editData} 
+            data={editData}
           />
         </DashboardLayout>
       } />
@@ -471,18 +474,18 @@ const DashboardRoutes = () => {
       <Route path="/approvement/ak-01" element={
         <DashboardLayout>
           <ApprovementAK01
-            onBack={() => navigate('/dashboard/approvement')} 
-            onNavigate={handleNavigate} 
+            onBack={() => navigate('/dashboard/approvement')}
+            onNavigate={handleNavigate}
           />
         </DashboardLayout>
       } />
 
       <Route path="/approvement/ak-01/detail" element={
         <DashboardLayout>
-          <DetailJurusanAK01 
-            onBack={() => navigate('/dashboard/approvement/ak-01')} 
+          <DetailJurusanAK01
+            onBack={() => navigate('/dashboard/approvement/ak-01')}
             onNavigate={handleNavigate}
-            data={editData} 
+            data={editData}
           />
         </DashboardLayout>
       } />
@@ -490,9 +493,9 @@ const DashboardRoutes = () => {
       <Route path="/approvement/ak-01/lihat" element={
         <DashboardLayout>
           <LihatApprovementAK01
-            onBack={() => navigate('/dashboard/approvement/ak-01')} 
-            onNavigate={handleNavigate} 
-            data={editData} 
+            onBack={() => navigate('/dashboard/approvement/ak-01')}
+            onNavigate={handleNavigate}
+            data={editData}
           />
         </DashboardLayout>
       } />
@@ -500,19 +503,18 @@ const DashboardRoutes = () => {
       <Route path="/approvement/detail" element={
         <DashboardLayout>
           <DetailJurusanApl01
-            onBack={() => navigate('/dashboard/approvement/apl-01')} 
+            onBack={() => navigate('/dashboard/approvement/apl-01')}
             onNavigate={handleNavigate}
-            data={editData} 
+            data={editData}
           />
         </DashboardLayout>
       } />
 
-      {/* List MUK Routes */}
-      <Route path="/list-muk" element={
+      <Route path="/list-muk/ia-05c/lembar-jawaban-pg" element={
         <DashboardLayout>
-          <ListMuk 
-            onBack={handleBackToHome} 
-            onNavigate={handleNavigate} 
+          <LembarJawabanPG
+            onBack={() => navigate('/dashboard/list-muk')}
+            onNavigate={handleNavigate}
           />
         </DashboardLayout>
       } />
@@ -521,18 +523,18 @@ const DashboardRoutes = () => {
 
       <Route path="/list-muk/ak-03/umpanbalik" element={
         <DashboardLayout>
-          <UmpanBalik 
-            onBack={() => navigate('/dashboard/list-muk')} 
-            onNavigate={handleNavigate} 
+          <UmpanBalik
+            onBack={() => navigate('/dashboard/list-muk')}
+            onNavigate={handleNavigate}
           />
         </DashboardLayout>
       } />
 
       <Route path="/list-muk/ak-05/laporan-Asesment" element={
         <DashboardLayout>
-          <AK05Form 
-            onBack={() => navigate('/dashboard/list-muk')} 
-            onNavigate={handleNavigate} 
+          <AK05Form
+            onBack={() => navigate('/dashboard/list-muk')}
+            onNavigate={handleNavigate}
           />
         </DashboardLayout>
       } />
@@ -540,9 +542,9 @@ const DashboardRoutes = () => {
 
       <Route path="/list-muk/ak-04/banding-asesmen" element={
         <DashboardLayout>
-          <BandingkanAsesmen 
-            onBack={() => navigate('/dashboard/list-muk')} 
-            onNavigate={handleNavigate} 
+          <BandingkanAsesmen
+            onBack={() => navigate('/dashboard/list-muk')}
+            onNavigate={handleNavigate}
           />
         </DashboardLayout>
       } />
@@ -552,6 +554,16 @@ const DashboardRoutes = () => {
       <Route path="/list-muk/ia-01/ceklis-observasi-aktivitas" element={
         <DashboardLayout>
           <CeklisObservasiAktivitas
+            onBack={() => navigate('/dashboard/list-muk')}
+            onNavigate={handleNavigate}
+          />
+        </DashboardLayout>
+      } />
+
+      {/* ADD: Route untuk LembarJawabanPG */}
+      <Route path="/list-muk/ia-05c/lembar-jawaban-pg" element={
+        <DashboardLayout>
+          <LembarJawabanPG
             onBack={() => navigate('/dashboard/list-muk')}
             onNavigate={handleNavigate}
           />
