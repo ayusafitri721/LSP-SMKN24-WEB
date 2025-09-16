@@ -146,10 +146,9 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
             backgroundColor: "#ffffff",
             borderRadius: "8px",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-            padding: "4px"
+            padding: "4px",
           }}
         >
-
           <button
             onClick={() => onNavigate && onNavigate("list-muk")}
             style={{
@@ -163,7 +162,7 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
               margin: "4px",
               borderRadius: "8px",
               flexShrink: 0,
-              minWidth: "fit-content"
+              minWidth: "fit-content",
             }}
           >
             FR.AK.02
@@ -180,121 +179,111 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
               cursor: "pointer",
               margin: "4px",
               flexShrink: 0,
-              minWidth: "fit-content"
+              minWidth: "fit-content",
             }}
           >
             FR.AK.03
           </button>
-              <button
-                onClick={() => onNavigate && onNavigate("listmuk/AK-04/BandingkanAsesmen")}
-                style={{
-                  padding: '12px 20px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                  color: '#666',
-                  cursor: 'pointer',
-                  margin: '4px',
-                  borderRadius: '8px',
-                  flexShrink: 0,
-                  minWidth: 'fit-content'
-                }}
-              >
-                FR.AK.04
-              </button>
-              <button
-                onClick={() => onNavigate && onNavigate("listmuk/AK-05/LaporanAsesment")}
-                style={{
-                  padding: '12px 20px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                  color: '#666',
-                  cursor: 'pointer',
-                  margin: '4px',
-                  borderRadius: '8px',
-                  flexShrink: 0,
-                  minWidth: 'fit-content'
-                }}
-              >
-                FR.AK.05
-              </button>
-              <button
-                onClick={() => onNavigate && onNavigate("listmuk/IA-01/CeklisObservasiAktivitas")}
-                style={{
-                  padding: '12px 20px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                  color: '#666',
-                  cursor: 'pointer',
-                  margin: '4px',
-                  borderRadius: '8px',
-                  flexShrink: 0,
-                  minWidth: 'fit-content'
-                }}
-              >
-                FR.IA.01
-              </button>
-              <button
-                onClick={() => onNavigate && onNavigate("listmuk/ia02")}
-                style={{
-                  padding: '12px 20px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                  color: '#666',
-                  cursor: 'pointer',
-                  margin: '4px',
-                  borderRadius: '8px',
-                  flexShrink: 0,
-                  minWidth: 'fit-content'
-                }}
-              >
-                FR.IA.02
-              </button>
-              <button
-                onClick={() => onNavigate && onNavigate("listmuk/ia05b")}
-                style={{
-                  padding: '12px 20px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                  color: '#666',
-                  cursor: 'pointer',
-                  margin: '4px',
-                  borderRadius: '8px',
-                  flexShrink: 0,
-                  minWidth: 'fit-content'
-                }}
-              >
-                FR.IA.05.B
-              </button>
-              <button
-                onClick={() => onNavigate && onNavigate("listmuk/ia05c")}
-                style={{
-                  padding: '12px 20px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                  color: '#666',
-                  cursor: 'pointer',
-                  margin: '4px',
-                  borderRadius: '8px',
-                  flexShrink: 0,
-                  minWidth: 'fit-content'
-                }}
-              >
-                FR.IA.05.C
-              </button>
-            </div>
-          </div>
+          <button
+            onClick={() =>
+              onNavigate && onNavigate("listmuk/AK-04/BandingkanAsesmen")
+            }
+            style={{
+              padding: "12px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "none",
+              backgroundColor: "transparent",
+              color: "#666",
+              cursor: "pointer",
+              margin: "4px",
+              borderRadius: "8px",
+              flexShrink: 0,
+              minWidth: "fit-content",
+            }}
+          >
+            FR.AK.04
+          </button>
+          <button
+            onClick={() =>
+              onNavigate && onNavigate("listmuk/AK-05/LaporanAsesment")
+            }
+            style={{
+              padding: "12px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "none",
+              backgroundColor: "transparent",
+              color: "#666",
+              cursor: "pointer",
+              margin: "4px",
+              borderRadius: "8px",
+              flexShrink: 0,
+              minWidth: "fit-content",
+            }}
+          >
+            FR.AK.05
+          </button>
+          <button
+            onClick={() =>
+              onNavigate && onNavigate("listmuk/IA-01/CeklisObservasiAktivitas")
+            }
+            style={{
+              padding: "12px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "none",
+              backgroundColor: "transparent",
+              color: "#666",
+              cursor: "pointer",
+              margin: "4px",
+              borderRadius: "8px",
+              flexShrink: 0,
+              minWidth: "fit-content",
+            }}
+          >
+            FR.IA.01
+          </button>
+          <button
+            onClick={() => onNavigate && onNavigate("listmuk/ia02")}
+            style={{
+              padding: "12px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "none",
+              backgroundColor: "transparent",
+              color: "#666",
+              cursor: "pointer",
+              margin: "4px",
+              borderRadius: "8px",
+              flexShrink: 0,
+              minWidth: "fit-content",
+            }}
+          >
+            FR.IA.02
+          </button>
+          <button
+            onClick={() =>
+              onNavigate && onNavigate("listmuk/IA-05C/LembarJawabanPG")
+            }
+            style={{
+              padding: "12px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              border: "none",
+              backgroundColor: "transparent",
+              color: "#666",
+              cursor: "pointer",
+              margin: "4px",
+              borderRadius: "8px",
+              flexShrink: 0,
+              minWidth: "fit-content",
+            }}
+          >
+            FR.IA.05.C
+          </button>
+        </div>
+      </div>
 
       {/* Main Content */}
       <div
@@ -306,36 +295,42 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
         }}
       >
         {/* Header dengan Logo LSP */}
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          marginBottom: '24px',
-          padding: '16px',
-          backgroundColor: '#f8f9fa',
-          borderRadius: '8px'
-        }}>
-          <div style={{
-            width: '60px',
-            height: '60px',
-            backgroundColor: '#ff6b35',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginRight: '16px',
-            color: 'white',
-            fontWeight: 'bold',
-            fontSize: '12px'
-          }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "24px",
+            padding: "16px",
+            backgroundColor: "#f8f9fa",
+            borderRadius: "8px",
+          }}
+        >
+          <div
+            style={{
+              width: "60px",
+              height: "60px",
+              backgroundColor: "#ff6b35",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: "16px",
+              color: "white",
+              fontWeight: "bold",
+              fontSize: "12px",
+            }}
+          >
             LSP
           </div>
           <div>
-            <h2 style={{ 
-              margin: '0 0 4px 0', 
-              fontSize: '18px', 
-              fontWeight: '600',
-              color: '#333'
-            }}>
+            <h2
+              style={{
+                margin: "0 0 4px 0",
+                fontSize: "18px",
+                fontWeight: "600",
+                color: "#333",
+              }}
+            >
               FR.AK.03. UMPAN BALIK DAN CATATAN ASESMEN
             </h2>
           </div>
@@ -345,37 +340,50 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
         <table style={tableStyle}>
           <tbody>
             <tr>
-              <td style={{ ...cellStyle, backgroundColor: '#e6f3ff', fontWeight: '600', width: '200px' }}>
+              <td
+                style={{
+                  ...cellStyle,
+                  backgroundColor: "#e6f3ff",
+                  fontWeight: "600",
+                  width: "200px",
+                }}
+              >
                 Skema Sertifikasi (KKNI/Okupasi/Klaster)
               </td>
-              <td style={{ ...headerCellStyle, width: '80px' }}>
-                Judul
-              </td>
+              <td style={{ ...headerCellStyle, width: "80px" }}>Judul</td>
               <td style={cellStyle}>
                 <input
                   type="text"
                   value={formData.judulSkema}
-                  onChange={(e) => handleInputChange("judulSkema", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("judulSkema", e.target.value)
+                  }
                   style={{ ...inputStyle, border: "none", padding: "4px" }}
                 />
               </td>
             </tr>
             <tr>
-              <td style={{ ...cellStyle, backgroundColor: '#e6f3ff' }}></td>
-              <td style={headerCellStyle}>
-                Nomor
-              </td>
+              <td style={{ ...cellStyle, backgroundColor: "#e6f3ff" }}></td>
+              <td style={headerCellStyle}>Nomor</td>
               <td style={cellStyle}>
                 <input
                   type="text"
                   value={formData.nomorSkema}
-                  onChange={(e) => handleInputChange("nomorSkema", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("nomorSkema", e.target.value)
+                  }
                   style={{ ...inputStyle, border: "none", padding: "4px" }}
                 />
               </td>
             </tr>
             <tr>
-              <td style={{ ...cellStyle, backgroundColor: '#e6f3ff', fontWeight: '600' }}>
+              <td
+                style={{
+                  ...cellStyle,
+                  backgroundColor: "#e6f3ff",
+                  fontWeight: "600",
+                }}
+              >
                 TUK
               </td>
               <td style={cellStyle}>:</td>
@@ -389,7 +397,13 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
               </td>
             </tr>
             <tr>
-              <td style={{ ...cellStyle, backgroundColor: '#e6f3ff', fontWeight: '600' }}>
+              <td
+                style={{
+                  ...cellStyle,
+                  backgroundColor: "#e6f3ff",
+                  fontWeight: "600",
+                }}
+              >
                 Nama Asesor
               </td>
               <td style={cellStyle}>:</td>
@@ -397,13 +411,21 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
                 <input
                   type="text"
                   value={formData.namaAsesor}
-                  onChange={(e) => handleInputChange("namaAsesor", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("namaAsesor", e.target.value)
+                  }
                   style={{ ...inputStyle, border: "none", padding: "4px" }}
                 />
               </td>
             </tr>
             <tr>
-              <td style={{ ...cellStyle, backgroundColor: '#e6f3ff', fontWeight: '600' }}>
+              <td
+                style={{
+                  ...cellStyle,
+                  backgroundColor: "#e6f3ff",
+                  fontWeight: "600",
+                }}
+              >
                 Nama Asesi
               </td>
               <td style={cellStyle}>:</td>
@@ -411,37 +433,45 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
                 <input
                   type="text"
                   value={formData.namaAsesi}
-                  onChange={(e) => handleInputChange("namaAsesi", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("namaAsesi", e.target.value)
+                  }
                   style={{ ...inputStyle, border: "none", padding: "4px" }}
                 />
               </td>
             </tr>
             <tr>
-              <td style={{ ...cellStyle, backgroundColor: '#e6f3ff', fontWeight: '600' }}>
+              <td
+                style={{
+                  ...cellStyle,
+                  backgroundColor: "#e6f3ff",
+                  fontWeight: "600",
+                }}
+              >
                 Tanggal Asesmen
               </td>
-              <td style={headerCellStyle}>
-                Mulai
-              </td>
+              <td style={headerCellStyle}>Mulai</td>
               <td style={cellStyle}>
                 <input
                   type="text"
                   value={formData.tanggalMulai}
-                  onChange={(e) => handleInputChange("tanggalMulai", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("tanggalMulai", e.target.value)
+                  }
                   style={{ ...inputStyle, border: "none", padding: "4px" }}
                 />
               </td>
             </tr>
             <tr>
-              <td style={{ ...cellStyle, backgroundColor: '#e6f3ff' }}></td>
-              <td style={headerCellStyle}>
-                Selesai
-              </td>
+              <td style={{ ...cellStyle, backgroundColor: "#e6f3ff" }}></td>
+              <td style={headerCellStyle}>Selesai</td>
               <td style={cellStyle}>
                 <input
                   type="text"
                   value={formData.tanggalSelesai}
-                  onChange={(e) => handleInputChange("tanggalSelesai", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("tanggalSelesai", e.target.value)
+                  }
                   style={{ ...inputStyle, border: "none", padding: "4px" }}
                 />
               </td>
@@ -450,78 +480,97 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
         </table>
 
         {/* Umpan Balik Section */}
-        <div style={{ marginBottom: '24px' }}>
-          <p style={{ 
-            fontSize: '14px', 
-            fontWeight: '600', 
-            marginBottom: '16px',
-            color: '#333'
-          }}>
-            Umpan balik dari Asesi (diisi oleh Asesi setelah pengambilan keputusan):
+        <div style={{ marginBottom: "24px" }}>
+          <p
+            style={{
+              fontSize: "14px",
+              fontWeight: "600",
+              marginBottom: "16px",
+              color: "#333",
+            }}
+          >
+            Umpan balik dari Asesi (diisi oleh Asesi setelah pengambilan
+            keputusan):
           </p>
 
           <table style={tableStyle}>
             <thead>
               <tr>
-                <th style={headerCellStyle}>
-                  KOMPONEN
-                </th>
-                <th style={{ ...headerCellStyle, width: '80px' }}>
-                  Hasil
-                </th>
-                <th style={{ ...headerCellStyle, width: '200px' }}>
+                <th style={headerCellStyle}>KOMPONEN</th>
+                <th style={{ ...headerCellStyle, width: "80px" }}>Hasil</th>
+                <th style={{ ...headerCellStyle, width: "200px" }}>
                   Catatan/Komentar Asesi
                 </th>
               </tr>
               <tr>
-                <th style={{ ...cellStyle, backgroundColor: '#e6f3ff' }}></th>
-                <th style={{ ...cellStyle, backgroundColor: '#e6f3ff', fontSize: '12px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                <th style={{ ...cellStyle, backgroundColor: "#e6f3ff" }}></th>
+                <th
+                  style={{
+                    ...cellStyle,
+                    backgroundColor: "#e6f3ff",
+                    fontSize: "12px",
+                  }}
+                >
+                  <div
+                    style={{ display: "flex", justifyContent: "space-around" }}
+                  >
                     <span>Ya</span>
                     <span>Tidak</span>
                   </div>
                 </th>
-                <th style={{ ...cellStyle, backgroundColor: '#e6f3ff' }}></th>
+                <th style={{ ...cellStyle, backgroundColor: "#e6f3ff" }}></th>
               </tr>
             </thead>
             <tbody>
               {feedbackQuestions.map((question, index) => (
                 <tr key={index}>
-                  <td style={{ 
-                    ...cellStyle,
-                    fontSize: '12px',
-                    lineHeight: '1.4'
-                  }}>
+                  <td
+                    style={{
+                      ...cellStyle,
+                      fontSize: "12px",
+                      lineHeight: "1.4",
+                    }}
+                  >
                     {question}
                   </td>
-                  <td style={{ ...cellStyle, textAlign: 'center' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-                      <input 
-                        type="radio" 
+                  <td style={{ ...cellStyle, textAlign: "center" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                      }}
+                    >
+                      <input
+                        type="radio"
                         name={`feedback_${index}`}
                         checked={formData.feedbackResponses[index]?.ya || false}
-                        onChange={() => handleFeedbackChange(index, 'ya')}
-                        style={{ transform: 'scale(1.2)' }} 
+                        onChange={() => handleFeedbackChange(index, "ya")}
+                        style={{ transform: "scale(1.2)" }}
                       />
-                      <input 
-                        type="radio" 
+                      <input
+                        type="radio"
                         name={`feedback_${index}`}
-                        checked={formData.feedbackResponses[index]?.tidak || false}
-                        onChange={() => handleFeedbackChange(index, 'tidak')}
-                        style={{ transform: 'scale(1.2)' }} 
+                        checked={
+                          formData.feedbackResponses[index]?.tidak || false
+                        }
+                        onChange={() => handleFeedbackChange(index, "tidak")}
+                        style={{ transform: "scale(1.2)" }}
                       />
                     </div>
                   </td>
                   <td style={cellStyle}>
                     <textarea
                       value={formData.feedbackComments[index]}
-                      onChange={(e) => handleCommentChange(index, e.target.value)}
+                      onChange={(e) =>
+                        handleCommentChange(index, e.target.value)
+                      }
                       style={{
-                        width: '100%',
-                        height: '60px',
-                        border: 'none',
-                        resize: 'vertical',
-                        fontSize: '12px'
+                        width: "100%",
+                        height: "60px",
+                        border: "none",
+                        resize: "vertical",
+                        fontSize: "12px",
                       }}
                       placeholder="Komentar..."
                     />
@@ -538,10 +587,13 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
             <tr>
               <td style={cellStyle}>
                 <strong>Catatan/komentar lainnya (apabila ada) :</strong>
-                <br /><br />
+                <br />
+                <br />
                 <textarea
                   value={formData.catatanLainnya}
-                  onChange={(e) => handleInputChange("catatanLainnya", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("catatanLainnya", e.target.value)
+                  }
                   style={{
                     width: "100%",
                     height: "100px",
@@ -549,7 +601,7 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
                     borderRadius: "4px",
                     padding: "8px",
                     fontSize: "14px",
-                    resize: "vertical"
+                    resize: "vertical",
                   }}
                   placeholder="Tulis catatan atau komentar tambahan di sini..."
                 />
