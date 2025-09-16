@@ -243,7 +243,7 @@ function ListMuk({ onBack, onNavigate, data }) {
                 FR.IA.01
               </button>
               <button
-                onClick={() => onNavigate && onNavigate("listmuk/ia02")}
+                onClick={() => onNavigate && onNavigate("list-muk/ia02")}
                 style={{
                   padding: "12px 20px",
                   fontSize: "14px",

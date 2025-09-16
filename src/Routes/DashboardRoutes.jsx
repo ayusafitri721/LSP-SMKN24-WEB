@@ -368,18 +368,6 @@ const DashboardRoutes = () => {
         }
       />
 
-      {}
-      <Route
-        path="/detail-ia02"
-        element={
-          <DashboardLayout>
-            <FRIA02
-              onBack={() => navigate("/dashboard/asesi")}
-              onNavigate={handleNavigate}
-            />
-          </DashboardLayout>
-        }
-      />
 
       {/* Asesi Routes */}
       <Route
@@ -747,6 +735,19 @@ const DashboardRoutes = () => {
           <DashboardLayout>
             <LembarJawabanPG
               onBack={() => navigate("/dashboard/list-muk")}
+              onNavigate={handleNavigate}
+            />
+          </DashboardLayout>
+        }
+      />
+      
+      {/* FIXED: Route untuk LembarJawabanPG dengan path yang benar */}
+      <Route
+        path="/list-muk/ia02"
+        element={
+          <DashboardLayout>
+            <FRIA02
+              onBack={() => navigate("/dashboard/asesi")}
               onNavigate={handleNavigate}
             />
           </DashboardLayout>
