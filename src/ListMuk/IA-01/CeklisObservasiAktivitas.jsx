@@ -60,11 +60,12 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         aktivitas6: [
             {
                 no: 1,
-                elemen: "Mengidentifikasi Model dokumentasi kode program",
+                elemen: "Melakukan identifikasi kode program",
                 kriteria: [
-                    "Mengidentifikasi parameter untuk dokumentasi setiap kelas",
-                    "Mengidentifikasi cara kerja Program",
-                    "Memberikan komentar setiap baris kode tersendiri, data, fungsi, dan lain lain-lain"
+                    "Mengidentifikasi Modul Program",
+                    "Mengidentifikasi parameter yang dipergunakan",
+                    "Menjelaskan cara kerja algoritma",
+                    "Memberikan komentar setiap baris kode termasuk data, eksepsi, fungsi, prosedur dan *class* (bila ada)"
                 ],
                 standar: "SKKNI",
                 pencapaian: { ya: false, tidak: false },
@@ -74,9 +75,10 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 no: 2,
                 elemen: "Membuat dokumentasi modul program",
                 kriteria: [
-                    "Membuat dokumentasi modul untuk keperluan program untuk penerbitan dokumentasi",
-                    "Menggunakan metode dokumentasi untuk cercabang kode program",
-                    "Membuat dokumentasi fungsi Program dan parameter dengan menggunakan notasi standar"
+                    "Membuat dokumentasi modul sesuai dengan identitas untuk memudahkan pelacakan",
+                    "Menerapkan identifikasi dokumentasi",
+                    "Menjelaskan kegunaan modul",
+                    "Merevisi dokumen sesuai perubahan kode program"
                 ],
                 standar: "SKKNI",
                 pencapaian: { ya: false, tidak: false },
@@ -84,10 +86,11 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             },
             {
                 no: 3,
-                elemen: "Membuat dokumentasi rancang prosedur dan membuat dokumentasi",
+                elemen: "Membuat dokumentasi fungsi, prosedur atau method program",
                 kriteria: [
-                    "Membuat dokumentasi sesuai parameter kode program",
-                    "Membuat dokumen sesuai cercabang kode program"
+                    "Membuat dokumentasi fungsi, prosedur atau metod",
+                    "Menjelaskan kemungkinan eksepsi",
+                    "Merevisi dokumen sesuai perubahan kode program"
                 ],
                 standar: "SKKNI",
                 pencapaian: { ya: false, tidak: false },
@@ -97,8 +100,8 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 no: 4,
                 elemen: "Men-generate dokumentasi",
                 kriteria: [
-                    "Generate dokumentasi",
-                    "Kesesuaian Generate dokumentasi"
+                    "Mengidentifikasi Tools untuk generate dokumentasi",
+                    "Melakukan Generate dokumentasi"
                 ],
                 standar: "SKKNI",
                 pencapaian: { ya: false, tidak: false },
@@ -852,6 +855,41 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
 
             {/* Unit Kompetensi 6 Assessment */}
             {renderAssessmentTable(formData.aktivitas6, 'aktivitas6', 'Unit Kompetensi 6')}
+
+            {/* Kelompok Pekerjaan 3 */}
+            <table style={{ borderCollapse: "collapse", width: "100%", marginTop: "20px" }}>
+                <thead>
+                    <tr>
+                        <th style={{ border: "1px solid black", padding: "8px", width: "20%", backgroundColor: "#2c3e50", color: "white" }}></th>
+                        <th style={{ border: "1px solid black", padding: "8px", width: "5%", backgroundColor: "#2c3e50", color: "white" }}>No.</th>
+                        <th style={{ border: "1px solid black", padding: "8px", width: "25%", backgroundColor: "#2c3e50", color: "white" }}>Kode Unit</th>
+                        <th style={{ border: "1px solid black", padding: "8px", backgroundColor: "#2c3e50", color: "white" }}>Judul Unit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowSpan={2} style={{
+                            border: "1px solid black",
+                            padding: "8px",
+                            textAlign: "center",
+                            fontWeight: "bold",
+                            fontSize: "12px",
+                            backgroundColor: "#2c3e50",
+                            color: "white"
+                        }}>
+                            Kelompok <br /> Pekerjaan 3
+                        </td>
+                        <td style={{ border: "1px solid black", padding: "8px", textAlign: "center", fontSize: "12px" }}>1.</td>
+                        <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>J.620100.025.02</td>
+                        <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>Melakukan Debugging</td>
+                    </tr>
+                    <tr>
+                        <td style={{ border: "1px solid black", padding: "8px", textAlign: "center", fontSize: "12px" }}>2.</td>
+                        <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>J.620100.033.02</td>
+                        <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>Melaksanakan Pengujian Unit Program</td>
+                    </tr>
+                </tbody>
+            </table>
 
             {/* Action Buttons */}
             <div style={{
