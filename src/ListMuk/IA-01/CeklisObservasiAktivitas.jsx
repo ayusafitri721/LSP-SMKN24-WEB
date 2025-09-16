@@ -32,6 +32,10 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             kode: "J.620100.023.02",
             judul: "Membuat Dokumen Kode Program"
         },
+        unitKompetensi7: {
+            kode: "J.620100.025.02",
+            judul: "Melakukan Debugging"
+        },
         aktivitas: [
             {
                 no: 1,
@@ -102,6 +106,32 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 kriteria: [
                     "Mengidentifikasi Tools untuk generate dokumentasi",
                     "Melakukan Generate dokumentasi"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            }
+        ],
+        aktivitas7: [
+            {
+                no: 1,
+                elemen: "Melakukan debugging",
+                kriteria: [
+                    "Menggunakan kode program dikompilasi sesuai bahasa pemrograman",
+                    "Menganalisis kriteria lulus build",
+                    "Menganalisis kriteria eksekusi aplikasi",
+                    "Mencatat kode kesalahan"
+                ],
+                standar: "SKKNI",
+                pencapaian: { ya: false, tidak: false },
+                penilaianLanjut: ""
+            },
+            {
+                no: 2,
+                elemen: "Memperbaiki program",
+                kriteria: [
+                    "Merumuskan Perbaikan terhadap kesalahan kompilasi maupun build",
+                    "Melakukan Perbaikan"
                 ],
                 standar: "SKKNI",
                 pencapaian: { ya: false, tidak: false },
@@ -284,6 +314,10 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             { no: 4, kode: "J.620100.017.02", judul: "Mengimplementasikan Pemrograman Terstruktur" },
             { no: 5, kode: "J.620100.023.02", judul: "Membuat Dokumen Kode Program" },
         ],
+        kelompokPekerjaan3: [
+            { no: 1, kode: "J.620100.025.02", judul: "Melakukan Debugging" },
+            { no: 2, kode: "J.620100.033.02", judul: "Melaksanakan Pengujian Unit Program" },
+        ],
         umpanBalik: ""
     });
 
@@ -371,6 +405,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                             {sectionName === 'aktivitas4' && formData.unitKompetensi4.kode}
                             {sectionName === 'aktivitas5' && formData.unitKompetensi5.kode}
                             {sectionName === 'aktivitas6' && formData.unitKompetensi6.kode}
+                            {sectionName === 'aktivitas7' && formData.unitKompetensi7.kode}
                         </td>
                     </tr>
                     <tr>
@@ -383,6 +418,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                             {sectionName === 'aktivitas4' && formData.unitKompetensi4.judul}
                             {sectionName === 'aktivitas5' && formData.unitKompetensi5.judul}
                             {sectionName === 'aktivitas6' && formData.unitKompetensi6.judul}
+                            {sectionName === 'aktivitas7' && formData.unitKompetensi7.judul}
                         </td>
                     </tr>
                 </tbody>
@@ -867,29 +903,34 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td rowSpan={2} style={{
-                            border: "1px solid black",
-                            padding: "8px",
-                            textAlign: "center",
-                            fontWeight: "bold",
-                            fontSize: "12px",
-                            backgroundColor: "#2c3e50",
-                            color: "white"
-                        }}>
-                            Kelompok <br /> Pekerjaan 3
-                        </td>
-                        <td style={{ border: "1px solid black", padding: "8px", textAlign: "center", fontSize: "12px" }}>1.</td>
-                        <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>J.620100.025.02</td>
-                        <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>Melakukan Debugging</td>
-                    </tr>
-                    <tr>
-                        <td style={{ border: "1px solid black", padding: "8px", textAlign: "center", fontSize: "12px" }}>2.</td>
-                        <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>J.620100.033.02</td>
-                        <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>Melaksanakan Pengujian Unit Program</td>
-                    </tr>
+                    {formData.kelompokPekerjaan3.map((item, index) => (
+                        <tr key={index}>
+                            {index === 0 && (
+                                <td
+                                    rowSpan={formData.kelompokPekerjaan3.length}
+                                    style={{
+                                        border: "1px solid black",
+                                        padding: "8px",
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        fontSize: "12px",
+                                        backgroundColor: "#2c3e50",
+                                        color: "white"
+                                    }}
+                                >
+                                    Kelompok <br /> Pekerjaan 3
+                                </td>
+                            )}
+                            <td style={{ border: "1px solid black", padding: "8px", textAlign: "center", fontSize: "12px" }}>{item.no}</td>
+                            <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>{item.kode}</td>
+                            <td style={{ border: "1px solid black", padding: "8px", fontSize: "12px" }}>{item.judul}</td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
+
+            {/* Unit Kompetensi 7 Assessment */}
+            {renderAssessmentTable(formData.aktivitas7, 'aktivitas7', 'Unit Kompetensi 7')}
 
             {/* Action Buttons */}
             <div style={{
