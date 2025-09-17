@@ -115,11 +115,6 @@ const IA03 = () => {
           <br></br>
         </div>
 
-      
-
-      
-
-
         {/* Schema Information */}
         <table style={styles.schemaTable}>
           <tbody>
