@@ -172,24 +172,6 @@ function ListMukHeader({ active = '', onBack, onNavigate }) {
         >
           FR.IA.05.C
         </button>
-        <button
-          onClick={() => onNavigate && onNavigate('listmuk/IA-03/PertanyaanMendukungObservasi')}
-          style={{
-            padding: '12px 20px',
-            fontSize: '14px',
-            fontWeight: '600',
-            border: 'none',
-            backgroundColor: isActive('ia-03') ? '#ff6b35' : 'transparent',
-            color: isActive('ia-03') ? 'white' : '#666',
-            cursor: 'pointer',
-            margin: '4px',
-            borderRadius: '8px',
-            flexShrink: '0',
-            minWidth: 'fit-content',
-          }}
-        >
-          FR.IA.03
-        </button>
       </div>
     </div>
   );
