@@ -280,6 +280,26 @@ function ListMuk({ onBack, onNavigate, data }) {
               >
                 FR.IA.05.C
               </button>
+              <button
+                onClick={() =>
+                  onNavigate && onNavigate("listmuk/IA-03/PertanyaanMendukungObservasi")
+                }
+                style={{
+                  padding: "12px 20px",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  border: "none",
+                  backgroundColor: "transparent",
+                  color: "#666",
+                  cursor: "pointer",
+                  margin: "4px",
+                  borderRadius: "8px",
+                  flexShrink: "0",
+                  minWidth: "fit-content",
+                }}
+              >
+                FR.IA.03
+              </button>
             </div>
           </div>
 
