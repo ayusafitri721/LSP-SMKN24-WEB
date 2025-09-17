@@ -1,4 +1,4 @@
-// src/DashboardAsesi/APL-01/APL-01.jsx
+// src/DashboardAsesi/IA-06c/IA-06c.jsx
 
 import React from 'react';
 import NavAsesi from '../../components/NavAsesi';
@@ -51,14 +51,13 @@ const contentCardStyle = {
   marginTop: '20px',
 };
 
-const APL01 = () => {
+const IA06C = () => {
   return (
     <div style={pageContainerStyle}>
-      {/* Scrollbar styling for WebKit browsers */}
       <style>
         {`
           .nav-scrollbar::-webkit-scrollbar {
-            height: 5px; /* Adjust this value to control the height of the scrollbar */
+            height: 5px;
           }
           .nav-scrollbar::-webkit-scrollbar-track {
             background: transparent;
@@ -73,21 +72,19 @@ const APL01 = () => {
         `}
       </style>
       <div style={navContainerStyle} className="nav-scrollbar">
-        <NavAsesi activeTab="FR.APL.01" />
+        <NavAsesi activeTab="FR.IA.06.C" />
       </div>
-
       <div style={imageBannerStyle}>
         <h1 style={logoTextStyle}>
           MyLSP
         </h1>
       </div>
-
       <div style={contentCardStyle}>
-        <h2>APL.01 - Formulir Permohonan Sertifikasi Kompetensi</h2>
+        <h2>IA.06.C - Daftar Pertanyaan Wawancara</h2>
         <p>Halaman ini akan berisi detail formulir. Saat ini hanya teks placeholder.</p>
       </div>
     </div>
   );
 };
 
-export default APL01;
+export default IA06C;
