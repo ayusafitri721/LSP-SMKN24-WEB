@@ -25,7 +25,8 @@ import LoginRoutes from "./Routes/LoginRoutes";
 import RegisterRoutes from "./Routes/RegisterRoutes";
 import DashboardRoutes from "./Routes/DashboardRoutes";
 import DashboardAsesor from "./DashboardAsesor/DashboardAsesor";
-import DashboardAsesi from "./DashboardAsesi/DashboardAsesi"; // ADDED: Import DashboardAsesi
+// ADDED: Import DashboardAsesiRoutes, bukan DashboardAsesi
+import DashboardAsesiRoutes from "./Routes/DashboardAsesiRoutes"; 
 
 function App() {
   const [pendingScroll, setPendingScroll] = useState(null);
@@ -108,7 +109,7 @@ function App() {
                 goToRegister={() => handleNavigate("/auth/register")}
                 goToDashboard={goToDashboard}
                 goToDashboardAsesor={goToDashboardAsesor}
-                goToDashboardAsesi={goToDashboardAsesi} // ADDED: Pass fungsi ke SertifikasiCTA
+                goToDashboardAsesi={goToDashboardAsesi} 
               />
               <div ref={galeriRef}>
                 <CariSkema goToLandingPage={goToLandingPage} />
@@ -249,8 +250,9 @@ function App() {
         {/* Dashboard Routes */}
         <Route path="/dashboard/*" element={<DashboardRoutes />} />
         <Route path="/dashboard-asesor/*" element={<DashboardAsesor />} />
-        <Route path="/dashboard-asesi/*" element={<DashboardAsesi />} />{" "}
-        {/* ADDED: Dashboard Asesi Routes */}
+        {/* PERBAIKAN: Ganti DashboardAsesi dengan DashboardAsesiRoutes */}
+        <Route path="/dashboard-asesi/*" element={<DashboardAsesiRoutes />} />{" "}
+        {/* Updated: Dashboard Asesi Routes */}
         {/* 404 Route */}
         <Route
           path="*"

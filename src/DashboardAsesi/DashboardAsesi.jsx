@@ -1,6 +1,7 @@
 import React from "react";
 
-function DashboardAsesi() {
+// Menerima prop 'onNavigate' dari komponen induk
+function DashboardAsesi({ onNavigate }) { 
   return (
     <div
       style={{
@@ -298,6 +299,8 @@ function DashboardAsesi() {
               </span>
 
               <button
+                // FIXED: Menggunakan "APL.01" sesuai dengan mapping di route
+                onClick={() => onNavigate && onNavigate("APL.01")}
                 style={{
                   backgroundColor: "white",
                   color: "#4285f4",
