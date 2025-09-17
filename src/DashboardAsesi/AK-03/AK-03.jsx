@@ -123,44 +123,44 @@ const AK03 = () => {
         <table style={tableStyle}>
           <tbody>
             <tr>
-              <td style={tableCellStyle}>Skema Sertifikasi (KODE/OKUPASI/KLASTER)</td>
-              <td style={tableCellStyle}>:</td>
-              <td style={tableCellStyle}></td>
-              <td style={tableCellStyle}>Judul Unit</td>
-              <td style={tableCellStyle}>:</td>
-              <td style={tableCellStyle}></td>
+              <td style={{ ...tableCellStyle, width: '25%' }}>Skema Sertifikasi (KODE/OKUPASI/KLASTER)</td>
+              <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+              <td style={{ ...tableCellStyle, width: '24%' }}></td>
+              <td style={{ ...tableCellStyle, width: '25%' }}>Judul Unit</td>
+              <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+              <td style={{ ...tableCellStyle, width: '24%' }}></td>
             </tr>
             <tr>
-              <td style={tableCellStyle}>TUK</td>
-              <td style={tableCellStyle}>:</td>
-              <td style={tableCellStyle}></td>
-              <td style={tableCellStyle}>Kode Unit</td>
-              <td style={tableCellStyle}>:</td>
-              <td style={tableCellStyle}></td>
+              <td style={{ ...tableCellStyle, width: '25%' }}>TUK</td>
+              <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+              <td style={{ ...tableCellStyle, width: '24%' }}></td>
+              <td style={{ ...tableCellStyle, width: '25%' }}>Kode Unit</td>
+              <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+              <td style={{ ...tableCellStyle, width: '24%' }}></td>
             </tr>
             <tr>
-              <td style={tableCellStyle}>Nama Asesor</td>
-              <td style={tableCellStyle}>:</td>
-              <td style={tableCellStyle}></td>
-              <td style={tableCellStyle}></td>
-              <td style={tableCellStyle}></td>
-              <td style={tableCellStyle}></td>
+              <td style={{ ...tableCellStyle, width: '25%' }}>Nama Asesor</td>
+              <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+              <td style={{ ...tableCellStyle, width: '24%' }}></td>
+              <td style={{ ...tableCellStyle, width: '25%' }}></td>
+              <td style={{ ...tableCellStyle, width: '1%' }}></td>
+              <td style={{ ...tableCellStyle, width: '24%' }}></td>
             </tr>
             <tr>
-              <td style={tableCellStyle}>Nama Asesi</td>
-              <td style={tableCellStyle}>:</td>
-              <td style={tableCellStyle}></td>
-              <td style={tableCellStyle}></td>
-              <td style={tableCellStyle}></td>
-              <td style={tableCellStyle}></td>
+              <td style={{ ...tableCellStyle, width: '25%' }}>Nama Asesi</td>
+              <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+              <td style={{ ...tableCellStyle, width: '24%' }}></td>
+              <td style={{ ...tableCellStyle, width: '25%' }}></td>
+              <td style={{ ...tableCellStyle, width: '1%' }}></td>
+              <td style={{ ...tableCellStyle, width: '24%' }}></td>
             </tr>
             <tr>
-              <td style={tableCellStyle}>Tanggal</td>
-              <td style={tableCellStyle}>:</td>
-              <td style={tableCellStyle}></td>
-              <td style={tableCellStyle}></td>
-              <td style={tableCellStyle}></td>
-              <td style={tableCellStyle}></td>
+              <td style={{ ...tableCellStyle, width: '25%' }}>Tanggal</td>
+              <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+              <td style={{ ...tableCellStyle, width: '24%' }}></td>
+              <td style={{ ...tableCellStyle, width: '25%' }}></td>
+              <td style={{ ...tableCellStyle, width: '1%' }}></td>
+              <td style={{ ...tableCellStyle, width: '24%' }}></td>
             </tr>
           </tbody>
         </table>
