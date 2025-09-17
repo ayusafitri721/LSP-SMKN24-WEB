@@ -1,7 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 
 // Menerima prop 'onNavigate' dari komponen induk
-function DashboardAsesi({ onNavigate }) { 
+function DashboardAsesi({ onNavigate }) {
+  const [profileImage, setProfileImage] = useState(null);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setProfileImage(event.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div
       style={{
@@ -43,7 +56,30 @@ function DashboardAsesi({ onNavigate }) {
             border: "2px solid rgba(255,255,255,0.3)",
           }}
         >
-          <span style={{ color: "white", fontSize: "16px" }}>👤</span>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle
+              cx="12"
+              cy="7"
+              r="4"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
 
         <h1
@@ -73,7 +109,7 @@ function DashboardAsesi({ onNavigate }) {
           style={{
             backgroundColor: "white",
             padding: "12px 20px",
-            borderRadius: "20px",
+            borderRadius: "15px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
             fontSize: "13px",
             fontWeight: "600",
@@ -87,7 +123,7 @@ function DashboardAsesi({ onNavigate }) {
           style={{
             backgroundColor: "white",
             padding: "12px 25px",
-            borderRadius: "20px",
+            borderRadius: "15px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
             fontSize: "13px",
             fontWeight: "600",
@@ -104,7 +140,7 @@ function DashboardAsesi({ onNavigate }) {
           style={{
             backgroundColor: "white",
             padding: "12px 20px",
-            borderRadius: "20px",
+            borderRadius: "15px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
             fontSize: "13px",
             fontWeight: "600",
@@ -115,51 +151,49 @@ function DashboardAsesi({ onNavigate }) {
         </div>
       </div>
 
-      {/* Main Content Container */}
+      {/* Main Content - Separated Cards */}
       <div
         style={{
-          backgroundColor: "white",
-          borderRadius: "15px",
-          padding: "0",
-          boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
-          overflow: "hidden",
+          display: "flex",
+          gap: "20px",
+          alignItems: "flex-start",
         }}
       >
+        {/* Left Panel - Photo and Profile Cards */}
         <div
           style={{
+            width: "220px",
             display: "flex",
-            minHeight: "400px",
+            flexDirection: "column",
+            gap: "15px",
           }}
         >
-          {/* Left Panel - Profile */}
+          {/* Photo Upload Card - Separated */}
           <div
             style={{
-              width: "200px",
-              backgroundColor: "#fafafa",
+              backgroundColor: "white",
+              borderRadius: "15px",
               padding: "25px",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              borderRight: "1px solid #e0e0e0",
             }}
           >
-            {/* Profile Image placeholder with upload functionality */}
             <div
               style={{
-                width: "100px",
-                height: "100px",
-                backgroundColor: "#e0e0e0",
+                width: "120px",
+                height: "120px",
+                backgroundColor: "#e8e8e8",
                 borderRadius: "8px",
                 marginBottom: "15px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "40px",
-                color: "#999",
                 cursor: "pointer",
                 position: "relative",
                 overflow: "hidden",
-                border: "2px dashed #ccc",
+                border: "1px solid #d0d0d0",
               }}
               onClick={() => document.getElementById("fileInput").click()}
             >
@@ -168,76 +202,177 @@ function DashboardAsesi({ onNavigate }) {
                 type="file"
                 accept="image/*"
                 style={{ display: "none" }}
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                      const img = document.getElementById("profileImage");
-                      img.src = event.target.result;
-                      img.style.display = "block";
-                      document.getElementById("cameraIcon").style.display =
-                        "none";
-                    };
-                    reader.readAsDataURL(file);
-                  }
-                }}
+                onChange={handleImageUpload}
               />
-              <img
-                id="profileImage"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  borderRadius: "6px",
-                  display: "none",
-                }}
-                alt="Profile"
-              />
-              <span id="cameraIcon" style={{ fontSize: "40px", color: "#999" }}>
-                📷
-              </span>
+              {profileImage ? (
+                <img
+                  src={profileImage}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: "6px",
+                  }}
+                  alt="Profile"
+                />
+              ) : (
+                <svg
+                  width="50"
+                  height="50"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{ opacity: "0.4" }}
+                >
+                  <path
+                    d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <circle
+                    cx="12"
+                    cy="13"
+                    r="4"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              )}
             </div>
 
             <p
               style={{
-                fontSize: "11px",
+                fontSize: "12px",
                 color: "#666",
                 textAlign: "center",
-                margin: "0 0 25px 0",
-                lineHeight: "1.4",
+                margin: "0",
+                lineHeight: "1.3",
+                fontWeight: "500",
               }}
             >
               Afdzal Ezhar Razona Pangestu
             </p>
+          </div>
 
-            {/* Address and info */}
-            <div style={{ fontSize: "11px", color: "#666", width: "100%" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: "6px",
-                  marginBottom: "12px",
-                }}
+          {/* Address and Gender Info Card - Separated */}
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "15px",
+              padding: "20px",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+            }}
+          >
+            {/* Address section */}
+            <div
+              style={{
+                backgroundColor: "#f8f9fa",
+                borderRadius: "8px",
+                padding: "12px",
+                fontSize: "11px",
+                color: "#666",
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "8px",
+              }}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ marginTop: "1px", opacity: "0.6", flexShrink: 0 }}
               >
-                <span style={{ minWidth: "12px" }}>🏠</span>
-                <span>
-                  Jalan TPI Berondong Kg PEC Jakarta Timur, DKI Jakarta
-                </span>
-              </div>
+                <path
+                  d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <polyline
+                  points="9,22 9,12 15,12 15,22"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span style={{ lineHeight: "1.4", fontSize: "10px" }}>
+                Jalan TPI Berondong Kg PEC Jakarta Timur, DKI Jakarta
+              </span>
+            </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  marginBottom: "20px",
-                }}
+            {/* Gender section */}
+            <div
+              style={{
+                backgroundColor: "#f8f9fa",
+                borderRadius: "8px",
+                padding: "12px",
+                fontSize: "11px",
+                color: "#666",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ opacity: "0.6" }}
               >
-                <span>👤</span>
-                <span>Laki-laki</span>
-              </div>
+                <circle
+                  cx="10"
+                  cy="14"
+                  r="6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <line
+                  x1="21"
+                  y1="3"
+                  x2="16"
+                  y2="8"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <line
+                  x1="18"
+                  y1="3"
+                  x2="21"
+                  y2="3"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <line
+                  x1="21"
+                  y1="3"
+                  x2="21"
+                  y2="6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span style={{ fontSize: "10px" }}>Laki-laki</span>
             </div>
 
             {/* Action button */}
@@ -246,84 +381,97 @@ function DashboardAsesi({ onNavigate }) {
                 backgroundColor: "#4CAF50",
                 color: "white",
                 border: "none",
-                borderRadius: "20px",
-                padding: "10px 25px",
-                fontSize: "12px",
+                borderRadius: "15px",
+                padding: "12px 20px",
+                fontSize: "11px",
                 cursor: "pointer",
                 fontWeight: "600",
+                marginTop: "8px",
+                transition: "all 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = "#45a049";
+                e.target.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = "#4CAF50";
+                e.target.style.transform = "translateY(0)";
               }}
             >
               Aksi
             </button>
           </div>
+        </div>
 
-          {/* Right Panel - Assessment */}
-          <div
+        {/* Right Panel - Assessment Card */}
+        <div
+          style={{
+            flex: 1,
+            backgroundColor: "white",
+            borderRadius: "15px",
+            padding: "25px",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+            height: "fit-content",
+            minHeight: "400px",
+          }}
+        >
+          <h3
             style={{
-              flex: 1,
-              padding: "25px",
+              fontSize: "16px",
+              fontWeight: "600",
+              margin: "0 0 20px 0",
+              color: "#333",
             }}
           >
-            <h3
+            Assessment Terjadwal
+          </h3>
+
+          {/* Assessment Card */}
+          <div
+            style={{
+              backgroundColor: "#2C94FF",
+              borderRadius: "12px",
+              padding: "18px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              boxShadow: "0 4px 12px rgba(44, 148, 255, 0.3)",
+              marginBottom: "15px",
+            }}
+          >
+            <span
               style={{
-                fontSize: "16px",
+                color: "white",
+                fontSize: "14px",
+                fontWeight: "500",
+                flex: 1,
+              }}
+            >
+              Assessment Sertifikasi kompetensi RPL - pemrograman junior
+            </span>
+
+            <button
+              onClick={() => onNavigate && onNavigate("APL.01")}
+              style={{
+                backgroundColor: "white",
+                color: "#2C94FF",
+                border: "none",
+                borderRadius: "25px",
+                padding: "10px 25px",
+                fontSize: "13px",
                 fontWeight: "600",
-                margin: "0 0 20px 0",
-                color: "#333",
+                cursor: "pointer",
+                marginLeft: "15px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                transition: "transform 0.2s ease",
               }}
+              onMouseEnter={(e) =>
+                (e.target.style.transform = "translateY(-1px)")
+              }
+              onMouseLeave={(e) => (e.target.style.transform = "translateY(0)")}
             >
-              Assessment Terjadwal
-            </h3>
-
-            {/* Assessment Card */}
-            <div
-              style={{
-                background: "linear-gradient(135deg, #4285f4 0%, #34a853 100%)",
-                borderRadius: "12px",
-                padding: "18px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                boxShadow: "0 4px 12px rgba(66, 133, 244, 0.3)",
-              }}
-            >
-              <span
-                style={{
-                  color: "white",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  flex: 1,
-                }}
-              >
-                Assessment Sertifikasi kompetensi RPL - pemrograman junior
-              </span>
-
-              <button
-                // FIXED: Menggunakan "APL.01" sesuai dengan mapping di route
-                onClick={() => onNavigate && onNavigate("APL.01")}
-                style={{
-                  backgroundColor: "white",
-                  color: "#4285f4",
-                  border: "none",
-                  borderRadius: "25px",
-                  padding: "10px 25px",
-                  fontSize: "13px",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                  marginLeft: "15px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  transition: "transform 0.2s ease",
-                }}
-                onMouseEnter={(e) =>
-                  (e.target.style.transform = "translateY(-1px)")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.transform = "translateY(0)")
-                }
-              >
-                Mulai
-              </button>
-            </div>
+              Mulai
+            </button>
           </div>
         </div>
       </div>
