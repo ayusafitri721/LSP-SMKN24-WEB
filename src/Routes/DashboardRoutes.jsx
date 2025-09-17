@@ -43,6 +43,7 @@ import AK05Form from "../ListMuk/AK-05/LaporanAsesment";
 import CeklisObservasiAktivitas from "../ListMuk/IA-01/CeklisObservasiAktivitas";
 // FIXED: Mengubah path import untuk LembarJawabanPG
 import LembarJawabanPG from "../ListMuk/IA-05C/LembarJawabanPG"; // CHANGED: Path diperbaiki
+import PertanyaanMendukungObservasi from "../ListMuk/IA-03/PertanyaanMendukungObservasi";
 
 const DashboardRoutes = () => {
   const navigate = useNavigate();
@@ -189,6 +190,8 @@ const DashboardRoutes = () => {
       "listmuk/ia05c": "list-muk/ia-05c",
       // FIX: Tambahkan mapping yang benar untuk FR.IA.05.C
       "listmuk/IA-05C/LembarJawabanPG": "list-muk/ia-05c/lembar-jawaban-pg",
+      // NEW: Tambahkan mapping untuk PertanyaanMendukungObservasi
+      "listmuk/IA-03/PertanyaanMendukungObservasi": "list-muk/ia-03/pertanyaan-mendukung-observasi",
     };
     const route = pageMap[page] || page;
     navigate(`/dashboard/${route}`);
@@ -777,6 +780,19 @@ const DashboardRoutes = () => {
           </DashboardLayout>
         }
       />
+
+      {/* NEW: Route untuk PertanyaanMendukungObservasi */}
+        <Route
+          path="/list-muk/ia-03/pertanyaan-mendukung-observasi"
+          element={
+            <DashboardLayout>
+              <PertanyaanMendukungObservasi
+                onBack={() => navigate("/dashboard/list-muk")}
+                onNavigate={handleNavigate}
+              />
+            </DashboardLayout>
+          }
+        />
 
       {/* Test Route for Debugging */}
       <Route
