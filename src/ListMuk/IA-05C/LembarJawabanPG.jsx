@@ -80,14 +80,159 @@ const LembarJawabanPG = ({ onBack, onNavigate }) => {
                         <polyline points="15 18 9 12 15 6"></polyline>
                     </svg>
                 </button>
-                <h2 style={{
-                    margin: '0',
-                    fontSize: '18px',
-                    fontWeight: '600',
-                    color: '#333'
+                {/* Nav Tabs inside the header */}
+                <div style={{
+                    display: 'flex',
+                    backgroundColor: '#ffffff',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                    padding: '4px',
+                    flexGrow: 1
                 }}>
-                    FR.IA.05.C - Lembar Jawaban Pilihan Ganda
-                </h2>
+                    <button
+                        onClick={() => onNavigate && onNavigate("list-muk")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            borderRadius: '8px',
+                            flexShrink: 0,
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.AK.02
+                    </button>
+                    <button
+                        onClick={() => onNavigate && onNavigate("listmuk/AK-03/UmpanBalik")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            borderRadius: '8px',
+                            flexShrink: '0',
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.AK.03
+                    </button>
+                    <button
+                        onClick={() => onNavigate && onNavigate("listmuk/AK-04/BandingkanAsesmen")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            borderRadius: '8px',
+                            flexShrink: '0',
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.AK.04
+                    </button>
+                    <button
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: '#ff6b35',
+                            color: 'white',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            flexShrink: 0,
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.AK.05
+                    </button>
+                    <button
+                        onClick={() => onNavigate && onNavigate("listmuk/IA-01/CeklisObservasiAktivitas")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            borderRadius: '8px',
+                            flexShrink: '0',
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.IA.01
+                    </button>
+                    <button
+                        onClick={() => onNavigate && onNavigate("listmuk/ia02")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            borderRadius: '8px',
+                            flexShrink: '0',
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.IA.02
+                    </button>
+                    <button
+                        onClick={() => onNavigate && onNavigate("listmuk/ia05b")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#666',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            borderRadius: '8px',
+                            flexShrink: '0',
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.IA.05.B
+                    </button>
+                    <button
+                        onClick={() => onNavigate && onNavigate("listmuk/ia05c")}
+                        style={{
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            border: 'none',
+                            backgroundColor: '#ff6b35',
+                            color: 'white',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            margin: '4px',
+                            flexShrink: '0',
+                            minWidth: 'fit-content'
+                        }}
+                    >
+                        FR.IA.05.C
+                    </button>
+                </div>
             </div>
 
             {/* Main Content */}
