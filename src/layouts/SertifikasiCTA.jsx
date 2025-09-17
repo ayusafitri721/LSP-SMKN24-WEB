@@ -1,6 +1,11 @@
 import React from "react";
 
-function SertifikasiCTA({ goToRegister, goToDashboard, goToDashboardAsesor }) {
+function SertifikasiCTA({
+  goToRegister,
+  goToDashboard,
+  goToDashboardAsesor,
+  goToDashboardAsesi,
+}) {
   return (
     <div style={{ padding: "60px 40px", textAlign: "center" }}>
       <h2 style={{ fontSize: "36px", color: "#333", marginBottom: "20px" }}>
@@ -63,9 +68,26 @@ function SertifikasiCTA({ goToRegister, goToDashboard, goToDashboardAsesor }) {
           fontSize: "18px",
           fontWeight: "600",
           cursor: "pointer",
+          marginRight: "20px",
         }}
       >
         Dashboard Asesor
+      </button>
+
+      <button
+        onClick={goToDashboardAsesi} // FIXED: Menggunakan fungsi yang benar
+        style={{
+          padding: "15px 30px",
+          backgroundColor: "blue",
+          color: "white",
+          border: "none",
+          borderRadius: "25px",
+          fontSize: "18px",
+          fontWeight: "600",
+          cursor: "pointer",
+        }}
+      >
+        Dashboard Asesi
       </button>
     </div>
   );

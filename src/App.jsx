@@ -24,7 +24,8 @@ import VisiMisi from "./layouts/VisiMisi";
 import LoginRoutes from "./Routes/LoginRoutes";
 import RegisterRoutes from "./Routes/RegisterRoutes";
 import DashboardRoutes from "./Routes/DashboardRoutes";
-import DashboardAsesor from "./DashboardAsesor/DashboardAsesor"; // FIXED: Import yang benar
+import DashboardAsesor from "./DashboardAsesor/DashboardAsesor";
+import DashboardAsesi from "./DashboardAsesi/DashboardAsesi"; // ADDED: Import DashboardAsesi
 
 function App() {
   const [pendingScroll, setPendingScroll] = useState(null);
@@ -57,9 +58,13 @@ function App() {
     window.location.href = "/dashboard";
   };
 
-  // FIXED: Fungsi untuk ke Dashboard Asesor
   const goToDashboardAsesor = () => {
     window.location.href = "/dashboard-asesor";
+  };
+
+  // ADDED: Fungsi untuk ke Dashboard Asesi
+  const goToDashboardAsesi = () => {
+    window.location.href = "/dashboard-asesi";
   };
 
   const goToLandingPage = () => {
@@ -102,7 +107,8 @@ function App() {
               <SertifikasiCTA
                 goToRegister={() => handleNavigate("/auth/register")}
                 goToDashboard={goToDashboard}
-                goToDashboardAsesor={goToDashboardAsesor} // FIXED: Pass fungsi ke SertifikasiCTA
+                goToDashboardAsesor={goToDashboardAsesor}
+                goToDashboardAsesi={goToDashboardAsesi} // ADDED: Pass fungsi ke SertifikasiCTA
               />
               <div ref={galeriRef}>
                 <CariSkema goToLandingPage={goToLandingPage} />
@@ -113,7 +119,6 @@ function App() {
             </div>
           }
         />
-
         {/* Public Pages */}
         <Route
           path="/kontak"
@@ -127,7 +132,6 @@ function App() {
             </div>
           }
         />
-
         <Route
           path="/berita"
           element={
@@ -140,7 +144,6 @@ function App() {
             </div>
           }
         />
-
         <Route
           path="/visi-misi"
           element={
@@ -153,7 +156,6 @@ function App() {
             </div>
           }
         />
-
         <Route
           path="/download"
           element={
@@ -169,7 +171,6 @@ function App() {
             </div>
           }
         />
-
         <Route
           path="/tempat-uji"
           element={
@@ -185,7 +186,6 @@ function App() {
             </div>
           }
         />
-
         <Route
           path="/jadwal-asesmen"
           element={
@@ -198,7 +198,6 @@ function App() {
             </div>
           }
         />
-
         <Route
           path="/galeri-foto"
           element={
@@ -214,7 +213,6 @@ function App() {
             </div>
           }
         />
-
         <Route
           path="/galeri-video"
           element={
@@ -230,7 +228,6 @@ function App() {
             </div>
           }
         />
-
         <Route
           path="/detail-sertifikasi"
           element={
@@ -246,17 +243,14 @@ function App() {
             </div>
           }
         />
-
         {/* Auth Routes */}
         <Route path="/auth/login/*" element={<LoginRoutes />} />
         <Route path="/auth/register/*" element={<RegisterRoutes />} />
-
         {/* Dashboard Routes */}
         <Route path="/dashboard/*" element={<DashboardRoutes />} />
-
-        {/* FIXED: Dashboard Asesor Routes */}
         <Route path="/dashboard-asesor/*" element={<DashboardAsesor />} />
-
+        <Route path="/dashboard-asesi/*" element={<DashboardAsesi />} />{" "}
+        {/* ADDED: Dashboard Asesi Routes */}
         {/* 404 Route */}
         <Route
           path="*"
