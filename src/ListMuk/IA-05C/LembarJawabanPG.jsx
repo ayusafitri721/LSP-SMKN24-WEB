@@ -144,16 +144,17 @@ const LembarJawabanPG = ({ onBack, onNavigate }) => {
                         FR.AK.04
                     </button>
                     <button
+                        onClick={() => onNavigate && onNavigate("listmuk/ak05")}
                         style={{
                             padding: '12px 20px',
                             fontSize: '14px',
                             fontWeight: '600',
                             border: 'none',
-                            backgroundColor: '#ff6b35',
-                            color: 'white',
-                            borderRadius: '8px',
+                            backgroundColor: 'transparent',
+                            color: '#666',
                             cursor: 'pointer',
                             margin: '4px',
+                            borderRadius: '8px',
                             flexShrink: 0,
                             minWidth: 'fit-content'
                         }}
@@ -195,24 +196,6 @@ const LembarJawabanPG = ({ onBack, onNavigate }) => {
                         }}
                     >
                         FR.IA.02
-                    </button>
-                    <button
-                        onClick={() => onNavigate && onNavigate("listmuk/ia05b")}
-                        style={{
-                            padding: '12px 20px',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            border: 'none',
-                            backgroundColor: 'transparent',
-                            color: '#666',
-                            cursor: 'pointer',
-                            margin: '4px',
-                            borderRadius: '8px',
-                            flexShrink: '0',
-                            minWidth: 'fit-content'
-                        }}
-                    >
-                        FR.IA.05.B
                     </button>
                     <button
                         onClick={() => onNavigate && onNavigate("listmuk/ia05c")}
