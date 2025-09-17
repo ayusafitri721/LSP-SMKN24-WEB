@@ -2,8 +2,87 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import NavAsesi from '../../components/NavAsesi';
 
+// NavAsesi Component yang sudah dimodifikasi dengan tab oranye
+const NavAsesi = ({ activeTab }) => {
+  const navigate = useNavigate();
+
+  const baseTabStyle = {
+    padding: '10px 20px',
+    marginRight: '10px',
+    border: 'none',
+    borderRadius: '20px',
+    cursor: 'pointer',
+    fontSize: '12px',
+    fontWeight: 'bold',
+    transition: 'all 0.3s ease',
+    whiteSpace: 'nowrap',
+  };
+
+  const getTabStyle = (tabId) => {
+    if (activeTab === tabId) {
+      return {
+        ...baseTabStyle,
+        backgroundColor: '#f8f9fa', // Background tetap abu-abu
+        color: '#FF8C00', // TEKS WARNA ORANYE untuk tab aktif
+        fontWeight: 'bold',
+      };
+    }
+    return {
+      ...baseTabStyle,
+      backgroundColor: '#f8f9fa',
+      color: '#666',
+    };
+  };
+
+  const tabs = [
+    { id: 'FR.APL.01', label: 'FR.APL.01', path: '/dashboard-asesi/apl-01' },
+    { id: 'FR.APL.02', label: 'FR.APL.02', path: '/dashboard-asesi/apl-02' },
+    { id: 'FR.AK.01', label: 'FR.AK.01', path: '/dashboard-asesi/ak-01' },
+    { id: 'FR.AK.02', label: 'FR.AK.02', path: '/dashboard-asesi/ak-02' },
+    { id: 'FR.AK.03', label: 'FR.AK.03', path: '/dashboard-asesi/ak-03' },
+    { id: 'FR.AK.04', label: 'FR.AK.04', path: '/dashboard-asesi/ak-04' },
+    { id: 'FR.AK.05', label: 'FR.AK.05', path: '/dashboard-asesi/ak-05' },
+    { id: 'FR.AK.06', label: 'FR.AK.06', path: '/dashboard-asesi/ak-06' },
+    { id: 'FR.AK.07', label: 'FR.AK.07', path: '/dashboard-asesi/ak-07' },
+  ];
+
+  const handleTabClick = (path) => {
+    navigate(path);
+  };
+
+  const handleMouseEnter = (e, tabId) => {
+    if (activeTab !== tabId) {
+      e.target.style.backgroundColor = '#f0f0f0'; // Background hover abu-abu terang
+      e.target.style.color = '#333'; // Teks hover abu-abu gelap
+    }
+  };
+
+  const handleMouseLeave = (e, tabId) => {
+    if (activeTab !== tabId) {
+      e.target.style.backgroundColor = '#f8f9fa';
+      e.target.style.color = '#666';
+    }
+  };
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+      {tabs.map((tab) => (
+        <button
+          key={tab.id}
+          style={getTabStyle(tab.id)}
+          onClick={() => handleTabClick(tab.path)}
+          onMouseEnter={(e) => handleMouseEnter(e, tab.id)}
+          onMouseLeave={(e) => handleMouseLeave(e, tab.id)}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+// Styles tetap sama
 const pageContainerStyle = {
   backgroundColor: '#f5f5f5',
   fontFamily: 'Arial, sans-serif',
