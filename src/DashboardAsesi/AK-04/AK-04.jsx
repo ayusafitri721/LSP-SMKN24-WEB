@@ -91,7 +91,7 @@ const titleStyle = {
 
 const subtitleStyle = {
   fontSize: '12px',
-  color: '#666',
+  color: '#333',
   margin: '2px 0 0 0',
 };
 
@@ -366,7 +366,7 @@ const AK04 = () => {
               }}
             />
           </div>
-          <div>
+          <div style={{ flex: 1, textAlign: 'center' }}>
             <h1 style={titleStyle}>FR.AK.04</h1>
             <p style={subtitleStyle}>REKAMAN ASESMEN KOMPETENSI</p>
           </div>
