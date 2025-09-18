@@ -1,14 +1,50 @@
-import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import React, { useState, useRef } from "react";
+import { User, FileText, Calendar, Edit3 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const DashboardAsesor = () => { // Hapus prop { onNavigate }
-  const navigate = useNavigate(); // Inisialisasi hook useNavigate
+const DashboardAsesor = () => {
+  const navigate = useNavigate();
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const scrollRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
   const handleCardClick = (index) => {
-    // Navigasi langsung ke route /dashboard-rpl
-    if (index === 0) { // Hanya aktifkan navigasi untuk card pertama
+    if (!isDragging) {
+      // Navigate to DashboardRpl for any "On Going" card
       navigate("/dashboard-asesor/dashboard-rpl");
     }
+  };
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleJadwalClick = () => {
+    navigate("/jadwal");
+  };
+
+  const handlePenilaianClick = () => {
+    navigate("/penilaian");
   };
 
   return (
@@ -49,12 +85,12 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
               marginBottom: "8px",
             }}
           >
-            <span style={{ fontSize: "16px" }}>👤</span>
             <span
               style={{ fontSize: "14px", color: "#6b7280", fontWeight: "500" }}
             >
               Jumlah Asesi
             </span>
+            <User size={20} color="#6b7280" />
           </div>
           <p
             style={{
@@ -72,7 +108,7 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
         <div
           style={{
             backgroundImage:
-              "linear-gradient(rgba(249, 115, 22, 0.8), rgba(251, 146, 60, 0.8)), url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80')",
+              "linear-gradient(rgba(249, 115, 22, 0.8), rgba(251, 146, 60, 0.8)), url('/src/img/kontak.png')",
             backgroundSize: "cover",
             backgroundPosition: "center",
             borderRadius: "12px",
@@ -101,7 +137,7 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
               textShadow: "0 1px 2px rgba(0,0,0,0.5)",
             }}
           >
-              Lembaga Sertifikasi Profesi
+            Lembaga Sertifikasi Profesi
           </p>
         </div>
 
@@ -124,12 +160,12 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
               marginBottom: "8px",
             }}
           >
-            <span style={{ fontSize: "16px" }}>📋</span>
             <span
               style={{ fontSize: "14px", color: "#6b7280", fontWeight: "500" }}
             >
               Skema
             </span>
+            <FileText size={20} color="#6b7280" />
           </div>
           <p
             style={{
@@ -147,7 +183,7 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
       {/* Welcome Header */}
       <div
         style={{
-          background: "linear-gradient(135deg, #ff7f39, #fb923c)",
+          background: "linear-gradient(135deg, #FE9C54, #fb923c)",
           borderRadius: "12px",
           padding: "25px",
           marginBottom: "20px",
@@ -156,19 +192,23 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
       >
         <h2
           style={{
-            fontSize: "24px",
-            marginBottom: "5px",
-            fontWeight: "600",
-            margin: "0",
+            fontSize: "28px",
+            marginBottom: "2px",
+            fontWeight: "700",
+            margin: "0 0 2px 0",
+            lineHeight: "1.2",
           }}
         >
           Selamat datang di MyLsp, Asesor Arul!
         </h2>
         <p
           style={{
-            fontSize: "14px",
-            margin: "5px 0 0 0",
+            fontSize: "15px",
+            margin: "0",
             opacity: 0.9,
+            fontWeight: "400",
+            lineHeight: "1.3",
+            fontStyle: "italic",
           }}
         >
           Semangat menjadi Asesor hari ini
@@ -182,14 +222,25 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
         }}
       >
         <div
+          ref={scrollRef}
           style={{
             display: "flex",
             gap: "15px",
             overflowX: "auto",
+            overflowY: "hidden",
             paddingBottom: "10px",
             scrollbarWidth: "thin",
             scrollbarColor: "#cbd5e0 transparent",
+            cursor: isDragging ? "grabbing" : "grab",
+            userSelect: "none",
+            scrollBehavior: "smooth",
+            WebkitOverflowScrolling: "touch",
           }}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+          className="scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
         >
           {[
             {
@@ -216,8 +267,44 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
               status: "On Going",
               isActive: false,
             },
+            {
+              title: "USK TKJ - JARINGAN KOMPUTER",
+              location: "SMKN 10 Jakarta",
+              status: "On Going",
+              isActive: false,
+            },
+            {
+              title: "USK MM - MULTIMEDIA",
+              location: "SMKN 5 Jakarta",
+              status: "On Going",
+              isActive: false,
+            },
+            {
+              title: "USK RPL - MOBILE DEVELOPMENT",
+              location: "SMKN 15 Jakarta",
+              status: "On Going",
+              isActive: false,
+            },
+            {
+              title: "USK TKJ - SISTEM KEAMANAN",
+              location: "SMKN 8 Jakarta",
+              status: "On Going",
+              isActive: false,
+            },
+            {
+              title: "USK RPL - DATABASE MANAGEMENT",
+              location: "SMKN 12 Jakarta",
+              status: "On Going",
+              isActive: false,
+            },
+            {
+              title: "USK MM - DESAIN GRAFIS",
+              location: "SMKN 3 Jakarta",
+              status: "On Going",
+              isActive: false,
+            },
           ].map((item, index) => {
-            const isActive = index === 0;
+            const isHovered = hoveredCard === index;
             return (
               <div
                 key={index}
@@ -225,38 +312,38 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
                   backgroundColor: "white",
                   borderRadius: "8px",
                   padding: "15px",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  boxShadow: isHovered
+                    ? "0 4px 8px rgba(0,0,0,0.15)"
+                    : "0 2px 4px rgba(0,0,0,0.1)",
                   border: "1px solid #e5e7eb",
-                  minWidth: "200px",
+                  minWidth: "220px",
                   flexShrink: 0,
                   cursor: "pointer",
-                  transition: "transform 0.2s, box-shadow 0.2s",
+                  transition: "all 0.2s ease",
+                  transform: isHovered ? "translateY(-2px)" : "translateY(0)",
+                  position: "relative",
                 }}
-                onClick={() => handleCardClick(index)} // Panggil handleCardClick saat diklik
-                onMouseEnter={(e) => {
-                  e.target.style.transform = "translateY(-2px)";
-                  e.target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = "translateY(0)";
-                  e.target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
-                }}
+                onClick={() => handleCardClick(index)}
+                onMouseEnter={() => !isDragging && setHoveredCard(index)}
+                onMouseLeave={() => setHoveredCard(null)}
               >
                 <h3
                   style={{
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    marginBottom: "8px",
-                    color: "#1f2937",
+                    fontSize: "13px",
+                    fontWeight: "700",
+                    marginBottom: "4px",
+                    color: "#000000",
+                    lineHeight: "1.2",
                   }}
                 >
                   {item.title}
                 </h3>
                 <p
                   style={{
-                    fontSize: "12px",
+                    fontSize: "11px",
                     color: "#6b7280",
-                    marginBottom: "12px",
+                    marginBottom: "20px",
+                    fontStyle: "italic",
                   }}
                 >
                   {item.location}
@@ -264,12 +351,16 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
                 <span
                   style={{
                     display: "inline-block",
-                    backgroundColor: isActive ? "#10b981" : "#d1d5db",
-                    color: isActive ? "white" : "#6b7280",
-                    padding: "4px 12px",
-                    borderRadius: "15px",
-                    fontSize: "11px",
-                    fontWeight: "500",
+                    backgroundColor: isHovered ? "#10b981" : "#d1d5db",
+                    color: isHovered ? "white" : "#6b7280",
+                    padding: "6px 16px",
+                    borderRadius: "20px",
+                    fontSize: "10px",
+                    fontWeight: "600",
+                    transition: "all 0.2s ease",
+                    position: "absolute",
+                    bottom: "15px",
+                    right: "15px",
                   }}
                 >
                   {item.status}
@@ -312,7 +403,7 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
             e.target.style.transform = "translateY(0)";
             e.target.style.boxShadow = "0 4px 12px rgba(6, 182, 212, 0.3)";
           }}
-          onClick={() => navigate("/jadwal")} // Navigasi ke rute jadwal
+          onClick={handleJadwalClick}
         >
           <div
             style={{
@@ -323,10 +414,9 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "18px",
             }}
           >
-            📅
+            <Calendar size={18} color="white" />
           </div>
           Jadwal Sertifikasi Mendatang
           <span style={{ marginLeft: "auto", fontSize: "16px" }}>›</span>
@@ -356,7 +446,7 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
             e.target.style.transform = "translateY(0)";
             e.target.style.boxShadow = "0 4px 12px rgba(6, 182, 212, 0.3)";
           }}
-          onClick={() => navigate("/penilaian")} // Navigasi ke rute penilaian
+          onClick={handlePenilaianClick}
         >
           <div
             style={{
@@ -367,10 +457,9 @@ const DashboardAsesor = () => { // Hapus prop { onNavigate }
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "18px",
             }}
           >
-            📝
+            <Edit3 size={18} color="white" />
           </div>
           Penilaian Asesi
           <span style={{ marginLeft: "auto", fontSize: "16px" }}>›</span>
