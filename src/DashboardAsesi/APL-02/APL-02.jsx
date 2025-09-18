@@ -169,6 +169,14 @@ const APL02 = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
+  const [checkAllState, setCheckAllState] = useState({ K: false, BK: false });
+  const [asesiApproval, setAsesiApproval] = useState('Approve');
+  const [asesorApproval, setAsesorApproval] = useState('Menunggu');
+  const [individualChecks, setIndividualChecks] = useState({
+    elemen1K: false,
+    elemen1BK: false
+  });
+  
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -226,6 +234,158 @@ const APL02 = () => {
     setTimeout(() => {
       navigate('/dashboard-asesi/ak-01');
     }, 300);
+  };
+
+  // Check All Component
+  const CheckAllComponent = () => {
+    const handleCheckAll = () => {
+      const newState = !(checkAllState.K && checkAllState.BK);
+      setCheckAllState({ K: newState, BK: newState });
+      // Update individual checks as well
+      setIndividualChecks(prev => ({
+        ...prev,
+        elemen1K: newState,
+        elemen1BK: newState
+      }));
+    };
+
+    const handleKChange = () => {
+      const newValue = !checkAllState.K;
+      setCheckAllState(prev => ({ ...prev, K: newValue }));
+      setIndividualChecks(prev => ({ ...prev, elemen1K: newValue }));
+    };
+
+    const handleBKChange = () => {
+      const newValue = !checkAllState.BK;
+      setCheckAllState(prev => ({ ...prev, BK: newValue }));
+      setIndividualChecks(prev => ({ ...prev, elemen1BK: newValue }));
+    };
+
+    return (
+      <div style={{
+        backgroundColor: '#f8f9fa',
+        border: '1px solid #ddd',
+        padding: '15px 20px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '20px',
+        minWidth: '180px',
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      }}>
+        {/* Check All Button */}
+        <button 
+          onClick={handleCheckAll}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+            padding: '6px 12px',
+            backgroundColor: 'transparent',
+            border: '1px solid #ff8c00',
+            borderRadius: '4px',
+            fontSize: '12px',
+            cursor: 'pointer',
+            color: '#ff8c00',
+            fontWeight: '600',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = '#fff5e6';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'transparent';
+          }}
+        >
+          Check All
+        </button>
+        
+        {/* K Checkbox */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '4px'
+        }}>
+          <label style={{
+            fontSize: '13px',
+            fontWeight: 'bold',
+            color: '#333'
+          }}>
+            K
+          </label>
+          <div 
+            onClick={handleKChange}
+            style={{
+              width: '28px',
+              height: '28px',
+              border: '2px solid #999',
+              backgroundColor: 'white',
+              borderRadius: '3px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              borderColor: checkAllState.K ? '#ff8c00' : '#999'
+            }}
+          >
+            {checkAllState.K && (
+              <span style={{ 
+                color: 'black', 
+                fontSize: '16px', 
+                fontWeight: 'bold' 
+              }}>
+                ✓
+              </span>
+            )}
+          </div>
+        </div>
+        
+        {/* BK Checkbox */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '4px'
+        }}>
+          <label style={{
+            fontSize: '13px',
+            fontWeight: 'bold',
+            color: '#333'
+          }}>
+            BK
+          </label>
+          <div 
+            onClick={handleBKChange}
+            style={{
+              width: '28px',
+              height: '28px',
+              border: '2px solid #999',
+              backgroundColor: 'white',
+              borderRadius: '3px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              borderColor: checkAllState.BK ? '#ff8c00' : '#999'
+            }}
+          >
+            {checkAllState.BK && (
+              <span style={{ 
+                color: 'black', 
+                fontSize: '16px', 
+                fontWeight: 'bold' 
+              }}>
+                ✓
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -288,8 +448,8 @@ const APL02 = () => {
           borderBottom: '2px solid #FF8C00'
         }}>
           <div style={{
-            width: '60px',
-            height: '60px',
+            width: '80px',
+            height: '80px',
             borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
@@ -461,61 +621,8 @@ const APL02 = () => {
             </ul>
           </div>
 
-          {/* Separate check all section */}
-          <div style={{
-            backgroundColor: '#f8f9fa',
-            border: '1px solid #ddd',
-            padding: '15px 20px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: '20px',
-            minWidth: '120px',
-            borderRadius: '8px'
-          }}>
-            <button style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px',
-              padding: '4px 8px',
-              backgroundColor: 'transparent',
-              border: '1px solid #999',
-              borderRadius: '3px',
-              fontSize: '11px',
-              cursor: 'pointer',
-              color: '#ff8c00',
-              fontWeight: 'normal'
-            }}>
-              Check All
-            </button>
-            <div style={{
-              display: 'flex',
-              gap: '8px',
-              fontSize: '12px',
-              fontWeight: 'bold'
-            }}>
-              <div style={{
-                border: '1px solid #999',
-                padding: '4px 8px',
-                backgroundColor: 'white',
-                minWidth: '25px',
-                textAlign: 'center',
-                borderRadius: '2px'
-              }}>
-                K
-              </div>
-              <div style={{
-                border: '1px solid #999',
-                padding: '4px 8px',
-                backgroundColor: 'white',
-                minWidth: '25px',
-                textAlign: 'center',
-                borderRadius: '2px'
-              }}>
-                BK
-              </div>
-            </div>
-          </div>
+          {/* Updated Check All Section */}
+          <CheckAllComponent />
         </div>
 
         {/* Unit Kompetensi 1 */}
@@ -683,38 +790,63 @@ const APL02 = () => {
                 gap: '30px',
                 alignItems: 'center'
               }}>
-                <label style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontSize: '13px',
-                  fontWeight: 'bold'
-                }}>
-                  <input 
-                    type="checkbox" 
-                    style={{
-                      width: '16px',
-                      height: '16px'
-                    }}
-                  />
+                <div 
+                  onClick={() => setIndividualChecks(prev => ({ ...prev, elemen1K: !prev.elemen1K }))}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    fontSize: '13px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <div style={{
+                    width: '20px',
+                    height: '20px',
+                    border: '2px solid #999',
+                    backgroundColor: 'white',
+                    borderRadius: '3px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderColor: individualChecks.elemen1K ? '#ff8c00' : '#999'
+                  }}>
+                    {individualChecks.elemen1K && (
+                      <span style={{ color: 'black', fontSize: '12px', fontWeight: 'bold' }}>✓</span>
+                    )}
+                  </div>
                   K
-                </label>
-                <label style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontSize: '13px',
-                  fontWeight: 'bold'
-                }}>
-                  <input 
-                    type="checkbox"
-                    style={{
-                      width: '16px',
-                      height: '16px'
-                    }}
-                  />
+                </div>
+                
+                <div 
+                  onClick={() => setIndividualChecks(prev => ({ ...prev, elemen1BK: !prev.elemen1BK }))}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    fontSize: '13px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <div style={{
+                    width: '20px',
+                    height: '20px',
+                    border: '2px solid #999',
+                    backgroundColor: 'white',
+                    borderRadius: '3px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderColor: individualChecks.elemen1BK ? '#ff8c00' : '#999'
+                  }}>
+                    {individualChecks.elemen1BK && (
+                      <span style={{ color: 'white', fontSize: '12px', fontWeight: 'bold' }}>✓</span>
+                    )}
+                  </div>
                   BK
-                </label>
+                </div>
               </div>
             </div>
 
@@ -740,7 +872,7 @@ const APL02 = () => {
                 gap: '6px',
                 fontSize: '12px'
               }}>
-                {['bukti I', 'bukti I', 'bukti I', 'bukti I', 'bukti I', 'bukti I'].map((bukti, index) => (
+                {['bukti I', 'bukti II', 'bukti III', 'bukti IV', 'bukti V', 'bukti VI'].map((bukti, index) => (
                   <label key={index} style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
@@ -754,7 +886,7 @@ const APL02 = () => {
                         height: '14px' 
                       }} 
                     />
-                    <span>☐ {bukti}</span>
+                    <span>{bukti}</span>
                   </label>
                 ))}
               </div>
@@ -838,16 +970,21 @@ const APL02 = () => {
               paddingRight: '50px'
             }}>
               <span style={{ fontSize: '11px', color: '#666' }}>Persetujuan Asesi</span>
-              <button style={{
-                padding: '8px 20px',
-                backgroundColor: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '20px',
-                fontSize: '12px',
-                fontWeight: 'bold'
-              }}>
-                Approve
+              <button 
+                onClick={() => setAsesiApproval(asesiApproval === 'Approve' ? 'Menunggu' : 'Approve')}
+                style={{
+                  padding: '8px 20px',
+                  backgroundColor: asesiApproval === 'Approve' ? '#28a745' : '#6c757d',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '20px',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                {asesiApproval}
               </button>
             </div>
           </div>
@@ -926,16 +1063,21 @@ const APL02 = () => {
               paddingRight: '50px'
             }}>
               <span style={{ fontSize: '11px', color: '#666' }}>Persetujuan Asesor</span>
-              <button style={{
-                padding: '8px 20px',
-                backgroundColor: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '20px',
-                fontSize: '12px',
-                fontWeight: 'bold'
-              }}>
-                Menunggu
+              <button 
+                onClick={() => setAsesorApproval(asesorApproval === 'Approve' ? 'Menunggu' : 'Approve')}
+                style={{
+                  padding: '8px 20px',
+                  backgroundColor: asesorApproval === 'Approve' ? '#28a745' : '#6c757d',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '20px',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                {asesorApproval}
               </button>
             </div>
           </div>
