@@ -285,7 +285,7 @@ const APL02 = () => {
           gap: '15px',
           marginBottom: '20px',
           paddingBottom: '15px',
-          borderBottom: '2px solid #ddd'
+          borderBottom: '2px solid #FF8C00'
         }}>
           <div style={{
             width: '60px',
@@ -426,7 +426,7 @@ const APL02 = () => {
         }}>
           {/* Main orange section */}
           <div style={{
-            backgroundColor: '#ffeaa7',
+            backgroundColor: 'rgba(255, 131, 3, 0.34)',
             padding: '15px',
             flex: 1,
             borderRadius: '8px',
