@@ -213,6 +213,12 @@ const tableCellStyle = {
   padding: '8px',
 };
 
+const tableTopCellStyle = {
+  border: '1px solid #ddd',
+  padding: '8px',
+  verticalAlign: 'top',
+};
+
 const buttonStyle = {
   backgroundColor: '#1a73e8',
   color: 'white',
@@ -400,22 +406,16 @@ const AK03 = () => {
         </div>
 
         <form onSubmit={handleSubmit}>
+          {/* Perubahan pada struktur tabel ini */}
           <table style={tableStyle}>
             <tbody>
               <tr>
-                <td style={{ ...tableCellStyle, width: '25%' }}>Skema Sertifikasi (KODE/OKUPASI/KLASTER)</td>
+                <td style={{ ...tableTopCellStyle, width: '25%' }} rowSpan="2">Skema Sertifikasi (KKNI/OKUPASI/KLASTER)</td>
+                <td style={{ ...tableTopCellStyle, width: '0%' }} rowSpan="2"></td>
+                
+                <td style={{ ...tableCellStyle, width: '15%' }}>Judul Unit</td>
                 <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
-                <td style={{ ...tableCellStyle, width: '24%' }}>
-                  <input
-                    type="text"
-                    style={{ width: '100%', border: 'none', outline: 'none' }}
-                    value={formData.skemaSertifikasi}
-                    onChange={(e) => handleInputChange('skemaSertifikasi', e.target.value)}
-                  />
-                </td>
-                <td style={{ ...tableCellStyle, width: '25%' }}>Judul Unit</td>
-                <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
-                <td style={{ ...tableCellStyle, width: '24%' }}>
+                <td style={{ ...tableCellStyle, width: '34%' }}>
                   <input
                     type="text"
                     style={{ width: '100%', border: 'none', outline: 'none' }}
@@ -425,19 +425,9 @@ const AK03 = () => {
                 </td>
               </tr>
               <tr>
-                <td style={{ ...tableCellStyle, width: '25%' }}>TUK</td>
+                <td style={{ ...tableCellStyle, width: '15%' }}>Kode Unit</td>
                 <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
-                <td style={{ ...tableCellStyle, width: '24%' }}>
-                  <input
-                    type="text"
-                    style={{ width: '100%', border: 'none', outline: 'none' }}
-                    value={formData.tuk}
-                    onChange={(e) => handleInputChange('tuk', e.target.value)}
-                  />
-                </td>
-                <td style={{ ...tableCellStyle, width: '25%' }}>Kode Unit</td>
-                <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
-                <td style={{ ...tableCellStyle, width: '24%' }}>
+                <td style={{ ...tableCellStyle, width: '34%' }}>
                   <input
                     type="text"
                     style={{ width: '100%', border: 'none', outline: 'none' }}
@@ -447,9 +437,21 @@ const AK03 = () => {
                 </td>
               </tr>
               <tr>
+                <td style={{ ...tableCellStyle, width: '25%' }}>TUK</td>
+                <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+                <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
+                  <input
+                    type="text"
+                    style={{ width: '100%', border: 'none', outline: 'none' }}
+                    value={formData.tuk}
+                    onChange={(e) => handleInputChange('tuk', e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
                 <td style={{ ...tableCellStyle, width: '25%' }}>Nama Asesor</td>
                 <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
-                <td style={{ ...tableCellStyle, width: '24%' }}>
+                <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
                   <input
                     type="text"
                     style={{ width: '100%', border: 'none', outline: 'none' }}
@@ -457,14 +459,11 @@ const AK03 = () => {
                     onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
                   />
                 </td>
-                <td style={{ ...tableCellStyle, width: '25%' }}></td>
-                <td style={{ ...tableCellStyle, width: '1%' }}></td>
-                <td style={{ ...tableCellStyle, width: '24%' }}></td>
               </tr>
               <tr>
                 <td style={{ ...tableCellStyle, width: '25%' }}>Nama Asesi</td>
                 <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
-                <td style={{ ...tableCellStyle, width: '24%' }}>
+                <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
                   <input
                     type="text"
                     style={{ width: '100%', border: 'none', outline: 'none' }}
@@ -472,14 +471,11 @@ const AK03 = () => {
                     onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
                   />
                 </td>
-                <td style={{ ...tableCellStyle, width: '25%' }}></td>
-                <td style={{ ...tableCellStyle, width: '1%' }}></td>
-                <td style={{ ...tableCellStyle, width: '24%' }}></td>
               </tr>
               <tr>
                 <td style={{ ...tableCellStyle, width: '25%' }}>Tanggal</td>
                 <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
-                <td style={{ ...tableCellStyle, width: '24%' }}>
+                <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
                   <input
                     type="text"
                     style={{ width: '100%', border: 'none', outline: 'none' }}
@@ -487,9 +483,6 @@ const AK03 = () => {
                     onChange={(e) => handleInputChange('tanggal', e.target.value)}
                   />
                 </td>
-                <td style={{ ...tableCellStyle, width: '25%' }}></td>
-                <td style={{ ...tableCellStyle, width: '1%' }}></td>
-                <td style={{ ...tableCellStyle, width: '24%' }}></td>
               </tr>
             </tbody>
           </table>
