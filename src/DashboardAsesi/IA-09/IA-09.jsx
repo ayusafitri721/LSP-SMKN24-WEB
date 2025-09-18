@@ -5,33 +5,40 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
 
 const pageContainerStyle = {
-  backgroundColor: '#f5f5f5',
+  backgroundColor: 'white',
   fontFamily: 'Arial, sans-serif',
   padding: '15px',
+  minHeight: '100vh',
+};
+
+const headerSectionStyle = {
+  backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  borderRadius: '0 0 40px 40px',
+  overflow: 'hidden',
+  marginBottom: '0',
 };
 
 const navContainerStyle = {
-  backgroundColor: 'white',
+  backgroundColor: 'rgba(255, 255, 255, 0.95)',
   padding: '5px 15px',
   borderRadius: '15px 15px 40px 15px',
   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  margin: '15px 15px 0 15px',
+  margin: '0 15px 0 0',
   overflowX: 'auto',
   maxWidth: '50%',
   whiteSpace: 'nowrap',
+  backdropFilter: 'blur(10px)',
+  position: 'relative',
+  zIndex: 2,
 };
 
-const imageBannerStyle = {
-  backgroundImage:
-    "linear-gradient(rgba(255,140,0,0.7), rgba(255,140,0,0.7)), url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')",
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  height: '160px',
+const logoContainerStyle = {
+  height: '180px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  borderRadius: '15px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
   marginTop: '20px',
 };
 
@@ -46,10 +53,11 @@ const logoTextStyle = {
 
 const contentCardStyle = {
   backgroundColor: 'white',
-  borderRadius: '15px',
+  borderRadius: '0 0 15px 15px',
   padding: '30px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-  marginTop: '20px',
+  boxShadow: 'none',
+  marginTop: '0',
+  border: 'none',
 };
 
 const headerStyle = {
@@ -71,7 +79,7 @@ const subtitleStyle = {
   margin: '0',
 };
 
-const logoContainerStyle = {
+const logoLSPContainerStyle = {
   position: 'absolute',
   top: '20px',
   left: '30px',
@@ -502,17 +510,17 @@ const IA09 = () => {
         </div>
       )}
       
-      <div style={navContainerStyle} className="nav-scrollbar">
-        <NavAsesi activeTab="FR.IA.09" />
-      </div>
-      
-      <div style={imageBannerStyle}>
-        <h1 style={logoTextStyle}>MyLSP</h1>
+      <div style={headerSectionStyle}>
+        <div style={navContainerStyle} className="nav-scrollbar">
+          <NavAsesi activeTab="FR.IA.09" />
+        </div>
+
+        <div style={logoContainerStyle}>
+          <h1 style={logoTextStyle}>MyLSP</h1>
+        </div>
       </div>
       
       <div style={contentCardStyle}>
-        <div style={logoContainerStyle}>LSP</div>
-        
         <div style={headerStyle}>
           <div style={titleStyle}>FR.IA.09</div>
           <div style={subtitleStyle}>PERTANYAAN WAWANCARA</div>
