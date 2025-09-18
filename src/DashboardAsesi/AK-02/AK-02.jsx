@@ -203,8 +203,83 @@ const AK02 = () => {
     }));
   };
 
+  const handleRekomendasiChange = (field, value) => {
+    if (field === "alasanKompeten" && value) {
+      // Jika pilih Kompeten, uncheck Belum Kompeten
+      setFormData((prev) => ({
+        ...prev,
+        alasanKompeten: true,
+        selesaiKompeten: false,
+      }));
+    } else if (field === "selesaiKompeten" && value) {
+      // Jika pilih Belum Kompeten, uncheck Kompeten
+      setFormData((prev) => ({
+        ...prev,
+        alasanKompeten: false,
+        selesaiKompeten: true,
+      }));
+    } else {
+      // Jika uncheck
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Validasi form
+    const requiredFields = [
+      { field: "judulUnit", name: "Judul Unit" },
+      { field: "kodeUnit", name: "Kode Unit" },
+      { field: "tuk", name: "TUK" },
+      { field: "namaAsesor", name: "Nama Asesor" },
+      { field: "namaAsesi", name: "Nama Asesi" },
+      { field: "tanggal", name: "Tanggal" },
+      { field: "waktu", name: "Waktu" },
+      { field: "komentar", name: "Alasan/Komentar" },
+      { field: "tanggapanAsesi", name: "Tindakan Selanjutnya" },
+    ];
+
+    // Cek field yang kosong
+    const emptyFields = requiredFields.filter(
+      ({ field }) => !formData[field].trim()
+    );
+
+    if (emptyFields.length > 0) {
+      alert(
+        `Harap lengkapi field berikut:\n${emptyFields
+          .map((f) => `- ${f.name}`)
+          .join("\n")}`
+      );
+      return;
+    }
+
+    // Cek apakah minimal satu unit kompetensi ada yang dicentang
+    const hasAnyUnitChecked = formData.unitKompetensi.some(
+      (unit) =>
+        unit.kompeten ||
+        unit.portfolioSesuai ||
+        unit.penguatanEvidenceSesuai ||
+        unit.hasilPenguatanEvidenceSesuai ||
+        unit.rekomendasiBelumKompeten
+    );
+
+    if (!hasAnyUnitChecked) {
+      alert("Harap centang minimal satu opsi pada Unit Kompetensi");
+      return;
+    }
+
+    // Cek rekomendasi hasil asesmen (harus pilih salah satu)
+    if (!formData.alasanKompeten && !formData.selesaiKompeten) {
+      alert(
+        "Harap pilih salah satu: Kompeten atau Belum Kompeten pada Rekomendasi hasil Asesmen"
+      );
+      return;
+    }
+
     setIsFormSubmitted(true);
     setShowPopup(true);
   };
@@ -241,13 +316,14 @@ const AK02 = () => {
   };
 
   const popupContainerStyle = {
-    backgroundColor: "white",
+    backgroundColor: "#f0f0f0",
     borderRadius: "20px",
-    padding: "40px",
+    padding: "30px 50px",
     textAlign: "center",
     boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
-    minWidth: "320px",
-    maxWidth: "400px",
+    minWidth: "550px",
+    maxWidth: "600px",
+    position: "relative",
   };
 
   const iconContainerStyle = {
@@ -256,10 +332,10 @@ const AK02 = () => {
 
   const successIconStyle = {
     display: "flex",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    margin: "0 auto 20px",
-    position: "relative",
+    margin: "0 auto 25px",
     gap: "15px",
   };
 
@@ -277,7 +353,6 @@ const AK02 = () => {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: "6px",
   };
 
   const checkMarkStyle = {
@@ -287,36 +362,26 @@ const AK02 = () => {
   };
 
   const popupTitleStyle = {
-    fontSize: "20px",
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: "8px",
-    lineHeight: "1.3",
-  };
-
-  const popupSubtitleStyle = {
-    fontSize: "20px",
+    fontSize: "18px",
     fontWeight: "bold",
     color: "#333",
     marginBottom: "30px",
-    lineHeight: "1.3",
-  };
-
-  const dividerStyle = {
-    height: "2px",
-    backgroundColor: "#ddd",
-    margin: "25px 0",
-    borderRadius: "1px",
+    lineHeight: "1.4",
   };
 
   const okayButtonStyle = {
-    backgroundColor: "transparent",
+    backgroundColor: "#FF8C00",
     border: "none",
-    fontSize: "18px",
-    fontWeight: "bold",
-    color: "#666",
+    fontSize: "14px",
+    fontWeight: "600",
+    color: "white",
     cursor: "pointer",
-    padding: "10px 20px",
+    padding: "10px 25px",
+    borderRadius: "20px",
+    position: "absolute",
+    bottom: "20px",
+    right: "30px",
+    transition: "all 0.2s ease",
   };
 
   const warningNotificationStyle = {
@@ -332,51 +397,6 @@ const AK02 = () => {
     fontSize: "14px",
     fontWeight: "bold",
     animation: "slideIn 0.3s ease-out",
-  };
-  const formRowStyle = {
-    display: "flex",
-    borderBottom: "2px solid #ddd",
-  };
-
-  const lastFormRowStyle = {
-    display: "flex",
-    borderBottom: "2px solid #ddd", // Added border for last row
-  };
-
-  const labelStyle = {
-    width: "200px",
-    padding: "8px 12px",
-    backgroundColor: "#f8f9fa",
-    borderRight: "2px solid #ddd",
-    fontSize: "12px",
-    fontWeight: "500",
-  };
-
-  const subLabelStyle = {
-    width: "80px",
-    padding: "8px 12px",
-    backgroundColor: "#f8f9fa",
-    borderRight: "2px solid #ddd",
-    fontSize: "12px",
-    fontWeight: "500",
-    textAlign: "center",
-  };
-
-  const valueStyle = {
-    flex: 1,
-    padding: "8px 12px",
-    backgroundColor: "white",
-    fontSize: "12px",
-    borderRight: "2px solid #ddd",
-    position: "relative",
-  };
-
-  const colonStyle = {
-    position: "absolute",
-    left: "12px",
-    top: "50%",
-    transform: "translateY(-50%)",
-    fontWeight: "bold",
   };
 
   return (
@@ -433,26 +453,22 @@ const AK02 = () => {
             display: "flex",
             alignItems: "flex-start",
             marginBottom: "20px",
+            paddingBottom: "15px",
+            borderBottom: "2px solid #FF8C00",
           }}
         >
           {/* Logo */}
           <div style={{ marginRight: "20px", marginTop: "5px" }}>
-            <div
+            <img
+              src="/src/img/image 12.png"
+              alt="LSP Logo"
               style={{
                 width: "40px",
                 height: "30px",
-                backgroundColor: "#FF8C00",
                 borderRadius: "4px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "white",
-                fontSize: "12px",
-                fontWeight: "bold",
+                objectFit: "contain",
               }}
-            >
-              LSP
-            </div>
+            />
           </div>
 
           {/* Title Section */}
@@ -502,17 +518,11 @@ const AK02 = () => {
                   width: "200px",
                 }}
               >
-                <input
-                  type="text"
-                  value={formData.skemaSertifikasi}
-                  onChange={(e) =>
-                    handleInputChange("skemaSertifikasi", e.target.value)
-                  }
-                  placeholder="Skema Sertifikasi"
-                  style={{ ...inputStyle, fontWeight: "500" }}
-                />
+                <span style={{ fontWeight: "500", color: "#000" }}>
+                  Skema Sertifikasi
+                </span>
                 <br />
-                <span style={{ fontSize: "11px", color: "#666" }}>
+                <span style={{ fontSize: "11px", color: "#000" }}>
                   (KODE/OKUPASI/KLASTER)
                 </span>
               </td>
@@ -897,7 +907,7 @@ const AK02 = () => {
                     style={{ margin: "0" }}
                   />
                   <span style={{ fontSize: "11px" }}>
-                    Kompeten/ Demonstrasi
+                    Observasi Demonstrasi
                   </span>
                 </div>
 
@@ -935,7 +945,7 @@ const AK02 = () => {
                     style={{ margin: "0" }}
                   />
                   <span style={{ fontSize: "11px" }}>
-                    Penguatan Hasil evidence Evidence Demonstrasi
+                    Pernyataan Pihak Ketiga Pertanyaan Wawancara
                   </span>
                 </div>
 
@@ -955,7 +965,7 @@ const AK02 = () => {
                     style={{ margin: "0" }}
                   />
                   <span style={{ fontSize: "11px" }}>
-                    Penguatan Hasil evidence Evidence Wawancara
+                    Pernyataan Pihak Ketiga Pertanyaan Wawancara
                   </span>
                 </div>
 
@@ -974,7 +984,7 @@ const AK02 = () => {
                     }
                     style={{ margin: "0" }}
                   />
-                  <span style={{ fontSize: "11px" }}>Belum Kompeten</span>
+                  <span style={{ fontSize: "11px" }}>Per Ter</span>
                 </div>
               </div>
             </div>
@@ -1027,7 +1037,10 @@ const AK02 = () => {
                         type="checkbox"
                         checked={formData.alasanKompeten}
                         onChange={(e) =>
-                          handleInputChange("alasanKompeten", e.target.checked)
+                          handleRekomendasiChange(
+                            "alasanKompeten",
+                            e.target.checked
+                          )
                         }
                       />
                     </div>
@@ -1043,7 +1056,10 @@ const AK02 = () => {
                         type="checkbox"
                         checked={formData.selesaiKompeten}
                         onChange={(e) =>
-                          handleInputChange("selesaiKompeten", e.target.checked)
+                          handleRekomendasiChange(
+                            "selesaiKompeten",
+                            e.target.checked
+                          )
                         }
                       />
                     </div>
@@ -1051,8 +1067,9 @@ const AK02 = () => {
                 </div>
 
                 <textarea
-                  placeholder="Tuliskan alasan yang dibutuhkan:
-Evidensi pendukung kompetensi dari kesesuaian yang dinyatakan untuk mencapai kompetensi"
+                  placeholder="Tindak lanjut yang dibutuhkan
+(masukan pekrjaan tambahan dan asesmen yang diperlukan untuk mencapai
+kompetensi) :"
                   value={formData.komentar}
                   onChange={(e) =>
                     handleInputChange("komentar", e.target.value)
@@ -1106,7 +1123,7 @@ Evidensi pendukung kompetensi dari kesesuaian yang dinyatakan untuk mencapai kom
           </div>
 
           {/* Submit Button */}
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <div style={{ textAlign: "right", marginTop: "20px" }}>
             <button
               type="submit"
               style={{
@@ -1133,47 +1150,49 @@ Evidensi pendukung kompetensi dari kesesuaian yang dinyatakan untuk mencapai kom
           <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
             <div style={iconContainerStyle}>
               <div style={successIconStyle}>
-                {/* List lines (3 horizontal lines) */}
+                {/* Check mark circle - di atas */}
+                <div style={checkCircleStyle}>
+                  <div style={checkMarkStyle}>✓</div>
+                </div>
+
+                {/* List lines (3 horizontal lines) - di bawah */}
                 <div style={listLinesStyle}>
                   <div
                     style={{
-                      width: "60px",
-                      height: "12px",
-                      backgroundColor: "#FF8C00",
-                      borderRadius: "6px",
-                    }}
-                  ></div>
-                  <div
-                    style={{
                       width: "80px",
-                      height: "12px",
+                      height: "10px",
                       backgroundColor: "#FF8C00",
-                      borderRadius: "6px",
+                      borderRadius: "5px",
                     }}
                   ></div>
                   <div
                     style={{
-                      width: "100px",
-                      height: "12px",
+                      width: "120px",
+                      height: "10px",
                       backgroundColor: "#FF8C00",
-                      borderRadius: "6px",
+                      borderRadius: "5px",
                     }}
                   ></div>
-                </div>
-
-                {/* Check mark circle */}
-                <div style={checkCircleStyle}>
-                  <div style={checkMarkStyle}>✓</div>
+                  <div
+                    style={{
+                      width: "140px",
+                      height: "10px",
+                      backgroundColor: "#FF8C00",
+                      borderRadius: "5px",
+                    }}
+                  ></div>
                 </div>
               </div>
             </div>
 
-            <div style={popupTitleStyle}>Jawaban Anda</div>
-            <div style={popupSubtitleStyle}>Berhasil Direkam!</div>
+            <div style={popupTitleStyle}>Jawaban anda telah direkam!</div>
 
-            <div style={dividerStyle}></div>
-
-            <button style={okayButtonStyle} onClick={handleClosePopup}>
+            <button
+              style={okayButtonStyle}
+              onClick={handleClosePopup}
+              onMouseEnter={(e) => (e.target.style.backgroundColor = "#e67e00")}
+              onMouseLeave={(e) => (e.target.style.backgroundColor = "#FF8C00")}
+            >
               Okay
             </button>
           </div>
