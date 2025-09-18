@@ -23,9 +23,9 @@ const headerSectionStyle = {
 const navContainerStyle = {
   backgroundColor: 'rgba(255, 255, 255, 0.95)',
   padding: '5px 15px',
-  borderRadius: '15px 15px 40px 15px',
+  borderRadius: '0 15px 40px 15px',
   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  margin: '0 15px 0 0',
+  margin: '0',
   overflowX: 'auto',
   maxWidth: '50%',
   whiteSpace: 'nowrap',
@@ -35,20 +35,21 @@ const navContainerStyle = {
 };
 
 const logoContainerStyle = {
-  height: '180px',
+  height: '120px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  marginTop: '20px',
+  marginTop: '10px',
+  marginBottom: '10px',
 };
 
 const logoTextStyle = {
   color: 'white',
-  fontSize: '48px',
+  fontSize: '36px',
   fontWeight: 'bold',
   margin: 0,
   textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-  letterSpacing: '2px',
+  letterSpacing: '1px',
 };
 
 const contentCardStyle = {
@@ -65,7 +66,7 @@ const headerStyle = {
   alignItems: 'center',
   gap: '15px',
   marginBottom: '30px',
-  borderBottom: '1px solid #eee',
+  borderBottom: '1px solid #FF8C00', // Mengganti #eee dengan #FF8C00
   paddingBottom: '20px',
 };
 
