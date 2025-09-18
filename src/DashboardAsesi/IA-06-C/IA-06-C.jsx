@@ -1,12 +1,11 @@
-// src/DashboardAsesi/IA-06c/IA-06c.jsx
-
-import React from 'react';
+import React, { useState } from 'react';
 import NavAsesi from '../../components/NavAsesi';
 
 const pageContainerStyle = {
   backgroundColor: '#f5f5f5',
   fontFamily: 'Arial, sans-serif',
   padding: '15px',
+  minHeight: '100vh',
 };
 
 const navContainerStyle = {
@@ -43,15 +42,245 @@ const logoTextStyle = {
   letterSpacing: '2px',
 };
 
-const contentCardStyle = {
+const formContainerStyle = {
   backgroundColor: 'white',
   borderRadius: '15px',
-  padding: '25px',
+  padding: '0',
   boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
   marginTop: '20px',
+  overflow: 'hidden',
+};
+
+const headerStyle = {
+  backgroundColor: 'white',
+  borderTop: '5px solid #ffffffff',
+  borderBottom: '5px solid #ffffffff',
+  padding: '10px 20px',
+  display: 'flex',
+  alignItems: 'center',
+  position: 'relative',
+  justifyContent: 'center',
+};
+
+const formTitleSectionStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  flexGrow: 1,
+};
+
+const formTitleLargeStyle = {
+  fontSize: '18px',
+  fontWeight: 'bold',
+  margin: '0',
+};
+
+const formTitleSmallStyle = {
+  fontSize: '14px',
+  fontWeight: 'normal',
+  color: '#666',
+  marginTop: '5px',
+};
+
+const lspLogoStyle = {
+  width: '50px',
+  height: '50px',
+  objectFit: 'contain',
+  marginRight: '15px',
+  position: 'absolute',
+  left: '20px',
+};
+
+const formBodyStyle = {
+  padding: '25px',
+  backgroundColor: 'white',
+};
+
+const tableStyle = {
+  width: '100%',
+  borderCollapse: 'collapse',
+  marginBottom: '20px',
+  border: '1px solid #ddd',
+};
+
+const tableCellStyle = {
+  padding: '8px',
+  border: '1px solid #ddd',
+  fontSize: '14px',
+  color: '#333',
+};
+
+const tableTopCellStyle = {
+  ...tableCellStyle,
+  backgroundColor: '#f5f5f5',
+  fontWeight: 'bold',
+};
+
+const tableInputStyle = {
+  border: 'none',
+  width: '100%',
+  fontSize: '14px',
+  padding: '0',
+  backgroundColor: 'transparent',
+  outline: 'none',
+};
+
+const separatorStyle = {
+  width: '1%',
+  textAlign: 'center',
+};
+
+const formSectionHeaderStyle = {
+  backgroundColor: '#f8f8f8',
+  border: '1px solid #ddd',
+  padding: '15px',
+  textAlign: 'center',
+  fontSize: '16px',
+  fontWeight: 'bold',
+  margin: '20px 0',
+  color: '#333',
+};
+
+const questionBoxStyle = {
+  border: '1px solid #ddd',
+  borderRadius: '8px',
+  padding: '15px',
+  marginBottom: '15px',
+  backgroundColor: '#f8f8f8',
+};
+
+const questionTextStyle = {
+  fontSize: '14px',
+  lineHeight: '1.5',
+  marginBottom: '15px',
+  color: '#333',
+};
+
+const answerInputStyle = {
+  width: '100%',
+  minHeight: '10px',
+  padding: '10px',
+  border: '1px solid #ced4da',
+  borderRadius: '5px',
+  backgroundColor: '#e9ecef',
+  fontSize: '14px',
+  boxSizing: 'border-box',
+  resize: 'vertical',
+  marginBottom: '10px',
+};
+
+// Adjusted style to left-align the content
+const responseSectionStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  // Removed `justifyContent: 'space-between'`
+};
+
+const responseLabelStyle = {
+  fontSize: '14px',
+  fontWeight: 'bold',
+  color: '#495057',
+  marginRight: '15px', // Add some space to the right of the label
+};
+
+const checkboxContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '20px',
+  // Removed `marginLeft` to avoid double-spacing
+};
+
+const checkboxLabelStyle = {
+  fontSize: '14px',
+  color: '#555',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '5px',
+};
+
+const radioInputStyle = {
+  accentColor: '#ff8c00',
+  width: '16px',
+  height: '16px',
+};
+
+const footerStyle = {
+  display: 'flex',
+  justifyContent: 'flex-end',
+  padding: '15px 0',
+};
+
+const submitButtonStyle = {
+  backgroundColor: '#007bff',
+  color: 'white',
+  padding: '10px 20px',
+  borderRadius: '5px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '16px',
+  fontWeight: 'bold',
 };
 
 const IA06C = () => {
+  const [formData, setFormData] = useState({
+    skemaSertifikasi: '',
+    judulUnit: '',
+    kodeUnit: '',
+    tuk: '',
+    namaAsesor: '',
+    namaAsesi: '',
+    tanggal: '',
+    responses: {
+      q1: { answer: '', text: '' },
+      q2: { answer: '', text: '' },
+      q3: { answer: '', text: '' },
+      q4: { answer: '', text: '' },
+      q5: { answer: '', text: '' },
+    },
+  });
+
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleResponseChange = (questionNum, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      responses: {
+        ...prev.responses,
+        [questionNum]: {
+          ...prev.responses[questionNum],
+          answer: value,
+        },
+      },
+    }));
+  };
+
+  const handleTextChange = (questionNum, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      responses: {
+        ...prev.responses,
+        [questionNum]: {
+          ...prev.responses[questionNum],
+          text: value,
+        },
+      },
+    }));
+  };
+
+  const questions = [
+    "Bagaimana cara Anda jika menghadapi pelanggan yang mengeluh karena adanya produk yang tidak sesuai dengan pesanannya?",
+    "Perbedaan pendapat yang terjadi di lingkungan tempat kerja bisa menjadi tantangan tersendiri jika tidak dihadapi dengan baik. Sebab, bisa menurunkan konflik yang berdampak negatif pada produktivitas dan kesejahteraan anggota tim. Bagaimana mengatasi perbedaan pendapat di tempat kerja dengan cara yang professional?",
+    "Apakah tujuan diadakannya prosedur keamanan kesehatan dan keselamatan kerja?",
+    "Sehabis menggunting mesin jahit bahan jahitan, sebaiknya membersihkan sisa benang pada mesin. Jika kita melakukan membersihkan sisa kain, benang, atau debu halus yang menempel pada mesin. Tuliskan peralatan yang digunakan untuk membersihkan mesin jahit!",
+    "Mengukur tubuh merupakan langkah pertama pada kegiatan membuat suatu busana. Tuliskan salah satu fungsi mengukur tubuh!",
+  ];
+
   return (
     <div style={pageContainerStyle}>
       <style>
@@ -69,19 +298,162 @@ const IA06C = () => {
           .nav-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #555;
           }
+          .radio-input {
+            accent-color: #ff8c00;
+          }
         `}
       </style>
+
       <div style={navContainerStyle} className="nav-scrollbar">
         <NavAsesi activeTab="FR.IA.06.C" />
       </div>
+
       <div style={imageBannerStyle}>
-        <h1 style={logoTextStyle}>
-          MyLSP
-        </h1>
+        <h1 style={logoTextStyle}>MyLSP</h1>
       </div>
-      <div style={contentCardStyle}>
-        <h2>IA.06.C - Daftar Pertanyaan Wawancara</h2>
-        <p>Halaman ini akan berisi detail formulir. Saat ini hanya teks placeholder.</p>
+
+      <div style={formContainerStyle}>
+        <div style={headerStyle}>
+          <img src="/src/img/image 12.png" alt="LSP Logo" style={lspLogoStyle} />
+          <div style={formTitleSectionStyle}>
+            <h2 style={formTitleLargeStyle}>FR.IA.06.C</h2>
+            <h3 style={formTitleSmallStyle}>LEMBAR JAWABAN DAN PERTANYAN TERTULIS ESAI</h3>
+          </div>
+        </div>
+
+        <div style={formBodyStyle}>
+          <table style={tableStyle}>
+            <tbody>
+              <tr>
+                <td style={{ ...tableTopCellStyle, width: '25%' }} rowSpan="2">Skema Sertifikasi (KKNI/OKUPASI/KLASTER)</td>
+                <td style={{ ...tableTopCellStyle, width: '0%' }} rowSpan="2">
+                  <input
+                    type="text"
+                    style={{ width: '100%', border: 'none', outline: 'none' }}
+                    value={formData.skemaSertifikasi}
+                    onChange={(e) => handleInputChange('skemaSertifikasi', e.target.value)}
+                  />
+                </td>
+                <td style={{ ...tableCellStyle, width: '15%' }}>Judul Unit</td>
+                <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+                <td style={{ ...tableCellStyle, width: '34%' }}>
+                  <input
+                    type="text"
+                    style={{ width: '100%', border: 'none', outline: 'none' }}
+                    value={formData.judulUnit}
+                    onChange={(e) => handleInputChange('judulUnit', e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td style={{ ...tableCellStyle, width: '15%' }}>Kode Unit</td>
+                <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+                <td style={{ ...tableCellStyle, width: '34%' }}>
+                  <input
+                    type="text"
+                    style={{ width: '100%', border: 'none', outline: 'none' }}
+                    value={formData.kodeUnit}
+                    onChange={(e) => handleInputChange('kodeUnit', e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td style={{ ...tableCellStyle, width: '25%' }}>TUK</td>
+                <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+                <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
+                  <input
+                    type="text"
+                    style={{ width: '100%', border: 'none', outline: 'none' }}
+                    value={formData.tuk}
+                    onChange={(e) => handleInputChange('tuk', e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td style={{ ...tableCellStyle, width: '25%' }}>Nama Asesor</td>
+                <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+                <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
+                  <input
+                    type="text"
+                    style={{ width: '100%', border: 'none', outline: 'none' }}
+                    value={formData.namaAsesor}
+                    onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td style={{ ...tableCellStyle, width: '25%' }}>Nama Asesi</td>
+                <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+                <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
+                  <input
+                    type="text"
+                    style={{ width: '100%', border: 'none', outline: 'none' }}
+                    value={formData.namaAsesi}
+                    onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td style={{ ...tableCellStyle, width: '25%' }}>Tanggal</td>
+                <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
+                <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
+                  <input
+                    type="text"
+                    style={{ width: '100%', border: 'none', outline: 'none' }}
+                    value={formData.tanggal}
+                    onChange={(e) => handleInputChange('tanggal', e.target.value)}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style={formSectionHeaderStyle}>
+            Jawablah semua pertanyaan dibawah ini:
+          </div>
+
+          {questions.map((question, index) => {
+            const qNum = `q${index + 1}`;
+            return (
+              <div key={qNum} style={questionBoxStyle}>
+                <div style={questionTextStyle}>
+                  {index + 1}. {question}
+                </div>
+                <textarea
+                  style={answerInputStyle}
+                  placeholder="Tulis jawaban disini"
+                  value={formData.responses[qNum].text}
+                  onChange={(e) => handleTextChange(qNum, e.target.value)}
+                />
+                <div style={responseSectionStyle}>
+                  <span style={responseLabelStyle}>Pencapaian:</span>
+                  <div style={checkboxContainerStyle}>
+                    <label style={checkboxLabelStyle}>
+                      <input
+                        type="checkbox"
+                        checked={formData.responses[qNum].answer === 'Ya'}
+                        onChange={() => handleResponseChange(qNum, 'Ya')}
+                      />
+                      Ya
+                    </label>
+                    <label style={checkboxLabelStyle}>
+                      <input
+                        type="checkbox"
+                        checked={formData.responses[qNum].answer === 'Tidak'}
+                        onChange={() => handleResponseChange(qNum, 'Tidak')}
+                      />
+                      Tidak
+                    </label>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div style={footerStyle}>
+        <button style={submitButtonStyle}>Kirim Jawaban</button>
       </div>
     </div>
   );
