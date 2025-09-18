@@ -4,68 +4,196 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
 
-const pageContainerStyle = {
-  backgroundColor: '#f5f5f5',
-  fontFamily: 'Arial, sans-serif',
-  padding: '15px',
+// Modal styles - Updated to match AK-01 design
+const modalOverlayStyle = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 1000,
 };
 
-const navContainerStyle = {
-  backgroundColor: 'white',
-  padding: '5px 15px',
-  borderRadius: '15px 15px 40px 15px',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  margin: '15px 15px 0 15px',
-  overflowX: 'auto',
-  maxWidth: '50%',
-  whiteSpace: 'nowrap',
+const modalContainerStyle = {
+  backgroundColor: '#f0f0f0',
+  borderRadius: '20px',
+  padding: '30px 50px',
+  textAlign: 'center',
+  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+  minWidth: '550px',
+  maxWidth: '600px',
+  position: 'relative',
 };
 
-const imageBannerStyle = {
-  backgroundImage:
-    "linear-gradient(rgba(255,165,0,0.8), rgba(255,140,0,0.8)), url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')",
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  height: '180px',
+const iconContainerStyle = {
+  marginBottom: '20px',
+};
+
+const successIconStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  margin: '0 auto 25px',
+  gap: '15px',
+};
+
+const listLinesStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '6px',
+};
+
+const checkCircleStyle = {
+  width: '60px',
+  height: '60px',
+  borderRadius: '50%',
+  backgroundColor: '#FF8C00',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  borderRadius: '15px 15px 0 0',
-  boxShadow: 'none',
-  marginTop: '20px',
 };
 
+const checkMarkStyle = {
+  color: 'white',
+  fontSize: '24px',
+  fontWeight: 'bold',
+};
+
+const modalTitleStyle = {
+  fontSize: '18px',
+  fontWeight: 'bold',
+  color: '#333',
+  marginBottom: '30px',
+  lineHeight: '1.4',
+};
+
+const okayButtonStyle = {
+  backgroundColor: '#FF8C00',
+  border: 'none',
+  fontSize: '14px',
+  fontWeight: '600',
+  color: 'white',
+  cursor: 'pointer',
+  padding: '10px 25px',
+  borderRadius: '20px',
+  position: 'absolute',
+  bottom: '20px',
+  right: '30px',
+  transition: 'all 0.2s ease',
+};
+
+const warningNotificationStyle = {
+  position: 'fixed',
+  top: '20px',
+  right: '20px',
+  backgroundColor: '#ff6b6b',
+  color: 'white',
+  padding: '15px 20px',
+  borderRadius: '10px',
+  boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+  zIndex: 1001,
+  fontSize: '14px',
+  fontWeight: 'bold',
+  animation: 'slideIn 0.3s ease-out',
+};
+
+const pageContainerStyle = {
+  backgroundColor: 'white',
+  fontFamily: 'Arial, sans-serif',
+  padding: '15px',
+  minHeight: '100vh',
+};
+
+// Header section matching AK-01 design
+const headerSectionStyle = {
+  backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  borderRadius: '0 0 40px 40px',
+  overflow: 'hidden',
+  marginBottom: '0',
+};
+
+// Navigation container matching AK-01
+const navContainerStyle = {
+  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+  padding: '5px 15px',
+  borderRadius: '0 15px 40px 15px',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+  margin: '0',
+  overflowX: 'auto',
+  maxWidth: '50%',
+  whiteSpace: 'nowrap',
+  backdropFilter: 'blur(10px)',
+  position: 'relative',
+  zIndex: 2,
+};
+
+// Logo container matching AK-01
+const logoContainerStyle = {
+  height: '120px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: '10px',
+  marginBottom: '10px',
+};
+
+// Logo text matching AK-01
 const logoTextStyle = {
   color: 'white',
-  fontSize: '48px',
+  fontSize: '36px',
   fontWeight: 'bold',
   margin: 0,
   textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-  letterSpacing: '2px',
+  letterSpacing: '1px',
 };
 
 const contentCardStyle = {
   backgroundColor: 'white',
   borderRadius: '0 0 15px 15px',
   padding: '30px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+  boxShadow: 'none',
   marginTop: '0',
+  border: 'none',
 };
 
-const headerTitleStyle = {
-  textAlign: 'center',
+const headerSectionStyle2 = {
+  display: 'flex',
+  alignItems: 'flex-start',
+  gap: '20px',
+  marginBottom: '20px',
+  paddingBottom: '15px',
+  borderBottom: '2px solid #FF8C00',
+};
+
+const logoContainer2Style = {
+  flexShrink: 0,
+};
+
+const headerContentStyle = {
+  flex: 1,
+};
+
+const titleStyle = {
   fontSize: '16px',
   fontWeight: 'bold',
-  marginBottom: '5px',
+  margin: '0 0 5px 0',
   color: '#333',
+  textAlign: 'center',
 };
 
-const headerSubtitleStyle = {
-  textAlign: 'center',
-  fontSize: '14px',
+const subtitleStyle = {
+  fontSize: '16px',
   fontWeight: 'bold',
-  marginBottom: '25px',
+  margin: '0 0 15px 0',
   color: '#333',
+  textAlign: 'center',
 };
 
 // Updated schema section styles to match AK-01
@@ -73,33 +201,6 @@ const tableStyle = {
   width: '100%',
   marginBottom: '15px',
   fontSize: '12px',
-};
-
-const tableCellStyle = {
-  padding: '5px 10px',
-  border: '1px solid #ddd',
-  verticalAlign: 'middle',
-};
-
-const tableLabelStyle = {
-  ...tableCellStyle,
-  backgroundColor: '#f8f9fa',
-  fontWeight: 'bold',
-  width: '150px',
-};
-
-const tableInputStyle = {
-  ...tableCellStyle,
-  backgroundColor: 'white',
-};
-
-const inputFieldStyle = {
-  border: 'none',
-  outline: 'none',
-  width: '100%',
-  padding: '2px',
-  fontSize: '12px',
-  backgroundColor: 'transparent',
 };
 
 const instructionBoxStyle = {
@@ -125,7 +226,7 @@ const instructionListStyle = {
 const instructionItemStyle = {
   fontSize: '12px',
   color: '#333',
-  marginBottom: '8px',
+  marginBottom: '10px',
   lineHeight: '1.4',
 };
 
@@ -284,15 +385,8 @@ const pertanyaanSectionStyle = {
   border: '2px solid #333',
   borderRadius: '8px',
   padding: '20px',
-  marginBottom: '300px',
+  marginBottom: '20px', // Reduced from 300px to 20px
   flex: 1,
-};
-
-const pertanyaanHeaderStyle = {
-  fontSize: '14px',
-  fontWeight: 'bold',
-  marginBottom: '20px',
-  color: '#333',
 };
 
 const pertanyaanItemStyle = {
@@ -331,119 +425,32 @@ const tanggapanInputStyle = {
   outline: 'none',
 };
 
+// Updated submit button style - smaller and positioned to the right
 const submitButtonStyle = {
   backgroundColor: '#007bff',
   color: 'white',
   border: 'none',
-  borderRadius: '20px',
-  padding: '12px 40px',
-  fontSize: '14px',
+  borderRadius: '15px',
+  padding: '8px 20px',
+  fontSize: '12px',
   fontWeight: 'bold',
   cursor: 'pointer',
+  marginTop: '15px', // Reduced margin
   alignSelf: 'flex-end',
-  marginTop: '20px',
-};
-
-// Popup styles (matching APL-01)
-const popupOverlayStyle = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  zIndex: 1000,
-};
-
-const popupContainerStyle = {
-  backgroundColor: '#f0f0f0',
-  borderRadius: '20px',
-  padding: '30px 50px',
-  textAlign: 'center',
-  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-  minWidth: '550px',
-  maxWidth: '600px',
-  position: 'relative',
-};
-
-const iconContainerStyle = {
-  marginBottom: '20px',
-};
-
-const successIconStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  margin: '0 auto 25px',
-  gap: '15px',
-};
-
-const listLinesStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '6px',
-};
-
-const checkCircleStyle = {
-  width: '60px',
-  height: '60px',
-  borderRadius: '50%',
-  backgroundColor: '#FF8C00',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
-
-const checkMarkStyle = {
-  color: 'white',
-  fontSize: '24px',
-  fontWeight: 'bold',
-};
-
-const popupTitleStyle = {
-  fontSize: '18px',
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: '30px',
-  lineHeight: '1.4',
-};
-
-const okayButtonStyle = {
-  backgroundColor: '#FF8C00',
-  border: 'none',
-  fontSize: '14px',
-  fontWeight: '600',
-  color: 'white',
-  cursor: 'pointer',
-  padding: '10px 25px',
-  borderRadius: '20px',
-  position: 'absolute',
-  bottom: '20px',
-  right: '30px',
   transition: 'all 0.2s ease',
 };
 
-const warningNotificationStyle = {
-  position: 'fixed',
-  top: '20px',
-  right: '20px',
-  backgroundColor: '#ff6b6b',
-  color: 'white',
-  padding: '15px 20px',
-  borderRadius: '10px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-  zIndex: 1001,
-  fontSize: '14px',
-  fontWeight: 'bold',
-  animation: 'slideIn 0.3s ease-out',
+// Button container to help with alignment - positioned closer to content
+const buttonContainerStyle = {
+  display: 'flex',
+  justifyContent: 'flex-end',
+  marginTop: '15px', // Reduced from 30px to 15px
+  width: '100%',
+  paddingRight: '0',
 };
 
 const IA01 = () => {
-  const [showPopup, setShowPopup] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [formData, setFormData] = useState({
@@ -462,7 +469,6 @@ const IA01 = () => {
       }
     };
 
-    // Intercept navigation attempts dengan history API
     const originalPushState = window.history.pushState;
     const originalReplaceState = window.history.replaceState;
 
@@ -502,13 +508,14 @@ const IA01 = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log('Form FR.IA.01.CL submitted:', formData);
+    localStorage.setItem('ia01FormData', JSON.stringify(formData));
     setIsFormSubmitted(true);
-    setShowPopup(true);
+    setShowModal(true);
   };
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    // Auto redirect ke IA-02 setelah close popup
+  const handleCloseModal = () => {
+    setShowModal(false);
     setTimeout(() => {
       navigate('/dashboard-asesi/ia-02');
     }, 300);
@@ -516,6 +523,7 @@ const IA01 = () => {
 
   return (
     <div style={pageContainerStyle}>
+      {/* Scrollbar styling for WebKit browsers */}
       <style>
         {`
           .nav-scrollbar::-webkit-scrollbar {
@@ -552,46 +560,97 @@ const IA01 = () => {
         </div>
       )}
 
-      <div style={navContainerStyle} className="nav-scrollbar">
-        <NavAsesi activeTab="FR.IA.01.CL" />
+      {/* Header Section matching AK-01 design */}
+      <div style={headerSectionStyle}>
+        <div style={navContainerStyle} className="nav-scrollbar">
+          <NavAsesi activeTab="FR.IA.01.CL" />
+        </div>
+
+        <div style={logoContainerStyle}>
+          <h1 style={logoTextStyle}>
+            MyLSP
+          </h1>
+        </div>
       </div>
 
-      <div style={imageBannerStyle}>
-        <h1 style={logoTextStyle}>
-          MyLSP
-        </h1>
-      </div>
-
+      {/* Content Card */}
       <div style={contentCardStyle}>
-        <div style={headerTitleStyle}>FR.IA.01.CL</div>
-        <div style={headerSubtitleStyle}>CEKLIS OBSERVASI AKTIVITAS DI TEMPAT KERJA ATAU TEMPAT KERJA SIMULASI</div>
+        <div style={headerSectionStyle2}>
+          <div style={logoContainer2Style}>
+            <img
+              src="/src/img/image 12.png"
+              alt="LSP Logo"
+              style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '8px',
+                objectFit: 'contain',
+                backgroundColor: '#f8f9fa',
+                padding: '4px',
+              }}
+            />
+          </div>
+          <div style={headerContentStyle}>
+            <div style={titleStyle}>FR.IA.01.CL</div>
+            <div style={subtitleStyle}>CEKLIS OBSERVASI AKTIVITAS DI TEMPAT KERJA ATAU TEMPAT KERJA SIMULASI</div>
+          </div>
+        </div>
 
-        <table style={tableStyle}>
+        {/* Skema Sertifikasi */}
+        <table style={{width: '100%', marginBottom: '15px', fontSize: '12px'}}>
           <tbody>
             <tr>
-              <td style={{...tableLabelStyle, verticalAlign: 'top', paddingTop: '10px'}}>
+              <td style={{
+                padding: '10px',
+                border: '1px solid #ddd',
+                backgroundColor: '#f8f9fa',
+                fontWeight: 'bold',
+                width: '150px',
+                textAlign: 'center',
+                verticalAlign: 'middle'
+              }}>
                 Skema Sertifikasi
               </td>
-              <td style={tableInputStyle}>
-                <div style={{marginBottom: '8px'}}>
-                  <div style={{fontSize: '11px', fontWeight: 'bold', marginBottom: '3px'}}>Judul Unit:</div>
-                  <input
-                    type="text"
-                    style={{...inputFieldStyle, border: '1px solid #ddd', padding: '4px 6px'}}
-                    value={formData.judulUnit}
-                    onChange={(e) => handleInputChange('judulUnit', e.target.value)}
-                    placeholder="Masukkan judul unit"
-                  />
-                </div>
-                <div>
-                  <div style={{fontSize: '11px', fontWeight: 'bold', marginBottom: '3px'}}>Nomor Unit:</div>
-                  <input
-                    type="text"
-                    style={{...inputFieldStyle, border: '1px solid #ddd', padding: '4px 6px'}}
-                    value={formData.nomorUnit}
-                    onChange={(e) => handleInputChange('nomorUnit', e.target.value)}
-                    placeholder="Masukkan nomor unit"
-                  />
+              <td style={{
+                padding: '10px',
+                border: '1px solid #ddd',
+                backgroundColor: 'white'
+              }}>
+                <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}}>
+                    <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Judul Unit</span>
+                    <span style={{margin: '0 8px'}}>:</span>
+                    <input
+                      type="text"
+                      style={{
+                        flex: 1,
+                        padding: '4px 8px',
+                        border: '1px solid #ddd',
+                        borderRadius: '4px',
+                        fontSize: '12px'
+                      }}
+                      value={formData.judulUnit}
+                      onChange={(e) => handleInputChange('judulUnit', e.target.value)}
+                      placeholder="Masukkan judul unit"
+                    />
+                  </div>
+                  <div style={{display: 'flex', alignItems: 'center'}}>
+                    <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Nomor Unit</span>
+                    <span style={{margin: '0 8px'}}>:</span>
+                    <input
+                      type="text"
+                      style={{
+                        flex: 1,
+                        padding: '4px 8px',
+                        border: '1px solid #ddd',
+                        borderRadius: '4px',
+                        fontSize: '12px'
+                      }}
+                      value={formData.nomorUnit}
+                      onChange={(e) => handleInputChange('nomorUnit', e.target.value)}
+                      placeholder="Masukkan nomor unit"
+                    />
+                  </div>
                 </div>
               </td>
             </tr>
@@ -623,7 +682,7 @@ const IA01 = () => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} style={{width: '100%'}}>
           <div style={mainContentStyle}>
             <div style={leftContentStyle}>
               <div style={unitSectionStyle}>
@@ -677,10 +736,6 @@ const IA01 = () => {
                   </div>
                 </div>
               </div>
-
-              <button type="submit" style={submitButtonStyle}>
-                Kirim
-              </button>
             </div>
 
             <div style={rightContentStyle}>
@@ -725,21 +780,31 @@ const IA01 = () => {
               </div>
             </div>
           </div>
+          
+          {/* Button moved closer to content */}
+          <div style={buttonContainerStyle}>
+            <button 
+              type="submit" 
+              style={submitButtonStyle}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#0056b3'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#007bff'}
+            >
+              Kirim
+            </button>
+          </div>
         </form>
       </div>
 
-      {/* Success Popup (matching APL-01 style) */}
-      {showPopup && (
-        <div style={popupOverlayStyle} onClick={handleClosePopup}>
-          <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
+      {/* Success Modal matching AK-01 style */}
+      {showModal && (
+        <div style={modalOverlayStyle} onClick={handleCloseModal}>
+          <div style={modalContainerStyle} onClick={(e) => e.stopPropagation()}>
             <div style={iconContainerStyle}>
               <div style={successIconStyle}>
-                {/* Check mark circle - di atas */}
                 <div style={checkCircleStyle}>
                   <div style={checkMarkStyle}>✓</div>
                 </div>
                 
-                {/* List lines (3 horizontal lines) - di bawah */}
                 <div style={listLinesStyle}>
                   <div style={{
                     width: '80px',
@@ -763,11 +828,11 @@ const IA01 = () => {
               </div>
             </div>
             
-            <div style={popupTitleStyle}>Jawaban anda telah direkam!</div>
+            <div style={modalTitleStyle}>Jawaban anda telah direkam!</div>
             
             <button 
               style={okayButtonStyle} 
-              onClick={handleClosePopup}
+              onClick={handleCloseModal}
               onMouseEnter={(e) => e.target.style.backgroundColor = '#e67e00'}
               onMouseLeave={(e) => e.target.style.backgroundColor = '#FF8C00'}
             >
