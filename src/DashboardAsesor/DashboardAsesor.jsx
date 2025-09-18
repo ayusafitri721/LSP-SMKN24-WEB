@@ -1,507 +1,402 @@
 import React, { useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
 
-const DashboardAsesor = () => {
-  const navigate = useNavigate();
-  const [activeCards, setActiveCards] = useState([]); // Awalnya tidak ada yang aktif
+const DashboardAsesor = ({ onNavigate }) => {
+  const [activeView, setActiveView] = useState("dashboard");
+  const [selectedAssessment, setSelectedAssessment] = useState(null);
 
-  const toggleCardActive = (index) => {
-    setActiveCards((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-    );
-  };
-
-  // Fungsi untuk navigasi ke halaman detail asesmen
   const handleCardClick = (index) => {
-    navigate(`/dashboard-asesor/detail-asesmen/${index}`);
+    // Langsung navigasi ke Dashboard RPL tanpa ke halaman detail
+    if (onNavigate) {
+      onNavigate("DashboardRPL");
+    }
   };
+
+  const handleBackClick = () => {
+    setActiveView("dashboard");
+    setSelectedAssessment(null);
+  };
+
+  const navigateTo = (view) => {
+    setActiveView(view);
+  };
+
+  // Fungsi untuk navigasi ke Dashboard RPL
+  const navigateToDashboardRPL = () => {
+    // Menggunakan onNavigate untuk memberitahu parent component
+    if (onNavigate) {
+      onNavigate("DashboardRPL");
+    }
+  };
+
+  // Hapus semua view detail, jadwal, penilaian karena tidak digunakan
+  // Langsung ke dashboard utama saja
 
   return (
-    <Routes>
-      {/* Main Dashboard Asesor - Tanpa Sidebar */}
-      <Route
-        path="/"
-        element={
+    <div
+      style={{
+        padding: "20px",
+        backgroundColor: "#f5f5f5",
+        minHeight: "100vh",
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      }}
+    >
+      {/* Top Stats Cards */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 2fr 1fr",
+          gap: "15px",
+          marginBottom: "20px",
+        }}
+      >
+        {/* Jumlah Asesi Card */}
+        <div
+          style={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            padding: "20px",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            textAlign: "center",
+          }}
+        >
           <div
             style={{
-              padding: "20px",
-              backgroundColor: "#f8fafc",
-              minHeight: "100vh",
-              fontFamily:
-                '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              marginBottom: "8px",
             }}
           >
-            {/* Header dengan gradient */}
-            <div
-              style={{
-                background: "linear-gradient(135deg, #ff7f39, #4dd0e1)",
-                borderRadius: "15px",
-                padding: "25px",
-                marginBottom: "30px",
-                color: "white",
-              }}
+            <span style={{ fontSize: "16px" }}>👤</span>
+            <span
+              style={{ fontSize: "14px", color: "#6b7280", fontWeight: "500" }}
             >
-              <h1
-                style={{
-                  fontSize: "32px",
-                  marginBottom: "8px",
-                  fontWeight: "bold",
-                }}
-              >
-                Selamat datang di{" "}
-                <span style={{ color: "#fff3cd" }}>MyLsp</span>, Asesor Arul!
-              </h1>
-              <p
-                style={{
-                  fontSize: "16px",
-                  margin: "0",
-                  opacity: 0.9,
-                }}
-              >
-                Semangat menjadi Asesor hari ini
-              </p>
-            </div>
-
-            {/* Cards untuk Asesmen yang Ongoing - Horizontal Scroll */}
-            <div
-              style={{
-                marginBottom: "30px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  gap: "20px",
-                  overflowX: "auto",
-                  paddingBottom: "10px",
-                  scrollbarWidth: "thin",
-                  scrollbarColor: "#cbd5e0 transparent",
-                }}
-              >
-                {[
-                  {
-                    title: "USK RPL - PEMROGRAMAN WEB",
-                    location: "SMKN 24 Jakarta",
-                    status: "On Going",
-                    statusColor: "#10b981",
-                  },
-                  {
-                    title: "USK RPL - PEMROGRAMAN WEB",
-                    location: "SMKN 24 Jakarta",
-                    status: "On Going",
-                    statusColor: "#6b7280",
-                  },
-                  {
-                    title: "USK RPL - PEMROGRAMAN WEB",
-                    location: "SMKN 24 Jakarta",
-                    status: "On Going",
-                    statusColor: "#6b7280",
-                  },
-                  {
-                    title: "USK RPL - PEMROGRAMAN WEB",
-                    location: "SMKN 24 Jakarta",
-                    status: "On Going",
-                    statusColor: "#6b7280",
-                  },
-                  {
-                    title: "USK RPL - PEMROGRAMAN WEB",
-                    location: "SMKN 24 Jakarta",
-                    status: "On Going",
-                    statusColor: "#6b7280",
-                  },
-                ].map((item, index) => {
-                  const isActive = activeCards.includes(index);
-                  return (
-                    <div
-                      key={index}
-                      style={{
-                        backgroundColor: "white",
-                        borderRadius: "12px",
-                        padding: "20px",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                        border: "1px solid #e5e7eb",
-                        minWidth: "280px",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <h3
-                        style={{
-                          fontSize: "16px",
-                          fontWeight: "600",
-                          marginBottom: "8px",
-                          color: "#1f2937",
-                        }}
-                      >
-                        {item.title}
-                      </h3>
-                      <p
-                        style={{
-                          fontSize: "14px",
-                          color: "#6b7280",
-                          marginBottom: "15px",
-                        }}
-                      >
-                        {item.location}
-                      </p>
-                      <button
-                        onClick={() => handleCardClick(index)}
-                        style={{
-                          display: "inline-block",
-                          backgroundColor: isActive ? "#10b981" : "#6b7280",
-                          color: "white",
-                          padding: "6px 12px",
-                          borderRadius: "20px",
-                          fontSize: "12px",
-                          fontWeight: "500",
-                          border: "none",
-                          cursor: "pointer",
-                          transition: "background-color 0.2s ease",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.backgroundColor = "#10b981"; // Hijau saat hover
-                        }}
-                        onMouseLeave={(e) => {
-                          if (!isActive) {
-                            e.target.style.backgroundColor = "#6b7280"; // Kembali abu-abu jika tidak aktif
-                          } else {
-                            e.target.style.backgroundColor = "#10b981"; // Tetap hijau jika aktif
-                          }
-                        }}
-                      >
-                        {item.status}
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Stats Cards */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "20px",
-                marginBottom: "30px",
-              }}
-            >
-              <div
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: "12px",
-                  padding: "25px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <div>
-                  <h3
-                    style={{
-                      fontSize: "16px",
-                      color: "#6b7280",
-                      marginBottom: "8px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Jumlah Asesi
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: "36px",
-                      fontWeight: "bold",
-                      color: "#3b82f6",
-                      margin: "0",
-                    }}
-                  >
-                    7098
-                  </p>
-                </div>
-                <div
-                  style={{
-                    width: "60px",
-                    height: "60px",
-                    backgroundColor: "#f3f4f6",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "24px",
-                  }}
-                >
-                  👤
-                </div>
-              </div>
-
-              <div
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: "12px",
-                  padding: "25px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <div>
-                  <h3
-                    style={{
-                      fontSize: "16px",
-                      color: "#6b7280",
-                      marginBottom: "8px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Skema
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: "36px",
-                      fontWeight: "bold",
-                      color: "#f97316",
-                      margin: "0",
-                    }}
-                  >
-                    7098
-                  </p>
-                </div>
-                <div
-                  style={{
-                    width: "60px",
-                    height: "60px",
-                    backgroundColor: "#f3f4f6",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "24px",
-                  }}
-                >
-                  📖
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "15px",
-              }}
-            >
-              <button
-                style={{
-                  backgroundColor: "#06b6d4",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "12px",
-                  padding: "20px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "15px",
-                  cursor: "pointer",
-                  fontSize: "16px",
-                  fontWeight: "500",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "#0891b2")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "#06b6d4")
-                }
-                onClick={() => navigate("/dashboard-asesor/jadwal-sertifikasi")}
-              >
-                <div
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    backgroundColor: "rgba(255,255,255,0.2)",
-                    borderRadius: "8px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "20px",
-                  }}
-                >
-                  📅
-                </div>
-                Jadwal Sertifikasi Mendatang
-                <span style={{ marginLeft: "auto", fontSize: "18px" }}>→</span>
-              </button>
-
-              <button
-                style={{
-                  backgroundColor: "#06b6d4",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "12px",
-                  padding: "20px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "15px",
-                  cursor: "pointer",
-                  fontSize: "16px",
-                  fontWeight: "500",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "#0891b2")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "#06b6d4")
-                }
-                onClick={() => navigate("/dashboard-asesor/penilaian-asesi")}
-              >
-                <div
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    backgroundColor: "rgba(255,255,255,0.2)",
-                    borderRadius: "8px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "20px",
-                  }}
-                >
-                  📝
-                </div>
-                Penilaian Asesi
-                <span style={{ marginLeft: "auto", fontSize: "18px" }}>→</span>
-              </button>
-            </div>
+              Jumlah Asesi
+            </span>
           </div>
-        }
-      />
+          <p
+            style={{
+              fontSize: "36px",
+              fontWeight: "bold",
+              color: "#3b82f6",
+              margin: "0",
+            }}
+          >
+            7098
+          </p>
+        </div>
 
-      {/* Route untuk detail asesmen */}
-      <Route
-        path="/detail-asesmen/:id"
-        element={
-          <div style={{ 
+        {/* MyLSP Center Card */}
+        <div
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(249, 115, 22, 0.8), rgba(251, 146, 60, 0.8)), url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            borderRadius: "12px",
             padding: "20px",
-            backgroundColor: "#f8fafc",
-            minHeight: "100vh",
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-          }}>
-            <div style={{
-              backgroundColor: "white",
-              borderRadius: "12px",
-              padding: "30px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-            }}>
-              <button
-                onClick={() => navigate(-1)}
+            color: "white",
+            textAlign: "center",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          <h1
+            style={{
+              fontSize: "32px",
+              fontWeight: "bold",
+              margin: "0 0 8px 0",
+              textShadow: "0 2px 4px rgba(0,0,0,0.5)",
+            }}
+          >
+            MyLSP
+          </h1>
+          <p
+            style={{
+              fontSize: "14px",
+              margin: "0",
+              opacity: 0.95,
+              textShadow: "0 1px 2px rgba(0,0,0,0.5)",
+            }}
+          >
+            Lembaga Sertifikasi Profesi
+          </p>
+        </div>
+
+        {/* Skema Card */}
+        <div
+          style={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            padding: "20px",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              marginBottom: "8px",
+            }}
+          >
+            <span style={{ fontSize: "16px" }}>📋</span>
+            <span
+              style={{ fontSize: "14px", color: "#6b7280", fontWeight: "500" }}
+            >
+              Skema
+            </span>
+          </div>
+          <p
+            style={{
+              fontSize: "36px",
+              fontWeight: "bold",
+              color: "#f97316",
+              margin: "0",
+            }}
+          >
+            7098
+          </p>
+        </div>
+      </div>
+
+      {/* Welcome Header */}
+      <div
+        style={{
+          background: "linear-gradient(135deg, #ff7f39, #fb923c)",
+          borderRadius: "12px",
+          padding: "25px",
+          marginBottom: "20px",
+          color: "white",
+        }}
+      >
+        <h2
+          style={{
+            fontSize: "24px",
+            marginBottom: "5px",
+            fontWeight: "600",
+            margin: "0",
+          }}
+        >
+          Selamat datang di MyLsp, Asesor Arul!
+        </h2>
+        <p
+          style={{
+            fontSize: "14px",
+            margin: "5px 0 0 0",
+            opacity: 0.9,
+          }}
+        >
+          Semangat menjadi Asesor hari ini
+        </p>
+      </div>
+
+      {/* Assessment Cards - Horizontal Scroll */}
+      <div
+        style={{
+          marginBottom: "20px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            gap: "15px",
+            overflowX: "auto",
+            paddingBottom: "10px",
+            scrollbarWidth: "thin",
+            scrollbarColor: "#cbd5e0 transparent",
+          }}
+        >
+          {[
+            {
+              title: "USK RPL - PEMROGRAMAN WEB",
+              location: "SMKN 24 Jakarta",
+              status: "On Going",
+              isActive: true,
+            },
+            {
+              title: "USK RPL - PEMROGRAMAN WEB",
+              location: "SMKN 24 Jakarta",
+              status: "On Going",
+              isActive: false,
+            },
+            {
+              title: "USK RPL - PEMROGRAMAN WEB",
+              location: "SMKN 24 Jakarta",
+              status: "On Going",
+              isActive: false,
+            },
+            {
+              title: "USK RPL - PEMROGRAMAN WEB",
+              location: "SMKN 24 Jakarta",
+              status: "On Going",
+              isActive: false,
+            },
+          ].map((item, index) => {
+            const isActive = index === 0;
+            return (
+              <div
+                key={index}
                 style={{
-                  backgroundColor: "#6b7280",
-                  color: "white",
-                  border: "none",
+                  backgroundColor: "white",
                   borderRadius: "8px",
-                  padding: "8px 16px",
-                  marginBottom: "20px",
+                  padding: "15px",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  border: "1px solid #e5e7eb",
+                  minWidth: "200px",
+                  flexShrink: 0,
                   cursor: "pointer",
-                  fontSize: "14px",
+                  transition: "transform 0.2s, box-shadow 0.2s",
+                }}
+                onClick={() => handleCardClick(index)}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = "translateY(-2px)";
+                  e.target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
                 }}
               >
-                ← Kembali
-              </button>
-              <h1 style={{ 
-                fontSize: "28px", 
-                marginBottom: "10px",
-                color: "#1f2937" 
-              }}>
-                Detail Asesmen
-              </h1>
-              <h2 style={{ 
-                fontSize: "24px", 
-                color: "#3b82f6",
-                marginBottom: "8px" 
-              }}>
-                USK RPL - PEMROGRAMAN WEB
-              </h2>
-              <p style={{ 
-                fontSize: "16px", 
-                color: "#6b7280",
-                marginBottom: "20px" 
-              }}>
-                SMKN 24 Jakarta
-              </p>
-              <div style={{
-                backgroundColor: "#f3f4f6",
-                padding: "20px",
-                borderRadius: "8px",
-                marginBottom: "20px"
-              }}>
-                <h3 style={{ fontSize: "18px", marginBottom: "10px" }}>Informasi Asesmen:</h3>
-                <ul style={{ paddingLeft: "20px" }}>
-                  <li>Status: <strong>On Going</strong></li>
-                  <li>Tanggal Mulai: 15 September 2025</li>
-                  <li>Tanggal Selesai: 20 September 2025</li>
-                  <li>Jumlah Asesi: 25 orang</li>
-                  <li>Lokasi: SMKN 24 Jakarta</li>
-                </ul>
-              </div>
-              <div style={{ display: "flex", gap: "10px" }}>
-                <button
+                <h3
                   style={{
-                    backgroundColor: "#10b981",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "8px",
-                    padding: "12px 20px",
-                    cursor: "pointer",
                     fontSize: "14px",
-                    fontWeight: "500",
+                    fontWeight: "600",
+                    marginBottom: "8px",
+                    color: "#1f2937",
                   }}
-                  onClick={() => navigate("/dashboard-asesor/penilaian-asesi")}
                 >
-                  Mulai Penilaian
-                </button>
-                <button
+                  {item.title}
+                </h3>
+                <p
                   style={{
-                    backgroundColor: "#3b82f6",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "8px",
-                    padding: "12px 20px",
-                    cursor: "pointer",
-                    fontSize: "14px",
+                    fontSize: "12px",
+                    color: "#6b7280",
+                    marginBottom: "12px",
+                  }}
+                >
+                  {item.location}
+                </p>
+                <span
+                  style={{
+                    display: "inline-block",
+                    backgroundColor: isActive ? "#10b981" : "#d1d5db",
+                    color: isActive ? "white" : "#6b7280",
+                    padding: "4px 12px",
+                    borderRadius: "15px",
+                    fontSize: "11px",
                     fontWeight: "500",
                   }}
                 >
-                  Lihat Asesi
-                </button>
+                  {item.status}
+                </span>
               </div>
-            </div>
-          </div>
-        }
-      />
+            );
+          })}
+        </div>
+      </div>
 
-      {/* Routes lainnya jika diperlukan */}
-      <Route
-        path="/jadwal-sertifikasi"
-        element={
-          <div style={{ padding: "20px" }}>
-            <h1>Jadwal Sertifikasi</h1>
-            <p>Halaman jadwal sertifikasi</p>
+      {/* Action Buttons */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "12px",
+        }}
+      >
+        <button
+          style={{
+            background: "linear-gradient(135deg, #06b6d4, #0891b2)",
+            color: "white",
+            border: "none",
+            borderRadius: "12px",
+            padding: "18px 20px",
+            display: "flex",
+            alignItems: "center",
+            gap: "15px",
+            cursor: "pointer",
+            fontSize: "15px",
+            fontWeight: "500",
+            transition: "all 0.2s",
+            boxShadow: "0 4px 12px rgba(6, 182, 212, 0.3)",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "translateY(-1px)";
+            e.target.style.boxShadow = "0 6px 16px rgba(6, 182, 212, 0.4)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "translateY(0)";
+            e.target.style.boxShadow = "0 4px 12px rgba(6, 182, 212, 0.3)";
+          }}
+          onClick={() => navigateTo("jadwal")}
+        >
+          <div
+            style={{
+              width: "35px",
+              height: "35px",
+              backgroundColor: "rgba(255,255,255,0.2)",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "18px",
+            }}
+          >
+            📅
           </div>
-        }
-      />
+          Jadwal Sertifikasi Mendatang
+          <span style={{ marginLeft: "auto", fontSize: "16px" }}>›</span>
+        </button>
 
-      <Route
-        path="/penilaian-asesi"
-        element={
-          <div style={{ padding: "20px" }}>
-            <h1>Penilaian Asesi</h1>
-            <p>Halaman penilaian asesi</p>
+        <button
+          style={{
+            background: "linear-gradient(135deg, #06b6d4, #0891b2)",
+            color: "white",
+            border: "none",
+            borderRadius: "12px",
+            padding: "18px 20px",
+            display: "flex",
+            alignItems: "center",
+            gap: "15px",
+            cursor: "pointer",
+            fontSize: "15px",
+            fontWeight: "500",
+            transition: "all 0.2s",
+            boxShadow: "0 4px 12px rgba(6, 182, 212, 0.3)",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "translateY(-1px)";
+            e.target.style.boxShadow = "0 6px 16px rgba(6, 182, 212, 0.4)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "translateY(0)";
+            e.target.style.boxShadow = "0 4px 12px rgba(6, 182, 212, 0.3)";
+          }}
+          onClick={() => navigateTo("penilaian")}
+        >
+          <div
+            style={{
+              width: "35px",
+              height: "35px",
+              backgroundColor: "rgba(255,255,255,0.2)",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "18px",
+            }}
+          >
+            📝
           </div>
-        }
-      />
-    </Routes>
+          Penilaian Asesi
+          <span style={{ marginLeft: "auto", fontSize: "16px" }}>›</span>
+        </button>
+      </div>
+    </div>
   );
 };
 
