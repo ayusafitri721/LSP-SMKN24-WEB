@@ -24,7 +24,7 @@ import VisiMisi from "./layouts/VisiMisi";
 import LoginRoutes from "./Routes/LoginRoutes";
 import RegisterRoutes from "./Routes/RegisterRoutes";
 import DashboardRoutes from "./Routes/DashboardRoutes";
-import DashboardAsesor from "./DashboardAsesor/DashboardAsesor";
+import DashboardAsesorRoutes from "./Routes/DashboardAsesorRoutes";
 // ADDED: Import DashboardAsesiRoutes, bukan DashboardAsesi
 import DashboardAsesiRoutes from "./Routes/DashboardAsesiRoutes"; 
 
@@ -249,7 +249,7 @@ function App() {
         <Route path="/auth/register/*" element={<RegisterRoutes />} />
         {/* Dashboard Routes */}
         <Route path="/dashboard/*" element={<DashboardRoutes />} />
-        <Route path="/dashboard-asesor/*" element={<DashboardAsesor />} />
+        <Route path="/dashboard-asesor/*" element={<DashboardAsesorRoutes />} />
         {/* PERBAIKAN: Ganti DashboardAsesi dengan DashboardAsesiRoutes */}
         <Route path="/dashboard-asesi/*" element={<DashboardAsesiRoutes />} />{" "}
         {/* Updated: Dashboard Asesi Routes */}

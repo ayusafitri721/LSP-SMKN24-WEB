@@ -1,35 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-const DashboardAsesor = ({ onNavigate }) => {
-  const [activeView, setActiveView] = useState("dashboard");
-  const [selectedAssessment, setSelectedAssessment] = useState(null);
+const DashboardAsesor = () => { // Hapus prop { onNavigate }
+  const navigate = useNavigate(); // Inisialisasi hook useNavigate
 
   const handleCardClick = (index) => {
-    // Langsung navigasi ke Dashboard RPL tanpa ke halaman detail
-    if (onNavigate) {
-      onNavigate("DashboardRPL");
+    // Navigasi langsung ke route /dashboard-rpl
+    if (index === 0) { // Hanya aktifkan navigasi untuk card pertama
+      navigate("/dashboard-asesor/dashboard-rpl");
     }
   };
-
-  const handleBackClick = () => {
-    setActiveView("dashboard");
-    setSelectedAssessment(null);
-  };
-
-  const navigateTo = (view) => {
-    setActiveView(view);
-  };
-
-  // Fungsi untuk navigasi ke Dashboard RPL
-  const navigateToDashboardRPL = () => {
-    // Menggunakan onNavigate untuk memberitahu parent component
-    if (onNavigate) {
-      onNavigate("DashboardRPL");
-    }
-  };
-
-  // Hapus semua view detail, jadwal, penilaian karena tidak digunakan
-  // Langsung ke dashboard utama saja
 
   return (
     <div
@@ -121,7 +101,7 @@ const DashboardAsesor = ({ onNavigate }) => {
               textShadow: "0 1px 2px rgba(0,0,0,0.5)",
             }}
           >
-            Lembaga Sertifikasi Profesi
+              Lembaga Sertifikasi Profesi
           </p>
         </div>
 
@@ -252,7 +232,7 @@ const DashboardAsesor = ({ onNavigate }) => {
                   cursor: "pointer",
                   transition: "transform 0.2s, box-shadow 0.2s",
                 }}
-                onClick={() => handleCardClick(index)}
+                onClick={() => handleCardClick(index)} // Panggil handleCardClick saat diklik
                 onMouseEnter={(e) => {
                   e.target.style.transform = "translateY(-2px)";
                   e.target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
@@ -332,7 +312,7 @@ const DashboardAsesor = ({ onNavigate }) => {
             e.target.style.transform = "translateY(0)";
             e.target.style.boxShadow = "0 4px 12px rgba(6, 182, 212, 0.3)";
           }}
-          onClick={() => navigateTo("jadwal")}
+          onClick={() => navigate("/jadwal")} // Navigasi ke rute jadwal
         >
           <div
             style={{
@@ -376,7 +356,7 @@ const DashboardAsesor = ({ onNavigate }) => {
             e.target.style.transform = "translateY(0)";
             e.target.style.boxShadow = "0 4px 12px rgba(6, 182, 212, 0.3)";
           }}
-          onClick={() => navigateTo("penilaian")}
+          onClick={() => navigate("/penilaian")} // Navigasi ke rute penilaian
         >
           <div
             style={{
