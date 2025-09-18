@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image12 from '../../img/image 12.png';
 import { useNavigate } from 'react-router-dom';
+import NavAsesi from '../../components/NavAsesi';
 
 const IA03 = () => {
   const navigate = useNavigate();
@@ -10,6 +11,49 @@ const IA03 = () => {
     checkedAnswers: {},
     responses: {}
   });
+
+  const [showModal, setShowModal] = useState(false);
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
+
+  // Blok navigasi ke tab lain sebelum submit
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (!isFormSubmitted) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    const originalPushState = window.history.pushState;
+    const originalReplaceState = window.history.replaceState;
+
+    window.history.pushState = function(...args) {
+      if (!isFormSubmitted && !String(args[2] || '').includes('/dashboard-asesi/ia-03')) {
+        setShowWarning(true);
+        setTimeout(() => setShowWarning(false), 3000);
+        return;
+      }
+      originalPushState.apply(window.history, args);
+    };
+
+    window.history.replaceState = function(...args) {
+      if (!isFormSubmitted && !String(args[2] || '').includes('/dashboard-asesi/ia-03')) {
+        setShowWarning(true);
+        setTimeout(() => setShowWarning(false), 3000);
+        return;
+      }
+      originalReplaceState.apply(window.history, args);
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.history.pushState = originalPushState;
+      window.history.replaceState = originalReplaceState;
+    };
+  }, [isFormSubmitted]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -47,74 +91,85 @@ const IA03 = () => {
     navigate(path);
   };
 
+  const isFormValid = () => {
+    const requiredFields = ['judulUnit', 'kodeUnit'];
+    const hasRequiredFields = requiredFields.every((f) => (formData[f] || '').trim() !== '');
+    const hasResponseQ1 = (formData.responses?.question1 || '').trim() !== '';
+    const hasAnswerQ1 = !!(formData.checkedAnswers?.question1?.ya || formData.checkedAnswers?.question1?.tidak);
+    return hasRequiredFields && hasResponseQ1 && hasAnswerQ1;
+  };
+
+  const handleSubmit = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!isFormValid()) {
+      alert('Harap lengkapi semua data (Judul Unit, Kode Unit, Tanggapan, dan pilih Ya/Tidak).');
+      return;
+    }
+    try {
+      localStorage.setItem('ia03FormData', JSON.stringify(formData));
+    } catch (_) {}
+    setIsFormSubmitted(true);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setTimeout(() => {
+      navigate('/dashboard-asesi/ia-06c');
+    }, 300);
+  };
+
   return (
-    <div style={{ backgroundColor: '#f5f5f5', fontFamily: 'Arial, sans-serif', padding: '15px' }}>
-      {/* Navigation Bar - Putih */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '20px',
-          backgroundColor: 'white',
-          color: '#333',
-          padding: '10px 20px',
-          borderRadius: '15px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          marginBottom: '20px',
-        }}
-      >
-        <div style={{ cursor: 'pointer' }} onClick={() => handleNavigate('/dashboard-asesi/apl-01')}>FR.APL.01</div>
-        <div style={{ cursor: 'pointer' }} onClick={() => handleNavigate('/dashboard-asesi/apl-02')}>FR.APL.02</div>
-        <div style={{ cursor: 'pointer' }} onClick={() => handleNavigate('/dashboard-asesi/ak-01')}>FR.AK.01</div>
-        <div style={{ cursor: 'pointer' }} onClick={() => handleNavigate('/dashboard-asesi/ak-04')}>FR.AK.04</div>
-        <div style={{ cursor: 'pointer' }} onClick={() => handleNavigate('/dashboard-asesi/ia-01')}>FR.IA.01.CL</div>
-        <div style={{ cursor: 'pointer' }} onClick={() => handleNavigate('/dashboard-asesi/ia-02')}>FR.IA.02.TPD</div>
-        <div style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => handleNavigate('/dashboard-asesi/ia-03')}>FR.IA.03</div>
-        <div style={{ cursor: 'pointer' }} onClick={() => handleNavigate('/dashboard-asesi/ia-06')}>FR.IA.06A.DPT</div>
+    <div style={pageContainerStyle}>
+      {/* Scrollbar styling for WebKit browsers */}
+      <style>
+        {`
+          .nav-scrollbar::-webkit-scrollbar { height: 5px; }
+          .nav-scrollbar::-webkit-scrollbar-track { background: transparent; }
+          .nav-scrollbar::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+          .nav-scrollbar::-webkit-scrollbar-thumb:hover { background: #555; }
+        `}
+      </style>
+
+      {showWarning && (
+        <div style={warningNotificationStyle}>
+          Silakan isi dan kirim formulir FR.IA.03 terlebih dahulu!
+        </div>
+      )}
+
+      {/* Header ala AK-01 (Nav + Logo) */}
+      <div style={headerSectionStyle}>
+        <div style={navContainerStyle} className="nav-scrollbar">
+          <NavAsesi activeTab="FR.IA.03" />
+        </div>
+        <div style={logoContainerStyle}>
+          <h1 style={logoTextStyle}>MyLSP</h1>
+        </div>
       </div>
 
-      {/* Header dengan gambar, tema oranye, dan sudut melengkung */}
-      <div
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,140,0,0.7), rgba(255,140,0,0.7)), url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          height: '160px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
-          borderRadius: '15px',
-          boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-        }}
-      >
-        <h1
-          style={{
-            color: 'white',
-            fontSize: '48px',
-            fontWeight: 'bold',
-            margin: 0,
-            textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-            letterSpacing: '2px',
-          }}
-        >
-          MyLSP
-        </h1>
+      {/* Header konten (judul form) */}
+      <div style={styles.headerSectionStyle2}>
+        <div style={styles.logoContainer2Style}>
+          <img
+            src={Image12}
+            alt="LSP Logo"
+            style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '8px',
+              objectFit: 'contain',
+              backgroundColor: '#f8f9fa',
+              padding: '4px',
+            }}
+          />
+        </div>
+        <div style={styles.headerContentStyle}>
+          <div style={styles.titleStyle}>FR.IA.03</div>
+          <div style={styles.subtitleStyle}>Pertanyaan Untuk Mendukung Observasi</div>
+        </div>
       </div>
 
       {/* Main Content */}
-        {/* Header with Logo - Diperbaiki untuk logo di kiri */}
-        <div style={styles.header}>
-        <div style={styles.logoWrapper}>
-          <img src={Image12} alt="Logo" style={styles.logoImage} />
-        </div>
-        <div style={styles.titleWrapper}>
-          <h2 style={styles.formNumber}>FR.IA.03</h2>
-          <h3 style={styles.formTitle}>Pertanyaan Untuk Mendukung Observasi</h3>
-          <br></br>
-        </div>
-
         {/* Schema Information */}
         <table style={styles.schemaTable}>
           <tbody>
@@ -234,11 +289,37 @@ const IA03 = () => {
 
         {/* Send Button */}
         <div style={styles.buttonContainer}>
-          <button style={styles.sendButton}>
+          <button type="button" onClick={handleSubmit} style={styles.sendButton}>
             Kirim
           </button>
         </div>
-      </div>
+      
+
+      {showModal && (
+        <div style={modalOverlayStyle} onClick={handleCloseModal}>
+          <div style={modalContainerStyle} onClick={(e) => e.stopPropagation()}>
+            <div style={iconContainerStyle}>
+              <div style={successIconStyle}>
+                <div style={checkCircleStyle}><div style={checkMarkStyle}>✓</div></div>
+                <div style={listLinesStyle}>
+                  <div style={{ width: '80px', height: '10px', backgroundColor: '#FF8C00', borderRadius: '5px' }}></div>
+                  <div style={{ width: '120px', height: '10px', backgroundColor: '#FF8C00', borderRadius: '5px' }}></div>
+                  <div style={{ width: '140px', height: '10px', backgroundColor: '#FF8C00', borderRadius: '5px' }}></div>
+                </div>
+              </div>
+            </div>
+            <div style={modalTitleStyle}>Jawaban anda telah direkam!</div>
+            <button 
+              style={okayButtonStyle}
+              onClick={handleCloseModal}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#e67e00'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#FF8C00'}
+            >
+              Okay
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -255,42 +336,37 @@ const styles = {
     fontSize: '12px',
     lineHeight: '1.4'
   },
-  header: {
-    display: "grid",
-     // kiri 100px buat logo, kanan sisanya buat judul
-    alignItems: "center",
-    marginBottom: "20px",
+  logoContainer2Style : {
+  flexShrink: 0,
   },
-  logoWrapper: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    marginTop: "50px"
+
+  headerContentStyle : {
+  flex: 1,
   },
-  logoImage: {
-    width: "100px",
-    height: "100px",
-    objectFit: "contain",
-    
-    alignItems: "center"
-    
+
+  headerSectionStyle2 : {
+  display: 'flex',
+  alignItems: 'flex-start',
+  gap: '20px',
+  marginBottom: '20px',
+  paddingBottom: '15px',
+  borderBottom: '2px solid #FF8C00',
   },
-  titleWrapper: {
-    textAlign: "center",
-  },
-  formNumber: {
-    fontSize: "16px",
-    fontWeight: "bold",
-    margin: "0 0 5px 0",
-    color: "#333",
-    
-  },
-  formTitle: {
-    fontSize: "14px",
-    fontWeight: "bold",
-    margin: 0,
-    color: "#333",
-    
+
+  titleStyle : {
+  fontSize: '16px',
+  fontWeight: 'bold',
+  margin: '0 0 5px 0',
+  color: '#333',
+  textAlign: 'center',
+},
+
+  subtitleStyle: {
+  fontSize: '16px',
+  fontWeight: 'bold',
+  margin: '0 0 15px 0',
+  color: '#333',
+  textAlign: 'center',
   },
   schemaTable: {
     width: '100%',
@@ -446,4 +522,149 @@ const styles = {
     cursor: 'pointer',
     boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
   }
+};
+
+// Styles tambahan (konsisten dengan AK-01)
+const pageContainerStyle = {
+  backgroundColor: 'white',
+  fontFamily: 'Arial, sans-serif',
+  padding: '15px',
+  minHeight: '100vh',
+};
+
+const headerSectionStyle = {
+  backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  borderRadius: '0 0 40px 40px',
+  overflow: 'hidden',
+  marginBottom: '20px',
+};
+
+const navContainerStyle = {
+  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+  padding: '5px 15px',
+  borderRadius: '0 15px 40px 15px',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+  margin: '0',
+  overflowX: 'auto',
+  maxWidth: '50%',
+  whiteSpace: 'nowrap',
+  backdropFilter: 'blur(10px)',
+  position: 'relative',
+  zIndex: 2,
+};
+
+const logoContainerStyle = {
+  height: '120px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: '10px',
+  marginBottom: '10px',
+};
+
+const logoTextStyle = {
+  color: 'white',
+  fontSize: '36px',
+  fontWeight: 'bold',
+  margin: 0,
+  textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+  letterSpacing: '1px',
+};
+
+const modalOverlayStyle = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 1000,
+};
+
+const modalContainerStyle = {
+  backgroundColor: '#f0f0f0',
+  borderRadius: '20px',
+  padding: '30px 50px',
+  textAlign: 'center',
+  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+  minWidth: '550px',
+  maxWidth: '600px',
+  position: 'relative',
+};
+
+const iconContainerStyle = {
+  marginBottom: '20px',
+};
+
+const successIconStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  margin: '0 auto 25px',
+  gap: '15px',
+};
+
+const listLinesStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '6px',
+};
+
+const checkCircleStyle = {
+  width: '60px',
+  height: '60px',
+  borderRadius: '50%',
+  backgroundColor: '#FF8C00',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
+const checkMarkStyle = {
+  color: 'white',
+  fontSize: '24px',
+  fontWeight: 'bold',
+};
+
+const modalTitleStyle = {
+  fontSize: '18px',
+  fontWeight: 'bold',
+  color: '#333',
+  marginBottom: '30px',
+  lineHeight: '1.4',
+};
+
+const okayButtonStyle = {
+  backgroundColor: '#FF8C00',
+  border: 'none',
+  fontSize: '14px',
+  fontWeight: '600',
+  color: 'white',
+  cursor: 'pointer',
+  padding: '10px 25px',
+  borderRadius: '20px',
+  position: 'absolute',
+  bottom: '20px',
+  right: '30px',
+  transition: 'all 0.2s ease',
+};
+
+const warningNotificationStyle = {
+  position: 'fixed',
+  top: '20px',
+  right: '20px',
+  backgroundColor: '#ff6b6b',
+  color: 'white',
+  padding: '15px 20px',
+  borderRadius: '10px',
+  boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+  zIndex: 1001,
+  fontSize: '14px',
+  fontWeight: 'bold',
 };
