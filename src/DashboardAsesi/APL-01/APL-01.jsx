@@ -8,30 +8,37 @@ const pageContainerStyle = {
   backgroundColor: '#f5f5f5',
   fontFamily: 'Arial, sans-serif',
   padding: '15px',
+  minHeight: '100vh',
+};
+
+const headerSectionStyle = {
+  backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  borderRadius: '15px',
+  overflow: 'hidden',
+  marginBottom: '20px',
 };
 
 const navContainerStyle = {
-  backgroundColor: 'white',
+  backgroundColor: 'rgba(255, 255, 255, 0.95)',
   padding: '5px 15px',
   borderRadius: '15px 15px 40px 15px',
   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  margin: '15px 15px 0 15px',
+  margin: '0 15px 0 0',
   overflowX: 'auto',
   maxWidth: '50%',
   whiteSpace: 'nowrap',
+  backdropFilter: 'blur(10px)',
+  position: 'relative',
+  zIndex: 2,
 };
 
-const imageBannerStyle = {
-  backgroundImage:
-    "linear-gradient(rgba(255,165,0,0.8), rgba(255,140,0,0.8)), url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')",
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
+const logoContainerStyle = {
   height: '180px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  borderRadius: '15px 15px 0 0',
-  boxShadow: 'none',
   marginTop: '20px',
 };
 
@@ -46,7 +53,7 @@ const logoTextStyle = {
 
 const contentCardStyle = {
   backgroundColor: 'white',
-  borderRadius: '0 0 15px 15px',
+  borderRadius: '15px',
   padding: '30px',
   boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
   marginTop: '0',
@@ -435,14 +442,16 @@ const APL01 = () => {
         </div>
       )}
 
-      <div style={navContainerStyle} className="nav-scrollbar">
-        <NavAsesi activeTab="FR.APL.01" />
-      </div>
+      <div style={headerSectionStyle}>
+        <div style={navContainerStyle} className="nav-scrollbar">
+          <NavAsesi activeTab="FR.APL.01" />
+        </div>
 
-      <div style={imageBannerStyle}>
-        <h1 style={logoTextStyle}>
-          MyLSP
-        </h1>
+        <div style={logoContainerStyle}>
+          <h1 style={logoTextStyle}>
+            MyLSP
+          </h1>
+        </div>
       </div>
 
       <div style={contentCardStyle}>
