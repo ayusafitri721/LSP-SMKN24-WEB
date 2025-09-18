@@ -21,7 +21,7 @@ const navContainerStyle = {
 
 const imageBannerStyle = {
   backgroundImage:
-    "linear-gradient(rgba(255,140,0,0.7), rgba(255,140,0,0.7)), url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')",
+    "linear-gradient(rgba(255,140,0,0.7), rgba(255,140,0,0.7)), url('/src/img/kontak.png')",
   backgroundSize: "cover",
   backgroundPosition: "center",
   height: "160px",
