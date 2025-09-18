@@ -283,11 +283,13 @@ const APL02 = () => {
           display: 'flex',
           alignItems: 'center',
           gap: '15px',
-          marginBottom: '20px'
+          marginBottom: '20px',
+          paddingBottom: '15px',
+          borderBottom: '2px solid #ddd'
         }}>
           <div style={{
-            width: '40px',
-            height: '40px',
+            width: '60px',
+            height: '60px',
             borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
@@ -465,10 +467,9 @@ const APL02 = () => {
             border: '1px solid #ddd',
             padding: '15px 20px',
             display: 'flex',
-            flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            gap: '15px',
+            gap: '20px',
             minWidth: '120px',
             borderRadius: '8px'
           }}>
@@ -517,188 +518,262 @@ const APL02 = () => {
           </div>
         </div>
 
-        {/* Unit Kompetensi 1 - dari kode pertama */}
-        <div style={{
-          backgroundColor: '#e9ecef',
-          padding: '8px 15px',
-          fontSize: '14px',
-          fontWeight: 'bold',
-          marginBottom: '0',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <span>Unit Kompetensi 1</span>
-          <div style={{ display: 'flex', gap: '10px', fontSize: '12px', fontWeight: 'normal' }}>
-            <span>Judul Unit :</span>
-            <span>Kode Unit :</span>
-          </div>
-        </div>
-
-        {/* Dapatkah Saya Section - dari kode pertama */}
+        {/* Unit Kompetensi 1 */}
         <div style={{
           border: '1px solid #ddd',
-          borderTop: 'none'
+          borderRadius: '8px 8px 0 0',
+          overflow: 'hidden',
+          marginBottom: '0'
         }}>
           <div style={{
-            backgroundColor: '#fff3cd',
-            padding: '8px 15px',
-            fontSize: '14px',
-            fontWeight: 'bold'
+            display: 'flex'
           }}>
-            Dapatkah Saya?
-          </div>
-
-          <div style={{ padding: '15px' }}>
+            {/* Left side - Unit Kompetensi 1 */}
             <div style={{
+              backgroundColor: '#e9ecef',
+              padding: '15px 20px',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              minWidth: '180px',
+              borderRight: '1px solid #ddd',
               display: 'flex',
-              gap: '20px'
+              alignItems: 'center'
             }}>
-              {/* Left side - Form content */}
-              <div style={{ flex: '2' }}>
-                <div style={{
-                  fontWeight: 'bold',
-                  fontSize: '13px',
-                  marginBottom: '5px'
-                }}>
-                  Elemen 1: Mengidentifikasi konsep data dan struktur data
-                </div>
-                <div style={{
-                  fontSize: '12px',
-                  color: '#666',
-                  marginBottom: '8px'
-                }}>
-                  Kriteria Untuk Kerja:
-                </div>
-                <div style={{
-                  fontSize: '12px',
-                  lineHeight: '1.4',
-                  marginBottom: '15px'
-                }}>
-                  1.1 Mengidentifikasi konsep data dan struktur data sesuai dengan konteks<br/>
-                  1.2 Membandingkan alternatif struktur data berdasarkan efisiensi dan keunggulannya untuk konteks permasalahan yang dihadapkan
-                </div>
-
-                <div style={{ display: 'flex', gap: '20px' }}>
-                  <label style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px',
-                    fontSize: '13px',
-                    fontWeight: 'bold'
-                  }}>
-                    <input type="checkbox" />
-                    K
-                  </label>
-                  <label style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px',
-                    fontSize: '13px',
-                    fontWeight: 'bold'
-                  }}>
-                    <input type="checkbox" />
-                    BK
-                  </label>
-                </div>
-              </div>
-
-              {/* Right side - Bukti yang relevan */}
+              Unit Kompetensi 1
+            </div>
+            
+            {/* Right side - Judul Unit and Kode Unit */}
+            <div style={{ flex: 1 }}>
               <div style={{
-                border: '1px solid #ddd',
-                borderRadius: '8px',
-                padding: '12px',
-                backgroundColor: '#f8f9fa',
-                minWidth: '200px'
+                display: 'flex',
+                borderBottom: '1px solid #ddd'
               }}>
                 <div style={{
-                  fontWeight: 'bold',
+                  padding: '8px 15px',
                   fontSize: '12px',
-                  marginBottom: '10px',
-                  textAlign: 'center'
+                  minWidth: '80px',
+                  borderRight: '1px solid #ddd',
+                  display: 'flex',
+                  alignItems: 'center'
                 }}>
-                  Bukti yang relevan:
+                  Judul Unit
                 </div>
                 <div style={{
+                  padding: '8px 10px',
+                  fontSize: '12px',
+                  minWidth: '20px',
+                  borderRight: '1px solid #ddd',
                   display: 'flex',
-                  flexDirection: 'column',
-                  gap: '5px',
-                  fontSize: '11px'
+                  alignItems: 'center'
                 }}>
-                  {['bukti L', 'bukti P', 'bukti T', 'bukti WE', 'bukti V', 'bukti I'].map((bukti) => (
-                    <label key={bukti} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <input type="checkbox" style={{ width: '12px', height: '12px' }} />
-                      <span>☐ {bukti}</span>
-                    </label>
-                  ))}
+                  :
+                </div>
+                <div style={{
+                  flex: 1,
+                  padding: '5px'
+                }}>
+                  <input 
+                    type="text"
+                    style={{
+                      width: '100%',
+                      border: 'none',
+                      padding: '3px 8px',
+                      fontSize: '12px',
+                      outline: 'none',
+                      backgroundColor: 'transparent'
+                    }}
+                  />
+                </div>
+              </div>
+              
+              <div style={{
+                display: 'flex'
+              }}>
+                <div style={{
+                  padding: '8px 15px',
+                  fontSize: '12px',
+                  minWidth: '80px',
+                  borderRight: '1px solid #ddd',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}>
+                  Kode Unit
+                </div>
+                <div style={{
+                  padding: '8px 10px',
+                  fontSize: '12px',
+                  minWidth: '20px',
+                  borderRight: '1px solid #ddd',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}>
+                  :
+                </div>
+                <div style={{
+                  flex: 1,
+                  padding: '5px'
+                }}>
+                  <input 
+                    type="text"
+                    style={{
+                      width: '100%',
+                      border: 'none',
+                      padding: '3px 8px',
+                      fontSize: '12px',
+                      outline: 'none',
+                      backgroundColor: 'transparent'
+                    }}
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Assessor Sections - dari kode pertama */}
+        {/* Dapatkah Saya Section */}
+        <div style={{
+          border: '1px solid #ddd',
+          borderTop: 'none',
+          borderRadius: '0 0 8px 8px'
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '10px 20px',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            borderBottom: '1px solid #ddd'
+          }}>
+            Dapatkah Saya?
+          </div>
+
+          <div style={{ 
+            padding: '20px',
+            display: 'flex',
+            gap: '25px'
+          }}>
+            {/* Left side - Form content */}
+            <div style={{ flex: '1' }}>
+              <div style={{
+                fontWeight: 'bold',
+                fontSize: '13px',
+                marginBottom: '8px'
+              }}>
+                Elemen 1: Mengidentifikasi konsep data dan struktur data
+              </div>
+              <div style={{
+                fontSize: '12px',
+                color: '#333',
+                fontWeight: 'bold',
+                marginBottom: '8px'
+              }}>
+                Kriteria Untuk Kerja:
+              </div>
+              <div style={{
+                fontSize: '12px',
+                lineHeight: '1.5',
+                marginBottom: '20px',
+                color: '#333'
+              }}>
+                1.1 Mengidentifikasi konsep data dan struktur data sesuai dengan konteks<br/>
+                1.2 Membandingkan alternatif struktur data berdasarkan efisiensi dan keunggulannya untuk konteks permasalahan yang dihadapkan
+              </div>
+
+              <div style={{ 
+                display: 'flex', 
+                gap: '30px',
+                alignItems: 'center'
+              }}>
+                <label style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '13px',
+                  fontWeight: 'bold'
+                }}>
+                  <input 
+                    type="checkbox" 
+                    style={{
+                      width: '16px',
+                      height: '16px'
+                    }}
+                  />
+                  K
+                </label>
+                <label style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '13px',
+                  fontWeight: 'bold'
+                }}>
+                  <input 
+                    type="checkbox"
+                    style={{
+                      width: '16px',
+                      height: '16px'
+                    }}
+                  />
+                  BK
+                </label>
+              </div>
+            </div>
+
+            {/* Right side - Bukti yang relevan */}
+            <div style={{
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              padding: '15px',
+              backgroundColor: '#f8f9fa',
+              minWidth: '400px',
+              maxWidth: '400px'
+            }}>
+              <div style={{
+                fontWeight: 'bold',
+                fontSize: '13px',
+                marginBottom: '15px'
+              }}>
+                Bukti yang relevan
+              </div>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+                fontSize: '12px'
+              }}>
+                {['bukti I', 'bukti I', 'bukti I', 'bukti I', 'bukti I', 'bukti I'].map((bukti, index) => (
+                  <label key={index} style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '8px',
+                    cursor: 'pointer'
+                  }}>
+                    <input 
+                      type="checkbox" 
+                      style={{ 
+                        width: '14px', 
+                        height: '14px' 
+                      }} 
+                    />
+                    <span>☐ {bukti}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Assessor Sections */}
         <div style={{ marginTop: '30px' }}>
           {/* Assessor 1 */}
           <div style={{
             textAlign: 'center',
             fontWeight: 'bold',
             fontSize: '14px',
-            marginBottom: '10px'
-          }}>
-            Ditinjau oleh Asesor:
-          </div>
-          
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '15px',
             marginBottom: '15px',
-            fontSize: '12px'
-          }}>
-            <span style={{ minWidth: '80px' }}>Nama Asesor</span>
-            <input 
-              type="text" 
-              value="Ahmad Fahmi Rizwan Pangestu"
-              readOnly
-              style={{
-                flex: 1,
-                padding: '5px',
-                border: '1px solid #ddd',
-                fontSize: '12px'
-              }}
-            />
-            <span style={{ minWidth: '60px' }}>Tanggal</span>
-            <input 
-              type="text" 
-              value="14/02/2023"
-              readOnly
-              style={{
-                width: '100px',
-                padding: '5px',
-                border: '1px solid #ddd',
-                fontSize: '12px'
-              }}
-            />
-            <span style={{ minWidth: '120px' }}>Rekomendasi Asesor</span>
-            <button style={{
-              padding: '5px 15px',
-              backgroundColor: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '15px',
-              fontSize: '11px'
-            }}>
-              Approve
-            </button>
-          </div>
-
-          {/* Assessor 2 */}
-          <div style={{
-            textAlign: 'center',
-            fontWeight: 'bold',
-            fontSize: '14px',
-            marginBottom: '10px'
+            borderTop: '2px solid #FF8C00',
+            borderBottom: '2px solid #FF8C00',
+            paddingTop: '10px',
+            paddingBottom: '10px'
           }}>
             Ditinjau oleh Asesor:
           </div>
@@ -710,56 +785,178 @@ const APL02 = () => {
             marginBottom: '30px',
             fontSize: '12px'
           }}>
-            <span style={{ minWidth: '80px' }}>Nama Asesor</span>
-            <input 
-              type="text" 
-              value="Prof. Arya Mauludi Suripto M.Kom."
-              readOnly
-              style={{
-                flex: 1,
-                padding: '5px',
-                border: '1px solid #ddd',
-                fontSize: '12px'
-              }}
-            />
-            <span style={{ minWidth: '60px' }}>Tanggal</span>
-            <input 
-              type="text" 
-              value="14/02/2023"
-              readOnly
-              style={{
-                width: '100px',
-                padding: '5px',
-                border: '1px solid #ddd',
-                fontSize: '12px'
-              }}
-            />
-            <span style={{ minWidth: '120px' }}>Rekomendasi Asesor</span>
-            <button style={{
-              padding: '5px 15px',
-              backgroundColor: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '15px',
-              fontSize: '11px'
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '5px',
+              minWidth: '100px'
             }}>
-              Menunggu
-            </button>
+              <span style={{ fontSize: '11px', color: '#666' }}>Nama Asesi</span>
+              <input 
+                type="text" 
+                value="Afghal Ezhar Rahma Pangestu"
+                readOnly
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #ddd',
+                  fontSize: '12px',
+                  backgroundColor: 'white',
+                  borderRadius: '4px',
+                  width: '250px'
+                }}
+              />
+            </div>
+            
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '5px',
+              minWidth: '80px'
+            }}>
+              <span style={{ fontSize: '11px', color: '#666' }}>Tanggal</span>
+              <input 
+                type="text" 
+                value="14/02/2027"
+                readOnly
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #ddd',
+                  fontSize: '12px',
+                  backgroundColor: 'white',
+                  borderRadius: '4px',
+                  width: '100px'
+                }}
+              />
+            </div>
+            
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '5px',
+              alignItems: 'flex-end',
+              flex: 1,
+              paddingRight: '50px'
+            }}>
+              <span style={{ fontSize: '11px', color: '#666' }}>Persetujuan Asesi</span>
+              <button style={{
+                padding: '8px 20px',
+                backgroundColor: '#6c757d',
+                color: 'white',
+                border: 'none',
+                borderRadius: '20px',
+                fontSize: '12px',
+                fontWeight: 'bold'
+              }}>
+                Approve
+              </button>
+            </div>
+          </div>
+
+          {/* Assessor 2 */}
+          <div style={{
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            marginBottom: '15px',
+            borderTop: '2px solid #FF8C00',
+            borderBottom: '2px solid #FF8C00',
+            paddingTop: '10px',
+            paddingBottom: '10px'
+          }}>
+            Ditinjau oleh Asesor:
+          </div>
+          
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '15px',
+            marginBottom: '30px',
+            fontSize: '12px'
+          }}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '5px',
+              minWidth: '100px'
+            }}>
+              <span style={{ fontSize: '11px', color: '#666' }}>Nama Asesor</span>
+              <input 
+                type="text" 
+                value="Prof. Arul Maulido Singo M.Kom."
+                readOnly
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #ddd',
+                  fontSize: '12px',
+                  backgroundColor: 'white',
+                  borderRadius: '4px',
+                  width: '250px'
+                }}
+              />
+            </div>
+            
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '5px',
+              minWidth: '80px'
+            }}>
+              <span style={{ fontSize: '11px', color: '#666' }}>Tanggal</span>
+              <input 
+                type="text" 
+                value="14/02/2027"
+                readOnly
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #ddd',
+                  fontSize: '12px',
+                  backgroundColor: 'white',
+                  borderRadius: '4px',
+                  width: '100px'
+                }}
+              />
+            </div>
+            
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '5px',
+              alignItems: 'flex-end',
+              flex: 1,
+              paddingRight: '50px'
+            }}>
+              <span style={{ fontSize: '11px', color: '#666' }}>Persetujuan Asesor</span>
+              <button style={{
+                padding: '8px 20px',
+                backgroundColor: '#6c757d',
+                color: 'white',
+                border: 'none',
+                borderRadius: '20px',
+                fontSize: '12px',
+                fontWeight: 'bold'
+              }}>
+                Menunggu
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Submit Button */}
-        <div style={{ textAlign: 'right' }}>
+        <div style={{ 
+          textAlign: 'right',
+          marginTop: '20px'
+        }}>
           <button 
             onClick={handleSubmit}
             style={{
-              padding: '8px 25px',
+              padding: '10px 30px',
               backgroundColor: '#007bff',
               color: 'white',
               border: 'none',
-              borderRadius: '20px',
-              fontSize: '12px',
-              cursor: 'pointer'
+              borderRadius: '25px',
+              fontSize: '14px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
             }}
           >
             Kirim
