@@ -41,6 +41,7 @@ const NavAsesi = ({ activeTab }) => {
           style={{
             cursor: 'pointer',
             fontWeight: activeTab === tab.name ? 'bold' : 'normal',
+            color: activeTab === tab.name ? '#FF8C00' : '#000',
             whiteSpace: 'nowrap',
             fontSize: '12px',
             flexShrink: 0,

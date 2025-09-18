@@ -1,6 +1,7 @@
 // src/DashboardAsesi/IA-09/IA-09.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
 
 const pageContainerStyle = {
@@ -278,6 +279,124 @@ const submitButtonStyle = {
   cursor: 'pointer',
 };
 
+// Popup overlay style
+const popupOverlayStyle = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 1000,
+};
+
+// Popup container style
+const popupContainerStyle = {
+  backgroundColor: 'white',
+  borderRadius: '20px',
+  padding: '40px',
+  textAlign: 'center',
+  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+  minWidth: '320px',
+  maxWidth: '400px',
+};
+
+// Icon container style
+const iconContainerStyle = {
+  marginBottom: '20px',
+};
+
+// Success icon style
+const successIconStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  margin: '0 auto 20px',
+  position: 'relative',
+  gap: '15px',
+};
+
+// List lines container
+const listLinesStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '6px',
+};
+
+// Check mark circle style
+const checkCircleStyle = {
+  width: '60px',
+  height: '60px',
+  borderRadius: '50%',
+  backgroundColor: '#FF8C00',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: '6px',
+};
+
+// Check mark style
+const checkMarkStyle = {
+  color: 'white',
+  fontSize: '24px',
+  fontWeight: 'bold',
+};
+
+// Popup text styles
+const popupTitleStyle = {
+  fontSize: '20px',
+  fontWeight: 'bold',
+  color: '#333',
+  marginBottom: '8px',
+  lineHeight: '1.3',
+};
+
+const popupSubtitleStyle = {
+  fontSize: '20px',
+  fontWeight: 'bold',
+  color: '#333',
+  marginBottom: '30px',
+  lineHeight: '1.3',
+};
+
+// Divider style
+const dividerStyle = {
+  height: '2px',
+  backgroundColor: '#ddd',
+  margin: '25px 0',
+  borderRadius: '1px',
+};
+
+// Okay button style
+const okayButtonStyle = {
+  backgroundColor: 'transparent',
+  border: 'none',
+  fontSize: '18px',
+  fontWeight: 'bold',
+  color: '#666',
+  cursor: 'pointer',
+  padding: '10px 20px',
+};
+
+// Warning notification style
+const warningNotificationStyle = {
+  position: 'fixed',
+  top: '20px',
+  right: '20px',
+  backgroundColor: '#ff6b6b',
+  color: 'white',
+  padding: '15px 20px',
+  borderRadius: '10px',
+  boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+  zIndex: 1001,
+  fontSize: '14px',
+  fontWeight: 'bold',
+  animation: 'slideIn 0.3s ease-out',
+};
+
 const IA09 = () => {
   const [checkboxes, setCheckboxes] = useState({
     sesuai1: false,
@@ -287,12 +406,62 @@ const IA09 = () => {
     sesuai3: false,
     rekomendasi3: false,
   });
+  const [showPopup, setShowPopup] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Block navigation - hanya allow IA-09
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+
+    // Intercept navigation attempts dengan history API
+    const originalPushState = window.history.pushState;
+    const originalReplaceState = window.history.replaceState;
+
+    window.history.pushState = function(...args) {
+      if (!args[2].includes('/dashboard-asesi/ia-09')) {
+        setShowWarning(true);
+        setTimeout(() => setShowWarning(false), 3000);
+        return;
+      }
+      originalPushState.apply(window.history, args);
+    };
+
+    window.history.replaceState = function(...args) {
+      if (!args[2].includes('/dashboard-asesi/ia-09')) {
+        setShowWarning(true);
+        setTimeout(() => setShowWarning(false), 3000);
+        return;
+      }
+      originalReplaceState.apply(window.history, args);
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.history.pushState = originalPushState;
+      window.history.replaceState = originalReplaceState;
+    };
+  }, []);
 
   const handleCheckboxChange = (name) => {
     setCheckboxes(prev => ({
       ...prev,
       [name]: !prev[name]
     }));
+  };
+
+  const handleSubmit = () => {
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
   };
 
   return (
@@ -312,8 +481,26 @@ const IA09 = () => {
           .nav-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #555;
           }
+          
+          @keyframes slideIn {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
         `}
       </style>
+      
+      {/* Warning Notification */}
+      {showWarning && (
+        <div style={warningNotificationStyle}>
+          Anda sedang di halaman terakhir!
+        </div>
+      )}
       
       <div style={navContainerStyle} className="nav-scrollbar">
         <NavAsesi activeTab="FR.IA.09" />
@@ -507,9 +694,56 @@ const IA09 = () => {
         {/* Buttons */}
         <div style={buttonContainerStyle}>
           <button style={approveButtonStyle}>Setujui</button>
-          <button style={submitButtonStyle}>Kirim Jawaban</button>
+          <button style={submitButtonStyle} onClick={handleSubmit}>Kirim Jawaban</button>
         </div>
       </div>
+
+      {/* Success Popup */}
+      {showPopup && (
+        <div style={popupOverlayStyle} onClick={handleClosePopup}>
+          <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
+            <div style={iconContainerStyle}>
+              <div style={successIconStyle}>
+                {/* List lines (3 horizontal lines) */}
+                <div style={listLinesStyle}>
+                  <div style={{
+                    width: '60px',
+                    height: '12px',
+                    backgroundColor: '#FF8C00',
+                    borderRadius: '6px'
+                  }}></div>
+                  <div style={{
+                    width: '80px',
+                    height: '12px',
+                    backgroundColor: '#FF8C00',
+                    borderRadius: '6px'
+                  }}></div>
+                  <div style={{
+                    width: '100px',
+                    height: '12px',
+                    backgroundColor: '#FF8C00',
+                    borderRadius: '6px'
+                  }}></div>
+                </div>
+                
+                {/* Check mark circle */}
+                <div style={checkCircleStyle}>
+                  <div style={checkMarkStyle}>✓</div>
+                </div>
+              </div>
+            </div>
+            
+            <div style={popupTitleStyle}>Jawaban Anda</div>
+            <div style={popupSubtitleStyle}>Berhasil Direkam!</div>
+            
+            <div style={dividerStyle}></div>
+            
+            <button style={okayButtonStyle} onClick={handleClosePopup}>
+              Okay
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
