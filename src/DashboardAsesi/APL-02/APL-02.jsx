@@ -251,13 +251,14 @@ const popupOverlayStyle = {
 
 // Popup container style
 const popupContainerStyle = {
-  backgroundColor: 'white',
+  backgroundColor: '#f0f0f0',
   borderRadius: '20px',
-  padding: '40px',
+  padding: '30px 50px',
   textAlign: 'center',
   boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-  minWidth: '320px',
-  maxWidth: '400px',
+  minWidth: '550px',
+  maxWidth: '600px',
+  position: 'relative',
 };
 
 // Icon container style
@@ -268,10 +269,10 @@ const iconContainerStyle = {
 // Success icon style
 const successIconStyle = {
   display: 'flex',
+  flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  margin: '0 auto 20px',
-  position: 'relative',
+  margin: '0 auto 25px',
   gap: '15px',
 };
 
@@ -291,7 +292,6 @@ const checkCircleStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  marginTop: '6px',
 };
 
 // Check mark style
@@ -303,15 +303,15 @@ const checkMarkStyle = {
 
 // Popup text styles
 const popupTitleStyle = {
-  fontSize: '20px',
+  fontSize: '18px',
   fontWeight: 'bold',
   color: '#333',
-  marginBottom: '8px',
-  lineHeight: '1.3',
+  marginBottom: '30px',
+  lineHeight: '1.4',
 };
 
 const popupSubtitleStyle = {
-  fontSize: '20px',
+  fontSize: '22px',
   fontWeight: 'bold',
   color: '#333',
   marginBottom: '30px',
@@ -321,20 +321,25 @@ const popupSubtitleStyle = {
 // Divider style
 const dividerStyle = {
   height: '2px',
-  backgroundColor: '#ddd',
+  backgroundColor: 'rgba(255, 255, 255, 0.4)',
   margin: '25px 0',
   borderRadius: '1px',
 };
 
 // Okay button style
 const okayButtonStyle = {
-  backgroundColor: 'transparent',
+  backgroundColor: '#FF8C00',
   border: 'none',
-  fontSize: '18px',
-  fontWeight: 'bold',
-  color: '#666',
+  fontSize: '14px',
+  fontWeight: '600',
+  color: 'white',
   cursor: 'pointer',
-  padding: '10px 20px',
+  padding: '10px 25px',
+  borderRadius: '20px',
+  position: 'absolute',
+  bottom: '20px',
+  right: '30px',
+  transition: 'all 0.2s ease',
 };
 
 // Warning notification style
@@ -609,41 +614,43 @@ const APL02 = () => {
           <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
             <div style={iconContainerStyle}>
               <div style={successIconStyle}>
-                {/* List lines (3 horizontal lines) */}
-                <div style={listLinesStyle}>
-                  <div style={{
-                    width: '60px',
-                    height: '12px',
-                    backgroundColor: '#FF8C00',
-                    borderRadius: '6px'
-                  }}></div>
-                  <div style={{
-                    width: '80px',
-                    height: '12px',
-                    backgroundColor: '#FF8C00',
-                    borderRadius: '6px'
-                  }}></div>
-                  <div style={{
-                    width: '100px',
-                    height: '12px',
-                    backgroundColor: '#FF8C00',
-                    borderRadius: '6px'
-                  }}></div>
-                </div>
-                
-                {/* Check mark circle */}
+                {/* Check mark circle - di atas */}
                 <div style={checkCircleStyle}>
                   <div style={checkMarkStyle}>✓</div>
+                </div>
+                
+                {/* List lines (3 horizontal lines) - di bawah */}
+                <div style={listLinesStyle}>
+                  <div style={{
+                    width: '80px',
+                    height: '10px',
+                    backgroundColor: '#FF8C00',
+                    borderRadius: '5px'
+                  }}></div>
+                  <div style={{
+                    width: '120px',
+                    height: '10px',
+                    backgroundColor: '#FF8C00',
+                    borderRadius: '5px'
+                  }}></div>
+                  <div style={{
+                    width: '140px',
+                    height: '10px',
+                    backgroundColor: '#FF8C00',
+                    borderRadius: '5px'
+                  }}></div>
                 </div>
               </div>
             </div>
             
-            <div style={popupTitleStyle}>Jawaban Anda</div>
-            <div style={popupSubtitleStyle}>Berhasil Direkam!</div>
+            <div style={popupTitleStyle}>Jawaban anda telah direkam!</div>
             
-            <div style={dividerStyle}></div>
-            
-            <button style={okayButtonStyle} onClick={handleClosePopup}>
+            <button 
+              style={okayButtonStyle} 
+              onClick={handleClosePopup}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#e67e00'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#FF8C00'}
+            >
               Okay
             </button>
           </div>
