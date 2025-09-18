@@ -5,7 +5,7 @@ import NavAsesi from "../../components/NavAsesi";
 const pageContainerStyle = {
   backgroundColor: "white",
   fontFamily: "Arial, sans-serif",
-  padding: "15px",
+  padding: "8px",
   minHeight: "100vh",
 };
 
@@ -23,12 +23,12 @@ const headerSectionStyle = {
 // Navigation container matching AK-01
 const navContainerStyle = {
   backgroundColor: "rgba(255, 255, 255, 0.95)",
-  padding: "5px 15px",
+  padding: "3px 10px",
   borderRadius: "0 15px 40px 15px",
   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
   margin: "0",
   overflowX: "auto",
-  maxWidth: "50%",
+  maxWidth: "60%",
   whiteSpace: "nowrap",
   backdropFilter: "blur(10px)",
   position: "relative",
@@ -37,18 +37,18 @@ const navContainerStyle = {
 
 // Logo container matching AK-01
 const logoContainerStyle = {
-  height: "120px",
+  height: "100px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  marginTop: "10px",
-  marginBottom: "10px",
+  marginTop: "8px",
+  marginBottom: "8px",
 };
 
 // Logo text matching AK-01
 const logoTextStyle = {
   color: "white",
-  fontSize: "36px",
+  fontSize: "32px",
   fontWeight: "bold",
   margin: 0,
   textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
@@ -58,7 +58,7 @@ const logoTextStyle = {
 const contentCardStyle = {
   backgroundColor: "white",
   borderRadius: "0 0 15px 15px",
-  padding: "30px",
+  padding: "20px",
   boxShadow: "none",
   marginTop: "0",
   border: "none",
@@ -402,7 +402,7 @@ const AK02 = () => {
   };
 
   return (
-    <div style={pageContainerStyle}>
+    <div style={{ ...pageContainerStyle }} className="page-container">
       <style>
         {`
           .nav-scrollbar::-webkit-scrollbar {
@@ -433,29 +433,139 @@ const AK02 = () => {
               opacity: 1;
             }
           }
+
+          /* Responsive Styles */
+          @media (max-width: 768px) {
+            .page-container {
+              padding: 8px !important;
+            }
+            
+            .nav-container {
+              max-width: 85% !important;
+              padding: 3px 10px !important;
+            }
+            
+            .logo-text {
+              font-size: 24px !important;
+            }
+            
+            .content-card {
+              padding: 15px !important;
+            }
+            
+            .header-section {
+              flex-direction: column !important;
+              align-items: center !important;
+              text-align: center;
+              gap: 10px !important;
+            }
+            
+            .logo-image {
+              width: 60px !important;
+              height: 60px !important;
+            }
+            
+            .form-table {
+              font-size: 11px !important;
+            }
+            
+            .form-table td {
+              padding: 6px 8px !important;
+            }
+            
+            .unit-checkboxes {
+              flex-direction: column !important;
+              gap: 10px !important;
+            }
+            
+            .recommendation-section {
+              flex-direction: column !important;
+              gap: 15px !important;
+            }
+            
+            .textarea-field {
+              height: 80px !important;
+              font-size: 10px !important;
+            }
+            
+            .submit-button {
+              width: 100% !important;
+              text-align: center !important;
+            }
+            
+            .popup-container {
+              min-width: 90% !important;
+              max-width: 95% !important;
+              margin: 0 10px;
+              padding: 20px 25px !important;
+            }
+            
+            .warning-notification {
+              right: 10px !important;
+              left: 10px !important;
+              font-size: 12px !important;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .logo-container {
+              height: 80px !important;
+            }
+            
+            .logo-text {
+              font-size: 20px !important;
+            }
+            
+            .content-card {
+              padding: 10px !important;
+            }
+            
+            .form-table {
+              font-size: 10px !important;
+            }
+            
+            .form-table td {
+              padding: 4px 6px !important;
+            }
+            
+            .unit-title {
+              font-size: 11px !important;
+            }
+            
+            .checkbox-label {
+              font-size: 9px !important;
+            }
+            
+            .textarea-field {
+              height: 70px !important;
+              font-size: 9px !important;
+            }
+          }
         `}
       </style>
 
       {/* Warning Notification */}
       {showWarning && (
-        <div style={warningNotificationStyle}>
+        <div style={warningNotificationStyle} className="warning-notification">
           Silakan isi dan kirim formulir AK-02 terlebih dahulu!
         </div>
       )}
 
       {/* Header Section matching AK-01 design */}
       <div style={headerSectionStyle}>
-        <div style={navContainerStyle} className="nav-scrollbar">
+        <div style={navContainerStyle} className="nav-scrollbar nav-container">
           <NavAsesi activeTab="FR.AK.02" />
         </div>
 
-        <div style={logoContainerStyle}>
-          <h1 style={logoTextStyle}>MyLSP</h1>
+        <div style={logoContainerStyle} className="logo-container">
+          <h1 style={logoTextStyle} className="logo-text">
+            MyLSP
+          </h1>
         </div>
       </div>
 
       {/* Content Card */}
-      <div style={contentCardStyle}>
+      <div style={contentCardStyle} className="content-card">
         {/* Header Section */}
         <div
           style={{
@@ -466,6 +576,7 @@ const AK02 = () => {
             paddingBottom: "15px",
             borderBottom: "2px solid #FF8C00",
           }}
+          className="header-section"
         >
           <div style={{ flexShrink: 0 }}>
             <img
@@ -479,6 +590,7 @@ const AK02 = () => {
                 backgroundColor: "#f8f9fa",
                 padding: "4px",
               }}
+              className="logo-image"
             />
           </div>
           <div style={{ flex: 1 }}>
@@ -516,6 +628,7 @@ const AK02 = () => {
               borderCollapse: "collapse",
               fontSize: "12px",
             }}
+            className="form-table"
           >
             <tbody>
               <tr>
@@ -896,7 +1009,10 @@ const AK02 = () => {
                 }}
               >
                 <div style={{ marginBottom: "10px" }}>
-                  <label style={{ fontSize: "12px", fontWeight: "500" }}>
+                  <label
+                    style={{ fontSize: "12px", fontWeight: "500" }}
+                    className="unit-title"
+                  >
                     {unit.title}
                   </label>
                 </div>
@@ -908,6 +1024,7 @@ const AK02 = () => {
                     alignItems: "center",
                     flexWrap: "wrap",
                   }}
+                  className="unit-checkboxes"
                 >
                   <div
                     style={{
@@ -924,7 +1041,10 @@ const AK02 = () => {
                       }
                       style={{ margin: "0" }}
                     />
-                    <span style={{ fontSize: "11px" }}>
+                    <span
+                      style={{ fontSize: "11px" }}
+                      className="checkbox-label"
+                    >
                       Observasi Demonstrasi
                     </span>
                   </div>
@@ -948,7 +1068,12 @@ const AK02 = () => {
                       }
                       style={{ margin: "0" }}
                     />
-                    <span style={{ fontSize: "11px" }}>Portofolio</span>
+                    <span
+                      style={{ fontSize: "11px" }}
+                      className="checkbox-label"
+                    >
+                      Portofolio
+                    </span>
                   </div>
 
                   <div
@@ -970,7 +1095,10 @@ const AK02 = () => {
                       }
                       style={{ margin: "0" }}
                     />
-                    <span style={{ fontSize: "11px" }}>
+                    <span
+                      style={{ fontSize: "11px" }}
+                      className="checkbox-label"
+                    >
                       Pernyataan Pihak Ketiga Pertanyaan Wawancara
                     </span>
                   </div>
@@ -994,7 +1122,10 @@ const AK02 = () => {
                       }
                       style={{ margin: "0" }}
                     />
-                    <span style={{ fontSize: "11px" }}>
+                    <span
+                      style={{ fontSize: "11px" }}
+                      className="checkbox-label"
+                    >
                       Pernyataan Pihak Ketiga Pertanyaan Wawancara
                     </span>
                   </div>
@@ -1018,7 +1149,12 @@ const AK02 = () => {
                       }
                       style={{ margin: "0" }}
                     />
-                    <span style={{ fontSize: "11px" }}>Per Ter</span>
+                    <span
+                      style={{ fontSize: "11px" }}
+                      className="checkbox-label"
+                    >
+                      Per Ter
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1040,6 +1176,7 @@ const AK02 = () => {
                   gap: "20px",
                   alignItems: "flex-start",
                 }}
+                className="recommendation-section"
               >
                 {/* Left Section - Rekomendasi */}
                 <div style={{ flex: 1 }}>
@@ -1122,6 +1259,7 @@ kompetensi) :"
                       resize: "vertical",
                       boxSizing: "border-box",
                     }}
+                    className="textarea-field"
                   />
                 </div>
 
@@ -1155,13 +1293,17 @@ kompetensi) :"
                       resize: "vertical",
                       boxSizing: "border-box",
                     }}
+                    className="textarea-field"
                   />
                 </div>
               </div>
             </div>
 
             {/* Submit Button */}
-            <div style={{ textAlign: "right", marginTop: "20px" }}>
+            <div
+              style={{ textAlign: "right", marginTop: "20px" }}
+              className="submit-button"
+            >
               <button
                 type="submit"
                 style={{
@@ -1169,14 +1311,14 @@ kompetensi) :"
                   color: "white",
                   padding: "12px 40px",
                   border: "none",
-                  borderRadius: "20px",
+                  borderRadius: "5px",
                   fontSize: "14px",
                   fontWeight: "bold",
                   cursor: "pointer",
                   boxShadow: "0 2px 4px rgba(0,123,255,0.3)",
                 }}
               >
-                Kirim
+                Kirim Jawaban
               </button>
             </div>
           </div>
@@ -1186,7 +1328,11 @@ kompetensi) :"
       {/* Success Popup - sama persis kayak AK-01 */}
       {showPopup && (
         <div style={popupOverlayStyle} onClick={handleClosePopup}>
-          <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
+          <div
+            style={popupContainerStyle}
+            onClick={(e) => e.stopPropagation()}
+            className="popup-container"
+          >
             <div style={iconContainerStyle}>
               <div style={successIconStyle}>
                 {/* Check mark circle - di atas */}

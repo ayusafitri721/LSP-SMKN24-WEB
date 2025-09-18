@@ -398,7 +398,7 @@ function DashboardAsesi({ onNavigate }) {
                 e.target.style.transform = "translateY(0)";
               }}
             >
-              Aksi
+              Valid
             </button>
           </div>
         </div>
@@ -453,8 +453,8 @@ function DashboardAsesi({ onNavigate }) {
             <button
               onClick={() => onNavigate && onNavigate("APL.01")}
               style={{
-                backgroundColor: "white",
-                color: "#2C94FF",
+                backgroundColor: "##D9D9D9",
+                color: "black",
                 border: "none",
                 borderRadius: "25px",
                 padding: "10px 25px",
