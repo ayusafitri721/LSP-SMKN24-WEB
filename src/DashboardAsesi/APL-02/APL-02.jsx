@@ -5,33 +5,40 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
 
 const pageContainerStyle = {
-  backgroundColor: '#f5f5f5',
+  backgroundColor: 'white',
   fontFamily: 'Arial, sans-serif',
   padding: '15px',
+  minHeight: '100vh',
+};
+
+const headerSectionStyle = {
+  backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  borderRadius: '0 0 40px 40px',
+  overflow: 'hidden',
+  marginBottom: '0',
 };
 
 const navContainerStyle = {
-  backgroundColor: 'white',
+  backgroundColor: 'rgba(255, 255, 255, 0.95)',
   padding: '5px 15px',
   borderRadius: '15px 15px 40px 15px',
   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  margin: '15px 15px 0 15px',
+  margin: '0 15px 0 0',
   overflowX: 'auto',
   maxWidth: '50%',
   whiteSpace: 'nowrap',
+  backdropFilter: 'blur(10px)',
+  position: 'relative',
+  zIndex: 2,
 };
 
-const imageBannerStyle = {
-  backgroundImage:
-    "linear-gradient(rgba(255,140,0,0.7), rgba(255,140,0,0.7)), url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')",
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  height: '160px',
+const logoContainerStyle = {
+  height: '180px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  borderRadius: '15px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
   marginTop: '20px',
 };
 
@@ -46,196 +53,15 @@ const logoTextStyle = {
 
 const contentCardStyle = {
   backgroundColor: 'white',
-  borderRadius: '15px',
+  borderRadius: '0 0 15px 15px',
   padding: '25px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-  marginTop: '20px',
-};
-
-const headerStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '15px',
-  marginBottom: '20px',
-};
-
-const logoStyle = {
-  width: '50px',
-  height: '50px',
-  backgroundColor: '#ff8c00',
-  borderRadius: '8px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: 'white',
-  fontWeight: 'bold',
-  fontSize: '20px',
-};
-
-const titleStyle = {
-  fontSize: '18px',
-  fontWeight: 'bold',
-  margin: 0,
-  color: '#333',
-};
-
-const subtitleStyle = {
-  fontSize: '12px',
-  color: '#666',
-  margin: '2px 0 0 0',
-};
-
-const sectionStyle = {
-  marginBottom: '25px',
-};
-
-const sectionHeaderStyle = {
-  backgroundColor: '#ffeaa7',
-  padding: '12px 15px',
-  borderRadius: '8px',
-  marginBottom: '15px',
-};
-
-const sectionTitleStyle = {
-  fontSize: '14px',
-  fontWeight: 'bold',
-  margin: 0,
-  color: '#333',
-};
-
-const listStyle = {
-  margin: '10px 0',
-  paddingLeft: '20px',
-};
-
-const listItemStyle = {
-  marginBottom: '5px',
-  fontSize: '13px',
-  lineHeight: '1.4',
-};
-
-const competencyHeaderStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '10px',
-  marginBottom: '15px',
-};
-
-const competencyTitleStyle = {
-  fontSize: '16px',
-  fontWeight: 'bold',
-  color: '#333',
-};
-
-const linkStyle = {
-  color: '#007bff',
-  textDecoration: 'none',
-  fontSize: '12px',
-  cursor: 'pointer',
-};
-
-const formSectionStyle = {
-  border: '1px solid #e0e0e0',
-  borderRadius: '8px',
-  padding: '20px',
-  marginBottom: '20px',
-};
-
-const formTitleStyle = {
-  fontSize: '14px',
-  fontWeight: 'bold',
-  marginBottom: '15px',
-  color: '#333',
-};
-
-const formDescStyle = {
-  fontSize: '12px',
-  color: '#666',
-  marginBottom: '20px',
-  lineHeight: '1.5',
-};
-
-const tableStyle = {
-  width: '100%',
-  borderCollapse: 'collapse',
-  fontSize: '12px',
-  marginBottom: '20px',
-};
-
-const thStyle = {
-  backgroundColor: '#f8f9fa',
-  padding: '10px',
-  border: '1px solid #dee2e6',
-  textAlign: 'left',
-  fontWeight: 'bold',
-  fontSize: '11px',
-};
-
-const tdStyle = {
-  padding: '10px',
-  border: '1px solid #dee2e6',
-  verticalAlign: 'top',
-};
-
-const checkboxContainerStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '5px',
-  fontSize: '11px',
-};
-
-const assessorSectionStyle = {
-  backgroundColor: '#f8f9fa',
-  padding: '15px',
-  borderRadius: '8px',
-  marginBottom: '15px',
-};
-
-const assessorTitleStyle = {
-  fontSize: '13px',
-  fontWeight: 'bold',
-  marginBottom: '10px',
-  textAlign: 'center',
-};
-
-const assessorRowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '15px',
-  marginBottom: '10px',
-};
-
-const inputStyle = {
-  flex: 1,
-  padding: '8px',
-  border: '1px solid #ddd',
-  borderRadius: '4px',
-  fontSize: '12px',
-};
-
-const buttonStyle = {
-  padding: '8px 15px',
-  backgroundColor: '#6c757d',
-  color: 'white',
+  boxShadow: 'none',
+  marginTop: '0',
   border: 'none',
-  borderRadius: '4px',
-  fontSize: '11px',
-  cursor: 'pointer',
+  maxWidth: '100%',
 };
 
-const submitButtonStyle = {
-  padding: '10px 30px',
-  backgroundColor: '#007bff',
-  color: 'white',
-  border: 'none',
-  borderRadius: '4px',
-  fontSize: '12px',
-  cursor: 'pointer',
-  float: 'right',
-  marginTop: '20px',
-};
-
-// Popup overlay style
+// Popup styles
 const popupOverlayStyle = {
   position: 'fixed',
   top: 0,
@@ -249,7 +75,6 @@ const popupOverlayStyle = {
   zIndex: 1000,
 };
 
-// Popup container style
 const popupContainerStyle = {
   backgroundColor: '#f0f0f0',
   borderRadius: '20px',
@@ -261,12 +86,10 @@ const popupContainerStyle = {
   position: 'relative',
 };
 
-// Icon container style
 const iconContainerStyle = {
   marginBottom: '20px',
 };
 
-// Success icon style
 const successIconStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -276,14 +99,12 @@ const successIconStyle = {
   gap: '15px',
 };
 
-// List lines container
 const listLinesStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '6px',
 };
 
-// Check mark circle style
 const checkCircleStyle = {
   width: '60px',
   height: '60px',
@@ -294,14 +115,12 @@ const checkCircleStyle = {
   justifyContent: 'center',
 };
 
-// Check mark style
 const checkMarkStyle = {
   color: 'white',
   fontSize: '24px',
   fontWeight: 'bold',
 };
 
-// Popup text styles
 const popupTitleStyle = {
   fontSize: '18px',
   fontWeight: 'bold',
@@ -310,23 +129,6 @@ const popupTitleStyle = {
   lineHeight: '1.4',
 };
 
-const popupSubtitleStyle = {
-  fontSize: '22px',
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: '30px',
-  lineHeight: '1.3',
-};
-
-// Divider style
-const dividerStyle = {
-  height: '2px',
-  backgroundColor: 'rgba(255, 255, 255, 0.4)',
-  margin: '25px 0',
-  borderRadius: '1px',
-};
-
-// Okay button style
 const okayButtonStyle = {
   backgroundColor: '#FF8C00',
   border: 'none',
@@ -342,7 +144,6 @@ const okayButtonStyle = {
   transition: 'all 0.2s ease',
 };
 
-// Warning notification style
 const warningNotificationStyle = {
   position: 'fixed',
   top: '20px',
@@ -410,12 +211,14 @@ const APL02 = () => {
     };
   }, [isFormSubmitted]);
 
+  // Handle submit - langsung show popup tanpa validasi field
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsFormSubmitted(true);
     setShowPopup(true);
   };
 
+  // Handle close popup - redirect ke AK-01
   const handleClosePopup = () => {
     setShowPopup(false);
     // Auto redirect ke AK-01 setelah close popup
@@ -426,7 +229,6 @@ const APL02 = () => {
 
   return (
     <div style={pageContainerStyle}>
-      {/* Scrollbar styling for WebKit browsers */}
       <style>
         {`
           .nav-scrollbar::-webkit-scrollbar {
@@ -463,149 +265,505 @@ const APL02 = () => {
         </div>
       )}
       
-      <div style={navContainerStyle} className="nav-scrollbar">
-        <NavAsesi activeTab="FR.APL.02" />
-      </div>
+      {/* Navigation dan Header dengan background image */}
+      <div style={headerSectionStyle}>
+        <div style={navContainerStyle} className="nav-scrollbar">
+          <NavAsesi activeTab="FR.APL.02" />
+        </div>
 
-      <div style={imageBannerStyle}>
-        <h1 style={logoTextStyle}>MyLSP</h1>
+        <div style={logoContainerStyle}>
+          <h1 style={logoTextStyle}>MyLSP</h1>
+        </div>
       </div>
 
       <div style={contentCardStyle}>
-        {/* Header */}
-        <div style={headerStyle}>
-          <div style={logoStyle}>LSP</div>
-          <div>
-            <h1 style={titleStyle}>FR.APL.02 ASESMEN MANDIRI</h1>
-            <p style={subtitleStyle}>Skema Sertifikasi<br />JUNIOR DEVELOPER APLIKASI (LEVEL III)</p>
+        {/* Header dengan logo - diganti dengan gambar */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '15px',
+          marginBottom: '20px'
+        }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'hidden'
+          }}>
+            <img 
+              src="/src/img/LOGO_LSP_SMKN_24.jpg" 
+              alt="LSP SMKN 24 Logo"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
           </div>
+          <h1 style={{
+            fontSize: '18px',
+            fontWeight: 'bold',
+            margin: 0,
+            color: '#333',
+            textAlign: 'center',
+            flex: 1
+          }}>
+            FR.APL.02 ASESMEN MANDIRI
+          </h1>
         </div>
 
-        {/* Petunjuk Section */}
-        <div style={sectionStyle}>
-          <div style={sectionHeaderStyle}>
-            <h3 style={sectionTitleStyle}>PETUNJUK ASESMEN MANDIRI</h3>
+        {/* Skema Sertifikasi Section - table format */}
+        <div style={{
+          backgroundColor: '#f8f9fa',
+          border: '1px solid #ddd',
+          borderRadius: '8px',
+          marginBottom: '20px',
+          fontSize: '14px',
+          fontWeight: 'bold',
+          display: 'flex',
+          overflow: 'hidden'
+        }}>
+          <div style={{ 
+            minWidth: '140px',
+            padding: '15px 10px',
+            borderRight: '1px solid #ddd',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            Skema Sertifikasi
           </div>
-          <p style={{ fontSize: '12px', marginBottom: '10px', fontWeight: 'bold' }}>INSTRUKSI:</p>
-          <ul style={listStyle}>
-            <li style={listItemStyle}>Baca setiap pernyataan di kolom sebelah kiri</li>
-            <li style={listItemStyle}>Beri tanda centang pada kolom jika Anda yakin dapat melakukan tugas yang dijelaskan</li>
-            <li style={listItemStyle}>Isi kolom di sebelah kanan dengan mendaftar bukti yang Anda miliki untuk menunjukkan bahwa Anda melakukan tugas – tugas ini</li>
-          </ul>
-        </div>
-
-        {/* Unit Kompetensi */}
-        <div style={sectionStyle}>
-          <div style={competencyHeaderStyle}>
-            <h3 style={competencyTitleStyle}>Unit Kompetensi 1</h3>
-            <a href="#" style={linkStyle}>Lihat Unit</a>
-            <a href="#" style={linkStyle}>Kode Unit</a>
-          </div>
-        </div>
-
-        {/* Form Section */}
-        <div style={formSectionStyle}>
-          <h4 style={formTitleStyle}>Dapatkah Saya?</h4>
-          <div style={formDescStyle}>
-            <strong>Elemen 1: Mengidentifikasi konsep data dan struktur data</strong><br />
-            Kriteria untuk kerja:
-          </div>
-          
-          <div style={{ fontSize: '11px', marginBottom: '15px' }}>
-            1.1 Mengidentifikasi konsep data dan struktur data sesuai dengan konteks<br />
-            1.2 Membandingkan alternatif struktur data besihiran dan keunggulannya untuk konteks permasalahan yang dihadapkan
-          </div>
-
-          <table style={tableStyle}>
-            <thead>
-              <tr>
-                <th style={{...thStyle, width: '50px'}}>K</th>
-                <th style={{...thStyle, width: '50px'}}>BK</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={tdStyle}>
-                  <input type="checkbox" />
-                </td>
-                <td style={tdStyle}>
-                  <input type="checkbox" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          {/* Bukti yang relevan */}
-          <div style={{ marginTop: '15px' }}>
-            <div style={checkboxContainerStyle}>
-              <label style={{ fontWeight: 'bold', fontSize: '12px', marginBottom: '10px' }}>
-                Bukti yang relevan:
-              </label>
-              <label><input type="checkbox" /> Bukti L</label>
-              <label><input type="checkbox" /> Bukti P</label>
-              <label><input type="checkbox" /> Bukti T</label>
-              <label><input type="checkbox" /> Bukti WE</label>
-              <label><input type="checkbox" /> Bukti V</label>
-              <label><input type="checkbox" /> Bukti I</label>
+          <div style={{
+            flex: 1,
+            fontSize: '12px',
+            fontWeight: 'normal'
+          }}>
+            <div style={{ 
+              display: 'flex',
+              borderBottom: '1px solid #ddd'
+            }}>
+              <div style={{
+                padding: '8px 10px',
+                borderRight: '1px solid #ddd',
+                minWidth: '80px'
+              }}>
+                Judul Unit
+              </div>
+              <div style={{
+                padding: '8px 5px',
+                borderRight: '1px solid #ddd',
+                minWidth: '20px',
+                textAlign: 'center'
+              }}>
+                :
+              </div>
+              <div style={{
+                flex: 1,
+                padding: '3px'
+              }}>
+                <input 
+                  type="text" 
+                  style={{
+                    width: '100%',
+                    border: 'none',
+                    padding: '5px',
+                    fontSize: '12px',
+                    outline: 'none',
+                    backgroundColor: 'transparent'
+                  }}
+                />
+              </div>
+            </div>
+            <div style={{ 
+              display: 'flex'
+            }}>
+              <div style={{
+                padding: '8px 10px',
+                borderRight: '1px solid #ddd',
+                minWidth: '80px'
+              }}>
+                Kode Unit
+              </div>
+              <div style={{
+                padding: '8px 5px',
+                borderRight: '1px solid #ddd',
+                minWidth: '20px',
+                textAlign: 'center'
+              }}>
+                :
+              </div>
+              <div style={{
+                flex: 1,
+                padding: '3px'
+              }}>
+                <input 
+                  type="text" 
+                  style={{
+                    width: '100%',
+                    border: 'none',
+                    padding: '5px',
+                    fontSize: '12px',
+                    outline: 'none',
+                    backgroundColor: 'transparent'
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Assessor Sections */}
-        <div style={assessorSectionStyle}>
-          <div style={assessorTitleStyle}>Ditinjau oleh Asesor:</div>
-          <div style={assessorRowStyle}>
-            <span style={{ fontSize: '12px', minWidth: '80px' }}>Nama Asesor</span>
+        {/* PADUAN ASESMEN MANDIRI - updated design with gap between sections */}
+        <div style={{
+          marginBottom: '20px',
+          display: 'flex',
+          gap: '3px'
+        }}>
+          {/* Main orange section */}
+          <div style={{
+            backgroundColor: '#ffeaa7',
+            padding: '15px',
+            flex: 1,
+            borderRadius: '8px',
+            border: '1px solid #ddd'
+          }}>
+            <div style={{
+              fontWeight: 'bold',
+              fontSize: '14px',
+              marginBottom: '10px'
+            }}>
+              PADUAN ASESMEN MANDIRI
+            </div>
+            
+            <div style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '8px' }}>
+              Instruksi:
+            </div>
+            <ul style={{ 
+              margin: '0',
+              paddingLeft: '20px',
+              fontSize: '12px',
+              lineHeight: '1.4'
+            }}>
+              <li style={{ marginBottom: '4px' }}>
+                Baca setiap pertanyaan di kolom sebelah kiri.
+              </li>
+              <li style={{ marginBottom: '4px' }}>
+                Beri tanda centang pada kotak jika Anda yakin dapat melakukan tugas yang dijelaskan.
+              </li>
+              <li>
+                Isi kolom di sebelah kanan dengan mendaftar bukti yang Anda miliki untuk menunjukkan bahwa Anda melakukan tugas-tugas ini.
+              </li>
+            </ul>
+          </div>
+
+          {/* Separate check all section */}
+          <div style={{
+            backgroundColor: '#f8f9fa',
+            border: '1px solid #ddd',
+            padding: '15px 20px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '15px',
+            minWidth: '120px',
+            borderRadius: '8px'
+          }}>
+            <button style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              padding: '4px 8px',
+              backgroundColor: 'transparent',
+              border: '1px solid #999',
+              borderRadius: '3px',
+              fontSize: '11px',
+              cursor: 'pointer',
+              color: '#ff8c00',
+              fontWeight: 'normal'
+            }}>
+              Check All
+            </button>
+            <div style={{
+              display: 'flex',
+              gap: '8px',
+              fontSize: '12px',
+              fontWeight: 'bold'
+            }}>
+              <div style={{
+                border: '1px solid #999',
+                padding: '4px 8px',
+                backgroundColor: 'white',
+                minWidth: '25px',
+                textAlign: 'center',
+                borderRadius: '2px'
+              }}>
+                K
+              </div>
+              <div style={{
+                border: '1px solid #999',
+                padding: '4px 8px',
+                backgroundColor: 'white',
+                minWidth: '25px',
+                textAlign: 'center',
+                borderRadius: '2px'
+              }}>
+                BK
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Unit Kompetensi 1 - dari kode pertama */}
+        <div style={{
+          backgroundColor: '#e9ecef',
+          padding: '8px 15px',
+          fontSize: '14px',
+          fontWeight: 'bold',
+          marginBottom: '0',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <span>Unit Kompetensi 1</span>
+          <div style={{ display: 'flex', gap: '10px', fontSize: '12px', fontWeight: 'normal' }}>
+            <span>Judul Unit :</span>
+            <span>Kode Unit :</span>
+          </div>
+        </div>
+
+        {/* Dapatkah Saya Section - dari kode pertama */}
+        <div style={{
+          border: '1px solid #ddd',
+          borderTop: 'none'
+        }}>
+          <div style={{
+            backgroundColor: '#fff3cd',
+            padding: '8px 15px',
+            fontSize: '14px',
+            fontWeight: 'bold'
+          }}>
+            Dapatkah Saya?
+          </div>
+
+          <div style={{ padding: '15px' }}>
+            <div style={{
+              display: 'flex',
+              gap: '20px'
+            }}>
+              {/* Left side - Form content */}
+              <div style={{ flex: '2' }}>
+                <div style={{
+                  fontWeight: 'bold',
+                  fontSize: '13px',
+                  marginBottom: '5px'
+                }}>
+                  Elemen 1: Mengidentifikasi konsep data dan struktur data
+                </div>
+                <div style={{
+                  fontSize: '12px',
+                  color: '#666',
+                  marginBottom: '8px'
+                }}>
+                  Kriteria Untuk Kerja:
+                </div>
+                <div style={{
+                  fontSize: '12px',
+                  lineHeight: '1.4',
+                  marginBottom: '15px'
+                }}>
+                  1.1 Mengidentifikasi konsep data dan struktur data sesuai dengan konteks<br/>
+                  1.2 Membandingkan alternatif struktur data berdasarkan efisiensi dan keunggulannya untuk konteks permasalahan yang dihadapkan
+                </div>
+
+                <div style={{ display: 'flex', gap: '20px' }}>
+                  <label style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    fontSize: '13px',
+                    fontWeight: 'bold'
+                  }}>
+                    <input type="checkbox" />
+                    K
+                  </label>
+                  <label style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    fontSize: '13px',
+                    fontWeight: 'bold'
+                  }}>
+                    <input type="checkbox" />
+                    BK
+                  </label>
+                </div>
+              </div>
+
+              {/* Right side - Bukti yang relevan */}
+              <div style={{
+                border: '1px solid #ddd',
+                borderRadius: '8px',
+                padding: '12px',
+                backgroundColor: '#f8f9fa',
+                minWidth: '200px'
+              }}>
+                <div style={{
+                  fontWeight: 'bold',
+                  fontSize: '12px',
+                  marginBottom: '10px',
+                  textAlign: 'center'
+                }}>
+                  Bukti yang relevan:
+                </div>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '5px',
+                  fontSize: '11px'
+                }}>
+                  {['bukti L', 'bukti P', 'bukti T', 'bukti WE', 'bukti V', 'bukti I'].map((bukti) => (
+                    <label key={bukti} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <input type="checkbox" style={{ width: '12px', height: '12px' }} />
+                      <span>☐ {bukti}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Assessor Sections - dari kode pertama */}
+        <div style={{ marginTop: '30px' }}>
+          {/* Assessor 1 */}
+          <div style={{
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            marginBottom: '10px'
+          }}>
+            Ditinjau oleh Asesor:
+          </div>
+          
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '15px',
+            marginBottom: '15px',
+            fontSize: '12px'
+          }}>
+            <span style={{ minWidth: '80px' }}>Nama Asesor</span>
             <input 
               type="text" 
-              style={inputStyle} 
-              value={assessorData[0].name}
+              value="Ahmad Fahmi Rizwan Pangestu"
               readOnly
+              style={{
+                flex: 1,
+                padding: '5px',
+                border: '1px solid #ddd',
+                fontSize: '12px'
+              }}
             />
-            <span style={{ fontSize: '12px', minWidth: '60px' }}>Tanggal</span>
+            <span style={{ minWidth: '60px' }}>Tanggal</span>
             <input 
               type="text" 
-              style={{...inputStyle, maxWidth: '100px'}} 
-              value={assessorData[0].date}
+              value="14/02/2023"
               readOnly
+              style={{
+                width: '100px',
+                padding: '5px',
+                border: '1px solid #ddd',
+                fontSize: '12px'
+              }}
             />
-            <span style={{ fontSize: '12px', minWidth: '100px' }}>Rekomendasi Asesor</span>
-            <button 
-              style={{...buttonStyle, backgroundColor: assessorData[0].status === 'Approve' ? '#28a745' : '#6c757d'}}
-            >
-              {assessorData[0].status}
+            <span style={{ minWidth: '120px' }}>Rekomendasi Asesor</span>
+            <button style={{
+              padding: '5px 15px',
+              backgroundColor: '#6c757d',
+              color: 'white',
+              border: 'none',
+              borderRadius: '15px',
+              fontSize: '11px'
+            }}>
+              Approve
+            </button>
+          </div>
+
+          {/* Assessor 2 */}
+          <div style={{
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            marginBottom: '10px'
+          }}>
+            Ditinjau oleh Asesor:
+          </div>
+          
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '15px',
+            marginBottom: '30px',
+            fontSize: '12px'
+          }}>
+            <span style={{ minWidth: '80px' }}>Nama Asesor</span>
+            <input 
+              type="text" 
+              value="Prof. Arya Mauludi Suripto M.Kom."
+              readOnly
+              style={{
+                flex: 1,
+                padding: '5px',
+                border: '1px solid #ddd',
+                fontSize: '12px'
+              }}
+            />
+            <span style={{ minWidth: '60px' }}>Tanggal</span>
+            <input 
+              type="text" 
+              value="14/02/2023"
+              readOnly
+              style={{
+                width: '100px',
+                padding: '5px',
+                border: '1px solid #ddd',
+                fontSize: '12px'
+              }}
+            />
+            <span style={{ minWidth: '120px' }}>Rekomendasi Asesor</span>
+            <button style={{
+              padding: '5px 15px',
+              backgroundColor: '#6c757d',
+              color: 'white',
+              border: 'none',
+              borderRadius: '15px',
+              fontSize: '11px'
+            }}>
+              Menunggu
             </button>
           </div>
         </div>
 
-        <div style={assessorSectionStyle}>
-          <div style={assessorTitleStyle}>Ditinjau oleh Asesor:</div>
-          <div style={assessorRowStyle}>
-            <span style={{ fontSize: '12px', minWidth: '80px' }}>Nama Asesor</span>
-            <input 
-              type="text" 
-              style={inputStyle} 
-              value={assessorData[1].name}
-              readOnly
-            />
-            <span style={{ fontSize: '12px', minWidth: '60px' }}>Tanggal</span>
-            <input 
-              type="text" 
-              style={{...inputStyle, maxWidth: '100px'}} 
-              value={assessorData[1].date}
-              readOnly
-            />
-            <span style={{ fontSize: '12px', minWidth: '100px' }}>Rekomendasi Asesor</span>
-            <button 
-              style={{...buttonStyle, backgroundColor: assessorData[1].status === 'Menunggu' ? '#ffc107' : '#6c757d'}}
-            >
-              {assessorData[1].status}
-            </button>
-          </div>
+        {/* Submit Button */}
+        <div style={{ textAlign: 'right' }}>
+          <button 
+            onClick={handleSubmit}
+            style={{
+              padding: '8px 25px',
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '20px',
+              fontSize: '12px',
+              cursor: 'pointer'
+            }}
+          >
+            Kirim
+          </button>
         </div>
-
-        <button style={submitButtonStyle} onClick={handleSubmit}>Kirim</button>
-        <div style={{ clear: 'both' }}></div>
       </div>
 
       {/* Success Popup */}
@@ -614,12 +772,10 @@ const APL02 = () => {
           <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
             <div style={iconContainerStyle}>
               <div style={successIconStyle}>
-                {/* Check mark circle - di atas */}
                 <div style={checkCircleStyle}>
                   <div style={checkMarkStyle}>✓</div>
                 </div>
                 
-                {/* List lines (3 horizontal lines) - di bawah */}
                 <div style={listLinesStyle}>
                   <div style={{
                     width: '80px',
