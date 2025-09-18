@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
 
 const pageContainerStyle = {
-  backgroundColor: '#f5f5f5',
+  backgroundColor: 'white',
   fontFamily: 'Arial, sans-serif',
   padding: '15px',
   minHeight: '100vh',
@@ -15,9 +15,9 @@ const headerSectionStyle = {
   backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
   backgroundSize: 'cover',
   backgroundPosition: 'center',
-  borderRadius: '15px',
+  borderRadius: '0 0 40px 40px',
   overflow: 'hidden',
-  marginBottom: '20px',
+  marginBottom: '0',
 };
 
 const navContainerStyle = {
@@ -53,10 +53,11 @@ const logoTextStyle = {
 
 const contentCardStyle = {
   backgroundColor: 'white',
-  borderRadius: '15px',
+  borderRadius: '0 0 15px 15px',
   padding: '30px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+  boxShadow: 'none',
   marginTop: '0',
+  border: 'none',
 };
 
 const titleStyle = {
