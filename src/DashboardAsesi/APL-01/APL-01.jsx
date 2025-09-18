@@ -23,9 +23,9 @@ const headerSectionStyle = {
 const navContainerStyle = {
   backgroundColor: 'rgba(255, 255, 255, 0.95)',
   padding: '5px 15px',
-  borderRadius: '15px 15px 40px 15px',
+  borderRadius: '0 15px 40px 15px',
   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  margin: '0 15px 0 0',
+  margin: '0',
   overflowX: 'auto',
   maxWidth: '50%',
   whiteSpace: 'nowrap',
