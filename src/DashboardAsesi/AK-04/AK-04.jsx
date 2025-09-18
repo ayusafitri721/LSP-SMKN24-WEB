@@ -5,33 +5,40 @@ import { useNavigate } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
 
 const pageContainerStyle = {
-  backgroundColor: '#f5f5f5',
+  backgroundColor: 'white',
   fontFamily: 'Arial, sans-serif',
   padding: '15px',
+  minHeight: '100vh',
+};
+
+const headerSectionStyle = {
+  backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  borderRadius: '0 0 40px 40px',
+  overflow: 'hidden',
+  marginBottom: '0',
 };
 
 const navContainerStyle = {
-  backgroundColor: 'white',
+  backgroundColor: 'rgba(255, 255, 255, 0.95)',
   padding: '5px 15px',
   borderRadius: '15px 15px 40px 15px',
   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  margin: '15px 15px 0 15px',
+  margin: '0 15px 0 0',
   overflowX: 'auto',
   maxWidth: '50%',
   whiteSpace: 'nowrap',
+  backdropFilter: 'blur(10px)',
+  position: 'relative',
+  zIndex: 2,
 };
 
-const imageBannerStyle = {
-  backgroundImage:
-    "linear-gradient(rgba(255,140,0,0.7), rgba(255,140,0,0.7)), url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')",
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  height: '160px',
+const logoContainerStyle = {
+  height: '180px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  borderRadius: '15px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
   marginTop: '20px',
 };
 
@@ -46,10 +53,11 @@ const logoTextStyle = {
 
 const contentCardStyle = {
   backgroundColor: 'white',
-  borderRadius: '15px',
+  borderRadius: '0 0 15px 15px',
   padding: '25px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-  marginTop: '20px',
+  boxShadow: 'none',
+  marginTop: '0',
+  border: 'none',
 };
 
 const headerStyle = {
@@ -93,6 +101,29 @@ const subtitleStyle = {
   fontSize: '12px',
   color: '#333',
   margin: '2px 0 0 0',
+};
+
+// Input field style
+const inputStyle = {
+  width: '100%',
+  padding: '8px 12px',
+  border: '1px solid #ddd',
+  borderRadius: '4px',
+  fontSize: '12px',
+  backgroundColor: 'white',
+  outline: 'none',
+};
+
+const textareaStyle = {
+  width: '100%',
+  padding: '8px 12px',
+  border: '1px solid #ddd',
+  borderRadius: '4px',
+  fontSize: '12px',
+  backgroundColor: 'white',
+  outline: 'none',
+  resize: 'vertical',
+  minHeight: '60px',
 };
 
 // Popup overlay style
@@ -171,22 +202,6 @@ const popupTitleStyle = {
   lineHeight: '1.4',
 };
 
-const popupSubtitleStyle = {
-  fontSize: '20px',
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: '30px',
-  lineHeight: '1.3',
-};
-
-// Divider style
-const dividerStyle = {
-  height: '2px',
-  backgroundColor: '#ddd',
-  margin: '25px 0',
-  borderRadius: '1px',
-};
-
 // Okay button style
 const okayButtonStyle = {
   backgroundColor: '#FF8C00',
@@ -228,6 +243,17 @@ const AK04 = () => {
     question2: { yes: false, no: false },
     question3: { yes: false, no: false },
   });
+
+  // Form input states
+  const [formData, setFormData] = useState({
+    namaAsesor: '',
+    namaAsesi: '',
+    tanggalAsesmen: '',
+    skemaSertifikasi: '',
+    noSkemaSertifikasi: '',
+    alasanBanding: ''
+  });
+
   const navigate = useNavigate();
 
   // Block navigation - tidak bisa ke page lain dan tidak bisa back
@@ -281,6 +307,13 @@ const AK04 = () => {
       window.history.replaceState = originalReplaceState;
     };
   }, [isFormSubmitted]);
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
   const handleKirimClick = () => {
     setShowPopup(true);
@@ -342,14 +375,14 @@ const AK04 = () => {
         </div>
       )}
 
-      <div style={navContainerStyle} className="nav-scrollbar">
-        <NavAsesi activeTab="FR.AK.04" />
-      </div>
+      <div style={headerSectionStyle}>
+        <div style={navContainerStyle} className="nav-scrollbar">
+          <NavAsesi activeTab="FR.AK.04" />
+        </div>
 
-      <div style={imageBannerStyle}>
-        <h1 style={logoTextStyle}>
-          MyLSP
-        </h1>
+        <div style={logoContainerStyle}>
+          <h1 style={logoTextStyle}>MyLSP</h1>
+        </div>
       </div>
 
       <div style={contentCardStyle}>
@@ -372,7 +405,7 @@ const AK04 = () => {
           </div>
         </div>
 
-        {/* Header Table */}
+        {/* Header Table with Editable Inputs */}
         <div style={{ marginBottom: '30px' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
             <tbody>
@@ -390,7 +423,15 @@ const AK04 = () => {
                   border: '1px solid #ddd',
                   backgroundColor: 'white',
                   width: '80%'
-                }}></td>
+                }}>
+                  <input
+                    type="text"
+                    style={inputStyle}
+                    value={formData.namaAsesor}
+                    onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
+                    placeholder="Masukkan nama asesor"
+                  />
+                </td>
               </tr>
               <tr>
                 <td style={{
@@ -404,7 +445,15 @@ const AK04 = () => {
                   padding: '10px 15px',
                   border: '1px solid #ddd',
                   backgroundColor: 'white'
-                }}></td>
+                }}>
+                  <input
+                    type="text"
+                    style={inputStyle}
+                    value={formData.namaAsesi}
+                    onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
+                    placeholder="Masukkan nama asesi"
+                  />
+                </td>
               </tr>
               <tr>
                 <td style={{
@@ -418,7 +467,14 @@ const AK04 = () => {
                   padding: '10px 15px',
                   border: '1px solid #ddd',
                   backgroundColor: 'white'
-                }}></td>
+                }}>
+                  <input
+                    type="date"
+                    style={inputStyle}
+                    value={formData.tanggalAsesmen}
+                    onChange={(e) => handleInputChange('tanggalAsesmen', e.target.value)}
+                  />
+                </td>
               </tr>
             </tbody>
           </table>
@@ -565,14 +621,27 @@ const AK04 = () => {
               padding: '12px',
               backgroundColor: 'white',
               marginBottom: '15px',
-              minHeight: '60px'
             }}>
-              <div style={{ fontSize: '11px', color: '#666', marginBottom: '5px' }}>
+              <div style={{ fontSize: '11px', color: '#666', marginBottom: '8px' }}>
                 Skema Sertifikasi:
               </div>
-              <div style={{ fontSize: '11px', color: '#666' }}>
+              <input
+                type="text"
+                style={{ ...inputStyle, marginBottom: '10px' }}
+                value={formData.skemaSertifikasi}
+                onChange={(e) => handleInputChange('skemaSertifikasi', e.target.value)}
+                placeholder="Masukkan skema sertifikasi"
+              />
+              <div style={{ fontSize: '11px', color: '#666', marginBottom: '8px' }}>
                 No. Skema Sertifikasi:
               </div>
+              <input
+                type="text"
+                style={inputStyle}
+                value={formData.noSkemaSertifikasi}
+                onChange={(e) => handleInputChange('noSkemaSertifikasi', e.target.value)}
+                placeholder="Masukkan nomor skema sertifikasi"
+              />
             </div>
 
             <div style={{
@@ -580,12 +649,17 @@ const AK04 = () => {
               borderRadius: '4px',
               padding: '12px',
               backgroundColor: 'white',
-              minHeight: '80px',
               marginBottom: '15px'
             }}>
-              <div style={{ fontSize: '11px', color: '#666' }}>
+              <div style={{ fontSize: '11px', color: '#666', marginBottom: '8px' }}>
                 Banding ini di ajukan atas alasan sebagai berikut:
               </div>
+              <textarea
+                style={textareaStyle}
+                value={formData.alasanBanding}
+                onChange={(e) => handleInputChange('alasanBanding', e.target.value)}
+                placeholder="Masukkan alasan banding"
+              />
             </div>
 
             <div style={{ marginBottom: '15px' }}>
@@ -593,31 +667,31 @@ const AK04 = () => {
                 Anda mempunyai hak mengajukan banding bila tidak merasa puas asesmen tidak sesuai SAP dan tidak memenuhi prinsip asesmen.
               </div>
 
-              <div style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '20px' }}>
+              <div style={{ display: 'flex', gap: '40px', alignItems: 'center', marginBottom: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontSize: '11px', color: '#666' }}>Persyaratan asesi :</span>
-                  <span style={{
-                    backgroundColor: '#6c757d',
-                    color: 'white',
-                    padding: '3px 10px',
-                    borderRadius: '12px',
-                    fontSize: '10px'
-                  }}>
-                    Belum
-                  </span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontSize: '11px', color: '#666' }}>Tanggal :</span>
-                  <span style={{
-                    backgroundColor: '#6c757d',
-                    color: 'white',
-                    padding: '3px 10px',
-                    borderRadius: '12px',
-                    fontSize: '10px'
-                  }}>
-                    Belum
-                  </span>
+                  <input
+                    type="date"
+                    style={{ ...inputStyle, width: '150px' }}
+                    value={formData.tanggalApprove || ''}
+                    onChange={(e) => handleInputChange('tanggalApprove', e.target.value)}
+                  />
                 </div>
+              </div>
+
+              <div style={{ marginBottom: '20px' }}>
+                <span style={{
+                  backgroundColor: '#6c757d',
+                  color: 'white',
+                  padding: '3px 10px',
+                  borderRadius: '12px',
+                  fontSize: '10px'
+                }}>
+                  Approve
+                </span>
               </div>
 
               <div style={{ textAlign: 'right' }}>
