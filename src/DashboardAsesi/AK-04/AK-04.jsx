@@ -66,7 +66,7 @@ const headerStyle = {
   alignItems: 'center',
   gap: '15px',
   marginBottom: '30px',
-  borderBottom: '1px solid #eee',
+  borderBottom: '1px solid #FF8C00', // Mengganti #eee dengan #FF8C00
   paddingBottom: '20px',
 };
 
