@@ -3,51 +3,65 @@ import { useNavigate } from "react-router-dom";
 import NavAsesi from "../../components/NavAsesi";
 
 const pageContainerStyle = {
-  backgroundColor: "#f5f5f5",
+  backgroundColor: "white",
   fontFamily: "Arial, sans-serif",
   padding: "15px",
+  minHeight: "100vh",
 };
 
+// Header section matching AK-01 design
+const headerSectionStyle = {
+  backgroundImage:
+    "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  borderRadius: "0 0 40px 40px",
+  overflow: "hidden",
+  marginBottom: "0",
+};
+
+// Navigation container matching AK-01
 const navContainerStyle = {
-  backgroundColor: "white",
+  backgroundColor: "rgba(255, 255, 255, 0.95)",
   padding: "5px 15px",
-  borderRadius: "15px 15px 40px 15px",
+  borderRadius: "0 15px 40px 15px",
   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-  margin: "15px 15px 0 15px",
+  margin: "0",
   overflowX: "auto",
   maxWidth: "50%",
   whiteSpace: "nowrap",
+  backdropFilter: "blur(10px)",
+  position: "relative",
+  zIndex: 2,
 };
 
-const imageBannerStyle = {
-  backgroundImage:
-    "linear-gradient(rgba(255,140,0,0.7), rgba(255,140,0,0.7)), url('/src/img/kontak.png')",
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  height: "160px",
+// Logo container matching AK-01
+const logoContainerStyle = {
+  height: "120px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  borderRadius: "15px",
-  boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
-  marginTop: "20px",
+  marginTop: "10px",
+  marginBottom: "10px",
 };
 
+// Logo text matching AK-01
 const logoTextStyle = {
   color: "white",
-  fontSize: "48px",
+  fontSize: "36px",
   fontWeight: "bold",
   margin: 0,
   textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
-  letterSpacing: "2px",
+  letterSpacing: "1px",
 };
 
 const contentCardStyle = {
   backgroundColor: "white",
-  borderRadius: "15px",
-  padding: "25px",
-  boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
-  marginTop: "20px",
+  borderRadius: "0 0 15px 15px",
+  padding: "30px",
+  boxShadow: "none",
+  marginTop: "0",
+  border: "none",
 };
 
 const AK02 = () => {
@@ -175,18 +189,6 @@ const AK02 = () => {
     }));
   }, []);
 
-  useEffect(() => {
-    const now = new Date();
-    const tanggal = now.toISOString().split("T")[0]; // Format YYYY-MM-DD
-    const waktu = now.toTimeString().split(" ")[0].slice(0, 5); // Format HH:MM
-
-    setFormData((prev) => ({
-      ...prev,
-      tanggal,
-      waktu,
-    }));
-  }, []);
-
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -301,7 +303,7 @@ const AK02 = () => {
     padding: "0",
   };
 
-  // Popup styles - sama persis kayak APL-01
+  // Popup styles - sama persis kayak AK-01
   const popupOverlayStyle = {
     position: "fixed",
     top: 0,
@@ -440,711 +442,748 @@ const AK02 = () => {
           Silakan isi dan kirim formulir AK-02 terlebih dahulu!
         </div>
       )}
-      <div style={navContainerStyle} className="nav-scrollbar">
-        <NavAsesi activeTab="FR.AK.02" />
+
+      {/* Header Section matching AK-01 design */}
+      <div style={headerSectionStyle}>
+        <div style={navContainerStyle} className="nav-scrollbar">
+          <NavAsesi activeTab="FR.AK.02" />
+        </div>
+
+        <div style={logoContainerStyle}>
+          <h1 style={logoTextStyle}>MyLSP</h1>
+        </div>
       </div>
-      <div style={imageBannerStyle}>
-        <h1 style={logoTextStyle}>MyLSP</h1>
-      </div>
-      <form onSubmit={handleSubmit} style={contentCardStyle}>
+
+      {/* Content Card */}
+      <div style={contentCardStyle}>
         {/* Header Section */}
         <div
           style={{
             display: "flex",
             alignItems: "flex-start",
+            gap: "20px",
             marginBottom: "20px",
             paddingBottom: "15px",
             borderBottom: "2px solid #FF8C00",
           }}
         >
-          {/* Logo */}
-          <div style={{ marginRight: "20px", marginTop: "5px" }}>
+          <div style={{ flexShrink: 0 }}>
             <img
               src="/src/img/image 12.png"
               alt="LSP Logo"
               style={{
-                width: "40px",
-                height: "30px",
-                borderRadius: "4px",
+                width: "80px",
+                height: "80px",
+                borderRadius: "8px",
                 objectFit: "contain",
+                backgroundColor: "#f8f9fa",
+                padding: "4px",
               }}
             />
           </div>
-
-          {/* Title Section */}
-          <div style={{ flex: 1, textAlign: "center" }}>
-            <h2
+          <div style={{ flex: 1 }}>
+            <div
               style={{
-                margin: "0 0 5px 0",
-                fontSize: "14px",
+                fontSize: "16px",
                 fontWeight: "bold",
+                margin: "0 0 5px 0",
                 color: "#333",
+                textAlign: "center",
               }}
             >
               FR.AK.02
-            </h2>
-            <h3
+            </div>
+            <div
               style={{
-                margin: 0,
-                fontSize: "14px",
+                fontSize: "16px",
                 fontWeight: "bold",
+                margin: "0 0 15px 0",
                 color: "#333",
+                textAlign: "center",
               }}
             >
               REKAMAN ASESMEN KOMPETENSI
-            </h3>
+            </div>
           </div>
         </div>
 
-        {/* Form Section - Clean Table Design */}
-        <table
-          style={{
-            width: "100%",
-            border: "1px solid #ccc",
-            borderCollapse: "collapse",
-            fontSize: "12px",
-          }}
-        >
-          <tbody>
-            <tr>
-              <td
-                rowSpan={2}
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                  fontWeight: "500",
-                  verticalAlign: "top",
-                  width: "200px",
-                }}
-              >
-                <span style={{ fontWeight: "500", color: "#000" }}>
-                  Skema Sertifikasi
-                </span>
-                <br />
-                <span style={{ fontSize: "11px", color: "#000" }}>
-                  (KODE/OKUPASI/KLASTER)
-                </span>
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                  fontWeight: "500",
-                  textAlign: "center",
-                  width: "80px",
-                }}
-              >
-                Judul Unit
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                  width: "20px",
-                }}
-              >
-                :
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                }}
-              >
-                <input
-                  type="text"
-                  value={formData.judulUnit}
-                  onChange={(e) =>
-                    handleInputChange("judulUnit", e.target.value)
-                  }
-                  placeholder="Masukkan judul unit"
-                  style={inputStyle}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                  fontWeight: "500",
-                  textAlign: "center",
-                }}
-              >
-                Kode Unit
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                }}
-              >
-                :
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                }}
-              >
-                <input
-                  type="text"
-                  value={formData.kodeUnit}
-                  onChange={(e) =>
-                    handleInputChange("kodeUnit", e.target.value)
-                  }
-                  placeholder="Masukkan kode unit"
-                  style={inputStyle}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                  fontWeight: "500",
-                }}
-              >
-                TUK
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                }}
-              ></td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                }}
-              >
-                :
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                }}
-              >
-                <input
-                  type="text"
-                  value={formData.tuk}
-                  onChange={(e) => handleInputChange("tuk", e.target.value)}
-                  placeholder="Masukkan TUK"
-                  style={inputStyle}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                  fontWeight: "500",
-                }}
-              >
-                Nama Asesor
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                }}
-              ></td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                }}
-              >
-                :
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                }}
-              >
-                <input
-                  type="text"
-                  value={formData.namaAsesor}
-                  onChange={(e) =>
-                    handleInputChange("namaAsesor", e.target.value)
-                  }
-                  placeholder="Masukkan nama asesor"
-                  style={inputStyle}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                  fontWeight: "500",
-                }}
-              >
-                Nama Asesi
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                }}
-              ></td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                }}
-              >
-                :
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                }}
-              >
-                <input
-                  type="text"
-                  value={formData.namaAsesi}
-                  onChange={(e) =>
-                    handleInputChange("namaAsesi", e.target.value)
-                  }
-                  placeholder="Masukkan nama asesi"
-                  style={inputStyle}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                  fontWeight: "500",
-                }}
-              >
-                Tanggal
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                }}
-              ></td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                }}
-              >
-                :
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                }}
-              >
-                <input
-                  type="date"
-                  value={formData.tanggal}
-                  onChange={(e) => handleInputChange("tanggal", e.target.value)}
-                  style={inputStyle}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                  fontWeight: "500",
-                }}
-              >
-                Waktu
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                }}
-              ></td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                }}
-              >
-                :
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "8px 12px",
-                  backgroundColor: "white",
-                }}
-              >
-                <input
-                  type="time"
-                  value={formData.waktu}
-                  onChange={(e) => handleInputChange("waktu", e.target.value)}
-                  style={inputStyle}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        {/* Unit Kompetensi Section */}
-        <div style={{ marginTop: "30px" }}>
-          <div
+        <form onSubmit={handleSubmit}>
+          {/* Form Section - Clean Table Design */}
+          <table
             style={{
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              padding: "10px 15px",
-              backgroundColor: "white",
-              marginBottom: "15px",
+              width: "100%",
+              border: "1px solid #ccc",
+              borderCollapse: "collapse",
+              fontSize: "12px",
             }}
           >
-            <p
-              style={{
-                fontSize: "12px",
-                textAlign: "center",
-                margin: "0",
-                color: "#666",
-              }}
-            >
-              Beri tanda centang (✔) dikolom yang sesuai untuk mencerminkan
-              bukti yang sesuai untuk setiap Unit Kompetensi.
-            </p>
-          </div>
+            <tbody>
+              <tr>
+                <td
+                  rowSpan={2}
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                    fontWeight: "500",
+                    verticalAlign: "top",
+                    width: "200px",
+                  }}
+                >
+                  <span style={{ fontWeight: "500", color: "#000" }}>
+                    Skema Sertifikasi
+                  </span>
+                  <br />
+                  <span style={{ fontSize: "11px", color: "#000" }}>
+                    (KODE/OKUPASI/KLASTER)
+                  </span>
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                    fontWeight: "500",
+                    textAlign: "center",
+                    width: "80px",
+                  }}
+                >
+                  Judul Unit
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                    width: "20px",
+                  }}
+                >
+                  :
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  <input
+                    type="text"
+                    value={formData.judulUnit}
+                    onChange={(e) =>
+                      handleInputChange("judulUnit", e.target.value)
+                    }
+                    placeholder="Masukkan judul unit"
+                    style={inputStyle}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                    fontWeight: "500",
+                    textAlign: "center",
+                  }}
+                >
+                  Kode Unit
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  :
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  <input
+                    type="text"
+                    value={formData.kodeUnit}
+                    onChange={(e) =>
+                      handleInputChange("kodeUnit", e.target.value)
+                    }
+                    placeholder="Masukkan kode unit"
+                    style={inputStyle}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                    fontWeight: "500",
+                  }}
+                >
+                  TUK
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                  }}
+                ></td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  :
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  <input
+                    type="text"
+                    value={formData.tuk}
+                    onChange={(e) => handleInputChange("tuk", e.target.value)}
+                    placeholder="Masukkan TUK"
+                    style={inputStyle}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                    fontWeight: "500",
+                  }}
+                >
+                  Nama Asesor
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                  }}
+                ></td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  :
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  <input
+                    type="text"
+                    value={formData.namaAsesor}
+                    onChange={(e) =>
+                      handleInputChange("namaAsesor", e.target.value)
+                    }
+                    placeholder="Masukkan nama asesor"
+                    style={inputStyle}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                    fontWeight: "500",
+                  }}
+                >
+                  Nama Asesi
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                  }}
+                ></td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  :
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  <input
+                    type="text"
+                    value={formData.namaAsesi}
+                    onChange={(e) =>
+                      handleInputChange("namaAsesi", e.target.value)
+                    }
+                    placeholder="Masukkan nama asesi"
+                    style={inputStyle}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                    fontWeight: "500",
+                  }}
+                >
+                  Tanggal
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                  }}
+                ></td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  :
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  <input
+                    type="date"
+                    value={formData.tanggal}
+                    onChange={(e) =>
+                      handleInputChange("tanggal", e.target.value)
+                    }
+                    style={inputStyle}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                    fontWeight: "500",
+                  }}
+                >
+                  Waktu
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                  }}
+                ></td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  :
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  <input
+                    type="time"
+                    value={formData.waktu}
+                    onChange={(e) => handleInputChange("waktu", e.target.value)}
+                    style={inputStyle}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-          <div
-            style={{
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              padding: "15px 0",
-              backgroundColor: "white",
-              marginBottom: "15px",
-            }}
-          >
-            <h3
-              style={{
-                textAlign: "center",
-                fontSize: "14px",
-                fontWeight: "bold",
-                margin: "0",
-              }}
-            >
-              Unit Kompetensi
-            </h3>
-          </div>
-
-          {formData.unitKompetensi.map((unit, index) => (
+          {/* Unit Kompetensi Section */}
+          <div style={{ marginTop: "30px" }}>
             <div
-              key={unit.id}
               style={{
                 border: "1px solid #ddd",
                 borderRadius: "8px",
-                padding: "15px",
-                marginBottom: "15px",
+                padding: "10px 15px",
                 backgroundColor: "white",
+                marginBottom: "15px",
               }}
             >
-              <div style={{ marginBottom: "10px" }}>
-                <label style={{ fontSize: "12px", fontWeight: "500" }}>
-                  {unit.title}
-                </label>
-              </div>
-
-              <div
+              <p
                 style={{
-                  display: "flex",
-                  gap: "20px",
-                  alignItems: "center",
-                  flexWrap: "wrap",
+                  fontSize: "12px",
+                  textAlign: "center",
+                  margin: "0",
+                  color: "#666",
                 }}
               >
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "5px" }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={unit.kompeten}
-                    onChange={(e) =>
-                      handleUnitChange(unit.id, "kompeten", e.target.checked)
-                    }
-                    style={{ margin: "0" }}
-                  />
-                  <span style={{ fontSize: "11px" }}>
-                    Observasi Demonstrasi
-                  </span>
-                </div>
-
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "5px" }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={unit.portfolioSesuai}
-                    onChange={(e) =>
-                      handleUnitChange(
-                        unit.id,
-                        "portfolioSesuai",
-                        e.target.checked
-                      )
-                    }
-                    style={{ margin: "0" }}
-                  />
-                  <span style={{ fontSize: "11px" }}>Portofolio</span>
-                </div>
-
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "5px" }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={unit.penguatanEvidenceSesuai}
-                    onChange={(e) =>
-                      handleUnitChange(
-                        unit.id,
-                        "penguatanEvidenceSesuai",
-                        e.target.checked
-                      )
-                    }
-                    style={{ margin: "0" }}
-                  />
-                  <span style={{ fontSize: "11px" }}>
-                    Pernyataan Pihak Ketiga Pertanyaan Wawancara
-                  </span>
-                </div>
-
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "5px" }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={unit.hasilPenguatanEvidenceSesuai}
-                    onChange={(e) =>
-                      handleUnitChange(
-                        unit.id,
-                        "hasilPenguatanEvidenceSesuai",
-                        e.target.checked
-                      )
-                    }
-                    style={{ margin: "0" }}
-                  />
-                  <span style={{ fontSize: "11px" }}>
-                    Pernyataan Pihak Ketiga Pertanyaan Wawancara
-                  </span>
-                </div>
-
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "5px" }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={unit.rekomendasiBelumKompeten}
-                    onChange={(e) =>
-                      handleUnitChange(
-                        unit.id,
-                        "rekomendasiBelumKompeten",
-                        e.target.checked
-                      )
-                    }
-                    style={{ margin: "0" }}
-                  />
-                  <span style={{ fontSize: "11px" }}>Per Ter</span>
-                </div>
-              </div>
+                Beri tanda centang (✔) dikolom yang sesuai untuk mencerminkan
+                bukti yang sesuai untuk setiap Unit Kompetensi.
+              </p>
             </div>
-          ))}
 
-          {/* Rekomendasi Hasil Assessment */}
-          <div
-            style={{
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              padding: "15px",
-              marginTop: "20px",
-              backgroundColor: "white",
-            }}
-          >
             <div
-              style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}
+              style={{
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                padding: "15px 0",
+                backgroundColor: "white",
+                marginBottom: "15px",
+              }}
             >
-              {/* Left Section - Rekomendasi */}
-              <div style={{ flex: 1 }}>
+              <h3
+                style={{
+                  textAlign: "center",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  margin: "0",
+                }}
+              >
+                Unit Kompetensi
+              </h3>
+            </div>
+
+            {formData.unitKompetensi.map((unit, index) => (
+              <div
+                key={unit.id}
+                style={{
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  padding: "15px",
+                  marginBottom: "15px",
+                  backgroundColor: "white",
+                }}
+              >
+                <div style={{ marginBottom: "10px" }}>
+                  <label style={{ fontSize: "12px", fontWeight: "500" }}>
+                    {unit.title}
+                  </label>
+                </div>
+
                 <div
                   style={{
                     display: "flex",
+                    gap: "20px",
                     alignItems: "center",
-                    justifyContent: "space-between",
-                    marginBottom: "15px",
-                    paddingBottom: "10px",
-                    borderBottom: "1px solid #eee",
+                    flexWrap: "wrap",
                   }}
                 >
-                  <label style={{ fontSize: "12px", fontWeight: "500" }}>
-                    Rekomendasi hasil Asesmen
-                  </label>
                   <div
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      gap: "15px",
+                      gap: "5px",
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "5px",
-                      }}
-                    >
-                      <span style={{ fontSize: "11px" }}>Kompeten</span>
-                      <input
-                        type="checkbox"
-                        checked={formData.alasanKompeten}
-                        onChange={(e) =>
-                          handleRekomendasiChange(
-                            "alasanKompeten",
-                            e.target.checked
-                          )
-                        }
-                      />
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "5px",
-                      }}
-                    >
-                      <span style={{ fontSize: "11px" }}>Belum Kompeten</span>
-                      <input
-                        type="checkbox"
-                        checked={formData.selesaiKompeten}
-                        onChange={(e) =>
-                          handleRekomendasiChange(
-                            "selesaiKompeten",
-                            e.target.checked
-                          )
-                        }
-                      />
-                    </div>
+                    <input
+                      type="checkbox"
+                      checked={unit.kompeten}
+                      onChange={(e) =>
+                        handleUnitChange(unit.id, "kompeten", e.target.checked)
+                      }
+                      style={{ margin: "0" }}
+                    />
+                    <span style={{ fontSize: "11px" }}>
+                      Observasi Demonstrasi
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={unit.portfolioSesuai}
+                      onChange={(e) =>
+                        handleUnitChange(
+                          unit.id,
+                          "portfolioSesuai",
+                          e.target.checked
+                        )
+                      }
+                      style={{ margin: "0" }}
+                    />
+                    <span style={{ fontSize: "11px" }}>Portofolio</span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={unit.penguatanEvidenceSesuai}
+                      onChange={(e) =>
+                        handleUnitChange(
+                          unit.id,
+                          "penguatanEvidenceSesuai",
+                          e.target.checked
+                        )
+                      }
+                      style={{ margin: "0" }}
+                    />
+                    <span style={{ fontSize: "11px" }}>
+                      Pernyataan Pihak Ketiga Pertanyaan Wawancara
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={unit.hasilPenguatanEvidenceSesuai}
+                      onChange={(e) =>
+                        handleUnitChange(
+                          unit.id,
+                          "hasilPenguatanEvidenceSesuai",
+                          e.target.checked
+                        )
+                      }
+                      style={{ margin: "0" }}
+                    />
+                    <span style={{ fontSize: "11px" }}>
+                      Pernyataan Pihak Ketiga Pertanyaan Wawancara
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={unit.rekomendasiBelumKompeten}
+                      onChange={(e) =>
+                        handleUnitChange(
+                          unit.id,
+                          "rekomendasiBelumKompeten",
+                          e.target.checked
+                        )
+                      }
+                      style={{ margin: "0" }}
+                    />
+                    <span style={{ fontSize: "11px" }}>Per Ter</span>
                   </div>
                 </div>
-
-                <textarea
-                  placeholder="Tindak lanjut yang dibutuhkan
-(masukan pekrjaan tambahan dan asesmen yang diperlukan untuk mencapai
-kompetensi) :"
-                  value={formData.komentar}
-                  onChange={(e) =>
-                    handleInputChange("komentar", e.target.value)
-                  }
-                  style={{
-                    width: "100%",
-                    height: "100px",
-                    border: "1px solid #ddd",
-                    borderRadius: "4px",
-                    padding: "8px",
-                    fontSize: "11px",
-                    resize: "vertical",
-                    boxSizing: "border-box",
-                  }}
-                />
               </div>
+            ))}
 
-              {/* Right Section - Tindakan Selanjutnya */}
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{
-                    marginBottom: "15px",
-                    paddingBottom: "10px",
-                    borderBottom: "1px solid #eee",
-                  }}
-                >
-                  <label style={{ fontSize: "12px", fontWeight: "500" }}>
-                    Tindakan Selanjutnya
-                  </label>
-                </div>
-
-                <textarea
-                  placeholder="Komentar / Observasi oleh Asesor"
-                  value={formData.tanggapanAsesi}
-                  onChange={(e) =>
-                    handleInputChange("tanggapanAsesi", e.target.value)
-                  }
-                  style={{
-                    width: "100%",
-                    height: "100px",
-                    border: "1px solid #ddd",
-                    borderRadius: "4px",
-                    padding: "8px",
-                    fontSize: "11px",
-                    resize: "vertical",
-                    boxSizing: "border-box",
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <div style={{ textAlign: "right", marginTop: "20px" }}>
-            <button
-              type="submit"
+            {/* Rekomendasi Hasil Assessment */}
+            <div
               style={{
-                backgroundColor: "#007bff",
-                color: "white",
-                padding: "10px 30px",
-                border: "none",
-                borderRadius: "5px",
-                fontSize: "12px",
-                fontWeight: "500",
-                cursor: "pointer",
-                boxShadow: "0 2px 4px rgba(0,123,255,0.3)",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                padding: "15px",
+                marginTop: "20px",
+                backgroundColor: "white",
               }}
             >
-              Kirim Jawaban
-            </button>
-          </div>
-        </div>
-      </form>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "20px",
+                  alignItems: "flex-start",
+                }}
+              >
+                {/* Left Section - Rekomendasi */}
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      marginBottom: "15px",
+                      paddingBottom: "10px",
+                      borderBottom: "1px solid #eee",
+                    }}
+                  >
+                    <label style={{ fontSize: "12px", fontWeight: "500" }}>
+                      Rekomendasi hasil Asesmen
+                    </label>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "15px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "5px",
+                        }}
+                      >
+                        <span style={{ fontSize: "11px" }}>Kompeten</span>
+                        <input
+                          type="checkbox"
+                          checked={formData.alasanKompeten}
+                          onChange={(e) =>
+                            handleRekomendasiChange(
+                              "alasanKompeten",
+                              e.target.checked
+                            )
+                          }
+                        />
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "5px",
+                        }}
+                      >
+                        <span style={{ fontSize: "11px" }}>Belum Kompeten</span>
+                        <input
+                          type="checkbox"
+                          checked={formData.selesaiKompeten}
+                          onChange={(e) =>
+                            handleRekomendasiChange(
+                              "selesaiKompeten",
+                              e.target.checked
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-      {/* Success Popup - sama persis kayak APL-01 */}
+                  <textarea
+                    placeholder="Tindak lanjut yang dibutuhkan
+(masukan pekrjaan tambahan dan asesmen yang diperlukan untuk mencapai
+kompetensi) :"
+                    value={formData.komentar}
+                    onChange={(e) =>
+                      handleInputChange("komentar", e.target.value)
+                    }
+                    style={{
+                      width: "100%",
+                      height: "100px",
+                      border: "1px solid #ddd",
+                      borderRadius: "4px",
+                      padding: "8px",
+                      fontSize: "11px",
+                      resize: "vertical",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+
+                {/* Right Section - Tindakan Selanjutnya */}
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      marginBottom: "15px",
+                      paddingBottom: "10px",
+                      borderBottom: "1px solid #eee",
+                    }}
+                  >
+                    <label style={{ fontSize: "12px", fontWeight: "500" }}>
+                      Tindakan Selanjutnya
+                    </label>
+                  </div>
+
+                  <textarea
+                    placeholder="Komentar / Observasi oleh Asesor"
+                    value={formData.tanggapanAsesi}
+                    onChange={(e) =>
+                      handleInputChange("tanggapanAsesi", e.target.value)
+                    }
+                    style={{
+                      width: "100%",
+                      height: "100px",
+                      border: "1px solid #ddd",
+                      borderRadius: "4px",
+                      padding: "8px",
+                      fontSize: "11px",
+                      resize: "vertical",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div style={{ textAlign: "right", marginTop: "20px" }}>
+              <button
+                type="submit"
+                style={{
+                  backgroundColor: "#007bff",
+                  color: "white",
+                  padding: "12px 40px",
+                  border: "none",
+                  borderRadius: "20px",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  boxShadow: "0 2px 4px rgba(0,123,255,0.3)",
+                }}
+              >
+                Kirim
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {/* Success Popup - sama persis kayak AK-01 */}
       {showPopup && (
         <div style={popupOverlayStyle} onClick={handleClosePopup}>
           <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
