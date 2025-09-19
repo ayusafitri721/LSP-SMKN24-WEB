@@ -1,189 +1,153 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-const ApprovedUnapproved = () => {
-  const { nis } = useParams();
+// Data dummy untuk nama asesi
+const asesiData = {
+  "08939239239": "AFDHAL EZHAR RAHMA PANGESTU",
+};
+
+// Komponen Header
+const Header = ({ asesiName, isAllApproved, nis }) => {
   const navigate = useNavigate();
 
-  // Dummy data for the assessment forms
-  const formulirData = [
-    { code: "FR.APL.02", title: "ASESMEN MANDIRI" },
-    { code: "FR.AK.01", title: "PERSETUJUAN ASESMEN DAN KERAHASIAAN" },
-    { code: "FR.IA.01.CL", title: "CEKLIS OBSERVASI AKTIVITAS DI TEMPAT KERJA/SIMULASI" },
-    { code: "FR.IA.06.C", title: "LEMBAR JAWABAN TERTULIS ESAI" },
-    { code: "FR.IA.09", title: "WAWANCARA" },
-    { code: "FR.AK.02", title: "REKAMAN ASESMEN KOMPETENSI" },
-    { code: "FR.AK.05", title: "LAPORAN ASESMEN" },
-  ];
-
-  // Dummy function to get the asesi's name based on their NIS
-  const getAsesiName = (currentNis) => {
-    const data = {
-      "08939239239": "AFDHAL EZHAR RAHMA PANGESTU",
-      "08939239240": "ALZAHRAN SHAFWAN ALAMSYAH",
-      "08939239241": "ANGGER FIRLANA",
-      "08939239242": "AZKA GHALIB ABDAB",
-    };
-    return data[currentNis] || "NAMA ASESI TIDAK DITEMUKAN";
+  const handleRecommend = () => {
+    if (isAllApproved) {
+      navigate(`/dashboard-asesor/rekomendasi/${nis}`);
+    } else {
+      alert("Anda harus menyetujui semua formulir terlebih dahulu.");
+    }
   };
 
-  const asesiName = getAsesiName(nis);
-
   return (
-    <div
-      style={{
-        padding: "0",
-        backgroundColor: "#f5f5f5",
-        minHeight: "100vh",
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      }}
-    >
-      {/* Header Utama dengan Latar Belakang */}
-      <div
-        style={{
-          width: "100%",
-          height: "200px",
-          backgroundImage: "url('https://images.unsplash.com/photo-1549923746-c56781254884?fit=crop&w=1500')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          position: "relative",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          color: "white",
-          fontSize: "48px",
-          fontWeight: "bold",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(255, 127, 57, 0.7)",
-          }}
-        ></div>
-        <span style={{ zIndex: 1 }}>MyLSP</span>
-        <div
-          style={{
-            position: "absolute",
-            top: "20px",
-            right: "20px",
-            width: "40px",
-            height: "40px",
-            borderRadius: "50%",
-            backgroundImage: "url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?fit=facearea&facepad=2&w=256&h=256&q=80')",
-            backgroundSize: "cover",
-          }}
-        ></div>
+    <div style={headerContainerStyle}>
+      <div style={mainHeaderStyle}>
+        MyLSP
       </div>
-
-      {/* Header Nama Asesi dan Tombol */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          backgroundColor: "white",
-          padding: "15px 20px",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-        }}
-      >
-        <h2 style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>
-          {asesiName}
-        </h2>
-        {/* Ubah navigasi tombol "Rekomendasikan" */}
+      <div style={subHeaderStyle}>
+        <h2 style={asesiNameStyle}>{asesiName}</h2>
         <button
           style={{
-            backgroundColor: "#f97316",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            padding: "10px 20px",
-            fontSize: "14px",
-            fontWeight: "500",
-            cursor: "pointer",
+            ...recommendButtonStyle,
+            backgroundColor: isAllApproved ? '#33b069' : '#f97316',
+            cursor: isAllApproved ? 'pointer' : 'not-allowed',
+            opacity: isAllApproved ? 1 : 0.6,
           }}
-          onClick={() => navigate(`/dashboard-asesor/rekomendasi/${nis}`)}
+          onClick={handleRecommend}
+          disabled={!isAllApproved}
         >
           Rekomendasikan
         </button>
       </div>
+    </div>
+  );
+};
 
-      {/* Daftar Formulir Penilaian */}
-      <div
-        style={{
-          padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "15px",
-        }}
-      >
-        {formulirData.map((formulir, index) => (
-          <div
-            key={index}
-            style={{
-              backgroundColor: "white",
-              borderRadius: "12px",
-              padding: "20px",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <p
-                style={{
-                  fontSize: "16px",
-                  fontWeight: "bold",
-                  color: "#1f2937",
-                  margin: 0,
-                }}
-              >
-                {formulir.code}
-              </p>
-              <p
-                style={{
-                  fontSize: "14px",
-                  color: "#6b7280",
-                  margin: "5px 0 0 0",
-                }}
-              >
-                {formulir.title}
-              </p>
-              <p style={{ fontSize: "12px", color: "#6b7280", margin: "5px 0 0 0" }}>
-                NIS: {nis}
-              </p>
+// Komponen Utama
+const ApprovedUnapproved = () => {
+  const { nis } = useParams();
+  const navigate = useNavigate();
+
+  // State untuk status persetujuan setiap formulir
+  const [formulirStatus, setFormulirStatus] = useState([
+    { code: "FR.APL.02", title: "ASESMEN MANDIRI", status: null, route: "/asesmen-mandiri" },
+    { code: "FR.AK.01", title: "PERSETUJUAN ASESMEN DAN KERAHASIAAN", status: null, route: "/persetujuan-asesmen" },
+    { code: "FR.IA.01.CL", title: "CEKLIS OBSERVASI AKTIVITAS DI TEMPAT KERJA/SIMULASI", status: null, route: "/ceklis-observasi" },
+    { code: "FR.IA.06.C", title: "LEMBAR JAWABAN TERTULIS ESAI", status: null, route: "/lembar-jawaban" },
+    { code: "FR.IA.09", title: "WAWANCARA", status: null, route: "/wawancara" },
+    { code: "FR.AK.02", title: "REKAMAN ASESMEN KOMPETENSI", status: null, route: "/rekaman-asesmen" },
+    { code: "FR.AK.05", title: "LAPORAN ASESMEN", status: null, route: "/laporan-asesmen" },
+  ]);
+
+  const [allApproved, setAllApproved] = useState(false);
+  const asesiName = asesiData[nis] || "NAMA ASESI TIDAK DITEMUKAN";
+
+  // Memperbarui status 'allApproved' ketika ada perubahan pada 'formulirStatus'
+  useEffect(() => {
+    const isApproved = formulirStatus.every(item => item.status === 'approved');
+    setAllApproved(isApproved);
+  }, [formulirStatus]);
+
+  // Handler untuk klik tombol Approve/Unapprove
+  const handleApproveUnapprove = (index, status) => {
+    setFormulirStatus(prevStatus => {
+      const newStatus = [...prevStatus];
+      newStatus[index].status = status;
+      return newStatus;
+    });
+  };
+
+  // Handler untuk navigasi ke form detail
+  const handleNavigateToForm = (formulir) => {
+    navigate(`/dashboard-asesor${formulir.route}/${nis}`);
+  };
+
+  // Fungsi untuk mendapatkan style yang berbeda untuk setiap card
+  const getFormItemStyle = (index) => {
+    const gradients = [
+      'linear-gradient(135deg, #4A90E2 0%, #357ABD 100%)',
+      'linear-gradient(135deg, #5BA0F2 0%, #4A90E2 100%)',
+      'linear-gradient(135deg, #357ABD 0%, #2E6DA4 100%)',
+      'linear-gradient(135deg, #6BB6FF 0%, #4A90E2 100%)',
+      'linear-gradient(135deg, #4A90E2 0%, #357ABD 100%)',
+      'linear-gradient(135deg, #5BA0F2 0%, #4A90E2 100%)',
+      'linear-gradient(135deg, #357ABD 0%, #2E6DA4 100%)',
+    ];
+    
+    return {
+      background: gradients[index % gradients.length],
+      borderRadius: '12px',
+      padding: '0',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      overflow: 'hidden',
+      transition: 'transform 0.2s ease',
+      cursor: 'pointer',
+      marginBottom: '8px',
+    };
+  };
+
+  return (
+    <div style={pageContainerStyle}>
+      <Header asesiName={asesiName} isAllApproved={allApproved} nis={nis} />
+      <div style={formsListContainerStyle}>
+        {formulirStatus.map((formulir, index) => (
+          <div key={index} style={getFormItemStyle(index)}>
+            <div 
+              style={formContentStyle}
+              onClick={() => handleNavigateToForm(formulir)}
+            >
+              <p style={formCodeStyle}>{formulir.code}</p>
+              <p style={formTitleStyle}>{formulir.title}</p>
+              <p style={formNisStyle}>NIS: {nis}</p>
             </div>
-            <div style={{ display: "flex", gap: "10px" }}>
+            <div style={buttonContainerStyle}>
               <button
                 style={{
-                  backgroundColor: "#3b82f6",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "8px",
-                  padding: "10px 20px",
-                  fontSize: "14px",
-                  cursor: "pointer",
+                  ...actionButtonStyle, // Menggunakan actionButtonStyle yang sudah disiapkan
+                  backgroundColor: formulir.status === 'approved' ? '#f97316' : '#6c757d',
+                  cursor: formulir.status ? 'not-allowed' : 'pointer',
                 }}
-                onClick={() => alert(`Anda menyetujui formulir ${formulir.code}`)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleApproveUnapprove(index, 'approved');
+                }}
+                disabled={!!formulir.status}
               >
                 Approve
               </button>
               <button
                 style={{
-                  backgroundColor: "#ef4444",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "8px",
-                  padding: "10px 20px",
-                  fontSize: "14px",
-                  cursor: "pointer",
+                  ...actionButtonStyle, // Menggunakan actionButtonStyle
+                  backgroundColor: formulir.status === 'unapproved' ? '#f97316' : '#6c757d',
+                  cursor: formulir.status ? 'not-allowed' : 'pointer',
                 }}
-                onClick={() => alert(`Anda tidak menyetujui formulir ${formulir.code}`)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleApproveUnapprove(index, 'unapproved');
+                }}
+                disabled={!!formulir.status}
               >
                 Unapprove
               </button>
@@ -193,6 +157,126 @@ const ApprovedUnapproved = () => {
       </div>
     </div>
   );
+};
+
+// Styling Object - sesuai dengan desain UI
+const pageContainerStyle = {
+  backgroundColor: '#f8f9fa',
+  minHeight: '100vh',
+  fontFamily: 'Roboto, sans-serif',
+};
+
+const headerContainerStyle = {
+  width: '100%',
+  position: 'relative',
+  paddingBottom: '20px',
+};
+
+const mainHeaderStyle = {
+  width: '100%',
+  height: '200px',
+  backgroundImage: `linear-gradient(rgba(255, 165, 0, 0.7), rgba(255, 140, 0, 0.7)), url('https://i.ibb.co/CByYk5p/image-7fdd46.png')`,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  color: 'white',
+  fontSize: '48px',
+  fontWeight: 'bold',
+  textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
+  position: 'relative',
+};
+
+const subHeaderStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  backgroundColor: 'white',
+  padding: '15px 20px',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+  margin: '0 auto',
+  maxWidth: '900px',
+  borderRadius: '12px',
+  transform: 'translateY(-20px)',
+  position: 'relative',
+  zIndex: 1,
+};
+
+const asesiNameStyle = {
+  fontSize: '18px',
+  fontWeight: '600',
+  margin: 0,
+  color: '#333',
+};
+
+const recommendButtonStyle = {
+  color: 'white',
+  border: 'none',
+  borderRadius: '25px',
+  padding: '12px 24px',
+  fontSize: '14px',
+  fontWeight: '600',
+  transition: 'all 0.3s ease',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+};
+
+const formsListContainerStyle = {
+  padding: '20px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
+  margin: '0 auto',
+  maxWidth: '900px',
+  backgroundColor: 'white',
+  borderRadius: '15px',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+  marginTop: '10px',
+};
+
+const formContentStyle = {
+  flex: 1,
+  padding: '16px 20px',
+  color: 'white',
+  cursor: 'pointer',
+};
+
+const formCodeStyle = {
+  fontSize: '14px',
+  fontWeight: 'bold',
+  color: 'white',
+  margin: 0,
+};
+
+const formTitleStyle = {
+  fontSize: '12px',
+  color: 'white',
+  margin: '2px 0 0 0',
+  opacity: 0.9,
+};
+
+const formNisStyle = {
+  fontSize: '11px',
+  color: 'white',
+  margin: '2px 0 0 0',
+  opacity: 0.8,
+};
+
+const buttonContainerStyle = {
+  display: 'flex',
+  gap: '6px',
+  padding: '16px 20px',
+};
+
+const actionButtonStyle = {
+  color: 'white',
+  border: 'none',
+  borderRadius: '9999px',
+  padding: '8px 16px',
+  fontSize: '13px',
+  fontWeight: '600',
+  transition: 'all 0.3s ease',
+  minWidth: '80px',
 };
 
 export default ApprovedUnapproved;
