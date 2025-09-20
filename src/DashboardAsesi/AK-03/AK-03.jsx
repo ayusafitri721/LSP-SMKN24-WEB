@@ -5,9 +5,27 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
 
+// Custom hook to detect screen size
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    const listener = () => setMatches(media.matches);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+    window.addEventListener('resize', listener);
+    return () => window.removeEventListener('resize', listener);
+  }, [matches, query]);
+
+  return matches;
+};
+
 const AK03 = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   const [formData, setFormData] = useState({
     skemaSertifikasi: '',
@@ -112,18 +130,19 @@ const AK03 = () => {
   const pageContainerStyle = {
     backgroundColor: '#f5f5f5',
     fontFamily: 'Arial, sans-serif',
-    padding: '15px',
+    padding: isMobile ? '10px' : '20px',
   };
 
   const navContainerStyle = {
     backgroundColor: 'white',
-    padding: '5px 15px',
+    padding: isMobile ? '5px 10px' : '5px 15px',
     borderRadius: '15px 15px 40px 15px',
     boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    margin: '15px 15px 0 15px',
+    margin: isMobile ? '10px' : '15px 15px 0 15px',
     overflowX: 'auto',
-    maxWidth: '50%',
+    maxWidth: isMobile ? '100%' : '50%',
     whiteSpace: 'nowrap',
+    boxSizing: 'border-box',
   };
 
   const imageBannerStyle = {
@@ -131,39 +150,43 @@ const AK03 = () => {
       "linear-gradient(rgba(255,140,0,0.7), rgba(255,140,0,0.7)), url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')",
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    height: '160px',
+    height: isMobile ? '120px' : '160px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: '15px',
     boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-    marginTop: '20px',
+    marginTop: isMobile ? '15px' : '20px',
   };
 
   const logoTextStyle = {
     color: 'white',
-    fontSize: '48px',
+    fontSize: isMobile ? '32px' : '48px',
     fontWeight: 'bold',
     margin: 0,
     textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-    letterSpacing: '2px',
+    letterSpacing: isMobile ? '1px' : '2px',
   };
 
   const formContainerStyle = {
     backgroundColor: 'white',
     borderRadius: '15px',
-    padding: '25px',
+    padding: isMobile ? '15px' : '25px',
     boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-    marginTop: '20px',
+    marginTop: isMobile ? '15px' : '20px',
   };
 
   const headerSectionStyle = {
     display: 'flex',
     alignItems: 'flex-start',
-    gap: '20px',
+    gap: isMobile ? '10px' : '20px',
     marginBottom: '20px',
     paddingBottom: '15px',
     borderBottom: '1px solid #ddd',
+    flexDirection: isMobile ? 'column' : 'row',
+    textAlign: isMobile ? 'center' : 'left',
+    justifyContent: isMobile ? 'center' : 'flex-start',
+    alignItems: isMobile ? 'center' : 'flex-start',
   };
 
   const logoContainerStyle = {
@@ -175,7 +198,7 @@ const AK03 = () => {
   };
 
   const titleStyle = {
-    fontSize: '16px',
+    fontSize: isMobile ? '14px' : '16px',
     fontWeight: 'bold',
     margin: '0 0 5px 0',
     color: '#333',
@@ -183,7 +206,7 @@ const AK03 = () => {
   };
 
   const subtitleStyle = {
-    fontSize: '16px',
+    fontSize: isMobile ? '14px' : '16px',
     fontWeight: 'bold',
     margin: '0 0 15px 0',
     color: '#333',
@@ -194,6 +217,9 @@ const AK03 = () => {
     width: '100%',
     borderCollapse: 'collapse',
     marginBottom: '20px',
+    display: isMobile ? 'block' : 'table',
+    overflowX: isMobile ? 'auto' : 'visible',
+    whiteSpace: isMobile ? 'nowrap' : 'normal',
   };
 
   const tableHeaderStyle = {
@@ -242,11 +268,12 @@ const AK03 = () => {
   const modalContainerStyle = {
     backgroundColor: 'white',
     borderRadius: '20px',
-    padding: '40px',
+    padding: isMobile ? '20px' : '40px',
     textAlign: 'center',
     boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-    minWidth: '320px',
+    minWidth: isMobile ? '90%' : '320px',
     maxWidth: '400px',
+    boxSizing: 'border-box',
   };
 
   const iconContainerStyle = {
@@ -259,13 +286,16 @@ const AK03 = () => {
     justifyContent: 'center',
     margin: '0 auto 20px',
     position: 'relative',
-    gap: '15px',
+    gap: isMobile ? '10px' : '15px',
+    flexDirection: isMobile ? 'column' : 'row',
   };
 
   const listLinesStyle = {
     display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
+    flexDirection: isMobile ? 'row' : 'column',
+    gap: isMobile ? '4px' : '6px',
+    justifyContent: 'center',
+    alignItems: 'center',
   };
 
   const checkCircleStyle = {
@@ -276,7 +306,7 @@ const AK03 = () => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: '6px',
+    marginTop: isMobile ? '0' : '6px',
   };
 
   const checkMarkStyle = {
@@ -333,174 +363,59 @@ const AK03 = () => {
     animation: 'slideIn 0.3s ease-out',
   };
 
+  // Helper component for mobile view to display table rows as cards
+  const MobileTable = ({ data }) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      {data.map((item) => (
+        <div
+          key={item.id}
+          style={{
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            padding: '10px',
+            backgroundColor: 'white',
+          }}
+        >
+          <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+            {item.text}
+          </div>
+          <div style={{ display: 'flex', gap: '20px', marginTop: '10px' }}>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              <input
+                type="checkbox"
+                checked={formData.isAnswered[item.id] === 'ya'}
+                onChange={() => handleCheckboxChange(item.id, 'ya')}
+              />
+              <span style={{ marginLeft: '8px' }}>Ya</span>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              <input
+                type="checkbox"
+                checked={formData.isAnswered[item.id] === 'tidak'}
+                onChange={() => handleCheckboxChange(item.id, 'tidak')}
+              />
+              <span style={{ marginLeft: '8px' }}>Tidak</span>
+            </label>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <div style={pageContainerStyle}>
-      <style>
-        {`
-          /* Responsive Styles */
-          @media (max-width: 768px) {
-            .nav-container {
-              max-width: 100%;
-              margin: 10px;
-              border-radius: 15px;
-            }
-            .image-banner {
-              height: 120px;
-              margin-top: 15px;
-            }
-            .logo-text {
-              font-size: 32px;
-              letter-spacing: 1px;
-            }
-            .form-container {
-              padding: 15px;
-            }
-            .header-section {
-              flex-direction: column;
-              align-items: center;
-              gap: 10px;
-              text-align: center;
-            }
-            .logo-img {
-              width: 60px;
-              height: 60px;
-            }
-            .table-responsive {
-              overflow-x: auto;
-            }
-            .form-table {
-              width: 100%;
-              display: block;
-              overflow-x: auto;
-              white-space: nowrap;
-            }
-            .form-table tr {
-              display: block;
-              margin-bottom: 10px;
-            }
-            .form-table td {
-              display: block;
-              width: 100%;
-              box-sizing: border-box;
-            }
-            
-            /* Responsive styles for the main table (desktop view) */
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-bottom: 20px;
-            }
-            th, td {
-              padding: 8px;
-              text-align: left;
-              border: 1px solid #ddd;
-            }
-            thead {
-              display: table-header-group;
-            }
-            tr {
-              display: table-row;
-            }
-
-            /* Responsive styles for the question table */
-            .question-table {
-              width: 100%;
-              border-collapse: collapse;
-            }
-            .question-table th, .question-table td {
-              border: 1px solid #ccc;
-              padding: 8px;
-            }
-            .question-table thead {
-              display: none;
-            }
-            .question-table tr {
-              display: block;
-              margin-bottom: 15px;
-              border: 1px solid #ccc;
-              border-radius: 8px;
-              padding: 10px;
-            }
-            .question-table td {
-              display: block;
-              text-align: left;
-              border: none;
-              border-bottom: 1px solid #eee;
-            }
-            .question-table td:last-child {
-              border-bottom: none;
-            }
-            .question-table td:before {
-              content: attr(data-label);
-              font-weight: bold;
-              display: block;
-              margin-bottom: 5px;
-            }
-          }
-          
-          @media (max-width: 480px) {
-            .form-container {
-              padding: 10px;
-            }
-            .modal-container {
-              min-width: 90%;
-              padding: 20px;
-            }
-            .success-icon {
-              flex-direction: column;
-              gap: 10px;
-            }
-            .list-lines {
-              flex-direction: row;
-              justify-content: center;
-              gap: 4px;
-            }
-            .line, .line-medium, .line-long {
-              height: 8px;
-            }
-          }
-
-          /* General Utility Classes */
-          .nav-scrollbar::-webkit-scrollbar {
-            height: 5px;
-          }
-          .nav-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-          }
-          .nav-scrollbar::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 5px;
-          }
-          .nav-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #555;
-          }
-          @keyframes slideIn {
-            from {
-              transform: translateX(100%);
-              opacity: 0;
-            }
-            to {
-              transform: translateX(0);
-              opacity: 1;
-            }
-          }
-        `}
-      </style>
-
       {showWarning && (
         <div style={warningNotificationStyle}>
           Silakan isi dan kirim formulir FR.AK.03 terlebih dahulu!
         </div>
       )}
 
-      <div style={navContainerStyle} className="nav-scrollbar">
+      <div style={navContainerStyle}>
         <NavAsesi activeTab="FR.AK.03" />
       </div>
 
       <div style={imageBannerStyle}>
-        <h1 style={logoTextStyle}>
-          MyLSP
-        </h1>
+        <h1 style={logoTextStyle}>MyLSP</h1>
       </div>
 
       <div style={formContainerStyle}>
@@ -509,10 +424,9 @@ const AK03 = () => {
             <img
               src="/src/img/image 12.png"
               alt="LSP Logo"
-              className="logo-img"
               style={{
-                width: '80px',
-                height: '80px',
+                width: isMobile ? '60px' : '80px',
+                height: isMobile ? '60px' : '80px',
                 borderRadius: '8px',
                 objectFit: 'contain',
                 backgroundColor: '#f8f9fa',
@@ -530,9 +444,13 @@ const AK03 = () => {
           <table style={tableStyle}>
             <tbody>
               <tr>
-                <td style={{ ...tableTopCellStyle, width: '25%' }} rowSpan="2" data-label="Skema Sertifikasi">Skema Sertifikasi (KKNI/OKUPASI/KLASTER)</td>
-                <td style={{ ...tableTopCellStyle, width: '0%' }} rowSpan="2"></td>
-                <td style={{ ...tableCellStyle, width: '15%' }} data-label="Judul Unit">Judul Unit</td>
+                <td
+                  style={{ ...tableTopCellStyle, width: '25%', verticalAlign: 'middle' }}
+                >
+                  Skema Sertifikasi (KKNI/OKUPASI/KLASTER)
+                </td>
+                <td style={{ ...tableTopCellStyle, width: '0%' }}></td>
+                <td style={{ ...tableCellStyle, width: '15%' }}>Judul Unit</td>
                 <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
                 <td style={{ ...tableCellStyle, width: '34%' }}>
                   <input
@@ -544,7 +462,9 @@ const AK03 = () => {
                 </td>
               </tr>
               <tr>
-                <td style={{ ...tableCellStyle, width: '15%' }} data-label="Kode Unit">Kode Unit</td>
+                <td style={{ ...tableTopCellStyle, width: '25%' }}></td>
+                <td style={{ ...tableTopCellStyle, width: '0%' }}></td>
+                <td style={{ ...tableCellStyle, width: '15%' }}>Kode Unit</td>
                 <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
                 <td style={{ ...tableCellStyle, width: '34%' }}>
                   <input
@@ -556,7 +476,7 @@ const AK03 = () => {
                 </td>
               </tr>
               <tr>
-                <td style={{ ...tableCellStyle, width: '25%' }} data-label="TUK">TUK</td>
+                <td style={{ ...tableCellStyle, width: '25%' }}>TUK</td>
                 <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
                 <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
                   <input
@@ -568,7 +488,7 @@ const AK03 = () => {
                 </td>
               </tr>
               <tr>
-                <td style={{ ...tableCellStyle, width: '25%' }} data-label="Nama Asesor">Nama Asesor</td>
+                <td style={{ ...tableCellStyle, width: '25%' }}>Nama Asesor</td>
                 <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
                 <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
                   <input
@@ -580,7 +500,7 @@ const AK03 = () => {
                 </td>
               </tr>
               <tr>
-                <td style={{ ...tableCellStyle, width: '25%' }} data-label="Nama Asesi">Nama Asesi</td>
+                <td style={{ ...tableCellStyle, width: '25%' }}>Nama Asesi</td>
                 <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
                 <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
                   <input
@@ -592,7 +512,7 @@ const AK03 = () => {
                 </td>
               </tr>
               <tr>
-                <td style={{ ...tableCellStyle, width: '25%' }} data-label="Tanggal">Tanggal</td>
+                <td style={{ ...tableCellStyle, width: '25%' }}>Tanggal</td>
                 <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
                 <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
                   <input
@@ -609,20 +529,9 @@ const AK03 = () => {
           <p style={{ textAlign: 'center' }}>Umpan balik dari Asesi (diisi oleh Asesi setelah pengambilan keputusan)</p>
 
           <div style={{ border: '1px solid #ccc', borderRadius: '8px', padding: '20px' }}>
-            <table className="question-table" style={tableStyle}>
-              <thead>
-                <tr>
-                  <th style={{ ...tableHeaderStyle, width: '70%', border: '1px solid #ccc' }}>Komponen</th>
-                  <th style={{ ...tableHeaderStyle, width: '15%', border: '1px solid #ccc', textAlign: 'center' }}>
-                    Ya
-                  </th>
-                  <th style={{ ...tableHeaderStyle, width: '15%', border: '1px solid #ccc', textAlign: 'center' }}>
-                    Tidak
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
+            {isMobile ? (
+              <MobileTable
+                data={[
                   { id: 'q1', text: 'Saya mendapatkan penjelasan yang cukup memadai mengenai proses asesmen/uji kompetensi.' },
                   { id: 'q2', text: 'Saya diberikan kesempatan untuk mempelajari standar kompetensi yang akan diujikan dan menilai diri sendiri terhadap pencapaiannya.' },
                   { id: 'q3', text: 'Asesor memberikan kesempatan untuk mendiskusikan/menegosiasikan metoda, instrumen dan sumber asesmen serta jadwal asesmen.' },
@@ -633,27 +542,51 @@ const AK03 = () => {
                   { id: 'q8', text: 'Asesor bersama saya mempelajari semua dokumen asesmen serta menandatanganinya.' },
                   { id: 'q9', text: 'Saya mendapatkan jaminan kerahasiaan hasil asesmen serta penjelasan penanganan dokumen asesmen.' },
                   { id: 'q10', text: 'Asesor menggunakan keterampilan komunikasi yang efektif selama asesmen.' },
-                ].map((item) => (
-                  <tr key={item.id}>
-                    <td style={tableCellStyle} data-label="Komponen">{item.text}</td>
-                    <td style={{ ...tableCellStyle, textAlign: 'center' }} data-label="Ya">
-                      <input
-                        type="checkbox"
-                        checked={formData.isAnswered[item.id] === 'ya'}
-                        onChange={() => handleCheckboxChange(item.id, 'ya')}
-                      />
-                    </td>
-                    <td style={{ ...tableCellStyle, textAlign: 'center' }} data-label="Tidak">
-                      <input
-                        type="checkbox"
-                        checked={formData.isAnswered[item.id] === 'tidak'}
-                        onChange={() => handleCheckboxChange(item.id, 'tidak')}
-                      />
-                    </td>
+                ]}
+              />
+            ) : (
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr>
+                    <th style={{ ...tableHeaderStyle, width: '70%', border: '1px solid #ccc' }}>Komponen</th>
+                    <th style={{ ...tableHeaderStyle, width: '15%', border: '1px solid #ccc', textAlign: 'center' }}>Ya</th>
+                    <th style={{ ...tableHeaderStyle, width: '15%', border: '1px solid #ccc', textAlign: 'center' }}>Tidak</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {[
+                    { id: 'q1', text: 'Saya mendapatkan penjelasan yang cukup memadai mengenai proses asesmen/uji kompetensi.' },
+                    { id: 'q2', text: 'Saya diberikan kesempatan untuk mempelajari standar kompetensi yang akan diujikan dan menilai diri sendiri terhadap pencapaiannya.' },
+                    { id: 'q3', text: 'Asesor memberikan kesempatan untuk mendiskusikan/menegosiasikan metoda, instrumen dan sumber asesmen serta jadwal asesmen.' },
+                    { id: 'q4', text: 'Asesor berusaha menggali seluruh bukti pendukung yang sesuai dengan latar belakang pelatihan dan pengalaman yang saya miliki.' },
+                    { id: 'q5', text: 'Saya sepenuhnya diberikan kesempatan untuk mendemonstrasikan kompetensi yang saya miliki selama asesmen.' },
+                    { id: 'q6', text: 'Saya mendapatkan penjelasan yang memadai mengenai keputusan asesmen.' },
+                    { id: 'q7', text: 'Asesor memberikan umpan balik yang mendukung setelah asesmen serta tidak lanjutnya.' },
+                    { id: 'q8', text: 'Asesor bersama saya mempelajari semua dokumen asesmen serta menandatanganinya.' },
+                    { id: 'q9', text: 'Saya mendapatkan jaminan kerahasiaan hasil asesmen serta penjelasan penanganan dokumen asesmen.' },
+                    { id: 'q10', text: 'Asesor menggunakan keterampilan komunikasi yang efektif selama asesmen.' },
+                  ].map((item) => (
+                    <tr key={item.id}>
+                      <td style={tableCellStyle}>{item.text}</td>
+                      <td style={{ ...tableCellStyle, textAlign: 'center' }}>
+                        <input
+                          type="checkbox"
+                          checked={formData.isAnswered[item.id] === 'ya'}
+                          onChange={() => handleCheckboxChange(item.id, 'ya')}
+                        />
+                      </td>
+                      <td style={{ ...tableCellStyle, textAlign: 'center' }}>
+                        <input
+                          type="checkbox"
+                          checked={formData.isAnswered[item.id] === 'tidak'}
+                          onChange={() => handleCheckboxChange(item.id, 'tidak')}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
 
           <div style={{ marginTop: '20px' }}>
@@ -666,6 +599,7 @@ const AK03 = () => {
                 boxSizing: 'border-box',
                 borderRadius: '5px',
                 border: '1px solid #ccc',
+                resize: 'vertical',
               }}
               value={formData.catatan}
               onChange={(e) => handleInputChange('catatan', e.target.value)}
@@ -685,9 +619,9 @@ const AK03 = () => {
             <div style={iconContainerStyle}>
               <div style={successIconStyle}>
                 <div style={listLinesStyle}>
-                  <div style={{ width: '60px', height: '12px', backgroundColor: '#FF8C00', borderRadius: '6px' }}></div>
-                  <div style={{ width: '80px', height: '12px', backgroundColor: '#FF8C00', borderRadius: '6px' }}></div>
-                  <div style={{ width: '100px', height: '12px', backgroundColor: '#FF8C00', borderRadius: '6px' }}></div>
+                  <div style={{ width: isMobile ? '30px' : '60px', height: '12px', backgroundColor: '#FF8C00', borderRadius: '6px' }}></div>
+                  <div style={{ width: isMobile ? '50px' : '80px', height: '12px', backgroundColor: '#FF8C00', borderRadius: '6px' }}></div>
+                  <div style={{ width: isMobile ? '70px' : '100px', height: '12px', backgroundColor: '#FF8C00', borderRadius: '6px' }}></div>
                 </div>
                 <div style={checkCircleStyle}>
                   <div style={checkMarkStyle}>✓</div>
