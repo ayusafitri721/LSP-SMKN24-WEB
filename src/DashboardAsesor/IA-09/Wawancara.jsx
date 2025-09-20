@@ -640,9 +640,52 @@ const Wawancara = () => {
         </div>
       </div>
 
-      {/* Name Box */}
-      <div style={responsiveStyles.nameBox}>
-        <div style={responsiveStyles.name}>FR-IA-09 Wawancara </div>
+      {/* Name Box dengan Logo */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '20px',
+        padding: '15px 20px',
+        backgroundColor: 'white',
+        margin: '0 20px',
+        border: '1px solid #dee2e6',
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        borderBottom: '2px solid #FF8C00'
+      }}>
+        <div style={{
+          flexShrink: 0
+        }}>
+          <img
+            src="/src/img/image 12.png"
+            alt="LSP Logo"
+            style={{
+              width: isMobile ? '60px' : '80px',
+              height: isMobile ? '60px' : '80px',
+              borderRadius: '8px',
+              objectFit: 'contain',
+              backgroundColor: '#f8f9fa',
+              padding: '4px',
+            }}
+          />
+        </div>
+        <div style={{
+          flex: 1,
+          textAlign: 'center'
+        }}>
+          <div style={{
+            fontSize: isMobile ? '14px' : '16px',
+            fontWeight: 'bold',
+            margin: '0 0 5px 0',
+            color: '#333'
+          }}>FR-IA-09</div>
+          <div style={{
+            fontSize: isMobile ? '14px' : '16px',
+            fontWeight: 'bold',
+            margin: '0',
+            color: '#333'
+          }}>WAWANCARA</div>
+        </div>
       </div>
 
       {/* Konten Utama */}
@@ -919,7 +962,7 @@ const Wawancara = () => {
                   </div>
                 </div>
 
-                {/* Tanda Tangan dan Tombol berdampingan */}
+                {/* Tanda Tangan */}
                 <div className={isMobile ? 'mobile-signature-row' : isTablet ? 'tablet-signature-row' : ''} style={{display: 'flex', gap: isMobile ? '8px' : '10px', alignItems: 'stretch', flexDirection: isMobile ? 'column' : 'row'}}>
                   <div className={isMobile ? 'mobile-form-box' : isTablet ? 'tablet-form-box' : ''} style={{...responsiveStyles.formBox, flex: 1}}>
                     <h4 style={{fontSize: isMobile ? '10px' : '11px', textAlign: 'center', marginBottom: '6px'}}>
@@ -985,46 +1028,75 @@ const Wawancara = () => {
                       )}
                     </div>
                   </div>
-
-                  {/* Tombol Approve dan Reject */}
-                  <div className={isMobile ? 'mobile-button-row' : isTablet ? 'tablet-button-row' : ''} style={{
-                    display: 'flex',
-                    flexDirection: isMobile ? 'column' : 'row',
-                    justifyContent: 'center',
-                    gap: isMobile ? '6px' : '8px',
-                    minWidth: isMobile ? 'auto' : '100px',
-                    alignItems: 'center'
-                  }}>
-                    <button 
-                      onClick={handleApprove}
-                      className="responsive-button"
-                      style={{
-                        ...responsiveStyles.approveButton,
-                        fontSize: isMobile ? '10px' : '11px',
-                        padding: isMobile ? '6px 10px' : '8px 12px',
-                        minWidth: isMobile ? '50px' : '60px'
-                      }}
-                    >
-                      Approve
-                    </button>
-                    <button 
-                      onClick={handleReject}
-                      className="responsive-button"
-                      style={{
-                        ...responsiveStyles.rejectButton,
-                        fontSize: isMobile ? '10px' : '11px',
-                        padding: isMobile ? '6px 10px' : '8px 12px',
-                        minWidth: isMobile ? '50px' : '60px'
-                      }}
-                    >
-                      Reject
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Button Approve dan Reject di bawah halaman */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: isMobile ? '15px' : '25px',
+        margin: isMobile ? '20px 10px' : '30px 20px',
+        paddingBottom: isMobile ? '20px' : '30px'
+      }}>
+        <button 
+          onClick={handleApprove}
+          className="responsive-button"
+          style={{
+            ...responsiveStyles.approveButton,
+            bbackgroundColor: 'white',
+            color: '#333',
+            border: '1px solid #ccc',
+            fontSize: isMobile ? '12px' : '14px',
+            padding: isMobile ? '10px 20px' : '12px 30px',
+            minWidth: isMobile ? '100px' : '120px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.backgroundColor = '#f8f9fa';
+            e.target.style.transform = 'translateY(-2px)';
+            e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.backgroundColor = 'white';
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+          }}
+        >
+         Approve
+        </button>
+        <button 
+          onClick={handleReject}
+          className="responsive-button"
+          style={{
+            ...responsiveStyles.rejectButton,
+            backgroundColor: 'white',
+            color: '#333',
+            border: '1px solid #ccc',
+            fontSize: isMobile ? '12px' : '14px',
+            padding: isMobile ? '10px 20px' : '12px 30px',
+            minWidth: isMobile ? '100px' : '120px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.backgroundColor = '#f8f9fa';
+            e.target.style.transform = 'translateY(-2px)';
+            e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.backgroundColor = 'white';
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+          }}
+        >
+         Reject
+        </button>
       </div>
 
       {/* Modal Notifikasi Approve - dari AK-02 */}
