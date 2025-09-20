@@ -5,31 +5,33 @@ import { Check } from 'lucide-react';
 const pageContainerStyle = {
   backgroundColor: 'white',
   fontFamily: 'Arial, sans-serif',
-  padding: '15px',
+  padding: 'clamp(10px, 2vw, 15px)', // Responsif
   minHeight: '100vh',
+  boxSizing: 'border-box',
 };
 
 const headerSectionStyle = {
   backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
   backgroundSize: 'cover',
   backgroundPosition: 'center',
-  borderRadius: '0 0 40px 40px',
+  borderRadius: '0 0 clamp(20px, 4vw, 40px) clamp(20px, 4vw, 40px)', // Responsif
   overflow: 'hidden',
   marginBottom: '0',
+  width: '100%',
 };
 
 const logoContainerStyle = {
-  height: '200px',
+  height: 'clamp(100px, 20vw, 200px)', // Responsif
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  marginTop: '20px',
-  marginBottom: '20px',
+  marginTop: 'clamp(10px, 2vw, 20px)', // Responsif
+  marginBottom: 'clamp(10px, 2vw, 20px)', // Responsif
 };
 
 const logoTextStyle = {
   color: 'white',
-  fontSize: '56px',
+  fontSize: 'clamp(24px, 5vw, 56px)', // Responsif
   fontWeight: 'bold',
   margin: 0,
   textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
@@ -38,20 +40,23 @@ const logoTextStyle = {
 
 const contentCardStyle = {
   backgroundColor: 'white',
-  borderRadius: '0 0 15px 15px',
-  padding: '30px',
+  borderRadius: '0 0 clamp(10px, 2vw, 15px) clamp(10px, 2vw, 15px)', // Responsif
+  padding: 'clamp(15px, 3vw, 30px)', // Responsif
   boxShadow: 'none',
   marginTop: '0',
   border: 'none',
+  width: '100%',
+  boxSizing: 'border-box',
 };
 
 const headerSectionStyle2 = {
   display: 'flex',
   alignItems: 'center',
-  gap: '20px',
-  marginBottom: '20px',
-  paddingBottom: '10px',
+  gap: 'clamp(10px, 2vw, 20px)', // Responsif
+  marginBottom: 'clamp(10px, 2vw, 20px)', // Responsif
+  paddingBottom: 'clamp(5px, 1vw, 10px)', // Responsif
   borderBottom: '2px solid #FF8C00',
+  flexWrap: 'wrap', // Tambah untuk responsivitas
 };
 
 const logoContainer2Style = {
@@ -63,7 +68,7 @@ const headerContentStyle = {
 };
 
 const titleStyle = {
-  fontSize: '16px',
+  fontSize: 'clamp(12px, 2.5vw, 16px)', // Responsif
   fontWeight: 'bold',
   margin: '0 0 5px 0',
   color: '#333',
@@ -71,9 +76,9 @@ const titleStyle = {
 };
 
 const subtitleStyle = {
-  fontSize: '16px',
+  fontSize: 'clamp(12px, 2.5vw, 16px)', // Responsif
   fontWeight: 'bold',
-  margin: '0 0 15px 0',
+  margin: '0 0 clamp(10px, 2vw, 15px) 0', // Responsif
   color: '#333',
   textAlign: 'center',
 };
@@ -81,9 +86,9 @@ const subtitleStyle = {
 // Original form styles
 const tableHeaderStyle = {
   backgroundColor: '#f8f9fa',
-  padding: '12px 20px',
+  padding: 'clamp(8px, 1.5vw, 12px) clamp(12px, 2vw, 20px)', // Responsif
   borderBottom: '1px solid #dee2e6',
-  fontSize: '12px',
+  fontSize: 'clamp(10px, 2vw, 12px)', // Responsif
   fontWeight: 'bold',
   color: '#333',
 };
@@ -91,7 +96,7 @@ const tableHeaderStyle = {
 const tableStyle = {
   width: '100%',
   borderCollapse: 'collapse',
-  fontSize: '11px',
+  fontSize: 'clamp(9px, 2vw, 11px)', // Responsif
 };
 
 const tableRowStyle = {
@@ -99,13 +104,13 @@ const tableRowStyle = {
 };
 
 const tableCellStyle = {
-  padding: '8px 12px',
+  padding: 'clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 12px)', // Responsif
   borderRight: '1px solid #dee2e6',
   verticalAlign: 'top',
 };
 
 const inputCellStyle = {
-  padding: '4px 8px',
+  padding: 'clamp(3px, 1vw, 4px) clamp(6px, 1.5vw, 8px)', // Responsif
   borderRight: '1px solid #dee2e6',
 };
 
@@ -113,22 +118,22 @@ const inputStyle = {
   width: '100%',
   border: 'none',
   outline: 'none',
-  fontSize: '10px',
-  padding: '4px',
+  fontSize: 'clamp(8px, 2vw, 10px)', // Responsif
+  padding: 'clamp(3px, 1vw, 4px)', // Responsif
   backgroundColor: 'transparent',
 };
 
 const sectionStyle = {
   backgroundColor: '#f8f9fa',
-  margin: '20px',
+  margin: 'clamp(10px, 2vw, 20px)', // Responsif
   borderRadius: '8px',
   border: '1px solid #dee2e6',
 };
 
 const sectionHeaderStyle = {
   backgroundColor: '#e9ecef',
-  padding: '8px 12px',
-  fontSize: '11px',
+  padding: 'clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 12px)', // Responsif
+  fontSize: 'clamp(9px, 2vw, 11px)', // Responsif
   fontWeight: 'bold',
   borderBottom: '1px solid #dee2e6',
 };
@@ -136,21 +141,22 @@ const sectionHeaderStyle = {
 const checkboxTableStyle = {
   width: '100%',
   borderCollapse: 'collapse',
-  fontSize: '9px',
+  fontSize: 'clamp(8px, 1.8vw, 9px)', // Responsif
 };
 
 const checkboxHeaderStyle = {
   backgroundColor: '#f8f9fa',
-  padding: '6px 8px',
+  padding: 'clamp(4px, 1vw, 6px) clamp(6px, 1.5vw, 8px)', // Responsif
   textAlign: 'center',
-  fontSize: '9px',
+  fontSize: 'clamp(8px, 1.8vw, 9px)', // Responsif
   fontWeight: 'normal',
   borderRight: '1px solid #dee2e6',
   borderBottom: '1px solid #dee2e6',
+  width: 'auto',
 };
 
 const checkboxCellStyle = {
-  padding: '4px',
+  padding: 'clamp(3px, 1vw, 4px)', // Responsif
   textAlign: 'center',
   borderRight: '1px solid #dee2e6',
   borderBottom: '1px solid #dee2e6',
@@ -160,17 +166,18 @@ const checkboxCellStyle = {
 const buttonContainerStyle = {
   display: 'flex',
   justifyContent: 'center',
-  gap: '15px',
-  margin: '40px 20px 20px 20px', // Increased top margin for more spacing
-  paddingBottom: '20px',
+  gap: 'clamp(10px, 2vw, 15px)', // Responsif
+  margin: 'clamp(20px, 4vw, 40px) clamp(10px, 2vw, 20px) clamp(10px, 2vw, 20px)', // Responsif
+  paddingBottom: 'clamp(10px, 2vw, 20px)', // Responsif
+  flexWrap: 'wrap', // Tambah untuk responsivitas
 };
 
 const buttonStyle = {
-  padding: '12px 30px', // Increased padding for more rounded appearance
+  padding: 'clamp(8px, 1.5vw, 12px) clamp(20px, 3vw, 30px)', // Responsif
   border: 'none',
-  borderRadius: '25px', // More rounded
+  borderRadius: 'clamp(15px, 3vw, 25px)', // Responsif
   cursor: 'pointer',
-  fontSize: '12px',
+  fontSize: 'clamp(10px, 2vw, 12px)', // Responsif
   fontWeight: 'bold',
 };
 
@@ -330,6 +337,82 @@ const RekamanAsesmen = () => {
 
   return (
     <div style={pageContainerStyle}>
+      <style>
+        {`
+          @media (max-width: 768px) {
+            .grid-container {
+              grid-template-columns: 1fr;
+            }
+            .modal-container {
+              min-width: clamp(250px, 90vw, 400px);
+              padding: clamp(15px, 3vw, 20px);
+            }
+            .header-section-2 {
+              flex-direction: column;
+              align-items: center;
+            }
+            .logo-container-2 img {
+              width: clamp(50px, 15vw, 60px);
+              height: clamp(50px, 15vw, 60px);
+            }
+            .table-cell {
+              display: block;
+              width: 100%;
+              border-right: none;
+              border-bottom: 1px solid #dee2e6;
+            }
+            .input-cell {
+              border-right: none;
+            }
+            .checkbox-table th {
+              font-size: clamp(7px, 1.5vw, 8px);
+              padding: clamp(3px, 1vw, 5px);
+            }
+            .checkbox-table td {
+              padding: clamp(2px, 0.8vw, 3px);
+            }
+          }
+          @media (max-width: 480px) {
+            .header-section-2 {
+              gap: clamp(5px, 1vw, 10px);
+            }
+            .button-container {
+              flex-direction: column;
+              align-items: center;
+            }
+            .modal-container {
+              min-width: clamp(200px, 90vw, 300px);
+              padding: clamp(10px, 2vw, 15px);
+            }
+            .modal-icon {
+              width: clamp(30px, 10vw, 40px);
+              height: clamp(30px, 10vw, 40px);
+            }
+            .modal-title {
+              font-size: clamp(14px, 3vw, 16px);
+            }
+            .modal-description {
+              font-size: clamp(10px, 2vw, 12px);
+            }
+            .modal-button {
+              padding: clamp(6px, 1.5vw, 8px) clamp(15px, 3vw, 20px);
+              font-size: clamp(10px, 2vw, 12px);
+            }
+            .modal-close-button {
+              width: clamp(18px, 5vw, 20px);
+              height: clamp(18px, 5vw, 20px);
+              font-size: clamp(10px, 2vw, 12px);
+            }
+            .table-cell {
+              font-size: clamp(8px, 1.8vw, 9px);
+            }
+            .input-field {
+              font-size: clamp(8px, 1.8vw, 9px);
+            }
+          }
+        `}
+      </style>
+
       {/* Header Section from CeklisObservasi (IA-01.CL) */}
       <div style={headerSectionStyle}>
         <div style={logoContainerStyle}>
@@ -341,18 +424,18 @@ const RekamanAsesmen = () => {
 
       {/* Content Card with Orange Line and LSP Logo */}
       <div style={contentCardStyle}>
-        <div style={headerSectionStyle2}>
-          <div style={logoContainer2Style}>
+        <div style={headerSectionStyle2} className="header-section-2">
+          <div style={logoContainer2Style} className="logo-container-2">
             <img
               src="/src/img/image 12.png"
               alt="LSP Logo"
               style={{
-                width: '80px',
-                height: '80px',
+                width: 'clamp(60px, 15vw, 80px)', // Responsif
+                height: 'clamp(60px, 15vw, 80px)', // Responsif
                 borderRadius: '8px',
                 objectFit: 'contain',
                 backgroundColor: '#f8f9fa',
-                padding: '4px',
+                padding: 'clamp(3px, 1vw, 4px)', // Responsif
               }}
             />
           </div>
@@ -371,96 +454,103 @@ const RekamanAsesmen = () => {
         <table style={tableStyle}>
           <tbody>
             <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, width: '150px', backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...tableCellStyle, width: 'clamp(100px, 25vw, 150px)', backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: 'clamp(9px, 2vw, 11px)' }} className="table-cell">
                 Skema Sertifikasi
                 <br />
-                <span style={{ fontWeight: 'normal', fontSize: '10px' }}>(KKNI/OKUPASI/KLASTER)</span>
+                <span style={{ fontWeight: 'normal', fontSize: 'clamp(8px, 1.8vw, 10px)' }}>(KKNI/OKUPASI/KLASTER)</span>
               </td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2">
+              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2" className="input-cell">
                 <input
-                  style={{ ...inputStyle, fontSize: '10px' }}
+                  style={{ ...inputStyle, fontSize: 'clamp(8px, 1.8vw, 10px)' }} // Responsif
                   type="text"
                   value={formData.judulUnit || ''}
                   onChange={(e) => handleInputChange('judulUnit', e.target.value)}
                   placeholder="JUDUL UNIT"
+                  className="input-field"
                 />
               </td>
             </tr>
             <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: 'clamp(9px, 2vw, 11px)' }} className="table-cell">
               </td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2">
+              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2" className="input-cell">
                 <input
-                  style={{ ...inputStyle, fontSize: '10px' }}
+                  style={{ ...inputStyle, fontSize: 'clamp(8px, 1.8vw, 10px)' }} // Responsif
                   type="text"
                   value={formData.kodeUnit || ''}
                   onChange={(e) => handleInputChange('kodeUnit', e.target.value)}
                   placeholder="KODE UNIT"
+                  className="input-field"
                 />
               </td>
             </tr>
             <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: 'clamp(9px, 2vw, 11px)' }} className="table-cell">
                 TUK
               </td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2">
+              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2" className="input-cell">
                 <input
-                  style={{ ...inputStyle, fontSize: '10px' }}
+                  style={{ ...inputStyle, fontSize: 'clamp(8px, 1.8vw, 10px)' }} // Responsif
                   type="text"
                   value={formData.tuk || ''}
                   onChange={(e) => handleInputChange('tuk', e.target.value)}
+                  className="input-field"
                 />
               </td>
             </tr>
             <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: 'clamp(9px, 2vw, 11px)' }} className="table-cell">
                 Nama Asesor
               </td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2">
+              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2" className="input-cell">
                 <input
-                  style={{ ...inputStyle, fontSize: '10px' }}
+                  style={{ ...inputStyle, fontSize: 'clamp(8px, 1.8vw, 10px)' }} // Responsif
                   type="text"
                   value={formData.namaAsesor || ''}
                   onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
+                  className="input-field"
                 />
               </td>
             </tr>
             <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: 'clamp(9px, 2vw, 11px)' }} className="table-cell">
                 Nama Asesi
               </td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2">
+              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2" className="input-cell">
                 <input
-                  style={{ ...inputStyle, fontSize: '10px' }}
+                  style={{ ...inputStyle, fontSize: 'clamp(8px, 1.8vw, 10px)' }} // Responsif
                   type="text"
                   value={formData.namaAsesi || ''}
                   onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
+                  className="input-field"
                 />
               </td>
             </tr>
             <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: 'clamp(9px, 2vw, 11px)' }} className="table-cell">
                 Tanggal
               </td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2">
+              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2" className="input-cell">
                 <input
-                  style={{ ...inputStyle, fontSize: '10px' }}
+                  style={{ ...inputStyle, fontSize: 'clamp(8px, 1.8vw, 10px)' }} // Responsif
                   type="date"
                   value={formData.tanggal || ''}
                   onChange={(e) => handleInputChange('tanggal', e.target.value)}
+                  className="input-field"
                 />
               </td>
             </tr>
             <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: 'clamp(9px, 2vw, 11px)' }} className="table-cell">
                 Waktu
               </td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2">
+              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2" className="input-cell">
                 <input
-                  style={{ ...inputStyle, fontSize: '10px' }}
+                  style={{ ...inputStyle, fontSize: 'clamp(8px, 1.8vw, 10px)' }} // Responsif
                   type="time"
                   value={formData.waktu || ''}
                   onChange={(e) => handleInputChange('waktu', e.target.value)}
+                  className="input-field"
                 />
               </td>
             </tr>
@@ -468,7 +558,7 @@ const RekamanAsesmen = () => {
         </table>
 
         {/* Grid untuk 4 section dalam layout 2x2 */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(0px, 2vw, 10px)' }} className="grid-container">
           {renderCheckboxSection(1)}
           {renderCheckboxSection(2)}
           {renderCheckboxSection(3)}
@@ -476,7 +566,7 @@ const RekamanAsesmen = () => {
         </div>
 
         {/* Button Container with More Spacing and Rounded Buttons */}
-        <div style={buttonContainerStyle}>
+        <div style={buttonContainerStyle} className="button-container">
           <button style={approveButtonStyle} onClick={handleApprove}>
             APPROVE
           </button>
@@ -491,23 +581,23 @@ const RekamanAsesmen = () => {
         <div style={modalOverlayStyle}>
           <div style={{
             backgroundColor: 'white',
-            borderRadius: '16px',
-            padding: '30px 40px',
-            minWidth: '500px',
+            borderRadius: 'clamp(10px, 2vw, 16px)', // Responsif
+            padding: 'clamp(15px, 3vw, 30px) clamp(20px, 4vw, 40px)', // Responsif
+            minWidth: 'clamp(300px, 80vw, 500px)', // Responsif
             boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
             position: 'relative'
-          }}>
+          }} className="modal-container">
             {/* Header dengan Icon dan Close Button */}
             <div style={{
               display: 'flex',
               alignItems: 'flex-start',
               justifyContent: 'space-between',
-              marginBottom: '25px'
+              marginBottom: 'clamp(15px, 3vw, 25px)', // Responsif
             }}>
               {/* Icon clipboard biru dengan checkmark di kiri */}
               <div style={{
-                width: '50px',
-                height: '50px',
+                width: 'clamp(40px, 10vw, 50px)', // Responsif
+                height: 'clamp(40px, 10vw, 50px)', // Responsif
                 backgroundColor: '#4A90E2',
                 borderRadius: '6px',
                 display: 'flex',
@@ -515,11 +605,11 @@ const RekamanAsesmen = () => {
                 justifyContent: 'center',
                 flexShrink: 0,
                 position: 'relative'
-              }}>
+              }} className="modal-icon">
                 {/* Clipboard shape */}
                 <div style={{
-                  width: '36px',
-                  height: '40px',
+                  width: 'clamp(28px, 7vw, 36px)', // Responsif
+                  height: 'clamp(32px, 8vw, 40px)', // Responsif
                   backgroundColor: 'white',
                   borderRadius: '3px',
                   position: 'relative',
@@ -531,14 +621,14 @@ const RekamanAsesmen = () => {
                   <div style={{
                     position: 'absolute',
                     top: '-3px',
-                    width: '16px',
+                    width: 'clamp(12px, 3vw, 16px)', // Responsif
                     height: '6px',
                     backgroundColor: '#4A90E2',
                     borderRadius: '3px 3px 0 0'
                   }}></div>
 
                   {/* Checkmark */}
-                  <Check size={18} color="#4A90E2" strokeWidth={4} />
+                  <Check size={clamp(14, 3, 18)} color="#4A90E2" strokeWidth={4} />
                 </div>
               </div>
 
@@ -546,24 +636,24 @@ const RekamanAsesmen = () => {
               <div style={{
                 flex: 1,
                 textAlign: 'center',
-                paddingTop: '5px'
+                paddingTop: 'clamp(3px, 1vw, 5px)', // Responsif
               }}>
                 <h3 style={{
-                  fontSize: '22px',
+                  fontSize: 'clamp(16px, 3vw, 22px)', // Responsif
                   fontWeight: '600',
                   color: '#333',
                   marginBottom: '4px',
                   lineHeight: '1.2'
-                }}>
+                }} className="modal-title">
                   Anda menyetujui
                 </h3>
                 <h3 style={{
-                  fontSize: '22px',
+                  fontSize: 'clamp(16px, 3vw, 22px)', // Responsif
                   fontWeight: '600',
                   color: '#333',
                   margin: '0',
                   lineHeight: '1.2'
-                }}>
+                }} className="modal-title">
                   rekaman Asesmen ini
                 </h3>
               </div>
@@ -571,8 +661,8 @@ const RekamanAsesmen = () => {
               {/* Close button di kanan */}
               <button
                 style={{
-                  width: '24px',
-                  height: '24px',
+                  width: 'clamp(20px, 5vw, 24px)', // Responsif
+                  height: 'clamp(20px, 5vw, 24px)', // Responsif
                   borderRadius: '50%',
                   backgroundColor: '#f0f0f0',
                   border: 'none',
@@ -580,11 +670,12 @@ const RekamanAsesmen = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '14px',
+                  fontSize: 'clamp(12px, 2vw, 14px)', // Responsif
                   color: '#666',
                   flexShrink: 0
                 }}
                 onClick={() => setShowModal(false)}
+                className="modal-close-button"
               >
                 ×
               </button>
@@ -595,18 +686,18 @@ const RekamanAsesmen = () => {
               width: '100%',
               height: '1px',
               backgroundColor: '#e0e0e0',
-              margin: '20px 0'
+              margin: 'clamp(15px, 3vw, 20px) 0', // Responsif
             }}></div>
 
             {/* Description */}
             <p style={{
-              fontSize: '14px',
+              fontSize: 'clamp(12px, 2vw, 14px)', // Responsif
               color: '#666',
-              marginBottom: '25px',
+              marginBottom: 'clamp(15px, 3vw, 25px)', // Responsif
               lineHeight: '1.5',
               fontStyle: 'italic',
               textAlign: 'center'
-            }}>
+            }} className="modal-description">
               Anda menyetujui dokumen sertifikat asesi ini dengan penilaian yang sebenar-benarnya
             </p>
 
@@ -614,19 +705,20 @@ const RekamanAsesmen = () => {
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
                 style={{
-                  padding: '10px 30px',
+                  padding: 'clamp(8px, 1.5vw, 10px) clamp(20px, 3vw, 30px)', // Responsif
                   backgroundColor: '#4A90E2',
                   color: 'white',
                   border: 'none',
-                  borderRadius: '20px',
+                  borderRadius: 'clamp(15px, 3vw, 20px)', // Responsif
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: 'clamp(12px, 2vw, 14px)', // Responsif
                   fontWeight: '600',
                   transition: 'all 0.2s ease'
                 }}
                 onClick={handleModalOke}
                 onMouseOver={(e) => e.target.style.backgroundColor = '#357ABD'}
                 onMouseOut={(e) => e.target.style.backgroundColor = '#4A90E2'}
+                className="modal-button"
               >
                 Oke
               </button>
@@ -640,33 +732,33 @@ const RekamanAsesmen = () => {
         <div style={modalOverlayStyle}>
           <div style={{
             backgroundColor: 'white',
-            borderRadius: '16px',
-            padding: '30px 40px',
-            minWidth: '500px',
+            borderRadius: 'clamp(10px, 2vw, 16px)', // Responsif
+            padding: 'clamp(15px, 3vw, 30px) clamp(20px, 4vw, 40px)', // Responsif
+            minWidth: 'clamp(300px, 80vw, 500px)', // Responsif
             boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
             position: 'relative'
-          }}>
+          }} className="modal-container">
             {/* Header dengan Icon dan Close Button */}
             <div style={{
               display: 'flex',
               alignItems: 'flex-start',
               justifyContent: 'space-between',
-              marginBottom: '25px'
+              marginBottom: 'clamp(15px, 3vw, 25px)', // Responsif
             }}>
               {/* Icon document dengan X orange di kiri */}
               <div style={{
-                width: '50px',
-                height: '50px',
+                width: 'clamp(40px, 10vw, 50px)', // Responsif
+                height: 'clamp(40px, 10vw, 50px)', // Responsif
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0,
                 position: 'relative'
-              }}>
+              }} className="modal-icon">
                 {/* Document outline */}
                 <div style={{
-                  width: '36px',
-                  height: '42px',
+                  width: 'clamp(28px, 7vw, 36px)', // Responsif
+                  height: 'clamp(34px, 8vw, 42px)', // Responsif
                   border: '2px solid #FF8C00',
                   borderRadius: '2px',
                   backgroundColor: 'white',
@@ -714,14 +806,14 @@ const RekamanAsesmen = () => {
                   position: 'absolute',
                   bottom: '2px',
                   right: '2px',
-                  width: '18px',
-                  height: '18px',
+                  width: 'clamp(14px, 4vw, 18px)', // Responsif
+                  height: 'clamp(14px, 4vw, 18px)', // Responsif
                   backgroundColor: '#FF8C00',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '12px',
+                  fontSize: 'clamp(10px, 2vw, 12px)', // Responsif
                   color: 'white',
                   fontWeight: 'bold',
                   border: '2px solid white',
@@ -735,24 +827,24 @@ const RekamanAsesmen = () => {
               <div style={{
                 flex: 1,
                 textAlign: 'center',
-                paddingTop: '5px'
+                paddingTop: 'clamp(3px, 1vw, 5px)', // Responsif
               }}>
                 <h3 style={{
-                  fontSize: '22px',
+                  fontSize: 'clamp(16px, 3vw, 22px)', // Responsif
                   fontWeight: '600',
                   color: '#333',
                   marginBottom: '4px',
                   lineHeight: '1.2'
-                }}>
+                }} className="modal-title">
                   Anda menolak
                 </h3>
                 <h3 style={{
-                  fontSize: '22px',
+                  fontSize: 'clamp(16px, 3vw, 22px)', // Responsif
                   fontWeight: '600',
                   color: '#333',
                   margin: '0',
                   lineHeight: '1.2'
-                }}>
+                }} className="modal-title">
                   rekaman Asesmen ini
                 </h3>
               </div>
@@ -760,8 +852,8 @@ const RekamanAsesmen = () => {
               {/* Close button di kanan */}
               <button
                 style={{
-                  width: '24px',
-                  height: '24px',
+                  width: 'clamp(20px, 5vw, 24px)', // Responsif
+                  height: 'clamp(20px, 5vw, 24px)', // Responsif
                   borderRadius: '50%',
                   backgroundColor: '#f0f0f0',
                   border: 'none',
@@ -769,11 +861,12 @@ const RekamanAsesmen = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '14px',
+                  fontSize: 'clamp(12px, 2vw, 14px)', // Responsif
                   color: '#666',
                   flexShrink: 0
                 }}
                 onClick={() => setShowRejectModal(false)}
+                className="modal-close-button"
               >
                 ×
               </button>
@@ -784,18 +877,18 @@ const RekamanAsesmen = () => {
               width: '100%',
               height: '1px',
               backgroundColor: '#e0e0e0',
-              margin: '20px 0'
+              margin: 'clamp(15px, 3vw, 20px) 0', // Responsif
             }}></div>
 
             {/* Description */}
             <p style={{
-              fontSize: '14px',
+              fontSize: 'clamp(12px, 2vw, 14px)', // Responsif
               color: '#666',
-              marginBottom: '25px',
+              marginBottom: 'clamp(15px, 3vw, 25px)', // Responsif
               lineHeight: '1.5',
               fontStyle: 'italic',
               textAlign: 'center'
-            }}>
+            }} className="modal-description">
               Dokumen ini ditolak karena dokumen dan keaslian data tidak valid.
             </p>
 
@@ -803,19 +896,20 @@ const RekamanAsesmen = () => {
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
                 style={{
-                  padding: '10px 30px',
+                  padding: 'clamp(8px, 1.5vw, 10px) clamp(20px, 3vw, 30px)', // Responsif
                   backgroundColor: '#FF8C00',
                   color: 'white',
                   border: 'none',
-                  borderRadius: '20px',
+                  borderRadius: 'clamp(15px, 3vw, 20px)', // Responsif
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: 'clamp(12px, 2vw, 14px)', // Responsif
                   fontWeight: '600',
                   transition: 'all 0.2s ease'
                 }}
                 onClick={handleRejectModalOke}
                 onMouseOver={(e) => e.target.style.backgroundColor = '#E67A00'}
                 onMouseOut={(e) => e.target.style.backgroundColor = '#FF8C00'}
+                className="modal-button"
               >
                 Oke
               </button>
