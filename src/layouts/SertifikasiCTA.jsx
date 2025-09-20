@@ -9,7 +9,7 @@ function SertifikasiCTA({
   return (
     <div style={{ padding: "60px 40px", textAlign: "center" }}>
       <h2 style={{ fontSize: "36px", color: "#333", marginBottom: "20px" }}>
-        Lembaga Sertifikasi Profesi
+        ALTERNATIF NAVIGASI KE SEMUA DASHBOARD
       </h2>
       <p
         style={{
@@ -19,8 +19,8 @@ function SertifikasiCTA({
           margin: "0 auto 30px auto",
         }}
       >
-        Kami berkomitmen untuk memberikan sertifikasi kompetensi profesional
-        yang berkualitas tinggi.
+        {/* Kami berkomitmen untuk memberikan sertifikasi kompetensi profesional
+        yang berkualitas tinggi. */}
       </p>
 
       <button

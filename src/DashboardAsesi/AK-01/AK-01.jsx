@@ -260,6 +260,17 @@ const sectionTextStyle = {
   marginBottom: '6px',
 };
 
+// Style for date input
+const dateInputStyle = {
+  flex: 1, 
+  fontSize: '11px', 
+  padding: '4px 6px', 
+  border: '1px solid #ddd', 
+  borderRadius: '3px',
+  fontFamily: 'Arial, sans-serif',
+  cursor: 'pointer'
+};
+
 const AK01 = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -590,11 +601,11 @@ const AK01 = () => {
                 </div>
                 <div style={{flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
                   <div style={{display: 'flex', alignItems: 'center', marginBottom: '5px'}}>
-                    <span style={{minWidth: '90px', fontSize: '12px'}}>Hari/Tanggal</span>
+                    <span style={{minWidth: '90px', fontSize: '12px'}}>Tanggal</span>
                     <span style={{margin: '0 5px'}}>{' : '}</span>
                     <input
-                      type="text"
-                      style={{flex: 1, fontSize: '11px', padding: '4px 6px', border: '1px solid #ddd', borderRadius: '3px'}}
+                      type="date"
+                      style={dateInputStyle}
                       value={formData.tanggal}
                       onChange={(e) => handleInputChange('tanggal', e.target.value)}
                     />
@@ -607,6 +618,7 @@ const AK01 = () => {
                       style={{flex: 1, fontSize: '11px', padding: '4px 6px', border: '1px solid #ddd', borderRadius: '3px'}}
                       value={formData.waktu}
                       onChange={(e) => handleInputChange('waktu', e.target.value)}
+                      placeholder="Contoh: 09:00 - 12:00 WIB"
                     />
                   </div>
                   <div style={{display: 'flex', alignItems: 'center'}}>
