@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Check } from 'lucide-react';
 
 // Header styles from IA-01.CL
 const headerSectionStyle = {
@@ -29,41 +30,23 @@ const logoTextStyle = {
   letterSpacing: '1px',
 };
 
-// Subheader styles
-const subHeaderStyle = {
+// Name box style
+const nameBoxStyle = {
   display: 'flex',
+  justifyContent: 'center',
   alignItems: 'center',
   padding: '15px 20px',
   backgroundColor: 'white',
+  margin: '0 20px',
+  border: '1px solid #dee2e6',
+  borderRadius: '8px',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
 };
 
-const logoLspStyle = {
-  width: '50px',
-  height: '50px',
-  marginRight: '15px',
-};
-
-const titleStyle = {
+const nameStyle = {
   fontSize: '16px',
   fontWeight: 'bold',
   color: '#333',
-  margin: '0',
-  flexGrow: 1,
-  textAlign: 'center',
-};
-
-const codeStyle = {
-  fontSize: '14px',
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: '5px',
-};
-
-// Orange line style
-const orangeLineStyle = {
-  width: '100%',
-  height: '3px',
-  backgroundColor: '#FF8C00',
   margin: '0',
 };
 
@@ -158,16 +141,7 @@ const checkboxCellStyle = {
   textAlign: 'center',
   borderRight: '1px solid #dee2e6',
   borderBottom: '1px solid #dee2e6',
-  width: '40px',
-};
-
-const detailCellStyle = {
-  padding: '6px 8px',
-  fontSize: '8px',
-  color: '#666',
-  borderRight: '1px solid #dee2e6',
-  borderBottom: '1px solid #dee2e6',
-  lineHeight: '1.2',
+  width: 'auto',
 };
 
 const buttonContainerStyle = {
@@ -201,65 +175,18 @@ const rejectButtonStyle = {
   border: '1px solid #ddd',
 };
 
-// Modal styles
+// Modal styles from AK-01
 const modalOverlayStyle = {
   position: 'fixed',
   top: 0,
   left: 0,
   right: 0,
   bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  backgroundColor: 'rgba(0,0,0,0.5)',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  zIndex: '1000',
-};
-
-const modalContentStyle = {
-  backgroundColor: 'white',
-  borderRadius: '12px',
-  padding: '30px',
-  textAlign: 'center',
-  maxWidth: '400px',
-  width: '90%',
-  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-};
-
-const modalIconStyle = {
-  fontSize: '48px',
-  marginBottom: '20px',
-  display: 'block',
-};
-
-const modalTitleStyle = {
-  fontSize: '18px',
-  fontWeight: 'bold',
-  margin: '0 0 10px 0',
-  color: '#333',
-};
-
-const modalSubtitleStyle = {
-  fontSize: '16px',
-  fontWeight: 'bold',
-  margin: '0 0 15px 0',
-  color: '#333',
-};
-
-const modalDescriptionStyle = {
-  fontSize: '14px',
-  color: '#666',
-  margin: '0 0 25px 0',
-  lineHeight: '1.4',
-};
-
-const modalButtonStyle = {
-  padding: '10px 30px',
-  border: 'none',
-  borderRadius: '25px',
-  cursor: 'pointer',
-  fontSize: '14px',
-  fontWeight: 'bold',
-  color: 'white',
+  zIndex: 1000,
 };
 
 const RekamanAsesmen = () => {
@@ -275,7 +202,7 @@ const RekamanAsesmen = () => {
   });
 
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(''); // 'approve' or 'reject'
+  const [showRejectModal, setShowRejectModal] = useState(false);
 
   const handleCheckboxChange = (section, item) => {
     setFormData((prev) => ({
@@ -295,23 +222,24 @@ const RekamanAsesmen = () => {
   };
 
   const handleApprove = () => {
-    setModalType('approve');
     setShowModal(true);
   };
 
   const handleReject = () => {
-    setModalType('reject');
-    setShowModal(true);
+    setShowRejectModal(true);
   };
 
-  const handleModalOk = () => {
+  const handleModalOke = () => {
     setShowModal(false);
     setTimeout(() => {
-      if (modalType === 'approve') {
-        window.location.href = '/dashboard-asesor/laporan-asesmen/0893923923';
-      } else if (modalType === 'reject') {
-        window.location.href = '/dashboard-asesor/approved-unapproved/08939239239';
-      }
+      window.location.href = '/dashboard-asesor/laporan-asesmen/0893923923';
+    }, 100);
+  };
+
+  const handleRejectModalOke = () => {
+    setShowRejectModal(false);
+    setTimeout(() => {
+      window.location.href = '/dashboard-asesor/approved-unapproved/08939239239';
     }, 100);
   };
 
@@ -321,13 +249,13 @@ const RekamanAsesmen = () => {
       <table style={checkboxTableStyle}>
         <thead>
           <tr>
-            <th style={{ ...checkboxHeaderStyle, width: '40px' }}>Observasi</th>
-            <th style={{ ...checkboxHeaderStyle, width: '40px' }}>Demonstrasi</th>
-            <th style={{ ...checkboxHeaderStyle, width: '40px' }}>Portofolio</th>
-            <th style={{ ...checkboxHeaderStyle, width: '60px' }}>Pertanyaan Lisan</th>
-            <th style={{ ...checkboxHeaderStyle, width: '40px' }}>Proyek Kerja</th>
-            <th style={{ ...checkboxHeaderStyle, width: '60px' }}>Pertanyaan Tertulis</th>
-            <th style={{ ...checkboxHeaderStyle, width: '80px' }}>Lainnya</th>
+            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Observasi Demonstrasi</th>
+            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Pertanyaan Tertulis</th>
+            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Portofolio</th>
+            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Proyek Kerja</th>
+            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Pernyataan Pihak Ketiga Pertanyaan Wawancara</th>
+            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Pertanyaan Lisan</th>
+            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Lainnya</th>
           </tr>
         </thead>
         <tbody>
@@ -356,13 +284,6 @@ const RekamanAsesmen = () => {
             <td style={checkboxCellStyle}>
               <input
                 type="checkbox"
-                checked={formData.checkboxes[`section${sectionNum}_pertanyaan_lisan`] || false}
-                onChange={() => handleCheckboxChange(`section${sectionNum}`, 'pertanyaan_lisan')}
-              />
-            </td>
-            <td style={checkboxCellStyle}>
-              <input
-                type="checkbox"
                 checked={formData.checkboxes[`section${sectionNum}_proyek`] || false}
                 onChange={() => handleCheckboxChange(`section${sectionNum}`, 'proyek')}
               />
@@ -377,28 +298,16 @@ const RekamanAsesmen = () => {
             <td style={checkboxCellStyle}>
               <input
                 type="checkbox"
+                checked={formData.checkboxes[`section${sectionNum}_pertanyaan_lisan`] || false}
+                onChange={() => handleCheckboxChange(`section${sectionNum}`, 'pertanyaan_lisan')}
+              />
+            </td>
+            <td style={checkboxCellStyle}>
+              <input
+                type="checkbox"
                 checked={formData.checkboxes[`section${sectionNum}_lainnya`] || false}
                 onChange={() => handleCheckboxChange(`section${sectionNum}`, 'lainnya')}
               />
-            </td>
-          </tr>
-          <tr>
-            <td style={detailCellStyle} colSpan="3">
-              <strong>Pertanyaan untuk mencakup:</strong>
-              <br />
-              Kriteria Persyaratan
-              <br />
-              Kinerja/cara
-            </td>
-            <td style={detailCellStyle} colSpan="2">
-              <strong>Persyaratan</strong>
-              <br />
-              Variabel
-            </td>
-            <td style={detailCellStyle} colSpan="2">
-              <strong>Persyaratan</strong>
-              <br />
-              Lingkungan
             </td>
           </tr>
         </tbody>
@@ -417,21 +326,10 @@ const RekamanAsesmen = () => {
         </div>
       </div>
 
-      {/* Subheader with Logo and Text */}
-      <div style={subHeaderStyle}>
-        <img
-          src="/src/img/image 12.png" // Ganti dengan path logo LSP yang sesuai
-          alt="LSP Logo"
-          style={logoLspStyle}
-        />
-        <div style={titleStyle}>
-          <div style={codeStyle}>FR.AK.02</div>
-          REKAMAN ASESMEN
-        </div>
+      {/* Name Box */}
+      <div style={nameBoxStyle}>
+        <div style={nameStyle}>AFDHAL EZHAR RAHMA PANGESTU</div>
       </div>
-
-      {/* Orange Line */}
-      <div style={orangeLineStyle}></div>
 
       {/* Konten Utama */}
       <div style={contentContainerStyle}>
@@ -447,7 +345,7 @@ const RekamanAsesmen = () => {
               <td style={{ ...tableCellStyle, width: '150px', backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
                 Skema Sertifikasi
                 <br />
-                <span style={{ fontWeight: 'normal', fontSize: '10px' }}>(JUNIOR WEB DEVELOPER)</span>
+                <span style={{ fontWeight: 'normal', fontSize: '10px' }}>(KKNI/OKUPASI/KLASTER)</span>
               </td>
               <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2">
                 <input
@@ -487,19 +385,6 @@ const RekamanAsesmen = () => {
             </tr>
             <tr style={tableRowStyle}>
               <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
-                Nama Asesi
-              </td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2">
-                <input
-                  style={{ ...inputStyle, fontSize: '10px' }}
-                  type="text"
-                  value={formData.namaAsesi || ''}
-                  onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
-                />
-              </td>
-            </tr>
-            <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
                 Nama Asesor
               </td>
               <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2">
@@ -508,6 +393,19 @@ const RekamanAsesmen = () => {
                   type="text"
                   value={formData.namaAsesor || ''}
                   onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
+                />
+              </td>
+            </tr>
+            <tr style={tableRowStyle}>
+              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+                Nama Asesi
+              </td>
+              <td style={{ ...inputCellStyle, backgroundColor: 'white' }} colSpan="2">
+                <input
+                  style={{ ...inputStyle, fontSize: '10px' }}
+                  type="text"
+                  value={formData.namaAsesi || ''}
+                  onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
                 />
               </td>
             </tr>
@@ -559,35 +457,340 @@ const RekamanAsesmen = () => {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Modal Notifikasi Approve - dari AK-01 */}
       {showModal && (
         <div style={modalOverlayStyle}>
-          <div style={modalContentStyle}>
-            {modalType === 'approve' ? (
-              <>
-                <span style={{ ...modalIconStyle, color: '#4CAF50' }}>✓</span>
-                <h3 style={modalTitleStyle}>Anda menyetujui</h3>
-                <h3 style={modalSubtitleStyle}>rekaman Asesmen ini</h3>
-                <p style={modalDescriptionStyle}>
-                  Anda menyetujui dokumen sertifikasi asesi ini dengan penilaian yang sebenar-benarnya
-                </p>
-                <button style={{ ...modalButtonStyle, backgroundColor: '#2196F3' }} onClick={handleModalOk}>
-                  Oke
-                </button>
-              </>
-            ) : (
-              <>
-                <span style={{ ...modalIconStyle, color: '#FF9800' }}>📋</span>
-                <h3 style={modalTitleStyle}>Anda menolak</h3>
-                <h3 style={modalSubtitleStyle}>rekaman Asesmen ini</h3>
-                <p style={modalDescriptionStyle}>
-                  Dokumen ini ditolak karena dokumen dan kesesaian data tidak valid.
-                </p>
-                <button style={{ ...modalButtonStyle, backgroundColor: '#FF9500' }} onClick={handleModalOk}>
-                  Oke
-                </button>
-              </>
-            )}
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '30px 40px',
+            minWidth: '500px',
+            boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
+            position: 'relative'
+          }}>
+            {/* Header dengan Icon dan Close Button */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              marginBottom: '25px'
+            }}>
+              {/* Icon clipboard biru dengan checkmark di kiri */}
+              <div style={{
+                width: '50px',
+                height: '50px',
+                backgroundColor: '#4A90E2',
+                borderRadius: '6px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                position: 'relative'
+              }}>
+                {/* Clipboard shape */}
+                <div style={{
+                  width: '36px',
+                  height: '40px',
+                  backgroundColor: 'white',
+                  borderRadius: '3px',
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  {/* Top clip part */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '-3px',
+                    width: '16px',
+                    height: '6px',
+                    backgroundColor: '#4A90E2',
+                    borderRadius: '3px 3px 0 0'
+                  }}></div>
+
+                  {/* Checkmark */}
+                  <Check size={18} color="#4A90E2" strokeWidth={4} />
+                </div>
+              </div>
+
+              {/* Title di tengah - sejajar dengan icon */}
+              <div style={{
+                flex: 1,
+                textAlign: 'center',
+                paddingTop: '5px'
+              }}>
+                <h3 style={{
+                  fontSize: '22px',
+                  fontWeight: '600',
+                  color: '#333',
+                  marginBottom: '4px',
+                  lineHeight: '1.2'
+                }}>
+                  Anda menyetujui
+                </h3>
+                <h3 style={{
+                  fontSize: '22px',
+                  fontWeight: '600',
+                  color: '#333',
+                  margin: '0',
+                  lineHeight: '1.2'
+                }}>
+                  rekaman Asesmen ini
+                </h3>
+              </div>
+
+              {/* Close button di kanan */}
+              <button
+                style={{
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  backgroundColor: '#f0f0f0',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '14px',
+                  color: '#666',
+                  flexShrink: 0
+                }}
+                onClick={() => setShowModal(false)}
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Separator line */}
+            <div style={{
+              width: '100%',
+              height: '1px',
+              backgroundColor: '#e0e0e0',
+              margin: '20px 0'
+            }}></div>
+
+            {/* Description */}
+            <p style={{
+              fontSize: '14px',
+              color: '#666',
+              marginBottom: '25px',
+              lineHeight: '1.5',
+              fontStyle: 'italic',
+              textAlign: 'center'
+            }}>
+              Anda menyetujui dokumen sertifikat asesi ini dengan penilaian yang sebenar-benarnya
+            </p>
+
+            {/* Button di kanan */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                style={{
+                  padding: '10px 30px',
+                  backgroundColor: '#4A90E2',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '20px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  transition: 'all 0.2s ease'
+                }}
+                onClick={handleModalOke}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#357ABD'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#4A90E2'}
+              >
+                Oke
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Notifikasi Reject - dari AK-01 */}
+      {showRejectModal && (
+        <div style={modalOverlayStyle}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '30px 40px',
+            minWidth: '500px',
+            boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
+            position: 'relative'
+          }}>
+            {/* Header dengan Icon dan Close Button */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              marginBottom: '25px'
+            }}>
+              {/* Icon document dengan X orange di kiri */}
+              <div style={{
+                width: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                position: 'relative'
+              }}>
+                {/* Document outline */}
+                <div style={{
+                  width: '36px',
+                  height: '42px',
+                  border: '2px solid #FF8C00',
+                  borderRadius: '2px',
+                  backgroundColor: 'white',
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '4px'
+                }}>
+                  {/* Document lines */}
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px',
+                    marginTop: '2px'
+                  }}>
+                    <div style={{
+                      height: '2px',
+                      backgroundColor: '#FF8C00',
+                      width: '100%',
+                      borderRadius: '1px'
+                    }}></div>
+                    <div style={{
+                      height: '2px',
+                      backgroundColor: '#FF8C00',
+                      width: '100%',
+                      borderRadius: '1px'
+                    }}></div>
+                    <div style={{
+                      height: '2px',
+                      backgroundColor: '#FF8C00',
+                      width: '80%',
+                      borderRadius: '1px'
+                    }}></div>
+                    <div style={{
+                      height: '2px',
+                      backgroundColor: '#FF8C00',
+                      width: '90%',
+                      borderRadius: '1px'
+                    }}></div>
+                  </div>
+                </div>
+
+                {/* X mark di pojok kanan bawah */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '2px',
+                  right: '2px',
+                  width: '18px',
+                  height: '18px',
+                  backgroundColor: '#FF8C00',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '12px',
+                  color: 'white',
+                  fontWeight: 'bold',
+                  border: '2px solid white',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                }}>
+                  ✗
+                </div>
+              </div>
+
+              {/* Title di tengah - sejajar dengan icon */}
+              <div style={{
+                flex: 1,
+                textAlign: 'center',
+                paddingTop: '5px'
+              }}>
+                <h3 style={{
+                  fontSize: '22px',
+                  fontWeight: '600',
+                  color: '#333',
+                  marginBottom: '4px',
+                  lineHeight: '1.2'
+                }}>
+                  Anda menolak
+                </h3>
+                <h3 style={{
+                  fontSize: '22px',
+                  fontWeight: '600',
+                  color: '#333',
+                  margin: '0',
+                  lineHeight: '1.2'
+                }}>
+                  rekaman Asesmen ini
+                </h3>
+              </div>
+
+              {/* Close button di kanan */}
+              <button
+                style={{
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  backgroundColor: '#f0f0f0',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '14px',
+                  color: '#666',
+                  flexShrink: 0
+                }}
+                onClick={() => setShowRejectModal(false)}
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Separator line */}
+            <div style={{
+              width: '100%',
+              height: '1px',
+              backgroundColor: '#e0e0e0',
+              margin: '20px 0'
+            }}></div>
+
+            {/* Description */}
+            <p style={{
+              fontSize: '14px',
+              color: '#666',
+              marginBottom: '25px',
+              lineHeight: '1.5',
+              fontStyle: 'italic',
+              textAlign: 'center'
+            }}>
+              Dokumen ini ditolak karena dokumen dan keaslian data tidak valid.
+            </p>
+
+                        
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                style={{
+                  padding: '10px 30px',
+                  backgroundColor: '#FF8C00',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '20px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  transition: 'all 0.2s ease'
+                }}
+                onClick={handleRejectModalOke}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#E67A00'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#FF8C00'}
+              >
+                Oke
+              </button>
+            </div>
           </div>
         </div>
       )}

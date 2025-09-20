@@ -107,8 +107,6 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
-
-
       </div>
 
       {/* Page Title */}
@@ -172,7 +170,7 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
             >
               {jurusan.id === 1 && (
                 <img
-                  src="src/img/jurusan1.png"
+                  src="/src/img/jurusanrpl.jpg"
                   alt={jurusan.title}
                   style={{
                     width: "100%",
@@ -199,7 +197,7 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
               )}
               {jurusan.id === 2 && (
                 <img
-                  src="src/img/jurusan2.png"
+                  src="/src/img/jurusanhotel.jpg"
                   alt={jurusan.title}
                   style={{
                     width: "100%",
@@ -226,7 +224,7 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
               )}
               {jurusan.id === 3 && (
                 <img
-                  src="src/img/jurusan3.png"
+                  src="/src/img/tataboga.jpg"
                   alt={jurusan.title}
                   style={{
                     width: "100%",
@@ -253,7 +251,7 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
               )}
               {jurusan.id === 4 && (
                 <img
-                  src="src/img/jurusan4.png"
+                  src="/src/img/tatabusana.jpg"
                   alt={jurusan.title}
                   style={{
                     width: "100%",
@@ -418,7 +416,7 @@ export default function ApprovementApl02({ onBack, onNavigate }) {
             }}
           >
             <img
-              src="src/img/jurusan5.png"
+              src="/src/img/jurusanulw.jpg"
               alt={jurusanData[4].title}
               style={{
                 width: "100%",

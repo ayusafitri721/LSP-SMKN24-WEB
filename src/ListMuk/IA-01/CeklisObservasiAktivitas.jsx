@@ -150,7 +150,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         kriteria: [
           "Mengidentifikasi prosedur uji coba aplikasi sesuai dengan software development life cycle",
           "Menentukan Tools uji coba",
-          "Mengidentifikasi Standar dan format uji coba"
+          "Mengidentifikasi Standar dan kondisi uji coba"
         ],
         standar: "SKKNI",
         pencapaian: { ya: false, tidak: false },
@@ -170,14 +170,12 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
       },
       {
         no: 3,
-        elemen: "Melaksanakan prosedur uji coba",
+        elemen: "Mempersiapkan data uji",
         kriteria: [
-          "Menjalankan skenario uji coba",
-          "Mendesain prosedur uji coba dalam algoritma",
-          "Melaksanakan uji coba",
-          "Melakukan algoritma uji coba"
+          "Mengidentifikasi data uji unit test",
+          "Membangkitkan data uji unit test"
         ],
-        standar: "SKKNI",
+        standar: "",
         pencapaian: { ya: false, tidak: false },
         penilaianLanjut: ""
       },
@@ -185,28 +183,17 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         no: 4,
         elemen: "Melaksanakan prosedur uji coba",
         kriteria: [
-          "Mengidentifikasi data uji unit test",
-          "Membangkitkan data uji unit test"
+          "Mendesain skenario uji coba",
+          "Mendesain prosedur uji coba dalam algoritma",
+          "Melaksanakan uji coba",
+          
         ],
-        standar: "SKKNI",
+        standar: "",
         pencapaian: { ya: false, tidak: false },
         penilaianLanjut: ""
       },
       {
         no: 5,
-        elemen: "Melaksanakan prosedur uji coba",
-        kriteria: [
-          "Mendesain skenario uji coba",
-          "Mendesain prosedur uji coba dalam algoritma",
-          "Melaksanakan uji coba",
-          "Melaksanakan uji coba"
-        ],
-        standar: "SKKNI",
-        pencapaian: { ya: false, tidak: false },
-        penilaianLanjut: ""
-      },
-      {
-        no: 6,
         elemen: "Mengevaluasi hasil uji coba",
         kriteria: [
           "Mencatat hasil uji coba",
@@ -214,7 +201,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
           "Melaporkan prosedur uji coba",
           "Menyelesaikan kesalahan/error"
         ],
-        standar: "SKKNI",
+        standar: "",
         pencapaian: { ya: false, tidak: false },
         penilaianLanjut: ""
       }

@@ -1,5 +1,3 @@
-// src/DashboardAsesi/IA-01/IA-01.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
@@ -165,10 +163,10 @@ const contentCardStyle = {
 
 const headerSectionStyle2 = {
   display: 'flex',
-  alignItems: 'flex-start',
+  alignItems: 'center',
   gap: '20px',
   marginBottom: '20px',
-  paddingBottom: '15px',
+  paddingBottom: '10px',
   borderBottom: '2px solid #FF8C00',
 };
 
@@ -196,18 +194,12 @@ const subtitleStyle = {
   textAlign: 'center',
 };
 
-// Updated schema section styles to match AK-01
-const tableStyle = {
-  width: '100%',
-  marginBottom: '15px',
-  fontSize: '12px',
-};
-
 const instructionBoxStyle = {
   backgroundColor: '#F4D5A7',
   borderRadius: '8px',
   padding: '20px',
   marginBottom: '25px',
+  height: 'fit-content',
 };
 
 const instructionTitleStyle = {
@@ -234,7 +226,7 @@ const instructionSectionStyle = {
   display: 'grid',
   gridTemplateColumns: '1fr 300px',
   gap: '30px',
-  alignItems: 'stretch',
+  alignItems: 'flex-start',
   marginBottom: '25px',
 };
 
@@ -242,7 +234,7 @@ const mainContentStyle = {
   display: 'grid',
   gridTemplateColumns: '1fr 1fr',
   gap: '30px',
-  alignItems: 'stretch',
+  alignItems: 'flex-start',
 };
 
 const leftContentStyle = {
@@ -253,58 +245,6 @@ const leftContentStyle = {
 const rightContentStyle = {
   display: 'flex',
   flexDirection: 'column',
-};
-
-const unitSectionStyle = {
-  marginBottom: '30px',
-};
-
-const unitHeaderStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  marginBottom: '15px',
-};
-
-const unitTitleStyle = {
-  fontSize: '14px',
-  fontWeight: 'bold',
-  marginRight: '20px',
-  color: '#333',
-};
-
-const unitFieldContainerStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '15px',
-};
-
-const unitFieldStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '5px',
-};
-
-const unitFieldLabelStyle = {
-  fontSize: '12px',
-  color: '#333',
-};
-
-const unitFieldInputStyle = {
-  border: 'none',
-  borderBottom: '1px solid #ccc',
-  padding: '2px 5px',
-  fontSize: '12px',
-  backgroundColor: 'transparent',
-  outline: 'none',
-  minWidth: '100px',
-};
-
-const elementBoxStyle = {
-  border: '2px solid #333',
-  borderRadius: '8px',
-  padding: '20px',
-  marginBottom: '20px',
-  flex: 1,
 };
 
 const elementTitleStyle = {
@@ -358,6 +298,10 @@ const kelompokPekerjaanStyle = {
   border: '2px solid #333',
   borderRadius: '8px',
   padding: '20px',
+  height: 'fit-content',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-start',
 };
 
 const kelompokHeaderStyle = {
@@ -381,12 +325,11 @@ const kelompokItemStyle = {
 };
 
 const pertanyaanSectionStyle = {
-  marginTop: '30px',
   border: '2px solid #333',
   borderRadius: '8px',
   padding: '20px',
-  marginBottom: '20px', // Reduced from 300px to 20px
-  flex: 1,
+  backgroundColor: 'white',
+  height: 'fit-content',
 };
 
 const pertanyaanItemStyle = {
@@ -413,18 +356,6 @@ const tanggapanLabelStyle = {
   fontWeight: 'bold',
 };
 
-const tanggapanInputStyle = {
-  width: '100%',
-  border: '1px solid #ccc',
-  borderRadius: '4px',
-  padding: '8px',
-  fontSize: '12px',
-  minHeight: '40px',
-  resize: 'vertical',
-  fontFamily: 'Arial, sans-serif',
-  outline: 'none',
-};
-
 // Updated submit button style - smaller and positioned to the right
 const submitButtonStyle = {
   backgroundColor: '#007bff',
@@ -435,7 +366,7 @@ const submitButtonStyle = {
   fontSize: '12px',
   fontWeight: 'bold',
   cursor: 'pointer',
-  marginTop: '15px', // Reduced margin
+  marginTop: '15px',
   alignSelf: 'flex-end',
   transition: 'all 0.2s ease',
 };
@@ -444,7 +375,7 @@ const submitButtonStyle = {
 const buttonContainerStyle = {
   display: 'flex',
   justifyContent: 'flex-end',
-  marginTop: '15px', // Reduced from 30px to 15px
+  marginTop: '15px',
   width: '100%',
   paddingRight: '0',
 };
@@ -456,7 +387,11 @@ const IA01 = () => {
   const [formData, setFormData] = useState({
     judulUnit: '',
     nomorUnit: '',
+    kodeUnit: '',
+    judulUnitKompetensi: '',
   });
+  
+  const [checkedItems, setCheckedItems] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -503,6 +438,13 @@ const IA01 = () => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
+    }));
+  };
+
+  const handleCheckboxChange = (item, value) => {
+    setCheckedItems(prev => ({
+      ...prev,
+      [item]: value
     }));
   };
 
@@ -682,88 +624,201 @@ const IA01 = () => {
           </div>
         </div>
 
+        {/* Unit Kompetensi Table */}
+        <table style={{width: '100%', marginBottom: '20px', fontSize: '12px', borderCollapse: 'collapse'}}>
+          <tbody>
+            <tr>
+              <td style={{
+                padding: '10px',
+                border: '1px solid #ddd',
+                backgroundColor: '#f8f9fa',
+                fontWeight: 'bold',
+                width: '150px',
+                textAlign: 'center',
+                verticalAlign: 'middle'
+              }}>
+                Unit Kompetensi 1
+              </td>
+              <td style={{
+                padding: '10px',
+                border: '1px solid #ddd',
+                backgroundColor: 'white'
+              }}>
+                <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}}>
+                    <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Kode Unit</span>
+                    <span style={{margin: '0 8px'}}>:</span>
+                    <input
+                      type="text"
+                      style={{
+                        flex: 1,
+                        padding: '4px 8px',
+                        border: '1px solid #ddd',
+                        borderRadius: '4px',
+                        fontSize: '12px'
+                      }}
+                      value={formData.kodeUnit}
+                      onChange={(e) => handleInputChange('kodeUnit', e.target.value)}
+                      placeholder="Masukkan kode unit"
+                    />
+                  </div>
+                  <div style={{display: 'flex', alignItems: 'center'}}>
+                    <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Judul Unit</span>
+                    <span style={{margin: '0 8px'}}>:</span>
+                    <input
+                      type="text"
+                      style={{
+                        flex: 1,
+                        padding: '4px 8px',
+                        border: '1px solid #ddd',
+                        borderRadius: '4px',
+                        fontSize: '12px'
+                      }}
+                      value={formData.judulUnitKompetensi}
+                      onChange={(e) => handleInputChange('judulUnitKompetensi', e.target.value)}
+                      placeholder="Masukkan judul unit kompetensi"
+                    />
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
         <form onSubmit={handleSubmit} style={{width: '100%'}}>
           <div style={mainContentStyle}>
             <div style={leftContentStyle}>
-              <div style={unitSectionStyle}>
-                <div style={unitHeaderStyle}>
-                  <div style={unitTitleStyle}>Unit Kompetensi 1</div>
-                  <div style={unitFieldContainerStyle}>
-                    <div style={unitFieldStyle}>
-                      <div style={unitFieldLabelStyle}>Kode Unit</div>
-                      <div style={unitFieldLabelStyle}>:</div>
-                      <input type="text" style={unitFieldInputStyle} />
-                    </div>
-                    <div style={unitFieldStyle}>
-                      <div style={unitFieldLabelStyle}>Judul Unit</div>
-                      <div style={unitFieldLabelStyle}>:</div>
-                      <input type="text" style={unitFieldInputStyle} />
+              {/* Box Elemen 1 - Made compact */}
+              <div style={{
+                border: '2px solid #333',
+                borderRadius: '8px',
+                padding: '20px',
+                marginBottom: '10px'
+              }}>
+                <div style={elementTitleStyle}>Elemen 1: Mengidentifikasi konsep data dan struktur data</div>
+                <div style={elementTitleStyle}>Kriteria Untuk Kerja</div>
+                
+                <div style={criteriaListStyle}>
+                  <div style={criteriaItemStyle}>
+                    <span>• Mengidentifikasi konsep data dan struktur data sesuai dengan konteks</span>
+                    <div style={checkboxGroupStyle}>
+                      <label style={checkboxLabelStyle}>
+                        <input 
+                          type="checkbox" 
+                          style={checkboxStyle}
+                          checked={checkedItems['criteria1_ya'] || false}
+                          onChange={(e) => handleCheckboxChange('criteria1_ya', e.target.checked)}
+                        />
+                        Ya
+                      </label>
+                      <label style={checkboxLabelStyle}>
+                        <input 
+                          type="checkbox" 
+                          style={checkboxStyle}
+                          checked={checkedItems['criteria1_tidak'] || false}
+                          onChange={(e) => handleCheckboxChange('criteria1_tidak', e.target.checked)}
+                        />
+                        Tidak
+                      </label>
                     </div>
                   </div>
-                </div>
-
-                <div style={elementBoxStyle}>
-                  <div style={elementTitleStyle}>Elemen 1: Mengidentifikasi konsep data dan struktur data</div>
-                  <div style={elementTitleStyle}>Kriteria Untuk Kerja</div>
-                  
-                  <div style={criteriaListStyle}>
-                    <div style={criteriaItemStyle}>
-                      <span>• Mengidentifikasi konsep data dan struktur data sesuai dengan konteks</span>
-                      <div style={checkboxGroupStyle}>
-                        <label style={checkboxLabelStyle}>
-                          <input type="checkbox" name="criteria1_ya" style={checkboxStyle} />
-                          Ya
-                        </label>
-                        <label style={checkboxLabelStyle}>
-                          <input type="checkbox" name="criteria1_tidak" style={checkboxStyle} />
-                          Tidak
-                        </label>
-                      </div>
-                    </div>
-                    <div style={criteriaItemStyle}>
-                      <span>• Membandingkan alternatif struktur data kelebihan dan kekurangannya untuk konteks permasalahan yang diselesaikan</span>
-                      <div style={checkboxGroupStyle}>
-                        <label style={checkboxLabelStyle}>
-                          <input type="checkbox" name="criteria2_ya" style={checkboxStyle} />
-                          Ya
-                        </label>
-                        <label style={checkboxLabelStyle}>
-                          <input type="checkbox" name="criteria2_tidak" style={checkboxStyle} />
-                          Tidak
-                        </label>
-                      </div>
+                  <div style={criteriaItemStyle}>
+                    <span>• Membandingkan alternatif struktur data kelebihan dan kekurangannya untuk konteks permasalahan yang diselesaikan</span>
+                    <div style={checkboxGroupStyle}>
+                      <label style={checkboxLabelStyle}>
+                        <input 
+                          type="checkbox" 
+                          style={checkboxStyle}
+                          checked={checkedItems['criteria2_ya'] || false}
+                          onChange={(e) => handleCheckboxChange('criteria2_ya', e.target.checked)}
+                        />
+                        Ya
+                      </label>
+                      <label style={checkboxLabelStyle}>
+                        <input 
+                          type="checkbox" 
+                          style={checkboxStyle}
+                          checked={checkedItems['criteria2_tidak'] || false}
+                          onChange={(e) => handleCheckboxChange('criteria2_tidak', e.target.checked)}
+                        />
+                        Tidak
+                      </label>
                     </div>
                   </div>
                 </div>
               </div>
+
+              {/* Field Penilaian Lanjut - tanpa box, langsung di bawah */}
+              <textarea 
+                placeholder="Penilaian Lanjut"
+                style={{
+                  width: '100%',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                  padding: '6px',
+                  fontSize: '10px',
+                  minHeight: '30px',
+                  resize: 'vertical',
+                  fontFamily: 'Arial, sans-serif',
+                  outline: 'none',
+                  backgroundColor: '#e9ecef',
+                  color: '#6c757d'
+                }}
+              ></textarea>
             </div>
 
             <div style={rightContentStyle}>
               <div style={pertanyaanSectionStyle}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px'}}>
+                  <div style={{fontSize: '12px', fontWeight: 'bold', color: '#333'}}>
+                    Pertanyaan
+                  </div>
+                  <div style={{fontSize: '12px', fontWeight: 'bold', color: '#333', textAlign: 'center'}}>
+                    Pencapaian
+                  </div>
+                </div>
+                
                 <div style={pertanyaanItemStyle}>
-                  {/* Pertanyaan dan Pencapaian secara horizontal */}
-                  <div style={{display: 'flex', gap: '30px', alignItems: 'flex-start'}}>
+                  <div style={{display: 'flex', gap: '20px', alignItems: 'flex-start'}}>
                     <div style={{flex: 1}}>
-                      <div style={{fontSize: '12px', fontWeight: 'bold', color: '#333', marginBottom: '10px'}}>
-                        Pertanyaan
-                      </div>
                       <div style={pertanyaanTextStyle}>
                         1. Anda seorang operator yunior busana, sebelum memulai kegiatan menjahit blus, anda perlu memperhatikan SOP kesehatan dan keselamatan kerja, apa yang akan anda lakukan supaya tidak terjadi kecelakaan kerja pada waktu menjahit blus? (JRES)
                       </div>
                     </div>
-                    <div style={{minWidth: '150px'}}>
-                      <div style={{fontSize: '12px', fontWeight: 'bold', color: '#333', marginBottom: '10px'}}>
-                        Pencapaian
-                      </div>
-                      <div style={{display: 'flex', gap: '20px', alignItems: 'center'}}>
+                    <div style={{minWidth: '120px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px'}}>
+                      <div style={{display: 'flex', gap: '30px', alignItems: 'center', width: '100%'}}>
                         <label style={{display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: '#333', cursor: 'pointer'}}>
-                          <input type="checkbox" name="pencapaian_ya" style={{width: '16px', height: '16px', cursor: 'pointer'}} />
+                          <input 
+                            type="checkbox" 
+                            style={{width: '16px', height: '16px', cursor: 'pointer'}}
+                            checked={checkedItems['pencapaian_ya'] || false}
+                            onChange={(e) => handleCheckboxChange('pencapaian_ya', e.target.checked)}
+                          />
                           Ya
                         </label>
                         <label style={{display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: '#333', cursor: 'pointer'}}>
-                          <input type="checkbox" name="pencapaian_tidak" style={{width: '16px', height: '16px', cursor: 'pointer'}} />
+                          <input 
+                            type="checkbox" 
+                            style={{width: '16px', height: '16px', cursor: 'pointer'}}
+                            checked={checkedItems['pencapaian_tidak'] || false}
+                            onChange={(e) => handleCheckboxChange('pencapaian_tidak', e.target.checked)}
+                          />
                           Tidak
                         </label>
+                      </div>
+                      
+                      <div style={{display: 'flex', gap: '30px', width: '100%'}}>
+                        <div style={{width: '16px', display: 'flex', justifyContent: 'center'}}>
+                          <input 
+                            type="checkbox" 
+                            style={{width: '16px', height: '16px', cursor: 'pointer'}}
+                            checked={checkedItems['r'] || false}
+                            onChange={(e) => handleCheckboxChange('r', e.target.checked)}
+                          />
+                        </div>
+                        <div style={{fontSize: '12px', color: '#333', marginLeft: '25px'}}>
+                          R
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -772,7 +827,18 @@ const IA01 = () => {
                   <div style={tanggapanContainerStyle}>
                     <div style={tanggapanLabelStyle}>Tanggapan:</div>
                     <textarea 
-                      style={tanggapanInputStyle}
+                      style={{
+                        width: '100%',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        padding: '6px',
+                        fontSize: '10px',
+                        minHeight: '30px',
+                        resize: 'vertical',
+                        fontFamily: 'Arial, sans-serif',
+                        outline: 'none',
+                        backgroundColor: '#e9ecef'
+                      }}
                       placeholder="isi tanggapan asesor"
                     ></textarea>
                   </div>
