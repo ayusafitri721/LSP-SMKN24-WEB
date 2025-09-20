@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Check } from 'lucide-react';
 
 const pageContainerStyle = {
   backgroundColor: 'white',
@@ -264,81 +265,18 @@ const approveButtonStyle = {
   transition: 'all 0.2s ease',
 };
 
-// Modal styles - positioned at top, more rectangular, matching the image
+// Modal styles - using the better design from the second code
 const modalOverlayStyle = {
   position: 'fixed',
   top: 0,
   left: 0,
   right: 0,
   bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  backgroundColor: 'rgba(0,0,0,0.5)',
   display: 'flex',
-  alignItems: 'flex-start',
   justifyContent: 'center',
-  zIndex: 1000,
-  paddingTop: '100px',
-};
-
-const modalContentStyle = {
-  backgroundColor: '#f5f5f5',
-  borderRadius: '15px',
-  padding: '25px 35px',
-  maxWidth: '520px',
-  width: '90%',
-  boxShadow: '0 15px 35px rgba(0,0,0,0.4)',
-  display: 'flex',
   alignItems: 'center',
-  gap: '20px',
-  border: '1px solid #e0e0e0',
-};
-
-const modalIconStyle = {
-  width: '60px',
-  height: '60px',
-  backgroundColor: '#4A90E2',
-  borderRadius: '10px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '30px',
-  color: 'white',
-  flexShrink: 0,
-  fontWeight: 'bold',
-};
-
-const modalTextContainerStyle = {
-  textAlign: 'left',
-  flex: 1,
-};
-
-const modalTitleStyle = {
-  fontSize: '20px',
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: '6px',
-  lineHeight: '1.2',
-};
-
-const modalDescriptionStyle = {
-  fontSize: '13px',
-  color: '#666',
-  marginBottom: '0',
-  lineHeight: '1.3',
-  fontStyle: 'italic',
-};
-
-const modalButtonStyle = {
-  backgroundColor: '#4A90E2',
-  color: 'white',
-  border: 'none',
-  borderRadius: '20px',
-  padding: '8px 25px',
-  fontSize: '14px',
-  fontWeight: '600',
-  cursor: 'pointer',
-  minWidth: '70px',
-  transition: 'all 0.2s ease',
-  flexShrink: 0,
+  zIndex: 1000
 };
 
 const CeklisObservasi = () => {
@@ -755,64 +693,340 @@ const CeklisObservasi = () => {
           </button>
         </div>
         
-        {/* Approval Modal */}
+        {/* Approval Modal - Updated Design */}
         {showApprovalModal && (
           <div style={modalOverlayStyle}>
-            <div style={modalContentStyle}>
-              <div style={modalIconStyle}>
-                ✓
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '16px',
+              padding: '30px 40px',
+              minWidth: '500px',
+              boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
+              position: 'relative'
+            }}>
+              {/* Header dengan Icon dan Close Button */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                justifyContent: 'space-between',
+                marginBottom: '25px'
+              }}>
+                {/* Icon clipboard biru dengan checkmark di kiri */}
+                <div style={{
+                  width: '50px',
+                  height: '50px',
+                  backgroundColor: '#4A90E2',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  position: 'relative'
+                }}>
+                  {/* Clipboard shape */}
+                  <div style={{
+                    width: '36px',
+                    height: '40px',
+                    backgroundColor: 'white',
+                    borderRadius: '3px',
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    {/* Top clip part */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '-3px',
+                      width: '16px',
+                      height: '6px',
+                      backgroundColor: '#4A90E2',
+                      borderRadius: '3px 3px 0 0'
+                    }}></div>
+                    
+                    {/* Checkmark */}
+                    <Check size={18} color="#4A90E2" strokeWidth={4} />
+                  </div>
+                </div>
+                
+                {/* Title di tengah - sejajar dengan icon */}
+                <div style={{ 
+                  flex: 1, 
+                  textAlign: 'center',
+                  paddingTop: '5px'
+                }}>
+                  <h3 style={{
+                    fontSize: '22px',
+                    fontWeight: '600',
+                    color: '#333',
+                    marginBottom: '4px',
+                    lineHeight: '1.2'
+                  }}>
+                    Anda menyetujui
+                  </h3>
+                  <h3 style={{
+                    fontSize: '22px',
+                    fontWeight: '600',
+                    color: '#333',
+                    margin: '0',
+                    lineHeight: '1.2'
+                  }}>
+                    rekaman Asesmen ini
+                  </h3>
+                </div>
+                
+                {/* Close button di kanan */}
+                <button 
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    backgroundColor: '#f0f0f0',
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '14px',
+                    color: '#666',
+                    flexShrink: 0
+                  }}
+                  onClick={() => setShowApprovalModal(false)}
+                >
+                  ×
+                </button>
               </div>
-              <div style={modalTextContainerStyle}>
-                <h2 style={modalTitleStyle}>
-                  Anda menyetujui<br />
-                  rekaman Asesmen ini
-                </h2>
-                <p style={modalDescriptionStyle}>
-                  Anda menyetujui dokumen sertifikasi asesi ini dengan penilaian yang sebenar-benarnya
-                </p>
+              
+              {/* Separator line */}
+              <div style={{
+                width: '100%',
+                height: '1px',
+                backgroundColor: '#e0e0e0',
+                margin: '20px 0'
+              }}></div>
+              
+              {/* Description */}
+              <p style={{
+                fontSize: '14px',
+                color: '#666',
+                marginBottom: '25px',
+                lineHeight: '1.5',
+                fontStyle: 'italic',
+                textAlign: 'center'
+              }}>
+                Anda menyetujui dokumen sertifikat asesi ini dengan penilaian yang sebenar-benarnya
+              </p>
+              
+              {/* Button di kanan */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button
+                  style={{
+                    padding: '10px 30px',
+                    backgroundColor: '#4A90E2',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '20px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onClick={handleModalOke}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#357ABD'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#4A90E2'}
+                >
+                  Oke
+                </button>
               </div>
-              <button 
-                style={modalButtonStyle}
-                onClick={handleModalOke}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#357ABD'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = '#4A90E2'}
-              >
-                Oke
-              </button>
             </div>
           </div>
         )}
 
-        {/* Rejection Modal */}
+        {/* Rejection Modal - Updated Design */}
         {showRejectionModal && (
           <div style={modalOverlayStyle}>
-            <div style={modalContentStyle}>
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '16px',
+              padding: '30px 40px',
+              minWidth: '500px',
+              boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
+              position: 'relative'
+            }}>
+              {/* Header dengan Icon dan Close Button */}
               <div style={{
-                ...modalIconStyle,
-                backgroundColor: '#FF8C00'
+                display: 'flex',
+                alignItems: 'flex-start',
+                justifyContent: 'space-between',
+                marginBottom: '25px'
               }}>
-                ✗
+                {/* Icon document dengan X orange di kiri */}
+                <div style={{
+                  width: '50px',
+                  height: '50px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  position: 'relative'
+                }}>
+                  {/* Document outline */}
+                  <div style={{
+                    width: '36px',
+                    height: '42px',
+                    border: '2px solid #FF8C00',
+                    borderRadius: '2px',
+                    backgroundColor: 'white',
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: '4px'
+                  }}>
+                    {/* Document lines */}
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '2px',
+                      marginTop: '2px'
+                    }}>
+                      <div style={{
+                        height: '2px',
+                        backgroundColor: '#FF8C00',
+                        width: '100%',
+                        borderRadius: '1px'
+                      }}></div>
+                      <div style={{
+                        height: '2px',
+                        backgroundColor: '#FF8C00',
+                        width: '100%',
+                        borderRadius: '1px'
+                      }}></div>
+                      <div style={{
+                        height: '2px',
+                        backgroundColor: '#FF8C00',
+                        width: '80%',
+                        borderRadius: '1px'
+                      }}></div>
+                      <div style={{
+                        height: '2px',
+                        backgroundColor: '#FF8C00',
+                        width: '90%',
+                        borderRadius: '1px'
+                      }}></div>
+                    </div>
+                  </div>
+                  
+                  {/* X mark di pojok kanan bawah */}
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '2px',
+                    right: '2px',
+                    width: '18px',
+                    height: '18px',
+                    backgroundColor: '#FF8C00',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '12px',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    border: '2px solid white',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                  }}>
+                    ✗
+                  </div>
+                </div>
+                
+                {/* Title di tengah - sejajar dengan icon */}
+                <div style={{ 
+                  flex: 1, 
+                  textAlign: 'center',
+                  paddingTop: '5px'
+                }}>
+                  <h3 style={{
+                    fontSize: '22px',
+                    fontWeight: '600',
+                    color: '#333',
+                    marginBottom: '4px',
+                    lineHeight: '1.2'
+                  }}>
+                    Anda menolak
+                  </h3>
+                  <h3 style={{
+                    fontSize: '22px',
+                    fontWeight: '600',
+                    color: '#333',
+                    margin: '0',
+                    lineHeight: '1.2'
+                  }}>
+                    rekaman Asesmen ini
+                  </h3>
+                </div>
+                
+                {/* Close button di kanan */}
+                <button 
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    backgroundColor: '#f0f0f0',
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '14px',
+                    color: '#666',
+                    flexShrink: 0
+                  }}
+                  onClick={() => setShowRejectionModal(false)}
+                >
+                  ×
+                </button>
               </div>
-              <div style={modalTextContainerStyle}>
-                <h2 style={modalTitleStyle}>
-                  Anda menolak<br />
-                  rekaman Asesmen ini
-                </h2>
-                <p style={modalDescriptionStyle}>
-                  Dokumen ini ditolak karena dokumen dan keaslian data tidak valid.
-                </p>
+              
+              {/* Separator line */}
+              <div style={{
+                width: '100%',
+                height: '1px',
+                backgroundColor: '#e0e0e0',
+                margin: '20px 0'
+              }}></div>
+              
+              {/* Description */}
+              <p style={{
+                fontSize: '14px',
+                color: '#666',
+                marginBottom: '25px',
+                lineHeight: '1.5',
+                fontStyle: 'italic',
+                textAlign: 'center'
+              }}>
+                Dokumen ini ditolak karena dokumen dan keaslian data tidak valid.
+              </p>
+              
+              {/* Button di kanan */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button
+                  style={{
+                    padding: '10px 30px',
+                    backgroundColor: '#FF8C00',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '20px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onClick={handleRejectionOke}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#E67A00'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#FF8C00'}
+                >
+                  Oke
+                </button>
               </div>
-              <button 
-                style={{
-                  ...modalButtonStyle,
-                  backgroundColor: '#FF8C00'
-                }}
-                onClick={handleRejectionOke}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#E67A00'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = '#FF8C00'}
-              >
-                Oke
-              </button>
             </div>
           </div>
         )}
