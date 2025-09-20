@@ -378,29 +378,7 @@ const Wawancara = () => {
   });
 
   // Mencegah navigasi dengan menonaktifkan back button dan shortcuts
-    React.useEffect(() => {
-      const handleKeyDown = (e) => {
-        if (e.key === 'F5' || 
-            (e.ctrlKey && e.key === 'r') || 
-            (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) ||
-            (e.ctrlKey && e.key === 'w') ||
-            (e.ctrlKey && e.key === 't')) {
-          e.preventDefault();
-          return false;
-        }
-      };
-  
-      document.addEventListener('keydown', handleKeyDown);
-  
-      window.history.pushState(null, '', window.location.href);
-      window.addEventListener('popstate', () => {
-        window.history.pushState(null, '', window.location.href);
-      });
-  
-      return () => {
-        document.removeEventListener('keydown', handleKeyDown);
-      };
-    }, []);
+    
 
   const [showModal, setShowModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
