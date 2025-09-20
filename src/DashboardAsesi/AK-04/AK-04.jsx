@@ -2,235 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
 
-const pageContainerStyle = {
-  backgroundColor: 'white',
-  fontFamily: 'Arial, sans-serif',
-  padding: '2vw',
-  minHeight: '100vh',
-  width: '100%',
-  boxSizing: 'border-box',
-};
+// Custom hook to detect screen size
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(false);
 
-const headerSectionStyle = {
-  backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  borderRadius: '0 0 2rem 2rem',
-  overflow: 'hidden',
-  marginBottom: '0',
-  width: '100%',
-};
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    const listener = () => setMatches(media.matches);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+    window.addEventListener('resize', listener);
+    return () => window.removeEventListener('resize', listener);
+  }, [matches, query]);
 
-const navContainerStyle = {
-  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-  padding: '0.5rem 1rem',
-  borderRadius: '0 1rem 2rem 1rem',
-  boxShadow: '0 0.2rem 0.8rem rgba(0,0,0,0.1)',
-  margin: '0 auto',
-  overflowX: 'auto',
-  maxWidth: '90%',
-  whiteSpace: 'nowrap',
-  backdropFilter: 'blur(10px)',
-  position: 'relative',
-  zIndex: 2,
-};
-
-const logoContainerStyle = {
-  height: '20vw',
-  maxHeight: '120px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginTop: '1rem',
-  marginBottom: '1rem',
-};
-
-const logoTextStyle = {
-  color: 'white',
-  fontSize: 'clamp(1.5rem, 5vw, 2.25rem)',
-  fontWeight: 'bold',
-  margin: 0,
-  textShadow: '0.125rem 0.125rem 0.25rem rgba(0,0,0,0.3)',
-  letterSpacing: '0.0625rem',
-};
-
-const contentCardStyle = {
-  backgroundColor: 'white',
-  borderRadius: '0 0 1rem 1rem',
-  padding: 'clamp(1rem, 3vw, 1.5rem)',
-  boxShadow: 'none',
-  marginTop: '0',
-  border: 'none',
-  width: '100%',
-  boxSizing: 'border-box',
-};
-
-const headerStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '1rem',
-  marginBottom: '2rem',
-  borderBottom: '1px solid #FF8C00',
-  paddingBottom: '1.25rem',
-  flexWrap: 'wrap',
-};
-
-const logoStyle = {
-  width: 'clamp(2.5rem, 8vw, 3.125rem)',
-  height: 'clamp(2.5rem, 8vw, 3.125rem)',
-  backgroundColor: '#ff8c00',
-  borderRadius: '0.5rem',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: 'white',
-  fontWeight: 'bold',
-  fontSize: 'clamp(1rem, 3vw, 1.25rem)',
-  overflow: 'hidden',
-};
-
-const logoImageStyle = {
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
-  borderRadius: '0.5rem',
-};
-
-const titleStyle = {
-  fontSize: 'clamp(1rem, 3vw, 1.125rem)',
-  fontWeight: 'bold',
-  margin: 0,
-  color: '#333',
-};
-
-const subtitleStyle = {
-  fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
-  color: '#333',
-  margin: '0.125rem 0 0 0',
-};
-
-const inputStyle = {
-  width: '100%',
-  padding: 'clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)',
-  border: '1px solid #ddd',
-  borderRadius: '0.25rem',
-  fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
-  backgroundColor: 'white',
-  outline: 'none',
-  boxSizing: 'border-box',
-};
-
-const textareaStyle = {
-  width: '100%',
-  padding: 'clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)',
-  border: '1px solid #ddd',
-  borderRadius: '0.25rem',
-  fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
-  backgroundColor: 'white',
-  outline: 'none',
-  resize: 'vertical',
-  minHeight: '3.75rem',
-};
-
-const popupOverlayStyle = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  zIndex: 1000,
-};
-
-const popupContainerStyle = {
-  backgroundColor: '#f0f0f0',
-  borderRadius: '1.25rem',
-  padding: 'clamp(1.5rem, 4vw, 2rem) clamp(2rem, 5vw, 3rem)',
-  textAlign: 'center',
-  boxShadow: '0 0.625rem 1.875rem rgba(0, 0, 0, 0.2)',
-  minWidth: 'clamp(15rem, 80vw, 37.5rem)',
-  maxWidth: '90%',
-  position: 'relative',
-};
-
-const iconContainerStyle = {
-  marginBottom: '1.25rem',
-};
-
-const successIconStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  margin: '0 auto 1.5rem',
-  gap: '0.9375rem',
-};
-
-const listLinesStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '0.375rem',
-};
-
-const checkCircleStyle = {
-  width: 'clamp(2.5rem, 8vw, 3.75rem)',
-  height: 'clamp(2.5rem, 8vw, 3.75rem)',
-  borderRadius: '50%',
-  backgroundColor: '#FF8C00',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginTop: '0.375rem',
-};
-
-const checkMarkStyle = {
-  color: 'white',
-  fontSize: 'clamp(1rem, 3vw, 1.5rem)',
-  fontWeight: 'bold',
-};
-
-const popupTitleStyle = {
-  fontSize: 'clamp(1rem, 3vw, 1.125rem)',
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: '1.875rem',
-  lineHeight: '1.4',
-};
-
-const okayButtonStyle = {
-  backgroundColor: '#FF8C00',
-  border: 'none',
-  fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
-  fontWeight: '600',
-  color: 'white',
-  cursor: 'pointer',
-  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(1rem, 3vw, 1.5rem)',
-  borderRadius: '1.25rem',
-  position: 'absolute',
-  bottom: '1.25rem',
-  right: '1.875rem',
-  transition: 'all 0.2s ease',
-};
-
-const warningNotificationStyle = {
-  position: 'fixed',
-  top: '1.25rem',
-  right: '1.25rem',
-  backgroundColor: '#ff6b6b',
-  color: 'white',
-  padding: 'clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.25rem)',
-  borderRadius: '0.625rem',
-  boxShadow: '0 0.25rem 0.9375rem rgba(0,0,0,0.2)',
-  zIndex: 1001,
-  fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
-  fontWeight: 'bold',
-  animation: 'slideIn 0.3s ease-out',
+  return matches;
 };
 
 const AK04 = () => {
+  const navigate = useNavigate();
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   const [showPopup, setShowPopup] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
@@ -246,10 +38,9 @@ const AK04 = () => {
     tanggalAsesmen: '',
     skemaSertifikasi: '',
     noSkemaSertifikasi: '',
-    alasanBanding: ''
+    alasanBanding: '',
+    tanggalApprove: ''
   });
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -328,6 +119,241 @@ const AK04 = () => {
     }));
   };
 
+  // Styles
+  const pageContainerStyle = {
+    backgroundColor: 'white',
+    fontFamily: 'Arial, sans-serif',
+    padding: '2vw',
+    minHeight: '100vh',
+    width: '100%',
+    boxSizing: 'border-box',
+  };
+
+  const navContainerStyle = {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    padding: isMobile ? '3px 8px' : '4px 12px',
+    borderRadius: '0 1rem 2rem 1rem',
+    boxShadow: '0 0.2rem 0.8rem rgba(0,0,0,0.1)',
+    margin: isMobile ? '0 10px 0 0' : '0 15px 0 0',
+    overflowX: 'auto',
+    maxWidth: isMobile ? '85%' : '50%',
+    whiteSpace: 'nowrap',
+    backdropFilter: 'blur(10px)',
+    position: 'relative',
+    zIndex: 2,
+    boxSizing: 'border-box',
+    display: 'inline-block',
+  };
+
+  const headerSectionStyle = {
+    backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    borderRadius: '0 0 2rem 2rem',
+    overflow: 'hidden',
+    marginBottom: '0',
+    width: '100%',
+  };
+
+  const logoContainerStyle = {
+    height: isMobile ? '15vw' : '20vw',
+    maxHeight: '120px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '1rem',
+    marginBottom: '1rem',
+  };
+
+  const logoTextStyle = {
+    color: 'white',
+    fontSize: 'clamp(1.5rem, 5vw, 2.25rem)',
+    fontWeight: 'bold',
+    margin: 0,
+    textShadow: '0.125rem 0.125rem 0.25rem rgba(0,0,0,0.3)',
+    letterSpacing: '0.0625rem',
+  };
+
+  const contentCardStyle = {
+    backgroundColor: 'white',
+    borderRadius: '0 0 1rem 1rem',
+    padding: isMobile ? '15px' : '25px',
+    boxShadow: 'none',
+    marginTop: '0',
+    border: 'none',
+    width: '100%',
+    boxSizing: 'border-box',
+  };
+
+  const headerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: isMobile ? '10px' : '1rem',
+    marginBottom: '2rem',
+    borderBottom: '1px solid #FF8C00',
+    paddingBottom: '1.25rem',
+    flexWrap: 'wrap',
+    textAlign: 'center', // Memastikan teks di dalamnya berada di tengah
+    justifyContent: 'center', // Mengatur konten ke tengah secara horizontal
+  };
+
+  const logoStyle = {
+    width: isMobile ? '60px' : '80px',
+    height: isMobile ? '60px' : '80px',
+    backgroundColor: '#ff8c00',
+    borderRadius: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: isMobile ? '16px' : '20px',
+    overflow: 'hidden',
+  };
+
+  const logoImageStyle = {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    borderRadius: '8px',
+  };
+
+  const titleStyle = {
+    fontSize: isMobile ? '14px' : '18px',
+    fontWeight: 'bold',
+    margin: 0,
+    color: '#333',
+  };
+
+  const subtitleStyle = {
+    fontSize: isMobile ? '12px' : '14px',
+    color: '#333',
+    margin: '5px 0 0 0',
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: isMobile ? '8px 12px' : '12px 16px',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    fontSize: isMobile ? '10px' : '12px',
+    backgroundColor: 'white',
+    outline: 'none',
+    boxSizing: 'border-box',
+  };
+
+  const textareaStyle = {
+    width: '100%',
+    padding: isMobile ? '8px 12px' : '12px 16px',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    fontSize: isMobile ? '10px' : '12px',
+    backgroundColor: 'white',
+    outline: 'none',
+    resize: 'vertical',
+    minHeight: '60px',
+    boxSizing: 'border-box',
+  };
+
+  const popupOverlayStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  };
+
+  const popupContainerStyle = {
+    backgroundColor: '#f0f0f0',
+    borderRadius: '20px',
+    padding: isMobile ? '20px' : '40px',
+    textAlign: 'center',
+    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+    minWidth: isMobile ? '90%' : '320px',
+    maxWidth: '90%',
+    position: 'relative',
+    boxSizing: 'border-box',
+  };
+
+  const iconContainerStyle = {
+    marginBottom: '20px',
+  };
+
+  const successIconStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: '0 auto 24px',
+    gap: '15px',
+  };
+
+  const listLinesStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+  };
+
+  const checkCircleStyle = {
+    width: isMobile ? '40px' : '60px',
+    height: isMobile ? '40px' : '60px',
+    borderRadius: '50%',
+    backgroundColor: '#FF8C00',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '6px',
+  };
+
+  const checkMarkStyle = {
+    color: 'white',
+    fontSize: isMobile ? '16px' : '24px',
+    fontWeight: 'bold',
+  };
+
+  const popupTitleStyle = {
+    fontSize: isMobile ? '16px' : '18px',
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: '30px',
+    lineHeight: '1.4',
+  };
+
+  const okayButtonStyle = {
+    backgroundColor: '#FF8C00',
+    border: 'none',
+    fontSize: isMobile ? '12px' : '14px',
+    fontWeight: '600',
+    color: 'white',
+    cursor: 'pointer',
+    padding: isMobile ? '8px 16px' : '10px 24px',
+    borderRadius: '20px',
+    position: 'absolute',
+    bottom: '20px',
+    right: '30px',
+    transition: 'all 0.2s ease',
+  };
+
+  const warningNotificationStyle = {
+    position: 'fixed',
+    top: '20px',
+    right: '20px',
+    backgroundColor: '#ff6b6b',
+    color: 'white',
+    padding: isMobile ? '12px 16px' : '15px 20px',
+    borderRadius: '10px',
+    boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+    zIndex: 1001,
+    fontSize: isMobile ? '12px' : '14px',
+    fontWeight: 'bold',
+    animation: 'slideIn 0.3s ease-out',
+  };
+
   return (
     <div style={pageContainerStyle}>
       <style>
@@ -355,63 +381,6 @@ const AK04 = () => {
               opacity: 1;
             }
           }
-          @media (max-width: 768px) {
-            .flex-container {
-              flex-direction: column;
-            }
-            .question-container, .banding-form {
-              width: 100%;
-            }
-            .popup-container {
-              padding: 1rem;
-              min-width: 90%;
-            }
-            .nav-container {
-              max-width: 100%;
-            }
-            .logo-container {
-              height: 15vw;
-            }
-            .table-cell {
-              font-size: clamp(0.625rem, 2vw, 0.75rem);
-              padding: 0.5rem;
-            }
-            .input-field {
-              font-size: clamp(0.625rem, 2vw, 0.75rem);
-            }
-            .checkbox-container {
-              min-width: 80px;
-            }
-            .list-lines div {
-              width: clamp(3rem, 20vw, 8rem);
-            }
-          }
-          @media (max-width: 480px) {
-            .header-style {
-              flex-direction: column;
-              align-items: flex-start;
-            }
-            .logo-style {
-              width: clamp(2rem, 10vw, 2.5rem);
-              height: clamp(2rem, 10vw, 2.5rem);
-            }
-            .title-style {
-              font-size: clamp(0.875rem, 4vw, 1rem);
-            }
-            .subtitle-style {
-              font-size: clamp(0.5rem, 2.5vw, 0.625rem);
-            }
-            .button-kirim {
-              padding: 0.5rem 1rem;
-              font-size: clamp(0.625rem, 2vw, 0.75rem);
-            }
-            .okay-button {
-              padding: 0.5rem 1rem;
-              font-size: clamp(0.625rem, 2vw, 0.75rem);
-              right: 1rem;
-              bottom: 1rem;
-            }
-          }
         `}
       </style>
 
@@ -421,19 +390,21 @@ const AK04 = () => {
         </div>
       )}
 
+      {/* Header section dengan nav tab compact */}
       <div style={headerSectionStyle}>
-        <div style={navContainerStyle} className="nav-scrollbar nav-container">
+        <div style={navContainerStyle} className="nav-scrollbar">
           <NavAsesi activeTab="FR.AK.04" />
         </div>
 
-        <div style={logoContainerStyle} className="logo-container">
+        <div style={logoContainerStyle}>
           <h1 style={logoTextStyle}>MyLSP</h1>
         </div>
       </div>
 
+      {/* Content card */}
       <div style={contentCardStyle}>
-        <div style={headerStyle} className="header-style">
-          <div style={logoStyle} className="logo-style">
+        <div style={headerStyle}>
+          <div style={logoStyle}>
             <img
               src="/src/img/LOGO_LSP_SMKN_24.jpg"
               alt="LSP SMKN 24 Logo"
@@ -444,82 +415,79 @@ const AK04 = () => {
               }}
             />
           </div>
-          <div style={{ flex: 1, textAlign: 'center' }}>
-            <h1 style={titleStyle} className="title-style">FR.AK.04</h1>
-            <p style={subtitleStyle} className="subtitle-style">REKAMAN ASESMEN KOMPETENSI</p>
+          <div style={{ flex: 1, textAlign: isMobile ? 'center' : 'center' }}>
+            <h1 style={titleStyle}>FR.AK.04</h1>
+            <p style={subtitleStyle}>REKAMAN ASESMEN KOMPETENSI</p>
           </div>
         </div>
 
-        <div style={{ marginBottom: '1.875rem' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'clamp(0.625rem, 2vw, 0.75rem)' }}>
+        <div style={{ marginBottom: '30px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: isMobile ? '10px' : '12px' }}>
             <tbody>
               <tr>
                 <td style={{
-                  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.75rem, 2vw, 1rem)',
+                  padding: isMobile ? '8px' : '10px 16px',
                   backgroundColor: '#f8f8f8',
                   border: '1px solid #ddd',
                   fontWeight: 'bold',
                   color: '#333',
                   width: '20%',
-                }} className="table-cell">Nama Asesor</td>
+                }}>Nama Asesor</td>
                 <td style={{
-                  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.75rem, 2vw, 1rem)',
+                  padding: isMobile ? '8px' : '10px 16px',
                   border: '1px solid #ddd',
                   backgroundColor: 'white',
                   width: '80%',
-                }} className="table-cell">
+                }}>
                   <input
                     type="text"
                     style={inputStyle}
                     value={formData.namaAsesor}
                     onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
                     placeholder="Masukkan nama asesor"
-                    className="input-field"
                   />
                 </td>
               </tr>
               <tr>
                 <td style={{
-                  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.75rem, 2vw, 1rem)',
+                  padding: isMobile ? '8px' : '10px 16px',
                   backgroundColor: '#f8f8f8',
                   border: '1px solid #ddd',
                   fontWeight: 'bold',
                   color: '#333',
-                }} className="table-cell">Nama Asesi</td>
+                }}>Nama Asesi</td>
                 <td style={{
-                  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.75rem, 2vw, 1rem)',
+                  padding: isMobile ? '8px' : '10px 16px',
                   border: '1px solid #ddd',
                   backgroundColor: 'white',
-                }} className="table-cell">
+                }}>
                   <input
                     type="text"
                     style={inputStyle}
                     value={formData.namaAsesi}
                     onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
                     placeholder="Masukkan nama asesi"
-                    className="input-field"
                   />
                 </td>
               </tr>
               <tr>
                 <td style={{
-                  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.75rem, 2vw, 1rem)',
+                  padding: isMobile ? '8px' : '10px 16px',
                   backgroundColor: '#f8f8f8',
                   border: '1px solid #ddd',
                   fontWeight: 'bold',
                   color: '#333',
-                }} className="table-cell">Tanggal Asesmen</td>
+                }}>Tanggal Asesmen</td>
                 <td style={{
-                  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.75rem, 2vw, 1rem)',
+                  padding: isMobile ? '8px' : '10px 16px',
                   border: '1px solid #ddd',
                   backgroundColor: 'white',
-                }} className="table-cell">
+                }}>
                   <input
                     type="date"
                     style={inputStyle}
                     value={formData.tanggalAsesmen}
                     onChange={(e) => handleInputChange('tanggalAsesmen', e.target.value)}
-                    className="input-field"
                   />
                 </td>
               </tr>
@@ -527,46 +495,48 @@ const AK04 = () => {
           </table>
         </div>
 
-        <div style={{ display: 'flex', gap: '1.875rem', flexWrap: 'wrap' }} className="flex-container">
-          <div style={{ flex: '1', minWidth: '100%' }} className="question-container">
+        <div style={{ display: 'flex', gap: '30px', flexWrap: 'wrap', flexDirection: isMobile ? 'column' : 'row' }}>
+          <div style={{ flex: '1', minWidth: '100%' }}>
             <h3 style={{
-              fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
+              fontSize: isMobile ? '12px' : '14px',
               fontWeight: 'bold',
-              marginBottom: '0.9375rem',
+              marginBottom: '15px',
               color: '#333',
             }}>
               Jawablah dengan Ya atau Tidak pertanyaan-pertanyaan berikut ini :
             </h3>
 
-            <div style={{ marginBottom: '0.5rem' }}>
+            <div style={{ marginBottom: '8px' }}>
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'flex-start',
-                padding: 'clamp(0.625rem, 2vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)',
+                padding: isMobile ? '10px 12px' : '12px 16px',
                 border: '1px solid #ddd',
-                borderRadius: '0.25rem',
+                borderRadius: '4px',
                 backgroundColor: 'white',
-                fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
+                fontSize: isMobile ? '10px' : '12px',
+                flexDirection: isMobile ? 'column' : 'row',
+                gap: isMobile ? '10px' : '0',
               }}>
-                <span style={{ flex: '1', paddingRight: '0.9375rem', lineHeight: '1.4' }}>
+                <span style={{ flex: '1', paddingRight: isMobile ? '0' : '15px', lineHeight: '1.4' }}>
                   Apakah proses branding telah di jelaskan kepada asesi?
                 </span>
-                <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', minWidth: '6.25rem' }} className="checkbox-container">
+                <div style={{ display: 'flex', gap: isMobile ? '15px' : '20px', alignItems: 'center', minWidth: isMobile ? '80px' : '100px', justifyContent: isMobile ? 'center' : 'flex-end' }}>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', fontWeight: 'bold', marginBottom: '0.25rem' }}>Ya</div>
+                    <div style={{ fontSize: isMobile ? '9px' : '11px', fontWeight: 'bold', marginBottom: '4px' }}>Ya</div>
                     <input
                       type="checkbox"
-                      style={{ width: '1rem', height: '1rem' }}
+                      style={{ width: isMobile ? '14px' : '16px', height: isMobile ? '14px' : '16px' }}
                       checked={answers.question1.yes}
                       onChange={() => handleCheckboxChange('question1', 'yes', true)}
                     />
                   </div>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', fontWeight: 'bold', marginBottom: '0.25rem' }}>Tidak</div>
+                    <div style={{ fontSize: isMobile ? '9px' : '11px', fontWeight: 'bold', marginBottom: '4px' }}>Tidak</div>
                     <input
                       type="checkbox"
-                      style={{ width: '1rem', height: '1rem' }}
+                      style={{ width: isMobile ? '14px' : '16px', height: isMobile ? '14px' : '16px' }}
                       checked={answers.question1.no}
                       onChange={() => handleCheckboxChange('question1', 'no', false)}
                     />
@@ -575,35 +545,37 @@ const AK04 = () => {
               </div>
             </div>
 
-            <div style={{ marginBottom: '0.5rem' }}>
+            <div style={{ marginBottom: '8px' }}>
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'flex-start',
-                padding: 'clamp(0.625rem, 2vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)',
+                padding: isMobile ? '10px 12px' : '12px 16px',
                 border: '1px solid #ddd',
-                borderRadius: '0.25rem',
+                borderRadius: '4px',
                 backgroundColor: 'white',
-                fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
+                fontSize: isMobile ? '10px' : '12px',
+                flexDirection: isMobile ? 'column' : 'row',
+                gap: isMobile ? '10px' : '0',
               }}>
-                <span style={{ flex: '1', paddingRight: '0.9375rem', lineHeight: '1.4' }}>
+                <span style={{ flex: '1', paddingRight: isMobile ? '0' : '15px', lineHeight: '1.4' }}>
                   Apakah anda telah memperlihatkan branding dengan asesor?
                 </span>
-                <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', minWidth: '6.25rem' }} className="checkbox-container">
+                <div style={{ display: 'flex', gap: isMobile ? '15px' : '20px', alignItems: 'center', minWidth: isMobile ? '80px' : '100px', justifyContent: isMobile ? 'center' : 'flex-end' }}>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', fontWeight: 'bold', marginBottom: '0.25rem' }}>Ya</div>
+                    <div style={{ fontSize: isMobile ? '9px' : '11px', fontWeight: 'bold', marginBottom: '4px' }}>Ya</div>
                     <input
                       type="checkbox"
-                      style={{ width: '1rem', height: '1rem' }}
+                      style={{ width: isMobile ? '14px' : '16px', height: isMobile ? '14px' : '16px' }}
                       checked={answers.question2.yes}
                       onChange={() => handleCheckboxChange('question2', 'yes', true)}
                     />
                   </div>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', fontWeight: 'bold', marginBottom: '0.25rem' }}>Tidak</div>
+                    <div style={{ fontSize: isMobile ? '9px' : '11px', fontWeight: 'bold', marginBottom: '4px' }}>Tidak</div>
                     <input
                       type="checkbox"
-                      style={{ width: '1rem', height: '1rem' }}
+                      style={{ width: isMobile ? '14px' : '16px', height: isMobile ? '14px' : '16px' }}
                       checked={answers.question2.no}
                       onChange={() => handleCheckboxChange('question2', 'no', false)}
                     />
@@ -612,35 +584,37 @@ const AK04 = () => {
               </div>
             </div>
 
-            <div style={{ marginBottom: '0.5rem' }}>
+            <div style={{ marginBottom: '8px' }}>
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'flex-start',
-                padding: 'clamp(0.625rem, 2vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)',
+                padding: isMobile ? '10px 12px' : '12px 16px',
                 border: '1px solid #ddd',
-                borderRadius: '0.25rem',
+                borderRadius: '4px',
                 backgroundColor: 'white',
-                fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
+                fontSize: isMobile ? '10px' : '12px',
+                flexDirection: isMobile ? 'column' : 'row',
+                gap: isMobile ? '10px' : '0',
               }}>
-                <span style={{ flex: '1', paddingRight: '0.9375rem', lineHeight: '1.4' }}>
+                <span style={{ flex: '1', paddingRight: isMobile ? '0' : '15px', lineHeight: '1.4' }}>
                   Apakah anda mau melibatkan "orang lain" membantu anda dalam proses branding?
                 </span>
-                <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', minWidth: '6.25rem' }} className="checkbox-container">
+                <div style={{ display: 'flex', gap: isMobile ? '15px' : '20px', alignItems: 'center', minWidth: isMobile ? '80px' : '100px', justifyContent: isMobile ? 'center' : 'flex-end' }}>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', fontWeight: 'bold', marginBottom: '0.25rem' }}>Ya</div>
+                    <div style={{ fontSize: isMobile ? '9px' : '11px', fontWeight: 'bold', marginBottom: '4px' }}>Ya</div>
                     <input
                       type="checkbox"
-                      style={{ width: '1rem', height: '1rem' }}
+                      style={{ width: isMobile ? '14px' : '16px', height: isMobile ? '14px' : '16px' }}
                       checked={answers.question3.yes}
                       onChange={() => handleCheckboxChange('question3', 'yes', true)}
                     />
                   </div>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', fontWeight: 'bold', marginBottom: '0.25rem' }}>Tidak</div>
+                    <div style={{ fontSize: isMobile ? '9px' : '11px', fontWeight: 'bold', marginBottom: '4px' }}>Tidak</div>
                     <input
                       type="checkbox"
-                      style={{ width: '1rem', height: '1rem' }}
+                      style={{ width: isMobile ? '14px' : '16px', height: isMobile ? '14px' : '16px' }}
                       checked={answers.question3.no}
                       onChange={() => handleCheckboxChange('question3', 'no', false)}
                     />
@@ -650,11 +624,11 @@ const AK04 = () => {
             </div>
           </div>
 
-          <div style={{ flex: '1', minWidth: '100%' }} className="banding-form">
+          <div style={{ flex: '1', minWidth: '100%' }}>
             <h4 style={{
-              fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
+              fontSize: isMobile ? '12px' : '14px',
               fontWeight: 'bold',
-              marginBottom: '0.9375rem',
+              marginBottom: '15px',
               color: '#333',
             }}>
               Banding ini di ajukan atas keputusan asesmen yang dibuat terhadap skema sertifikasi (Kualifikasi/Klaster/Okupasi) berikut :
@@ -662,23 +636,22 @@ const AK04 = () => {
 
             <div style={{
               border: '1px solid #ddd',
-              borderRadius: '0.25rem',
-              padding: '0.75rem',
+              borderRadius: '4px',
+              padding: '12px',
               backgroundColor: 'white',
-              marginBottom: '0.9375rem',
+              marginBottom: '15px',
             }}>
-              <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', color: '#666', marginBottom: '0.5rem' }}>
+              <div style={{ fontSize: isMobile ? '9px' : '11px', color: '#666', marginBottom: '8px' }}>
                 Skema Sertifikasi:
               </div>
               <input
                 type="text"
-                style={{ ...inputStyle, marginBottom: '0.625rem' }}
+                style={{ ...inputStyle, marginBottom: '10px' }}
                 value={formData.skemaSertifikasi}
                 onChange={(e) => handleInputChange('skemaSertifikasi', e.target.value)}
                 placeholder="Masukkan skema sertifikasi"
-                className="input-field"
               />
-              <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', color: '#666', marginBottom: '0.5rem' }}>
+              <div style={{ fontSize: isMobile ? '9px' : '11px', color: '#666', marginBottom: '8px' }}>
                 No. Skema Sertifikasi:
               </div>
               <input
@@ -687,18 +660,17 @@ const AK04 = () => {
                 value={formData.noSkemaSertifikasi}
                 onChange={(e) => handleInputChange('noSkemaSertifikasi', e.target.value)}
                 placeholder="Masukkan nomor skema sertifikasi"
-                className="input-field"
               />
             </div>
 
             <div style={{
               border: '1px solid #ddd',
-              borderRadius: '0.25rem',
-              padding: '0.75rem',
+              borderRadius: '4px',
+              padding: '12px',
               backgroundColor: 'white',
-              marginBottom: '0.9375rem',
+              marginBottom: '15px',
             }}>
-              <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', color: '#666', marginBottom: '0.5rem' }}>
+              <div style={{ fontSize: isMobile ? '9px' : '11px', color: '#666', marginBottom: '8px' }}>
                 Banding ini di ajukan atas alasan sebagai berikut:
               </div>
               <textarea
@@ -706,38 +678,36 @@ const AK04 = () => {
                 value={formData.alasanBanding}
                 onChange={(e) => handleInputChange('alasanBanding', e.target.value)}
                 placeholder="Masukkan alasan banding"
-                className="input-field"
               />
             </div>
 
-            <div style={{ marginBottom: '0.9375rem' }}>
-              <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', color: '#666', marginBottom: '0.75rem', lineHeight: '1.4' }}>
+            <div style={{ marginBottom: '15px' }}>
+              <div style={{ fontSize: isMobile ? '9px' : '11px', color: '#666', marginBottom: '12px', lineHeight: '1.4' }}>
                 Anda mempunyai hak mengajukan banding bila tidak merasa puas asesmen tidak sesuai SAP dan tidak memenuhi prinsip asesmen.
               </div>
 
-              <div style={{ display: 'flex', gap: '2.5rem', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <span style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', color: '#666' }}>Persyaratan asesi :</span>
+              <div style={{ display: 'flex', gap: isMobile ? '15px' : '40px', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: isMobile ? '9px' : '11px', color: '#666' }}>Persyaratan asesi :</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <span style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', color: '#666' }}>Tanggal :</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: isMobile ? '9px' : '11px', color: '#666' }}>Tanggal :</span>
                   <input
                     type="date"
-                    style={{ ...inputStyle, width: 'clamp(8rem, 30vw, 9.375rem)' }}
+                    style={{ ...inputStyle, width: isMobile ? '120px' : '150px' }}
                     value={formData.tanggalApprove || ''}
                     onChange={(e) => handleInputChange('tanggalApprove', e.target.value)}
-                    className="input-field"
                   />
                 </div>
               </div>
 
-              <div style={{ marginBottom: '1.25rem' }}>
+              <div style={{ marginBottom: '20px' }}>
                 <span style={{
                   backgroundColor: '#6c757d',
                   color: 'white',
-                  padding: '0.1875rem 0.625rem',
-                  borderRadius: '0.75rem',
-                  fontSize: 'clamp(0.5rem, 1.5vw, 0.625rem)',
+                  padding: '3px 10px',
+                  borderRadius: '12px',
+                  fontSize: isMobile ? '8px' : '10px',
                 }}>
                   Approve
                 </span>
@@ -750,12 +720,11 @@ const AK04 = () => {
                     backgroundColor: '#007bff',
                     color: 'white',
                     border: 'none',
-                    padding: 'clamp(0.5rem, 1.5vw, 0.5rem) clamp(0.75rem, 2vw, 1.25rem)',
-                    borderRadius: '0.9375rem',
-                    fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
+                    padding: isMobile ? '8px 12px' : '8px 20px',
+                    borderRadius: '15px',
+                    fontSize: isMobile ? '10px' : '12px',
                     cursor: 'pointer',
                   }}
-                  className="button-kirim"
                 >
                   Kirim
                 </button>
@@ -766,30 +735,30 @@ const AK04 = () => {
 
         {showPopup && (
           <div style={popupOverlayStyle} onClick={handleClosePopup}>
-            <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()} className="popup-container">
+            <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
               <div style={iconContainerStyle}>
                 <div style={successIconStyle}>
                   <div style={checkCircleStyle}>
                     <div style={checkMarkStyle}>✓</div>
                   </div>
-                  <div style={listLinesStyle} className="list-lines">
+                  <div style={listLinesStyle}>
                     <div style={{
-                      width: 'clamp(3rem, 15vw, 5rem)',
-                      height: '0.625rem',
+                      width: isMobile ? '48px' : '80px',
+                      height: '10px',
                       backgroundColor: '#FF8C00',
-                      borderRadius: '0.3125rem',
+                      borderRadius: '5px',
                     }}></div>
                     <div style={{
-                      width: 'clamp(4rem, 20vw, 7.5rem)',
-                      height: '0.625rem',
+                      width: isMobile ? '64px' : '120px',
+                      height: '10px',
                       backgroundColor: '#FF8C00',
-                      borderRadius: '0.3125rem',
+                      borderRadius: '5px',
                     }}></div>
                     <div style={{
-                      width: 'clamp(5rem, 25vw, 8.75rem)',
-                      height: '0.625rem',
+                      width: isMobile ? '80px' : '140px',
+                      height: '10px',
                       backgroundColor: '#FF8C00',
-                      borderRadius: '0.3125rem',
+                      borderRadius: '5px',
                     }}></div>
                   </div>
                 </div>
@@ -802,7 +771,6 @@ const AK04 = () => {
                 onClick={handleClosePopup}
                 onMouseEnter={(e) => e.target.style.backgroundColor = '#e67e00'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = '#FF8C00'}
-                className="okay-button"
               >
                 Okay
               </button>
