@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { Check } from 'lucide-react';
 
-// Header styles from IA-01.CL
+// Header styles from CeklisObservasi (IA-01.CL)
+const pageContainerStyle = {
+  backgroundColor: 'white',
+  fontFamily: 'Arial, sans-serif',
+  padding: '15px',
+  minHeight: '100vh',
+};
+
 const headerSectionStyle = {
   backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
   backgroundSize: 'cover',
@@ -9,7 +16,6 @@ const headerSectionStyle = {
   borderRadius: '0 0 40px 40px',
   overflow: 'hidden',
   marginBottom: '0',
-  padding: '20px 0',
 };
 
 const logoContainerStyle = {
@@ -30,42 +36,49 @@ const logoTextStyle = {
   letterSpacing: '1px',
 };
 
-// Name box style
-const nameBoxStyle = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: '15px 20px',
+const contentCardStyle = {
   backgroundColor: 'white',
-  margin: '0 20px',
-  border: '1px solid #dee2e6',
-  borderRadius: '8px',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  borderRadius: '0 0 15px 15px',
+  padding: '30px',
+  boxShadow: 'none',
+  marginTop: '0',
+  border: 'none',
 };
 
-const nameStyle = {
+const headerSectionStyle2 = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '20px',
+  marginBottom: '20px',
+  paddingBottom: '10px',
+  borderBottom: '2px solid #FF8C00',
+};
+
+const logoContainer2Style = {
+  flexShrink: 0,
+};
+
+const headerContentStyle = {
+  flex: 1,
+};
+
+const titleStyle = {
   fontSize: '16px',
   fontWeight: 'bold',
+  margin: '0 0 5px 0',
   color: '#333',
-  margin: '0',
+  textAlign: 'center',
 };
 
-// Styling untuk komponen (sisanya tetap sama)
-const pageContainerStyle = {
-  backgroundColor: '#f8f9fa',
-  minHeight: '100vh',
-  fontFamily: 'Arial, sans-serif',
-  padding: '20px 0',
+const subtitleStyle = {
+  fontSize: '16px',
+  fontWeight: 'bold',
+  margin: '0 0 15px 0',
+  color: '#333',
+  textAlign: 'center',
 };
 
-const contentContainerStyle = {
-  margin: '0 20px',
-  backgroundColor: 'white',
-  borderRadius: '12px',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  overflow: 'hidden',
-};
-
+// Original form styles
 const tableHeaderStyle = {
   backgroundColor: '#f8f9fa',
   padding: '12px 20px',
@@ -148,14 +161,14 @@ const buttonContainerStyle = {
   display: 'flex',
   justifyContent: 'center',
   gap: '15px',
-  margin: '20px',
+  margin: '40px 20px 20px 20px', // Increased top margin for more spacing
   paddingBottom: '20px',
 };
 
 const buttonStyle = {
-  padding: '8px 25px',
+  padding: '12px 30px', // Increased padding for more rounded appearance
   border: 'none',
-  borderRadius: '5px',
+  borderRadius: '25px', // More rounded
   cursor: 'pointer',
   fontSize: '12px',
   fontWeight: 'bold',
@@ -175,7 +188,7 @@ const rejectButtonStyle = {
   border: '1px solid #ddd',
 };
 
-// Modal styles from AK-01
+// Modal styles
 const modalOverlayStyle = {
   position: 'fixed',
   top: 0,
@@ -317,7 +330,7 @@ const RekamanAsesmen = () => {
 
   return (
     <div style={pageContainerStyle}>
-      {/* Header Section matching IA-01 design - ENLARGED */}
+      {/* Header Section from CeklisObservasi (IA-01.CL) */}
       <div style={headerSectionStyle}>
         <div style={logoContainerStyle}>
           <h1 style={logoTextStyle}>
@@ -326,13 +339,29 @@ const RekamanAsesmen = () => {
         </div>
       </div>
 
-      {/* Name Box */}
-      <div style={nameBoxStyle}>
-        <div style={nameStyle}>AFDHAL EZHAR RAHMA PANGESTU</div>
-      </div>
+      {/* Content Card with Orange Line and LSP Logo */}
+      <div style={contentCardStyle}>
+        <div style={headerSectionStyle2}>
+          <div style={logoContainer2Style}>
+            <img
+              src="/src/img/image 12.png"
+              alt="LSP Logo"
+              style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '8px',
+                objectFit: 'contain',
+                backgroundColor: '#f8f9fa',
+                padding: '4px',
+              }}
+            />
+          </div>
+          <div style={headerContentStyle}>
+            <div style={titleStyle}>FR.AK.02</div>
+            <div style={subtitleStyle}>REKAMAN ASESMEN</div>
+          </div>
+        </div>
 
-      {/* Konten Utama */}
-      <div style={contentContainerStyle}>
         {/* Header Tabel */}
         <div style={tableHeaderStyle}>
           Skema Sertifikasi
@@ -446,7 +475,7 @@ const RekamanAsesmen = () => {
           {renderCheckboxSection(4)}
         </div>
 
-        {/* Button Container */}
+        {/* Button Container with More Spacing and Rounded Buttons */}
         <div style={buttonContainerStyle}>
           <button style={approveButtonStyle} onClick={handleApprove}>
             APPROVE
@@ -457,7 +486,7 @@ const RekamanAsesmen = () => {
         </div>
       </div>
 
-      {/* Modal Notifikasi Approve - dari AK-01 */}
+      {/* Modal Notifikasi Approve */}
       {showModal && (
         <div style={modalOverlayStyle}>
           <div style={{
@@ -606,7 +635,7 @@ const RekamanAsesmen = () => {
         </div>
       )}
 
-      {/* Modal Notifikasi Reject - dari AK-01 */}
+      {/* Modal Notifikasi Reject */}
       {showRejectModal && (
         <div style={modalOverlayStyle}>
           <div style={{
@@ -770,7 +799,7 @@ const RekamanAsesmen = () => {
               Dokumen ini ditolak karena dokumen dan keaslian data tidak valid.
             </p>
 
-                        
+            {/* Button di kanan */}
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
                 style={{
