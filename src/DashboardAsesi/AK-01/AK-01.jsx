@@ -260,7 +260,7 @@ const sectionTextStyle = {
   marginBottom: '6px',
 };
 
-// Style for date input
+// Style for date and time input
 const dateInputStyle = {
   flex: 1, 
   fontSize: '11px', 
@@ -271,6 +271,18 @@ const dateInputStyle = {
   cursor: 'pointer'
 };
 
+// Style for editable TUK text
+const editableTextStyle = {
+  fontSize: '11px',
+  color: '#333',
+  border: 'none',
+  background: 'transparent',
+  outline: 'none',
+  fontFamily: 'Arial, sans-serif',
+  width: '100%',
+  padding: '2px',
+};
+
 const AK01 = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -279,7 +291,7 @@ const AK01 = () => {
     skemaSertifikasi: '',
     judulUnit: '',
     nomorUnit: '',
-    tuk: 'Sewaktu/Tempat Kerja/Mandiri*',
+    tukTemplate: 'Sewaktu/Tempat Kerja/Mandiri*',
     namaAsesor: '',
     namaAsesi: '',
     checkedItems: {
@@ -538,11 +550,16 @@ const AK01 = () => {
             <div style={{ flex: 1 }}>
               {/* Box 1 Kiri - TUK, Nama Asesor, Nama Asesi */}
               <div style={{...transparentBoxStyle, height: '120px', display: 'flex', flexDirection: 'column', padding: '15px', justifyContent: 'flex-start'}}>
-                <div style={{...sectionTextStyle, marginBottom: '8px'}}>
-                  <strong>TUK</strong>{' : '}<span style={{fontWeight: 'normal'}}>Sewaktu/Tempat Kerja/Mandiri*</span>{' '}
-                  <span style={{ color: '#999', fontSize: '10px', fontWeight: 'normal' }}>
-                    (coret yang tidak perlu)
-                  </span>
+                <div style={{...sectionTextStyle, marginBottom: '8px', display: 'flex', alignItems: 'center'}}>
+                  <strong style={{minWidth: '25px'}}>TUK</strong>
+                  <span style={{margin: '0 5px'}}>{' : '}</span>
+                  <input
+                    type="text"
+                    style={editableTextStyle}
+                    value={formData.tukTemplate}
+                    onChange={(e) => handleInputChange('tukTemplate', e.target.value)}
+                    placeholder="Coret yang tidak perlu"
+                  />
                 </div>
                 <div style={{...sectionTextStyle, marginBottom: '8px', display: 'flex', alignItems: 'center'}}>
                   <strong style={{minWidth: '90px'}}>Nama Asesor</strong>
@@ -595,12 +612,12 @@ const AK01 = () => {
               </div>
 
               {/* Box 3 Kiri - Pelaksanaan Asesmen */}
-              <div style={{...transparentBoxStyle, height: '130px', display: 'flex', flexDirection: 'column', padding: '15px'}}>
+              <div style={{...transparentBoxStyle, height: '150px', display: 'flex', flexDirection: 'column', padding: '15px'}}>
                 <div style={{ ...sectionTextStyle, fontWeight: 'bold', marginBottom: '10px', fontSize: '13px' }}>
                   Pelaksanaan asesmen disepakati pada:
                 </div>
-                <div style={{flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-                  <div style={{display: 'flex', alignItems: 'center', marginBottom: '5px'}}>
+                <div style={{flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: '10px'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}}>
                     <span style={{minWidth: '90px', fontSize: '12px'}}>Tanggal</span>
                     <span style={{margin: '0 5px'}}>{' : '}</span>
                     <input
@@ -610,15 +627,14 @@ const AK01 = () => {
                       onChange={(e) => handleInputChange('tanggal', e.target.value)}
                     />
                   </div>
-                  <div style={{display: 'flex', alignItems: 'center', marginBottom: '5px'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}}>
                     <span style={{minWidth: '90px', fontSize: '12px'}}>Waktu</span>
                     <span style={{margin: '0 5px'}}>{' : '}</span>
                     <input
-                      type="text"
-                      style={{flex: 1, fontSize: '11px', padding: '4px 6px', border: '1px solid #ddd', borderRadius: '3px'}}
+                      type="time"
+                      style={dateInputStyle}
                       value={formData.waktu}
                       onChange={(e) => handleInputChange('waktu', e.target.value)}
-                      placeholder="Contoh: 09:00 - 12:00 WIB"
                     />
                   </div>
                   <div style={{display: 'flex', alignItems: 'center'}}>
@@ -655,7 +671,7 @@ const AK01 = () => {
               </div>
 
               {/* Box 3 Kanan - Asesi */}
-              <div style={{...transparentBoxStyle, height: '130px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '15px'}}>
+              <div style={{...transparentBoxStyle, height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '15px'}}>
                 <div style={{...boxTitleStyle, marginBottom: '10px', fontSize: '13px'}}>Asesi:</div>
                 <div style={{ ...boxTextStyle, textAlign: 'justify', fontWeight: 'normal', fontSize: '12px', lineHeight: '1.4' }}>
                   Saya setuju mengikuti Asesmen dengan pemahaman bahwa informasi yang dikumpulkan hanya digunakan untuk
