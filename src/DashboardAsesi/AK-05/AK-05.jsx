@@ -1,4 +1,3 @@
-/* eslint-disable no-irregular-whitespace */
 // src/DashboardAsesi/AK-05/AK-05.jsx
 
 import React, { useState, useEffect } from 'react';
@@ -114,20 +113,22 @@ const AK05 = () => {
         {`
           /* Base Styles */
           .page-container {
-            background-color: #f5f5f5;
-            font-family: 'Arial', sans-serif;
-            padding: 15px;
+              background-color: #f5f5f5;
+              font-family: 'Arial', sans-serif;
+              padding: 15px;
+              box-sizing: border-box; 
           }
 
           .nav-container {
-            background-color: white;
-            padding: 5px 15px;
-            border-radius: 15px 15px 40px 15px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin: 15px 15px 0 15px;
-            overflow-x: auto;
-            max-width: 50%;
-            white-space: nowrap;
+              background-color: white;
+              padding: 5px 15px;
+              border-radius: 15px 15px 40px 15px;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+              margin: 15px auto 0;
+              width: 95%; 
+              max-width: 500px; 
+              overflow-x: auto;
+              white-space: nowrap;
           }
 
           .nav-scrollbar::-webkit-scrollbar {
@@ -148,179 +149,158 @@ const AK05 = () => {
           }
 
           .image-banner {
-            background-image: linear-gradient(rgba(255, 140, 0, 0.7), rgba(255, 140, 0, 0.7)), url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');
-            background-size: cover;
-            background-position: center;
-            height: 160px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
+              background-image: linear-gradient(rgba(255, 140, 0, 0.7), rgba(255, 140, 0, 0.7)), url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');
+              background-size: cover;
+              background-position: center;
+              height: 160px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 15px;
+              box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+              margin-top: 20px;
           }
 
           .logo-text {
-            color: white;
-            font-size: 48px;
-            font-weight: bold;
-            margin: 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            letter-spacing: 2px;
+              color: white;
+              font-size: clamp(2rem, 8vw, 48px);
+              font-weight: bold;
+              margin: 0;
+              text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+              letter-spacing: 2px;
           }
 
           .form-container {
-            background-color: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
+              background-color: white;
+              border-radius: 15px;
+              padding: clamp(15px, 5vw, 25px); 
+              box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+              margin-top: 20px;
           }
 
           .header-section {
-            display: flex;
-            align-items: flex-start;
-            gap: 20px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #ddd;
+              display: flex;
+              align-items: center;
+              gap: 20px;
+              margin-bottom: 20px;
+              padding-bottom: 15px;
+              border-bottom: 1px solid #ddd;
           }
 
           .logo-container {
-            flex-shrink: 0;
+              flex-shrink: 0;
           }
 
           .logo-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            object-fit: contain;
-            background-color: #f8f9fa;
-            padding: 4px;
+              width: clamp(60px, 15vw, 80px); 
+              height: clamp(60px, 15vw, 80px);
+              border-radius: 8px;
+              object-fit: contain;
+              background-color: #f8f9fa;
+              padding: 4px;
           }
 
           .header-content {
-            flex: 1;
+              flex: 1;
           }
 
           .title, .subtitle {
-            font-size: 16px;
-            font-weight: bold;
-            margin: 0 0 5px 0;
-            color: #333;
-            text-align: center;
+              font-size: clamp(14px, 4vw, 16px);
+              font-weight: bold;
+              margin: 0 0 5px 0;
+              color: #333;
+              text-align: center;
           }
 
           .note-text {
-            font-size: 12px;
-            margin-top: 10px;
+              font-size: 12px;
+              margin-top: 10px;
           }
 
           .form-group {
-            margin-top: 20px;
+              margin-top: 20px;
           }
 
-          .form-textarea {
-            width: 100%;
-            min-height: 100px;
-            padding: 10px;
-            box-sizing: border-box;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-          }
-
-          .form-input {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            outline: none;
+          .form-textarea, .form-input {
+              width: 100%;
+              padding: 10px;
+              box-sizing: border-box;
+              border-radius: 5px;
+              border: 1px solid #ccc;
+              outline: none;
+              font-size: 14px;
           }
 
           .table-responsive {
-            overflow-x: auto;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            padding: 20px;
+              overflow-x: auto;
+              margin-bottom: 20px;
+              border-radius: 8px;
+              border: 1px solid #ccc;
+              padding: 20px;
           }
 
           .ak-05-table, .ak-05-table-2 {
-            width: 100%;
-            border-collapse: collapse;
+              width: 100%;
+              border-collapse: collapse;
           }
 
-          .ak-05-table td, .ak-05-table th {
-            border: 1px solid #ddd;
-            padding: 8px;
-            vertical-align: top;
-          }
-
-          .ak-05-table-2 {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 20px;
+          .ak-05-table td, .ak-05-table th, .ak-05-table-2 td, .ak-05-table-2 th {
+              border: 1px solid #ddd;
+              padding: 8px;
+              vertical-align: top;
+              font-size: 14px;
           }
 
           .table-header-2 {
-            border: 1px solid #ccc;
-            padding: 8px;
-            background-color: #f2f2f2;
-            text-align: center;
-          }
-
-          .table-cell-2 {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: center;
+              background-color: #f2f2f2;
+              text-align: center;
           }
 
           .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+              gap: 20px;
+              margin-top: 20px;
           }
 
           .grid-item {
-            display: flex;
-            flex-direction: column;
+              display: flex;
+              flex-direction: column;
           }
 
           .label-top-margin {
-            margin-top: 10px;
+              margin-top: 10px;
           }
 
           .label-top-margin-20 {
-            margin-top: 20px;
+              margin-top: 20px;
           }
 
           .submit-button-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 20px;
+              display: flex;
+              justify-content: flex-end;
+              margin-top: 20px;
           }
 
           .submit-button, .approve-button {
-            background-color: #1a73e8;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            display: block;
-            width: 100%;
+              background-color: #1a73e8;
+              color: white;
+              padding: 10px 20px;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              font-size: 16px;
+              font-weight: bold;
+              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+              width: 100%;
+              max-width: 200px;
           }
 
           .approve-button {
-            background-color: #ccc;
-            color: #666;
-            cursor: not-allowed;
-            opacity: 0.6;
+              background-color: #ccc;
+              color: #666;
+              cursor: not-allowed;
+              opacity: 0.6;
           }
 
           /* Modal styles */
@@ -465,48 +445,20 @@ const AK05 = () => {
 
           /* --- Media Queries for Responsiveness --- */
           @media (max-width: 768px) {
-            .nav-container {
-              max-width: 100%;
-              margin: 10px;
-              border-radius: 15px;
-            }
-          
-            .image-banner {
-              height: 120px;
-              margin-top: 15px;
-            }
-          
-            .logo-text {
-              font-size: 32px;
-              letter-spacing: 1px;
-            }
-          
-            .form-container {
-              padding: 15px;
-            }
-          
             .header-section {
-              flex-direction: column;
-              align-items: center;
-              gap: 10px;
-              text-align: center;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
             }
-          
-            .logo-img {
-              width: 60px;
-              height: 60px;
+          }
+
+          @media (max-width: 600px) {
+            .ak-05-table, .ak-05-table-2 {
+              border: none;
             }
-          
-            .ak-05-table,
-            .ak-05-table-2 {
-              display: block;
-              width: 100%;
-            }
-            
             .ak-05-table thead, .ak-05-table-2 thead {
               display: none;
             }
-            
             .ak-05-table tr, .ak-05-table-2 tr {
               display: block;
               margin-bottom: 15px;
@@ -514,56 +466,30 @@ const AK05 = () => {
               border-radius: 8px;
               padding: 10px;
             }
-            
             .ak-05-table td, .ak-05-table-2 td {
-              display: block;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
               border: none;
               border-bottom: 1px solid #eee;
               padding: 8px;
-              text-align: left;
               white-space: normal;
             }
-            
-            .ak-05-table td:last-child, .ak-05-table-2 td:last-child {
-              border-bottom: none;
-            }
-            
             .ak-05-table td:before, .ak-05-table-2 td:before {
               content: attr(data-label);
               font-weight: bold;
-              display: block;
-              margin-bottom: 5px;
+              flex-basis: 40%;
+              text-align: left;
             }
-          
-            .grid-container {
-              grid-template-columns: 1fr;
-              gap: 15px;
+            .ak-05-table td:last-child, .ak-05-table-2 td:last-child {
+              border-bottom: none;
             }
-          }
-          
-          @media (max-width: 480px) {
-            .form-container {
-              padding: 10px;
+            .ak-05-table input, .ak-05-table-2 input {
+              flex: 1;
+              text-align: right;
             }
-          
-            .modal-container {
-              min-width: 90%;
-              padding: 20px;
-            }
-          
-            .success-icon {
-              flex-direction: column;
-              gap: 10px;
-            }
-          
-            .list-lines {
-              flex-direction: row;
-              justify-content: center;
-              gap: 4px;
-            }
-          
-            .line, .line-medium, .line-long {
-              height: 8px;
+            .submit-button, .approve-button {
+              max-width: none;
             }
           }
         `}
