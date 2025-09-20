@@ -238,7 +238,6 @@ const submitButtonStyle = {
   marginTop: '20px',
 };
 
-// Popup overlay style
 const popupOverlayStyle = {
   position: 'fixed',
   top: 0,
@@ -252,7 +251,6 @@ const popupOverlayStyle = {
   zIndex: 1000,
 };
 
-// Popup container style
 const popupContainerStyle = {
   backgroundColor: '#f0f0f0',
   borderRadius: '20px',
@@ -264,12 +262,10 @@ const popupContainerStyle = {
   position: 'relative',
 };
 
-// Icon container style
 const iconContainerStyle = {
   marginBottom: '20px',
 };
 
-// Success icon style
 const successIconStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -279,14 +275,12 @@ const successIconStyle = {
   gap: '15px',
 };
 
-// List lines container
 const listLinesStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '6px',
 };
 
-// Check mark circle style
 const checkCircleStyle = {
   width: '60px',
   height: '60px',
@@ -297,14 +291,12 @@ const checkCircleStyle = {
   justifyContent: 'center',
 };
 
-// Check mark style
 const checkMarkStyle = {
   color: 'white',
   fontSize: '24px',
   fontWeight: 'bold',
 };
 
-// Popup text styles
 const popupTitleStyle = {
   fontSize: '18px',
   fontWeight: 'bold',
@@ -313,7 +305,6 @@ const popupTitleStyle = {
   lineHeight: '1.4',
 };
 
-// Okay button style
 const okayButtonStyle = {
   backgroundColor: '#FF8C00',
   border: 'none',
@@ -329,7 +320,6 @@ const okayButtonStyle = {
   transition: 'all 0.2s ease',
 };
 
-// Warning notification style
 const warningNotificationStyle = {
   position: 'fixed',
   top: '20px',
@@ -350,7 +340,6 @@ const APL01 = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   
-  // State untuk menyimpan file yang diupload
   const [uploadedFiles, setUploadedFiles] = useState({
     ktp: null,
     foto: null,
@@ -362,7 +351,6 @@ const APL01 = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Block navigation jika form belum di-submit
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (!isFormSubmitted) {
@@ -371,7 +359,6 @@ const APL01 = () => {
       }
     };
 
-    // Intercept navigation attempts dengan history API
     const originalPushState = window.history.pushState;
     const originalReplaceState = window.history.replaceState;
 
@@ -402,11 +389,9 @@ const APL01 = () => {
     };
   }, [isFormSubmitted]);
 
-  // Fungsi untuk handle file upload
   const handleFileUpload = (fileType, event) => {
     const file = event.target.files[0];
     if (file) {
-      // Validasi tipe file
       const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
       if (!allowedTypes.includes(file.type)) {
         alert('File harus berformat PNG, JPG, JPEG, atau PDF');
@@ -414,7 +399,6 @@ const APL01 = () => {
         return;
       }
 
-      // Validasi ukuran file (maksimal 5MB)
       const maxSize = 5 * 1024 * 1024; // 5MB
       if (file.size > maxSize) {
         alert('Ukuran file maksimal 5MB');
@@ -431,20 +415,17 @@ const APL01 = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Tampilkan pop-up
     setShowPopup(true);
   };
 
   const handleClosePopup = () => {
     setShowPopup(false);
     setIsFormSubmitted(true);
-    // Auto redirect ke APL-02 setelah close popup
     setTimeout(() => {
       navigate('/dashboard-asesi/apl-02');
     }, 300);
   };
 
-  // Fungsi untuk menampilkan nama file yang sudah diupload
   const getFileDisplayName = (fileType) => {
     const file = uploadedFiles[fileType];
     if (file) {
@@ -454,8 +435,7 @@ const APL01 = () => {
   };
 
   return (
-    <div style={pageContainerStyle}>
-      {/* Scrollbar styling for WebKit browsers */}
+    <div style={pageContainerStyle} className="page-container">
       <style>
         {`
           .nav-scrollbar::-webkit-scrollbar {
@@ -482,202 +462,453 @@ const APL01 = () => {
               opacity: 1;
             }
           }
+
+          /* Mobile Responsive Styles */
+          @media (max-width: 768px) {
+            .page-container {
+              padding: 10px !important;
+              overflow-x: hidden !important;
+            }
+
+            .header-section {
+              border-radius: 0 0 20px 20px !important;
+            }
+
+            .nav-container {
+              max-width: 80% !important;
+              padding: 5px 10px !important;
+              border-radius: 0 10px 20px 10px !important;
+            }
+
+            .logo-container {
+              height: 120px !important;
+              margin: 15px 0 !important;
+            }
+
+            .logo-text {
+              font-size: 32px !important;
+              letter-spacing: 1px !important;
+            }
+
+            .content-card {
+              padding: 15px !important;
+              overflow-x: hidden !important;
+            }
+
+            .title {
+              font-size: 16px !important;
+              margin-bottom: 20px !important;
+              text-align: center !important;
+            }
+
+            .form-container {
+              grid-template-columns: 1fr !important;
+              gap: 15px !important;
+            }
+
+            .input-group {
+              margin-top: 20px !important;
+              width: 100% !important;
+              overflow-x: hidden !important;
+            }
+
+            .label {
+              position: static !important;
+              background: none !important;
+              padding: 0 !important;
+              margin-bottom: 8px !important;
+              font-weight: bold !important;
+              font-size: 13px !important;
+              color: #333 !important;
+            }
+
+            .input {
+              width: 100% !important;
+              max-width: 100% !important;
+              padding: 10px 15px !important;
+              font-size: 13px !important;
+              border-radius: 15px !important;
+              box-sizing: border-box !important;
+              background-image: none !important;
+            }
+
+            .textarea {
+              width: 100% !important;
+              max-width: 100% !important;
+              padding: 10px 15px !important;
+              font-size: 13px !important;
+              border-radius: 10px !important;
+              min-height: 60px !important;
+              box-sizing: border-box !important;
+              background-image: none !important;
+            }
+
+            .radio-group {
+              flex-direction: column !important;
+              gap: 15px !important;
+              margin-top: 10px !important;
+              align-items: flex-start !important;
+            }
+
+            .radio-label {
+              font-size: 13px !important;
+              gap: 10px !important;
+            }
+
+            .radio-input {
+              width: 18px !important;
+              height: 18px !important;
+            }
+
+            .file-upload {
+              width: 100% !important;
+              overflow-x: hidden !important;
+            }
+
+            .file-button {
+              width: 100% !important;
+              max-width: 100% !important;
+              padding: 10px 15px !important;
+              font-size: 13px !important;
+              border-radius: 15px !important;
+              box-sizing: border-box !important;
+              background-image: none !important;
+              word-wrap: break-word !important;
+              overflow-wrap: break-word !important;
+            }
+
+            .file-button span:first-child {
+              max-width: 70% !important;
+              overflow: hidden !important;
+              text-overflow: ellipsis !important;
+              white-space: nowrap !important;
+            }
+
+            .upload-icon {
+              font-size: 16px !important;
+              flex-shrink: 0 !important;
+            }
+
+            .checkbox-group {
+              gap: 10px !important;
+              margin-top: 10px !important;
+            }
+
+            .checkbox-label {
+              font-size: 13px !important;
+              gap: 8px !important;
+              line-height: 1.3 !important;
+            }
+
+            .radio-assessment-input {
+              width: 16px !important;
+              height: 16px !important;
+              flex-shrink: 0 !important;
+            }
+
+            .submit-button {
+              width: 100% !important;
+              align-self: stretch !important;
+              padding: 12px 20px !important;
+              font-size: 14px !important;
+              margin-top: 25px !important;
+            }
+
+            .warning-notification {
+              top: 10px !important;
+              right: 10px !important;
+              left: 10px !important;
+              font-size: 12px !important;
+              padding: 10px 15px !important;
+            }
+
+            .popup-container {
+              margin: 20px !important;
+              padding: 20px 25px !important;
+              min-width: unset !important;
+              max-width: calc(100vw - 40px) !important;
+              width: auto !important;
+            }
+
+            .popup-title {
+              font-size: 16px !important;
+              margin-bottom: 20px !important;
+            }
+
+            .success-icon {
+              gap: 10px !important;
+            }
+
+            .check-circle {
+              width: 50px !important;
+              height: 50px !important;
+            }
+
+            .check-mark {
+              font-size: 20px !important;
+            }
+
+            .list-lines div {
+              height: 8px !important;
+            }
+
+            .list-lines div:nth-child(1) {
+              width: 60px !important;
+            }
+
+            .list-lines div:nth-child(2) {
+              width: 80px !important;
+            }
+
+            .list-lines div:nth-child(3) {
+              width: 100px !important;
+            }
+
+            .okay-button {
+              position: static !important;
+              margin-top: 20px !important;
+              width: 100% !important;
+              padding: 12px 20px !important;
+            }
+          }
+
+          /* Very small screens */
+          @media (max-width: 480px) {
+            .page-container {
+              padding: 8px !important;
+            }
+
+            .content-card {
+              padding: 12px !important;
+            }
+
+            .logo-text {
+              font-size: 28px !important;
+            }
+
+            .input-group {
+              margin-top: 15px !important;
+            }
+
+            .input, .textarea {
+              padding: 8px 12px !important;
+              font-size: 12px !important;
+            }
+
+            .file-button {
+              padding: 8px 12px !important;
+              font-size: 12px !important;
+            }
+
+            .radio-label, .checkbox-label {
+              font-size: 12px !important;
+            }
+
+            .nav-container {
+              max-width: 85% !important;
+            }
+
+            .popup-container {
+              margin: 15px !important;
+              padding: 15px 20px !important;
+            }
+          }
         `}
       </style>
       
       {/* Warning Notification */}
       {showWarning && (
-        <div style={warningNotificationStyle}>
+        <div style={warningNotificationStyle} className="warning-notification">
           Silakan isi dan kirim formulir APL-01 terlebih dahulu!
         </div>
       )}
 
-      <div style={headerSectionStyle}>
-        <div style={navContainerStyle} className="nav-scrollbar">
+      <div style={headerSectionStyle} className="header-section">
+        <div style={navContainerStyle} className="nav-scrollbar nav-container">
           <NavAsesi activeTab="FR.APL.01" />
         </div>
 
-        <div style={logoContainerStyle}>
-          <h1 style={logoTextStyle}>
+        <div style={logoContainerStyle} className="logo-container">
+          <h1 style={logoTextStyle} className="logo-text">
             MyLSP
           </h1>
         </div>
       </div>
 
-      <div style={contentCardStyle}>
-        <h2 style={titleStyle}>Lengkapi identitas anda</h2>
+      <div style={contentCardStyle} className="content-card">
+        <h2 style={titleStyle} className="title">Lengkapi identitas anda</h2>
         
-        <form style={formContainerStyle} onSubmit={handleSubmit}>
+        <form style={formContainerStyle} className="form-container" onSubmit={handleSubmit}>
           <div style={leftColumnStyle}>
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>Nama Lengkap</label>
-              <input type="text" style={inputStyle} />
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">Nama Lengkap</label>
+              <input type="text" style={inputStyle} className="input" />
             </div>
             
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>Tanggal lahir</label>
-              <input type="date" style={inputStyle} />
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">Tanggal lahir</label>
+              <input type="date" style={inputStyle} className="input" />
             </div>
             
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>Kelas</label>
-              <input type="text" style={inputStyle} />
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">Kelas</label>
+              <input type="text" style={inputStyle} className="input" />
             </div>
             
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>Jurusan</label>
-              <input type="text" style={inputStyle} />
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">Jurusan</label>
+              <input type="text" style={inputStyle} className="input" />
             </div>
             
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>Alamat</label>
-              <textarea style={textareaStyle}></textarea>
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">Alamat</label>
+              <textarea style={textareaStyle} className="textarea"></textarea>
             </div>
             
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>Jenis kelamin</label>
-              <div style={radioGroupStyle}>
-                <label style={radioLabelStyle}>
-                  <input type="radio" name="gender" value="laki-laki" style={radioInputStyle} />
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">Jenis kelamin</label>
+              <div style={radioGroupStyle} className="radio-group">
+                <label style={radioLabelStyle} className="radio-label">
+                  <input type="radio" name="gender" value="laki-laki" style={radioInputStyle} className="radio-input" />
                   Laki-laki
                 </label>
-                <label style={radioLabelStyle}>
-                  <input type="radio" name="gender" value="perempuan" style={radioInputStyle} />
+                <label style={radioLabelStyle} className="radio-label">
+                  <input type="radio" name="gender" value="perempuan" style={radioInputStyle} className="radio-input" />
                   Perempuan
                 </label>
               </div>
             </div>
             
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>KTP/Kartu Pelajar</label>
-              <div style={fileUploadStyle}>
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">KTP/Kartu Pelajar</label>
+              <div style={fileUploadStyle} className="file-upload">
                 <input 
                   type="file" 
                   accept=".png,.jpg,.jpeg,.pdf"
                   style={fileInputStyle}
                   onChange={(e) => handleFileUpload('ktp', e)}
                 />
-                <div style={fileButtonStyle}>
+                <div style={fileButtonStyle} className="file-button">
                   <span style={{ color: uploadedFiles.ktp ? '#333' : '#666' }}>
                     {getFileDisplayName('ktp') || ''}
                   </span>
-                  <span style={uploadIconStyle}>↑</span>
+                  <span style={uploadIconStyle} className="upload-icon">↑</span>
                 </div>
               </div>
             </div>
             
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>Foto 3x4</label>
-              <div style={fileUploadStyle}>
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">Foto 3x4</label>
+              <div style={fileUploadStyle} className="file-upload">
                 <input 
                   type="file" 
                   accept=".png,.jpg,.jpeg,.pdf"
                   style={fileInputStyle}
                   onChange={(e) => handleFileUpload('foto', e)}
                 />
-                <div style={fileButtonStyle}>
+                <div style={fileButtonStyle} className="file-button">
                   <span style={{ color: uploadedFiles.foto ? '#333' : '#666' }}>
                     {getFileDisplayName('foto') || ''}
                   </span>
-                  <span style={uploadIconStyle}>↑</span>
+                  <span style={uploadIconStyle} className="upload-icon">↑</span>
                 </div>
               </div>
             </div>
             
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>Sertifikat</label>
-              <div style={fileUploadStyle}>
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">Sertifikat</label>
+              <div style={fileUploadStyle} className="file-upload">
                 <input 
                   type="file" 
                   accept=".png,.jpg,.jpeg,.pdf"
                   style={fileInputStyle}
                   onChange={(e) => handleFileUpload('sertifikat', e)}
                 />
-                <div style={fileButtonStyle}>
+                <div style={fileButtonStyle} className="file-button">
                   <span style={{ color: uploadedFiles.sertifikat ? '#333' : '#666' }}>
                     {getFileDisplayName('sertifikat') || ''}
                   </span>
-                  <span style={uploadIconStyle}>↑</span>
+                  <span style={uploadIconStyle} className="upload-icon">↑</span>
                 </div>
               </div>
             </div>
           </div>
           
           <div style={rightColumnStyle}>
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>Jenis Skema</label>
-              <input type="text" style={inputStyle} />
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">Jenis Skema</label>
+              <input type="text" style={inputStyle} className="input" />
             </div>
             
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>No Skema</label>
-              <input type="text" style={inputStyle} />
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">No Skema</label>
+              <input type="text" style={inputStyle} className="input" />
             </div>
             
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>Tujuan Assessment</label>
-              <div style={checkboxGroupStyle}>
-                <label style={checkboxLabelStyle}>
-                  <input type="radio" name="tujuan_assessment" value="sertifikasi" style={radioAssessmentInputStyle} />
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">Tujuan Assessment</label>
+              <div style={checkboxGroupStyle} className="checkbox-group">
+                <label style={checkboxLabelStyle} className="checkbox-label">
+                  <input type="radio" name="tujuan_assessment" value="sertifikasi" style={radioAssessmentInputStyle} className="radio-assessment-input" />
                   <span>Sertifikasi</span>
                 </label>
-                <label style={checkboxLabelStyle}>
-                  <input type="radio" name="tujuan_assessment" value="pkt" style={radioAssessmentInputStyle} />
+                <label style={checkboxLabelStyle} className="checkbox-label">
+                  <input type="radio" name="tujuan_assessment" value="pkt" style={radioAssessmentInputStyle} className="radio-assessment-input" />
                   <span>Pengakuan Kompetensi Terkini (PKT)</span>
                 </label>
-                <label style={checkboxLabelStyle}>
-                  <input type="radio" name="tujuan_assessment" value="rpl" style={radioAssessmentInputStyle} />
+                <label style={checkboxLabelStyle} className="checkbox-label">
+                  <input type="radio" name="tujuan_assessment" value="rpl" style={radioAssessmentInputStyle} className="radio-assessment-input" />
                   <span>Rekognisi Pembelajaran Lampau (RPL)</span>
                 </label>
-                <label style={checkboxLabelStyle}>
-                  <input type="radio" name="tujuan_assessment" value="lainnya" style={radioAssessmentInputStyle} />
+                <label style={checkboxLabelStyle} className="checkbox-label">
+                  <input type="radio" name="tujuan_assessment" value="lainnya" style={radioAssessmentInputStyle} className="radio-assessment-input" />
                   <span>Lainnya</span>
                 </label>
               </div>
             </div>
             
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>Asesor</label>
-              <input type="text" style={inputStyle} />
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">Asesor</label>
+              <input type="text" style={inputStyle} className="input" />
             </div>
             
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>Surat keterangan TH</label>
-              <div style={fileUploadStyle}>
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">Surat keterangan TH</label>
+              <div style={fileUploadStyle} className="file-upload">
                 <input 
                   type="file" 
                   accept=".png,.jpg,.jpeg,.pdf"
                   style={fileInputStyle}
                   onChange={(e) => handleFileUpload('suratTH', e)}
                 />
-                <div style={fileButtonStyle}>
+                <div style={fileButtonStyle} className="file-button">
                   <span style={{ color: uploadedFiles.suratTH ? '#333' : '#666' }}>
                     {getFileDisplayName('suratTH') || ''}
                   </span>
-                  <span style={uploadIconStyle}>↑</span>
+                  <span style={uploadIconStyle} className="upload-icon">↑</span>
                 </div>
               </div>
             </div>
             
-            <div style={inputGroupStyle}>
-              <label style={labelStyle}>Surat keterangan UNIK</label>
-              <div style={fileUploadStyle}>
+            <div style={inputGroupStyle} className="input-group">
+              <label style={labelStyle} className="label">Surat keterangan UNIK</label>
+              <div style={fileUploadStyle} className="file-upload">
                 <input 
                   type="file" 
                   accept=".png,.jpg,.jpeg,.pdf"
                   style={fileInputStyle}
                   onChange={(e) => handleFileUpload('suratUNIK', e)}
                 />
-                <div style={fileButtonStyle}>
+                <div style={fileButtonStyle} className="file-button">
                   <span style={{ color: uploadedFiles.suratUNIK ? '#333' : '#666' }}>
                     {getFileDisplayName('suratUNIK') || ''}
                   </span>
-                  <span style={uploadIconStyle}>↑</span>
+                  <span style={uploadIconStyle} className="upload-icon">↑</span>
                 </div>
               </div>
             </div>
             
-            <button type="submit" style={submitButtonStyle}>
+            <button type="submit" style={submitButtonStyle} className="submit-button">
               Kirim
             </button>
           </div>
@@ -687,16 +918,16 @@ const APL01 = () => {
       {/* Success Popup */}
       {showPopup && (
         <div style={popupOverlayStyle} onClick={handleClosePopup}>
-          <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
+          <div style={popupContainerStyle} className="popup-container" onClick={(e) => e.stopPropagation()}>
             <div style={iconContainerStyle}>
-              <div style={successIconStyle}>
+              <div style={successIconStyle} className="success-icon">
                 {/* Check mark circle - di atas */}
-                <div style={checkCircleStyle}>
-                  <div style={checkMarkStyle}>✓</div>
+                <div style={checkCircleStyle} className="check-circle">
+                  <div style={checkMarkStyle} className="check-mark">✓</div>
                 </div>
                 
                 {/* List lines (3 horizontal lines) - di bawah */}
-                <div style={listLinesStyle}>
+                <div style={listLinesStyle} className="list-lines">
                   <div style={{
                     width: '80px',
                     height: '10px',
@@ -719,10 +950,11 @@ const APL01 = () => {
               </div>
             </div>
             
-            <div style={popupTitleStyle}>Jawaban anda telah direkam!</div>
+            <div style={popupTitleStyle} className="popup-title">Jawaban anda telah direkam!</div>
             
             <button 
               style={okayButtonStyle} 
+              className="okay-button"
               onClick={handleClosePopup}
               onMouseEnter={(e) => e.target.style.backgroundColor = '#e67e00'}
               onMouseLeave={(e) => e.target.style.backgroundColor = '#FF8C00'}
