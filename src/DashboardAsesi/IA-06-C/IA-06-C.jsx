@@ -1,4 +1,6 @@
+/* eslint-disable no-irregular-whitespace */
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
 
 const pageContainerStyle = {
@@ -53,8 +55,8 @@ const formContainerStyle = {
 
 const headerStyle = {
   backgroundColor: 'white',
-  borderTop: '5px solid #ffffffff', // Corrected color based on image
-  borderBottom: '5px solid #ffffffff', // Corrected color based on image
+  borderTop: '5px solid #ffffffff', 
+  borderBottom: '5px solid #ffffffff', 
   padding: '10px 20px',
   display: 'flex',
   alignItems: 'center',
@@ -332,6 +334,7 @@ const IA06C = () => {
   });
 
   const [showPopup, setShowPopup] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
@@ -373,6 +376,7 @@ const IA06C = () => {
 
   const handleClosePopup = () => {
     setShowPopup(false);
+    navigate('/dashboard-asesi/ak-02');
   };
 
   const questions = [
@@ -500,7 +504,7 @@ const IA06C = () => {
                 <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
                 <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
                   <input
-                    type="text"
+                    type="date"
                     style={{ width: '100%', border: 'none', outline: 'none' }}
                     value={formData.tanggal}
                     onChange={(e) => handleInputChange('tanggal', e.target.value)}
