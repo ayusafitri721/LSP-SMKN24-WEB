@@ -80,18 +80,6 @@ const subtitleStyle = {
   margin: '0',
 };
 
-const logoLSPContainerStyle = {
-  position: 'absolute',
-  top: '20px',
-  left: '30px',
-  backgroundColor: '#ff8c00',
-  color: 'white',
-  padding: '8px 12px',
-  fontSize: '14px',
-  fontWeight: 'bold',
-  borderRadius: '4px',
-};
-
 const mainContainerStyle = {
   display: 'grid',
   gridTemplateColumns: '1fr 1fr',
@@ -151,16 +139,26 @@ const valueStyle = {
   flex: 1,
 };
 
-const textareaStyle = {
-  width: '100%',
-  minHeight: '80px',
-  padding: '8px',
-  border: '1px solid #ccc',
-  borderRadius: '4px',
+const inputStyle = {
   fontSize: '12px',
-  fontFamily: 'Arial, sans-serif',
-  resize: 'vertical',
+  color: '#333',
+  flex: 1,
+  border: 'none',
+  outline: 'none',
+  backgroundColor: 'transparent',
+  padding: '2px 0',
+  borderBottom: '1px solid #ccc',
+};
+
+const dateTimeInputStyle = {
+  fontSize: '12px',
+  color: '#333',
+  flex: 1,
+  border: '1px solid #ccc',
+  outline: 'none',
   backgroundColor: 'white',
+  padding: '4px 6px',
+  borderRadius: '4px',
 };
 
 const competencyListStyle = {
@@ -288,7 +286,6 @@ const submitButtonStyle = {
   cursor: 'pointer',
 };
 
-// Popup overlay style
 const popupOverlayStyle = {
   position: 'fixed',
   top: 0,
@@ -302,7 +299,6 @@ const popupOverlayStyle = {
   zIndex: 1000,
 };
 
-// Popup container style
 const popupContainerStyle = {
   backgroundColor: 'white',
   borderRadius: '20px',
@@ -313,12 +309,10 @@ const popupContainerStyle = {
   maxWidth: '400px',
 };
 
-// Icon container style
 const iconContainerStyle = {
   marginBottom: '20px',
 };
 
-// Success icon style
 const successIconStyle = {
   display: 'flex',
   alignItems: 'center',
@@ -328,14 +322,12 @@ const successIconStyle = {
   gap: '15px',
 };
 
-// List lines container
 const listLinesStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '6px',
 };
 
-// Check mark circle style
 const checkCircleStyle = {
   width: '60px',
   height: '60px',
@@ -347,14 +339,12 @@ const checkCircleStyle = {
   marginTop: '6px',
 };
 
-// Check mark style
 const checkMarkStyle = {
   color: 'white',
   fontSize: '24px',
   fontWeight: 'bold',
 };
 
-// Popup text styles
 const popupTitleStyle = {
   fontSize: '20px',
   fontWeight: 'bold',
@@ -371,7 +361,6 @@ const popupSubtitleStyle = {
   lineHeight: '1.3',
 };
 
-// Divider style
 const dividerStyle = {
   height: '2px',
   backgroundColor: '#ddd',
@@ -379,7 +368,6 @@ const dividerStyle = {
   borderRadius: '1px',
 };
 
-// Okay button style
 const okayButtonStyle = {
   backgroundColor: 'transparent',
   border: 'none',
@@ -390,7 +378,6 @@ const okayButtonStyle = {
   padding: '10px 20px',
 };
 
-// Warning notification style
 const warningNotificationStyle = {
   position: 'fixed',
   top: '20px',
@@ -415,19 +402,33 @@ const IA09 = () => {
     sesuai3: false,
     rekomendasi3: false,
   });
+  
+  const [formData, setFormData] = useState({
+    judulUnit: '',
+    nomorUnit: '',
+    namaAsesor: '',
+    namaAsesi: '',
+    buktiKumpul: '',
+    tanggal: '',
+    waktu: '',
+    bukti1: '',
+    bukti2: '',
+    bukti3: '',
+    namaAsesiSignature: 'YUSMAYATI',
+    namaAsesorSignature: 'ROSMANI'
+  });
+  
   const [showPopup, setShowPopup] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Block navigation - hanya allow IA-09
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       e.preventDefault();
       e.returnValue = '';
     };
 
-    // Intercept navigation attempts dengan history API
     const originalPushState = window.history.pushState;
     const originalReplaceState = window.history.replaceState;
 
@@ -462,6 +463,13 @@ const IA09 = () => {
     setCheckboxes(prev => ({
       ...prev,
       [name]: !prev[name]
+    }));
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
     }));
   };
 
@@ -501,80 +509,406 @@ const IA09 = () => {
               opacity: 1;
             }
           }
+
+          /* Mobile Responsive Styles */
+          @media (max-width: 768px) {
+            /* Page container */
+            .page-container {
+              padding: 10px !important;
+            }
+
+            /* Header section */
+            .header-section {
+              border-radius: 0 0 20px 20px !important;
+            }
+
+            /* Navigation */
+            .nav-container {
+              max-width: 80% !important;
+              padding: 5px 10px !important;
+              border-radius: 0 10px 20px 10px !important;
+            }
+
+            /* Logo */
+            .logo-container {
+              height: 80px !important;
+              margin: 10px 0 !important;
+            }
+
+            .logo-text {
+              font-size: 24px !important;
+            }
+
+            /* Content card */
+            .content-card {
+              padding: 15px !important;
+              overflow-x: hidden !important;
+            }
+
+            /* Main container - Stack vertically */
+            .main-container {
+              grid-template-columns: 1fr !important;
+              gap: 20px !important;
+              margin-top: 15px !important;
+            }
+
+            /* Section styles */
+            .section {
+              padding: 10px !important;
+              overflow-x: hidden !important;
+            }
+
+            .section-title {
+              font-size: 12px !important;
+              margin-bottom: 8px !important;
+            }
+
+            /* Field rows - Stack on mobile */
+            .field-row {
+              flex-direction: column !important;
+              margin-bottom: 12px !important;
+              gap: 5px !important;
+              width: 100% !important;
+              overflow-x: hidden !important;
+            }
+
+            .field-row-label {
+              min-width: unset !important;
+              padding-right: 0 !important;
+              font-weight: bold !important;
+              word-wrap: break-word !important;
+              white-space: normal !important;
+            }
+
+            .field-row-colon {
+              display: none !important;
+            }
+
+            .field-row-input {
+              width: 100% !important;
+              max-width: 100% !important;
+              padding: 8px !important;
+              border: 1px solid #ccc !important;
+              border-radius: 4px !important;
+              background: white !important;
+              box-sizing: border-box !important;
+              font-size: 12px !important;
+            }
+
+            /* Fix for long text values */
+            .field-row-value {
+              word-wrap: break-word !important;
+              white-space: normal !important;
+              line-height: 1.4 !important;
+            }
+
+            /* Table responsive */
+            .table-container {
+              overflow-x: auto !important;
+              max-width: 100% !important;
+            }
+
+            .table-row {
+              grid-template-columns: 3fr 1fr 1fr !important;
+              min-width: 300px !important;
+            }
+
+            .table-cell {
+              padding: 6px !important;
+              font-size: 10px !important;
+              word-wrap: break-word !important;
+              overflow-wrap: break-word !important;
+              hyphens: auto !important;
+            }
+
+            .table-cell-input {
+              min-width: 80px !important;
+              max-width: 120px !important;
+              font-size: 10px !important;
+              padding: 4px !important;
+              box-sizing: border-box !important;
+            }
+
+            .checkbox-cell {
+              padding: 8px !important;
+            }
+
+            .table-header {
+              padding: 8px !important;
+              font-size: 11px !important;
+            }
+
+            /* Bottom section - Stack signatures */
+            .bottom-section {
+              grid-template-columns: 1fr !important;
+              gap: 15px !important;
+              margin-top: 20px !important;
+            }
+
+            .signature-box {
+              padding: 10px !important;
+            }
+
+            .signature-name {
+              font-size: 12px !important;
+            }
+
+            .signature-value {
+              font-size: 11px !important;
+              padding: 6px !important;
+            }
+
+            .signature-label {
+              font-size: 11px !important;
+            }
+
+            /* Buttons - Stack on small screens */
+            .button-container {
+              flex-direction: column !important;
+              align-items: stretch !important;
+              gap: 10px !important;
+              margin-top: 20px !important;
+            }
+
+            .button {
+              padding: 12px 20px !important;
+              font-size: 14px !important;
+              width: 100% !important;
+            }
+
+            /* Competency items */
+            .competency-item {
+              flex-direction: column !important;
+              gap: 5px !important;
+              width: 100% !important;
+              overflow-x: hidden !important;
+            }
+
+            .competency-item-input {
+              width: 100% !important;
+              max-width: 100% !important;
+              padding: 8px !important;
+              border: 1px solid #ccc !important;
+              border-radius: 4px !important;
+              background: white !important;
+              box-sizing: border-box !important;
+              font-size: 12px !important;
+            }
+
+            /* Warning notification */
+            .warning-notification {
+              top: 10px !important;
+              right: 10px !important;
+              left: 10px !important;
+              font-size: 12px !important;
+              padding: 10px 15px !important;
+            }
+
+            /* Popup responsive */
+            .popup-container {
+              margin: 20px !important;
+              padding: 20px !important;
+              min-width: unset !important;
+              max-width: calc(100vw - 40px) !important;
+            }
+
+            .popup-title, .popup-subtitle {
+              font-size: 16px !important;
+            }
+
+            .success-icon {
+              gap: 10px !important;
+            }
+
+            .check-circle {
+              width: 40px !important;
+              height: 40px !important;
+            }
+
+            .check-mark {
+              font-size: 18px !important;
+            }
+
+            .list-lines div {
+              width: 40px !important;
+              height: 8px !important;
+            }
+
+            .list-lines div:nth-child(2) {
+              width: 50px !important;
+            }
+
+            .list-lines div:nth-child(3) {
+              width: 60px !important;
+            }
+          }
+
+          /* Very small screens */
+          @media (max-width: 480px) {
+            .content-card {
+              padding: 10px !important;
+            }
+
+            .field-row {
+              flex-direction: column !important;
+              margin-bottom: 10px !important;
+            }
+
+            .field-row-input {
+              font-size: 11px !important;
+              padding: 6px !important;
+            }
+
+            .table-row {
+              grid-template-columns: 2fr 1fr 1fr !important;
+              min-width: 280px !important;
+            }
+
+            .table-cell {
+              flex-direction: column !important;
+              align-items: flex-start !important;
+              gap: 3px !important;
+              padding: 4px !important;
+              font-size: 9px !important;
+            }
+
+            .table-cell-input {
+              width: 100% !important;
+              min-width: unset !important;
+              max-width: 100% !important;
+              font-size: 9px !important;
+              padding: 3px !important;
+            }
+
+            .nav-container {
+              max-width: 95% !important;
+            }
+
+            .competency-item-input {
+              font-size: 11px !important;
+              padding: 6px !important;
+            }
+
+            .section {
+              padding: 8px !important;
+            }
+          }
         `}
       </style>
       
       {/* Warning Notification */}
       {showWarning && (
-        <div style={warningNotificationStyle}>
+        <div style={warningNotificationStyle} className="warning-notification">
           Anda sedang di halaman terakhir!
         </div>
       )}
       
-      <div style={headerSectionStyle}>
-        <div style={navContainerStyle} className="nav-scrollbar">
+      <div style={headerSectionStyle} className="header-section">
+        <div style={navContainerStyle} className="nav-scrollbar nav-container">
           <NavAsesi activeTab="FR.IA.09" />
         </div>
 
-        <div style={logoContainerStyle}>
-          <h1 style={logoTextStyle}>MyLSP</h1>
+        <div style={logoContainerStyle} className="logo-container">
+          <h1 style={logoTextStyle} className="logo-text">MyLSP</h1>
         </div>
       </div>
       
-      <div style={contentCardStyle}>
+      <div style={contentCardStyle} className="content-card">
         <div style={headerStyle}>
           <div style={titleStyle}>FR.IA.09</div>
           <div style={subtitleStyle}>PERTANYAAN WAWANCARA</div>
         </div>
 
-        <div style={mainContainerStyle}>
+        <div style={mainContainerStyle} className="main-container">
           <div style={leftSectionStyle}>
             {/* Skema Sertifikasi */}
-            <div style={sectionStyle}>
-              <div style={sectionTitleStyle}>Skema Sertifikasi</div>
-              <div style={fieldRowStyle}>
-                <span style={labelStyle}>Judul Unit</span>
-                <span style={colonStyle}>:</span>
-                <span style={valueStyle}></span>
+            <div style={sectionStyle} className="section">
+              <div style={sectionTitleStyle} className="section-title">Skema Sertifikasi</div>
+              <div style={fieldRowStyle} className="field-row">
+                <span style={labelStyle} className="field-row-label">Judul Unit</span>
+                <span style={colonStyle} className="field-row-colon">:</span>
+                <input 
+                  type="text"
+                  style={inputStyle}
+                  className="field-row-input"
+                  value={formData.judulUnit}
+                  onChange={(e) => handleInputChange('judulUnit', e.target.value)}
+                />
               </div>
-              <div style={fieldRowStyle}>
-                <span style={labelStyle}>Nomor Unit</span>
-                <span style={colonStyle}>:</span>
-                <span style={valueStyle}></span>
+              <div style={fieldRowStyle} className="field-row">
+                <span style={labelStyle} className="field-row-label">Nomor Unit</span>
+                <span style={colonStyle} className="field-row-colon">:</span>
+                <input 
+                  type="text"
+                  style={inputStyle}
+                  className="field-row-input"
+                  value={formData.nomorUnit}
+                  onChange={(e) => handleInputChange('nomorUnit', e.target.value)}
+                />
               </div>
             </div>
 
             {/* Form Fields */}
             <div>
-              <div style={fieldRowStyle}>
-                <span style={labelStyle}>TUK</span>
-                <span style={colonStyle}>:</span>
-                <span style={valueStyle}>Sewaktu/Tempat Kerja/Mandiri* (coret yang tidak perlu)</span>
+              <div style={fieldRowStyle} className="field-row">
+                <span style={labelStyle} className="field-row-label">TUK</span>
+                <span style={colonStyle} className="field-row-colon">:</span>
+                <span style={valueStyle} className="field-row-value">Sewaktu/Tempat Kerja/Mandiri* (coret yang tidak perlu)</span>
               </div>
-              <div style={fieldRowStyle}>
-                <span style={labelStyle}>Nama Asesor</span>
-                <span style={colonStyle}>:</span>
-                <span style={valueStyle}></span>
+              <div style={fieldRowStyle} className="field-row">
+                <span style={labelStyle} className="field-row-label">Nama Asesor</span>
+                <span style={colonStyle} className="field-row-colon">:</span>
+                <input 
+                  type="text"
+                  style={inputStyle}
+                  className="field-row-input"
+                  value={formData.namaAsesor}
+                  onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
+                />
               </div>
-              <div style={fieldRowStyle}>
-                <span style={labelStyle}>Nama Asesi</span>
-                <span style={colonStyle}>:</span>
-                <span style={valueStyle}></span>
+              <div style={fieldRowStyle} className="field-row">
+                <span style={labelStyle} className="field-row-label">Nama Asesi</span>
+                <span style={colonStyle} className="field-row-colon">:</span>
+                <input 
+                  type="text"
+                  style={inputStyle}
+                  className="field-row-input"
+                  value={formData.namaAsesi}
+                  onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
+                />
               </div>
-              <div style={fieldRowStyle}>
-                <span style={labelStyle}>Bukti yang akan dikumpulkan</span>
-                <span style={colonStyle}>:</span>
-                <span style={valueStyle}></span>
+              <div style={fieldRowStyle} className="field-row">
+                <span style={labelStyle} className="field-row-label">Bukti yang akan dikumpulkan</span>
+                <span style={colonStyle} className="field-row-colon">:</span>
+                <input 
+                  type="text"
+                  style={inputStyle}
+                  className="field-row-input"
+                  value={formData.buktiKumpul}
+                  onChange={(e) => handleInputChange('buktiKumpul', e.target.value)}
+                />
               </div>
-              <div style={fieldRowStyle}>
-                <span style={labelStyle}>Tanggal</span>
-                <span style={colonStyle}>:</span>
-                <span style={valueStyle}></span>
+              <div style={fieldRowStyle} className="field-row">
+                <span style={labelStyle} className="field-row-label">Tanggal</span>
+                <span style={colonStyle} className="field-row-colon">:</span>
+                <input 
+                  type="date"
+                  style={dateTimeInputStyle}
+                  className="field-row-input"
+                  value={formData.tanggal}
+                  onChange={(e) => handleInputChange('tanggal', e.target.value)}
+                />
               </div>
-              <div style={fieldRowStyle}>
-                <span style={labelStyle}>Waktu</span>
-                <span style={colonStyle}>:</span>
-                <span style={valueStyle}></span>
+              <div style={fieldRowStyle} className="field-row">
+                <span style={labelStyle} className="field-row-label">Waktu</span>
+                <span style={colonStyle} className="field-row-colon">:</span>
+                <input 
+                  type="time"
+                  style={dateTimeInputStyle}
+                  className="field-row-input"
+                  value={formData.waktu}
+                  onChange={(e) => handleInputChange('waktu', e.target.value)}
+                />
               </div>
             </div>
 
@@ -587,12 +921,39 @@ const IA09 = () => {
                 Tuliskan bukti-bukti yang terdapat pada Ceklis Verifikasi Portofolio yang memerlukan wawancara
               </div>
               
-              <div style={sectionStyle}>
-                <div style={sectionTitleStyle}>Bukti-bukti Kompetensi</div>
+              <div style={sectionStyle} className="section">
+                <div style={sectionTitleStyle} className="section-title">Bukti-bukti Kompetensi</div>
                 <div style={competencyListStyle}>
-                  <div style={competencyItemStyle}>1.</div>
-                  <div style={competencyItemStyle}>2.</div>
-                  <div style={competencyItemStyle}>3.</div>
+                  <div style={{...competencyItemStyle, display: 'flex', alignItems: 'flex-start', gap: '8px'}} className="competency-item">
+                    <span>1.</span>
+                    <input 
+                      type="text"
+                      style={{...inputStyle, flex: 1}}
+                      className="competency-item-input"
+                      value={formData.bukti1}
+                      onChange={(e) => handleInputChange('bukti1', e.target.value)}
+                    />
+                  </div>
+                  <div style={{...competencyItemStyle, display: 'flex', alignItems: 'flex-start', gap: '8px'}} className="competency-item">
+                    <span>2.</span>
+                    <input 
+                      type="text"
+                      style={{...inputStyle, flex: 1}}
+                      className="competency-item-input"
+                      value={formData.bukti2}
+                      onChange={(e) => handleInputChange('bukti2', e.target.value)}
+                    />
+                  </div>
+                  <div style={{...competencyItemStyle, display: 'flex', alignItems: 'flex-start', gap: '8px'}} className="competency-item">
+                    <span>3.</span>
+                    <input 
+                      type="text"
+                      style={{...inputStyle, flex: 1}}
+                      className="competency-item-input"
+                      value={formData.bukti3}
+                      onChange={(e) => handleInputChange('bukti3', e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -600,31 +961,43 @@ const IA09 = () => {
 
           <div style={rightSectionStyle}>
             {/* Unit Kompetensi */}
-            <div style={sectionStyle}>
-              <div style={sectionTitleStyle}>Unit Kompetensi</div>
-              <div style={fieldRowStyle}>
-                <span style={labelStyle}>Kode Unit</span>
-                <span style={colonStyle}>:</span>
-                <span style={valueStyle}>J.555HHR000.001.2</span>
+            <div style={sectionStyle} className="section">
+              <div style={sectionTitleStyle} className="section-title">Unit Kompetensi</div>
+              <div style={fieldRowStyle} className="field-row">
+                <span style={labelStyle} className="field-row-label">Kode Unit</span>
+                <span style={colonStyle} className="field-row-colon">:</span>
+                <span style={valueStyle} className="field-row-value">J.555HHR000.001.2</span>
               </div>
-              <div style={fieldRowStyle}>
-                <span style={labelStyle}>Judul Unit</span>
-                <span style={colonStyle}>:</span>
-                <span style={valueStyle}>Memproses Reservasi</span>
+              <div style={fieldRowStyle} className="field-row">
+                <span style={labelStyle} className="field-row-label">Judul Unit</span>
+                <span style={colonStyle} className="field-row-colon">:</span>
+                <span style={valueStyle} className="field-row-value">Memproses Reservasi</span>
               </div>
             </div>
 
             {/* Table */}
-            <div style={tableContainerStyle}>
-              <div style={tableRowStyle}>
-                <div style={tableHeaderStyle}>Daftar Pertanyaan Wawancara</div>
-                <div style={tableHeaderStyle}>Rekomendasi</div>
-                <div style={tableHeaderStyle}>Rekomendasi</div>
+            <div style={tableContainerStyle} className="table-container">
+              <div style={{...tableRowStyle, gridTemplateColumns: '2fr 1fr 1fr'}} className="table-row">
+                <div style={tableHeaderStyle} className="table-header">Daftar Pertanyaan Wawancara</div>
+                <div style={{...tableHeaderStyle, gridColumn: 'span 2'}} className="table-header">Rekomendasi</div>
               </div>
               
-              <div style={tableRowStyle}>
-                <div style={tableCellStyle}>1. Sesuai dengan bukti :</div>
-                <div style={checkboxCellStyle}>
+              <div style={{...tableRowStyle, gridTemplateColumns: '2fr 1fr 1fr'}} className="table-row">
+                <div style={{...tableCellStyle, visibility: 'hidden'}}></div>
+                <div style={{...checkboxCellStyle, fontSize: '11px', fontWeight: 'bold'}}>K</div>
+                <div style={{...checkboxCellStyle, fontSize: '11px', fontWeight: 'bold', borderRight: 'none'}}>BK</div>
+              </div>
+              
+              <div style={{...tableRowStyle, gridTemplateColumns: '2fr 1fr 1fr'}} className="table-row">
+                <div style={tableCellStyle} className="table-cell">
+                  <span style={{marginRight: '8px'}}>1. Sesuai dengan bukti :</span>
+                  <input 
+                    type="text"
+                    style={{...inputStyle, minWidth: '150px'}}
+                    className="table-cell-input"
+                  />
+                </div>
+                <div style={checkboxCellStyle} className="checkbox-cell">
                   <input 
                     type="checkbox" 
                     style={checkboxStyle}
@@ -632,7 +1005,7 @@ const IA09 = () => {
                     onChange={() => handleCheckboxChange('sesuai1')}
                   />
                 </div>
-                <div style={checkboxCellStyle}>
+                <div style={{...checkboxCellStyle, borderRight: 'none'}} className="checkbox-cell">
                   <input 
                     type="checkbox" 
                     style={checkboxStyle}
@@ -642,9 +1015,16 @@ const IA09 = () => {
                 </div>
               </div>
               
-              <div style={tableRowStyle}>
-                <div style={tableCellStyle}>2. Sesuai dengan bukti :</div>
-                <div style={checkboxCellStyle}>
+              <div style={{...tableRowStyle, gridTemplateColumns: '2fr 1fr 1fr'}} className="table-row">
+                <div style={tableCellStyle} className="table-cell">
+                  <span style={{marginRight: '8px'}}>2. Sesuai dengan bukti :</span>
+                  <input 
+                    type="text"
+                    style={{...inputStyle, minWidth: '150px'}}
+                    className="table-cell-input"
+                  />
+                </div>
+                <div style={checkboxCellStyle} className="checkbox-cell">
                   <input 
                     type="checkbox" 
                     style={checkboxStyle}
@@ -652,7 +1032,7 @@ const IA09 = () => {
                     onChange={() => handleCheckboxChange('sesuai2')}
                   />
                 </div>
-                <div style={checkboxCellStyle}>
+                <div style={{...checkboxCellStyle, borderRight: 'none'}} className="checkbox-cell">
                   <input 
                     type="checkbox" 
                     style={checkboxStyle}
@@ -662,9 +1042,16 @@ const IA09 = () => {
                 </div>
               </div>
               
-              <div style={tableRowStyle}>
-                <div style={tableCellStyle}>3. Sesuai dengan bukti :</div>
-                <div style={checkboxCellStyle}>
+              <div style={{...tableRowStyle, borderBottom: 'none', gridTemplateColumns: '2fr 1fr 1fr'}} className="table-row">
+                <div style={tableCellStyle} className="table-cell">
+                  <span style={{marginRight: '8px'}}>3. Sesuai dengan bukti :</span>
+                  <input 
+                    type="text"
+                    style={{...inputStyle, minWidth: '150px'}}
+                    className="table-cell-input"
+                  />
+                </div>
+                <div style={checkboxCellStyle} className="checkbox-cell">
                   <input 
                     type="checkbox" 
                     style={checkboxStyle}
@@ -672,7 +1059,7 @@ const IA09 = () => {
                     onChange={() => handleCheckboxChange('sesuai3')}
                   />
                 </div>
-                <div style={checkboxCellStyle}>
+                <div style={{...checkboxCellStyle, borderRight: 'none'}} className="checkbox-cell">
                   <input 
                     type="checkbox" 
                     style={checkboxStyle}
@@ -686,35 +1073,59 @@ const IA09 = () => {
         </div>
 
         {/* Bottom Section - Signatures */}
-        <div style={bottomSectionStyle}>
-          <div style={signatureBoxStyle}>
-            <div style={signatureNameStyle}>Nama Asesi</div>
-            <div style={signatureValueStyle}>YUSMAYATI</div>
-            <div style={signatureLabelStyle}>Persetujuan Asesi</div>
+        <div style={bottomSectionStyle} className="bottom-section">
+          <div style={signatureBoxStyle} className="signature-box">
+            <div style={signatureNameStyle} className="signature-name">Nama Asesi</div>
+            <input 
+              type="text"
+              style={{
+                ...signatureValueStyle,
+                border: '1px solid #ddd',
+                outline: 'none',
+                textAlign: 'center',
+                fontWeight: 'bold'
+              }}
+              className="signature-value"
+              value={formData.namaAsesiSignature}
+              onChange={(e) => handleInputChange('namaAsesiSignature', e.target.value)}
+            />
+            <div style={signatureLabelStyle} className="signature-label">Persetujuan Asesi</div>
           </div>
           
-          <div style={signatureBoxStyle}>
-            <div style={signatureNameStyle}>Nama Asesor</div>
-            <div style={signatureValueStyle}>ROSMANI</div>
-            <div style={signatureLabelStyle}>Persetujuan Asesor</div>
+          <div style={signatureBoxStyle} className="signature-box">
+            <div style={signatureNameStyle} className="signature-name">Nama Asesor</div>
+            <input 
+              type="text"
+              style={{
+                ...signatureValueStyle,
+                border: '1px solid #ddd',
+                outline: 'none',
+                textAlign: 'center',
+                fontWeight: 'bold'
+              }}
+              className="signature-value"
+              value={formData.namaAsesorSignature}
+              onChange={(e) => handleInputChange('namaAsesorSignature', e.target.value)}
+            />
+            <div style={signatureLabelStyle} className="signature-label">Persetujuan Asesor</div>
           </div>
         </div>
 
         {/* Buttons */}
-        <div style={buttonContainerStyle}>
-          <button style={approveButtonStyle}>Setujui</button>
-          <button style={submitButtonStyle} onClick={handleSubmit}>Kirim Jawaban</button>
+        <div style={buttonContainerStyle} className="button-container">
+          <button style={approveButtonStyle} className="button">Setujui</button>
+          <button style={submitButtonStyle} className="button" onClick={handleSubmit}>Kirim Jawaban</button>
         </div>
       </div>
 
       {/* Success Popup */}
       {showPopup && (
         <div style={popupOverlayStyle} onClick={handleClosePopup}>
-          <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
+          <div style={popupContainerStyle} className="popup-container" onClick={(e) => e.stopPropagation()}>
             <div style={iconContainerStyle}>
-              <div style={successIconStyle}>
+              <div style={successIconStyle} className="success-icon">
                 {/* List lines (3 horizontal lines) */}
-                <div style={listLinesStyle}>
+                <div style={listLinesStyle} className="list-lines">
                   <div style={{
                     width: '60px',
                     height: '12px',
@@ -736,14 +1147,14 @@ const IA09 = () => {
                 </div>
                 
                 {/* Check mark circle */}
-                <div style={checkCircleStyle}>
-                  <div style={checkMarkStyle}>✓</div>
+                <div style={checkCircleStyle} className="check-circle">
+                  <div style={checkMarkStyle} className="check-mark">✓</div>
                 </div>
               </div>
             </div>
             
-            <div style={popupTitleStyle}>Jawaban Anda</div>
-            <div style={popupSubtitleStyle}>Berhasil Direkam!</div>
+            <div style={popupTitleStyle} className="popup-title">Jawaban Anda</div>
+            <div style={popupSubtitleStyle} className="popup-subtitle">Berhasil Direkam!</div>
             
             <div style={dividerStyle}></div>
             
