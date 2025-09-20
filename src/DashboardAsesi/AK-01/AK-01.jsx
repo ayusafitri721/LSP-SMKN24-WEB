@@ -15,6 +15,7 @@ const modalOverlayStyle = {
   justifyContent: 'center',
   alignItems: 'center',
   zIndex: 1000,
+  padding: '10px',
 };
 
 const modalContainerStyle = {
@@ -26,6 +27,8 @@ const modalContainerStyle = {
   minWidth: '550px',
   maxWidth: '600px',
   position: 'relative',
+  maxHeight: '90vh',
+  overflowY: 'auto',
 };
 
 const iconContainerStyle = {
@@ -99,6 +102,8 @@ const warningNotificationStyle = {
   fontSize: '14px',
   fontWeight: 'bold',
   animation: 'slideIn 0.3s ease-out',
+  maxWidth: '250px',
+  wordWrap: 'break-word',
 };
 
 const pageContainerStyle = {
@@ -268,7 +273,8 @@ const dateInputStyle = {
   border: '1px solid #ddd', 
   borderRadius: '3px',
   fontFamily: 'Arial, sans-serif',
-  cursor: 'pointer'
+  cursor: 'pointer',
+  minWidth: '120px',
 };
 
 // Style for editable TUK text
@@ -403,8 +409,8 @@ const AK01 = () => {
   };
 
   return (
-    <div style={pageContainerStyle}>
-      {/* Scrollbar styling for WebKit browsers */}
+    <div style={pageContainerStyle} className="page-container">
+      {/* Scrollbar styling for WebKit browsers + RESPONSIVE CSS */}
       <style>
         {`
           .nav-scrollbar::-webkit-scrollbar {
@@ -431,33 +437,217 @@ const AK01 = () => {
               opacity: 1;
             }
           }
+
+          /* RESPONSIVE STYLES */
+          @media (max-width: 768px) {
+            .page-container {
+              padding: 10px !important;
+            }
+            
+            .content-card {
+              padding: 20px !important;
+            }
+            
+            .logo-text {
+              font-size: 28px !important;
+            }
+            
+            .logo-container {
+              height: 100px !important;
+            }
+            
+            .nav-container {
+              max-width: 80% !important;
+            }
+            
+            .header-section2 {
+              flex-direction: column !important;
+              text-align: center !important;
+              align-items: center !important;
+            }
+            
+            .logo-container2 {
+              align-self: center !important;
+            }
+            
+            .title-text {
+              font-size: 14px !important;
+            }
+            
+            .subtitle-text {
+              font-size: 14px !important;
+            }
+            
+            .two-column-layout {
+              flex-direction: column !important;
+              gap: 10px !important;
+            }
+            
+            .transparent-box {
+              height: auto !important;
+              min-height: 100px !important;
+              padding: 12px !important;
+            }
+            
+            .checkbox-grid {
+              grid-template-columns: 1fr !important;
+            }
+            
+            .submit-button {
+              width: 100% !important;
+              float: none !important;
+              margin-top: 15px !important;
+            }
+            
+            .data-table {
+              font-size: 11px !important;
+            }
+            
+            .data-table td {
+              padding: 8px !important;
+            }
+            
+            .input-field {
+              font-size: 11px !important;
+              padding: 3px 6px !important;
+              min-width: 0 !important;
+            }
+            
+            .date-time-input {
+              min-width: 100px !important;
+              font-size: 10px !important;
+            }
+            
+            .warning-notification {
+              right: 10px !important;
+              left: 10px !important;
+              max-width: none !important;
+              font-size: 12px !important;
+            }
+            
+            .modal-container {
+              min-width: 90% !important;
+              max-width: 90% !important;
+              padding: 20px 30px !important;
+              margin: 10px !important;
+            }
+            
+            .modal-title {
+              font-size: 16px !important;
+              margin-bottom: 20px !important;
+              padding-bottom: 20px !important;
+            }
+            
+            .modal-button {
+              position: relative !important;
+              bottom: auto !important;
+              right: auto !important;
+              width: 100% !important;
+              margin-top: 20px !important;
+            }
+
+            .table-input-row {
+              flex-wrap: wrap !important;
+              gap: 5px !important;
+            }
+            
+            .table-input-row span {
+              min-width: auto !important;
+            }
+            
+            .table-input-row input {
+              min-width: 150px !important;
+              flex: 1 !important;
+            }
+
+            .form-row {
+              flex-wrap: wrap !important;
+              gap: 3px !important;
+            }
+            
+            .form-row strong {
+              min-width: auto !important;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .logo-text {
+              font-size: 24px !important;
+            }
+            
+            .nav-container {
+              max-width: 90% !important;
+              padding: 5px 10px !important;
+            }
+            
+            .content-card {
+              padding: 15px !important;
+            }
+            
+            .transparent-box {
+              padding: 10px !important;
+            }
+            
+            .section-text {
+              font-size: 10px !important;
+            }
+            
+            .box-text {
+              font-size: 10px !important;
+            }
+            
+            .checkbox-item {
+              font-size: 9px !important;
+            }
+            
+            .input-field {
+              font-size: 10px !important;
+            }
+            
+            .submit-button {
+              font-size: 12px !important;
+              padding: 10px 20px !important;
+            }
+            
+            .data-table {
+              font-size: 10px !important;
+            }
+            
+            .data-table td {
+              padding: 6px !important;
+            }
+
+            .table-input-row input {
+              min-width: 120px !important;
+            }
+          }
         `}
       </style>
 
       {/* Warning Notification */}
       {showWarning && (
-        <div style={warningNotificationStyle}>
+        <div style={warningNotificationStyle} className="warning-notification">
           Silakan isi dan kirim formulir FR.AK.01 terlebih dahulu!
         </div>
       )}
 
       {/* Header Section matching APL-01 design */}
       <div style={headerSectionStyle}>
-        <div style={navContainerStyle} className="nav-scrollbar">
+        <div style={navContainerStyle} className="nav-scrollbar nav-container">
           <NavAsesi activeTab="FR.AK.01" />
         </div>
 
-        <div style={logoContainerStyle}>
-          <h1 style={logoTextStyle}>
+        <div style={logoContainerStyle} className="logo-container">
+          <h1 style={logoTextStyle} className="logo-text">
             MyLSP
           </h1>
         </div>
       </div>
 
       {/* Content Card */}
-      <div style={contentCardStyle}>
-        <div style={headerSectionStyle2}>
-          <div style={logoContainer2Style}>
+      <div style={contentCardStyle} className="content-card">
+        <div style={headerSectionStyle2} className="header-section2">
+          <div style={logoContainer2Style} className="logo-container2">
             <img
               src="/src/img/image 12.png"
               alt="LSP Logo"
@@ -472,14 +662,14 @@ const AK01 = () => {
             />
           </div>
           <div style={headerContentStyle}>
-            <div style={titleStyle}>FR.AK.01</div>
-            <div style={subtitleStyle}>PERSETUJUAN ASESMEN DAN KERAHASIAAN</div>
+            <div style={titleStyle} className="title-text">FR.AK.01</div>
+            <div style={subtitleStyle} className="subtitle-text">PERSETUJUAN ASESMEN DAN KERAHASIAAN</div>
           </div>
         </div>
 
         <form onSubmit={handleSubmit}>
           {/* Skema Sertifikasi */}
-          <table style={{width: '100%', marginBottom: '15px', fontSize: '12px'}}>
+          <table style={{width: '100%', marginBottom: '15px', fontSize: '12px'}} className="data-table">
             <tbody>
               <tr>
                 <td style={{
@@ -499,7 +689,7 @@ const AK01 = () => {
                   backgroundColor: 'white'
                 }}>
                   <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-                    <div style={{display: 'flex', alignItems: 'center'}}>
+                    <div style={{display: 'flex', alignItems: 'center'}} className="table-input-row">
                       <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Judul Unit</span>
                       <span style={{margin: '0 8px'}}>:</span>
                       <input
@@ -511,12 +701,13 @@ const AK01 = () => {
                           borderRadius: '4px',
                           fontSize: '12px'
                         }}
+                        className="input-field"
                         value={formData.judulUnit}
                         onChange={(e) => handleInputChange('judulUnit', e.target.value)}
                         placeholder="Masukkan judul unit"
                       />
                     </div>
-                    <div style={{display: 'flex', alignItems: 'center'}}>
+                    <div style={{display: 'flex', alignItems: 'center'}} className="table-input-row">
                       <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Nomor Unit</span>
                       <span style={{margin: '0 8px'}}>:</span>
                       <input
@@ -528,6 +719,7 @@ const AK01 = () => {
                           borderRadius: '4px',
                           fontSize: '12px'
                         }}
+                        className="input-field"
                         value={formData.nomorUnit}
                         onChange={(e) => handleInputChange('nomorUnit', e.target.value)}
                         placeholder="Masukkan nomor unit"
@@ -539,18 +731,18 @@ const AK01 = () => {
             </tbody>
           </table>
 
-          <div style={transparentBoxStyle}>
-            <div style={boxTextStyle}>
+          <div style={transparentBoxStyle} className="transparent-box">
+            <div style={boxTextStyle} className="box-text">
               Persetujuan Asesmen ini untuk menjamin bahwa Asesi telah diberi arahan secara rinci tentang perencanaan dan
               proses asesmen.
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }} className="two-column-layout">
             <div style={{ flex: 1 }}>
               {/* Box 1 Kiri - TUK, Nama Asesor, Nama Asesi */}
-              <div style={{...transparentBoxStyle, height: '120px', display: 'flex', flexDirection: 'column', padding: '15px', justifyContent: 'flex-start'}}>
-                <div style={{...sectionTextStyle, marginBottom: '8px', display: 'flex', alignItems: 'center'}}>
+              <div style={{...transparentBoxStyle, height: '120px', display: 'flex', flexDirection: 'column', padding: '15px', justifyContent: 'flex-start'}} className="transparent-box">
+                <div style={{...sectionTextStyle, marginBottom: '8px', display: 'flex', alignItems: 'center'}} className="section-text form-row">
                   <strong style={{minWidth: '25px'}}>TUK</strong>
                   <span style={{margin: '0 5px'}}>{' : '}</span>
                   <input
@@ -561,22 +753,24 @@ const AK01 = () => {
                     placeholder="Coret yang tidak perlu"
                   />
                 </div>
-                <div style={{...sectionTextStyle, marginBottom: '8px', display: 'flex', alignItems: 'center'}}>
+                <div style={{...sectionTextStyle, marginBottom: '8px', display: 'flex', alignItems: 'center'}} className="section-text form-row">
                   <strong style={{minWidth: '90px'}}>Nama Asesor</strong>
                   <span style={{margin: '0 5px'}}>{' : '}</span>
                   <input
                     type="text"
                     style={{ flex: 1, fontSize: '11px', padding: '3px 6px', border: '1px solid #ddd', borderRadius: '3px' }}
+                    className="input-field"
                     value={formData.namaAsesor}
                     onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
                   />
                 </div>
-                <div style={{...sectionTextStyle, marginBottom: '0', display: 'flex', alignItems: 'center'}}>
+                <div style={{...sectionTextStyle, marginBottom: '0', display: 'flex', alignItems: 'center'}} className="section-text form-row">
                   <strong style={{minWidth: '90px'}}>Nama Asesi</strong>
                   <span style={{margin: '0 5px'}}>{' : '}</span>
                   <input
                     type="text"
                     style={{ flex: 1, fontSize: '11px', padding: '3px 6px', border: '1px solid #ddd', borderRadius: '3px' }}
+                    className="input-field"
                     value={formData.namaAsesi}
                     onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
                   />
@@ -584,11 +778,11 @@ const AK01 = () => {
               </div>
 
               {/* Box 2 Kiri - Bukti yang akan dikumpulkan */}
-              <div style={{...transparentBoxStyle, height: '130px', display: 'flex', flexDirection: 'column', padding: '15px'}}>
-                <div style={{ ...sectionTextStyle, fontWeight: 'bold', marginBottom: '8px', fontSize: '13px' }}>
+              <div style={{...transparentBoxStyle, height: '130px', display: 'flex', flexDirection: 'column', padding: '15px'}} className="transparent-box">
+                <div style={{ ...sectionTextStyle, fontWeight: 'bold', marginBottom: '8px', fontSize: '13px' }} className="section-text">
                   Bukti yang akan dikumpulkan:
                 </div>
-                <div style={{...checkboxGridStyle, gap: '5px 10px'}}>
+                <div style={{...checkboxGridStyle, gap: '5px 10px'}} className="checkbox-grid">
                   {[
                     { key: 'portfolio', label: 'Hasil verifikasi Portofolio' },
                     { key: 'reviewProduk', label: 'Hasil review produk' },
@@ -598,7 +792,7 @@ const AK01 = () => {
                     { key: 'pertanyaanTertulis', label: 'Hasil Pertanyaan Tertulis' },
                     { key: 'wawancara', label: 'Hasil Pertanyaan wawancara' },
                   ].map((item) => (
-                    <div key={item.key} style={{...checkboxItemStyle, fontSize: '11px'}}>
+                    <div key={item.key} style={{...checkboxItemStyle, fontSize: '11px'}} className="checkbox-item">
                       <input
                         type="checkbox"
                         style={checkboxStyle}
@@ -612,37 +806,40 @@ const AK01 = () => {
               </div>
 
               {/* Box 3 Kiri - Pelaksanaan Asesmen */}
-              <div style={{...transparentBoxStyle, height: '150px', display: 'flex', flexDirection: 'column', padding: '15px'}}>
-                <div style={{ ...sectionTextStyle, fontWeight: 'bold', marginBottom: '10px', fontSize: '13px' }}>
+              <div style={{...transparentBoxStyle, height: '150px', display: 'flex', flexDirection: 'column', padding: '15px'}} className="transparent-box">
+                <div style={{ ...sectionTextStyle, fontWeight: 'bold', marginBottom: '10px', fontSize: '13px' }} className="section-text">
                   Pelaksanaan asesmen disepakati pada:
                 </div>
                 <div style={{flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: '10px'}}>
-                  <div style={{display: 'flex', alignItems: 'center'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}} className="form-row">
                     <span style={{minWidth: '90px', fontSize: '12px'}}>Tanggal</span>
                     <span style={{margin: '0 5px'}}>{' : '}</span>
                     <input
                       type="date"
                       style={dateInputStyle}
+                      className="date-time-input"
                       value={formData.tanggal}
                       onChange={(e) => handleInputChange('tanggal', e.target.value)}
                     />
                   </div>
-                  <div style={{display: 'flex', alignItems: 'center'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}} className="form-row">
                     <span style={{minWidth: '90px', fontSize: '12px'}}>Waktu</span>
                     <span style={{margin: '0 5px'}}>{' : '}</span>
                     <input
                       type="time"
                       style={dateInputStyle}
+                      className="date-time-input"
                       value={formData.waktu}
                       onChange={(e) => handleInputChange('waktu', e.target.value)}
                     />
                   </div>
-                  <div style={{display: 'flex', alignItems: 'center'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}} className="form-row">
                     <span style={{minWidth: '90px', fontSize: '12px'}}>TUK</span>
                     <span style={{margin: '0 5px'}}>{' : '}</span>
                     <input
                       type="text"
                       style={{flex: 1, fontSize: '11px', padding: '4px 6px', border: '1px solid #ddd', borderRadius: '3px'}}
+                      className="input-field"
                       value={formData.tukPelaksanaan}
                       onChange={(e) => handleInputChange('tukPelaksanaan', e.target.value)}
                     />
@@ -653,17 +850,17 @@ const AK01 = () => {
 
             <div style={{ flex: 1 }}>
               {/* Box 1 Kanan - Asesi */}
-              <div style={{...transparentBoxStyle, height: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '15px'}}>
+              <div style={{...transparentBoxStyle, height: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '15px'}} className="transparent-box">
                 <div style={{...boxTitleStyle, marginBottom: '10px', fontSize: '13px'}}>Asesi:</div>
-                <div style={{ ...boxTextStyle, textAlign: 'justify', fontWeight: 'normal', fontSize: '12px', lineHeight: '1.4' }}>
+                <div style={{ ...boxTextStyle, textAlign: 'justify', fontWeight: 'normal', fontSize: '12px', lineHeight: '1.4' }} className="box-text">
                   Bahwa saya telah mendapatkan penjelasan terkait hak dan prosedur banding asesmen dari asesor.
                 </div>
               </div>
 
               {/* Box 2 Kanan - Asesor */}
-              <div style={{...transparentBoxStyle, height: '130px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '15px'}}>
+              <div style={{...transparentBoxStyle, height: '130px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '15px'}} className="transparent-box">
                 <div style={{fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#333'}}>Asesor:</div>
-                <div style={{ fontSize: '11px', color: '#333', lineHeight: '1.3', textAlign: 'justify', fontWeight: 'normal' }}>
+                <div style={{ fontSize: '11px', color: '#333', lineHeight: '1.3', textAlign: 'justify', fontWeight: 'normal' }} className="box-text">
                   Menyatakan tidak akan membuka hasil pekerjaan yang diperoleh karena penguasaan saya sebagai Asesor dalam
                   pekerjaan Asesmen kepada siapapun atau organisasi manapun selain kepada pihak yang berwenang sehubungan
                   dengan kewajiban saya sebagai Asesor yang ditugaskan oleh LSP.
@@ -671,9 +868,9 @@ const AK01 = () => {
               </div>
 
               {/* Box 3 Kanan - Asesi */}
-              <div style={{...transparentBoxStyle, height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '15px'}}>
+              <div style={{...transparentBoxStyle, height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '15px'}} className="transparent-box">
                 <div style={{...boxTitleStyle, marginBottom: '10px', fontSize: '13px'}}>Asesi:</div>
-                <div style={{ ...boxTextStyle, textAlign: 'justify', fontWeight: 'normal', fontSize: '12px', lineHeight: '1.4' }}>
+                <div style={{ ...boxTextStyle, textAlign: 'justify', fontWeight: 'normal', fontSize: '12px', lineHeight: '1.4' }} className="box-text">
                   Saya setuju mengikuti Asesmen dengan pemahaman bahwa informasi yang dikumpulkan hanya digunakan untuk
                   pengembangan profesional dan hanya dapat diakses oleh orang tertentu saja.
                 </div>
@@ -681,7 +878,7 @@ const AK01 = () => {
             </div>
           </div>
 
-          <button type="submit" style={submitButtonStyle}>
+          <button type="submit" style={submitButtonStyle} className="submit-button">
             Kirim
           </button>
           <div style={{ clear: 'both', marginBottom: '20px' }}></div>
@@ -690,7 +887,7 @@ const AK01 = () => {
 
       {showModal && (
         <div style={modalOverlayStyle} onClick={handleCloseModal}>
-          <div style={modalContainerStyle} onClick={(e) => e.stopPropagation()}>
+          <div style={modalContainerStyle} className="modal-container" onClick={(e) => e.stopPropagation()}>
             <div style={iconContainerStyle}>
               <div style={successIconStyle}>
                 <div style={checkCircleStyle}>
@@ -720,10 +917,11 @@ const AK01 = () => {
               </div>
             </div>
             
-            <div style={modalTitleStyle}>Jawaban anda telah direkam!</div>
+            <div style={modalTitleStyle} className="modal-title">Jawaban anda telah direkam!</div>
             
             <button 
               style={okayButtonStyle} 
+              className="modal-button"
               onClick={handleCloseModal}
               onMouseEnter={(e) => e.target.style.backgroundColor = '#e67e00'}
               onMouseLeave={(e) => e.target.style.backgroundColor = '#FF8C00'}

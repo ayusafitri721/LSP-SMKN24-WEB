@@ -1,302 +1,6 @@
-// src/DashboardAsesi/IA-02/IA-02.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
-
-const pageContainerStyle = {
-  backgroundColor: 'white',
-  fontFamily: 'Arial, sans-serif',
-  padding: '15px',
-  minHeight: '100vh',
-};
-
-const headerSectionStyle = {
-  backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  borderRadius: '0 0 40px 40px',
-  overflow: 'hidden',
-  marginBottom: '0',
-};
-
-const navContainerStyle = {
-  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-  padding: '5px 15px',
-  borderRadius: '15px 15px 40px 15px',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  margin: '0 15px 0 0',
-  overflowX: 'auto',
-  maxWidth: '50%',
-  whiteSpace: 'nowrap',
-  backdropFilter: 'blur(10px)',
-  position: 'relative',
-  zIndex: 2,
-};
-
-const logoContainerStyle = {
-  height: '180px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginTop: '20px',
-};
-
-const logoTextStyle = {
-  color: 'white',
-  fontSize: '48px',
-  fontWeight: 'bold',
-  margin: 0,
-  textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-  letterSpacing: '2px',
-};
-
-const contentCardStyle = {
-  backgroundColor: 'white',
-  borderRadius: '0 0 15px 15px',
-  padding: '28px',
-  boxShadow: 'none',
-  marginTop: '0',
-  border: 'none',
-};
-
-const headerWithTextStyle = {
-  marginBottom: '18px',
-  paddingBottom: '16px',
-  borderBottom: '2px solid #f1f5f9',
-  textAlign: 'center',
-};
-
-const formSectionStyle = { marginTop: '18px' };
-
-const formGridStyle = {
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr',
-  gap: '22px',
-  marginBottom: '18px',
-};
-
-const inputStyle = {
-  width: '100%',
-  padding: '12px 14px',
-  marginTop: '6px',
-  marginBottom: '14px',
-  borderRadius: '8px',
-  border: '2px solid #e6edf3',
-  fontSize: '14px',
-  transition: 'all 0.15s ease',
-  backgroundColor: '#fbfbfb',
-  outline: 'none',
-  boxSizing: 'border-box',
-  fontFamily: 'Arial, sans-serif',
-  color: '#0f172a',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-};
-
-const labelStyle = {
-  fontSize: '14px',
-  fontWeight: 'bold',
-  color: '#0f172a',
-  display: 'block',
-  marginBottom: '6px',
-  lineHeight: '1.3',
-};
-
-const instructionStyle = {
-  backgroundColor: '#fff7ed',
-  padding: '18px',
-  borderRadius: '10px',
-  marginTop: '14px',
-  border: '1px solid #ffedd5',
-  borderLeft: '5px solid #fb923c',
-};
-
-const tableContainerStyle = {
-  overflowX: 'auto',
-  marginTop: '14px',
-  borderRadius: '10px',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.03)',
-  border: '1px solid #e6edf3',
-  backgroundColor: 'white',
-};
-
-const tableStyle = {
-  width: '100%',
-  borderCollapse: 'collapse',
-  backgroundColor: 'white',
-};
-
-const thStyle = {
-  padding: '14px 16px',
-  textAlign: 'left',
-  backgroundColor: '#f8fafc',
-  fontWeight: 'bold',
-  fontSize: '12px',
-  color: '#0f172a',
-  borderBottom: '2px solid #e6edf3',
-  letterSpacing: '0.08em',
-  textTransform: 'uppercase',
-};
-
-const tdStyle = {
-  padding: '12px 16px',
-  textAlign: 'left',
-  fontSize: '14px',
-  color: '#475569',
-  backgroundColor: 'white',
-  borderBottom: '1px solid #f3f6f9',
-  lineHeight: '1.5',
-  verticalAlign: 'top',
-};
-
-const tdCodeStyle = {
-  ...tdStyle,
-  fontSize: '13px',
-  color: '#0b1220',
-  fontWeight: 'bold',
-  fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Courier New", monospace',
-  letterSpacing: '0.02em',
-};
-
-const scenarioContainerStyle = {
-  marginTop: '16px',
-  padding: '16px',
-  backgroundColor: '#f8fafc',
-  borderRadius: '8px',
-  border: '1px solid #e6edf3',
-};
-
-const bottomSectionStyle = {
-  marginTop: '20px',
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr auto',
-  gap: '18px',
-  alignItems: 'end',
-  padding: '18px',
-  backgroundColor: '#fbfbfd',
-  borderRadius: '12px',
-  border: '1px solid #e2e8f0',
-};
-
-const submitButtonStyle = {
-  backgroundColor: '#007bff',
-  color: 'white',
-  padding: '12px 26px',
-  borderRadius: '22px',
-  border: 'none',
-  cursor: 'pointer',
-  fontSize: '14px',
-  fontWeight: 'bold',
-  boxShadow: '0 8px 18px rgba(0,123,255,0.16)',
-  transition: 'all 0.18s ease',
-};
-
-// Popup overlay style
-const popupOverlayStyle = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  zIndex: 1000,
-};
-
-// Popup container style
-const popupContainerStyle = {
-  backgroundColor: '#f0f0f0',
-  borderRadius: '20px',
-  padding: '30px 50px',
-  textAlign: 'center',
-  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-  minWidth: '550px',
-  maxWidth: '600px',
-  position: 'relative',
-};
-
-// Icon container style
-const iconContainerStyle = {
-  marginBottom: '20px',
-};
-
-// Success icon style
-const successIconStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  margin: '0 auto 25px',
-  gap: '15px',
-};
-
-// List lines container
-const listLinesStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '6px',
-};
-
-// Check mark circle style
-const checkCircleStyle = {
-  width: '60px',
-  height: '60px',
-  borderRadius: '50%',
-  backgroundColor: '#FF8C00',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
-
-// Check mark style
-const checkMarkStyle = {
-  color: 'white',
-  fontSize: '24px',
-  fontWeight: 'bold',
-};
-
-// Popup text styles
-const popupTitleStyle = {
-  fontSize: '18px',
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: '30px',
-  lineHeight: '1.4',
-};
-
-// Okay button style
-const okayButtonStyle = {
-  backgroundColor: '#FF8C00',
-  border: 'none',
-  fontSize: '14px',
-  fontWeight: '600',
-  color: 'white',
-  cursor: 'pointer',
-  padding: '10px 25px',
-  borderRadius: '20px',
-  position: 'absolute',
-  bottom: '20px',
-  right: '30px',
-  transition: 'all 0.2s ease',
-};
-
-// Warning notification style
-const warningNotificationStyle = {
-  position: 'fixed',
-  top: '20px',
-  right: '20px',
-  backgroundColor: '#ff6b6b',
-  color: 'white',
-  padding: '15px 20px',
-  borderRadius: '10px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-  zIndex: 1001,
-  fontSize: '14px',
-  fontWeight: 'bold',
-  animation: 'slideIn 0.3s ease-out',
-};
 
 const IA02 = () => {
   const [showSuccess, setShowSuccess] = useState(false);
@@ -315,7 +19,6 @@ const IA02 = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Block navigation jika form belum di-submit
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (!isFormSubmitted) {
@@ -324,7 +27,6 @@ const IA02 = () => {
       }
     };
 
-    // Intercept navigation attempts dengan history API
     const originalPushState = window.history.pushState;
     const originalReplaceState = window.history.replaceState;
 
@@ -367,7 +69,6 @@ const IA02 = () => {
 
   const handleOkay = () => {
     setShowSuccess(false);
-    // Auto redirect ke IA-03 setelah close popup
     setTimeout(() => {
       navigate('/dashboard-asesi/ia-03');
     }, 300);
@@ -386,12 +87,18 @@ const IA02 = () => {
   };
 
   return (
-    <div style={pageContainerStyle}>
+    <div style={{
+      backgroundColor: 'white',
+      fontFamily: 'Arial, sans-serif',
+      padding: '1rem',
+      minHeight: '100vh',
+      boxSizing: 'border-box',
+    }}>
       <style>{`
         @keyframes modalPop {
           0% { transform: translateY(8px) scale(0.98); opacity: 0; }
-          60% { transform: translateY(-6px) scale(1.02); opacity: 1;}
-          100% { transform: translateY(0) scale(1); opacity: 1;}
+          60% { transform: translateY(-6px) scale(1.02); opacity: 1; }
+          100% { transform: translateY(0) scale(1); opacity: 1; }
         }
         .nav-scrollbar::-webkit-scrollbar { 
           height: 5px; 
@@ -413,619 +120,428 @@ const IA02 = () => {
           transform: translateY(-3px); 
         }
         @keyframes slideIn {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @media (max-width: 768px) {
+          .nav-container { 
+            max-width: 100%; 
+            margin: 0; 
+            padding: 0.5rem;
           }
-          to {
-            transform: translateX(0);
-            opacity: 1;
+          .logo-text { 
+            font-size: 2rem; 
+          }
+          .content-card { 
+            padding: 1rem; 
+          }
+          .form-table td { 
+            display: block; 
+            width: 100%; 
+            box-sizing: border-box; 
+            border: none; 
+            padding: 0.5rem; 
+          }
+          .form-table td:first-child { 
+            background-color: #f8fafc; 
+            font-weight: bold; 
+          }
+          .form-table td:nth-child(2) { 
+            display: none; 
+          }
+          .scenario-table th, .scenario-table td { 
+            font-size: 0.8rem; 
+            padding: 0.5rem; 
+          }
+          .bottom-section { 
+            flex-direction: column; 
+            align-items: flex-start; 
+          }
+          .popup-container { 
+            min-width: 80vw; 
+            padding: 1.5rem; 
+          }
+          .warning-notification { 
+            top: 10px; 
+            right: 10px; 
+            padding: 0.8rem; 
+            font-size: 0.9rem; 
           }
         }
       `}</style>
 
-      {/* Warning Notification */}
       {showWarning && (
-        <div style={warningNotificationStyle}>
+        <div style={{
+          position: 'fixed',
+          top: '1rem',
+          right: '1rem',
+          backgroundColor: '#ff6b6b',
+          color: 'white',
+          padding: '0.8rem 1rem',
+          borderRadius: '0.5rem',
+          boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+          zIndex: 1001,
+          fontSize: '0.9rem',
+          fontWeight: 'bold',
+          animation: 'slideIn 0.3s ease-out',
+        }}>
           Silakan isi dan kirim formulir IA-02 terlebih dahulu!
         </div>
       )}
 
-      {/* Header dengan background image */}
-      <div style={headerSectionStyle}>
-        <div style={navContainerStyle} className="nav-scrollbar">
+      <div style={{
+        backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        borderRadius: '0 0 2rem 2rem',
+        overflow: 'hidden',
+        marginBottom: '0',
+      }}>
+        <div style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          padding: '0.5rem 1rem',
+          borderRadius: '0.5rem 0.5rem 2rem 0.5rem',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          margin: '0 1rem 0 0',
+          overflowX: 'auto',
+          maxWidth: '100%',
+          whiteSpace: 'nowrap',
+          backdropFilter: 'blur(10px)',
+          position: 'relative',
+          zIndex: 2,
+        }} className="nav-container nav-scrollbar">
           <NavAsesi activeTab="FR.IA.02.TPD" />
         </div>
 
-        <div style={logoContainerStyle}>
-          <h1 style={logoTextStyle}>MyLSP</h1>
+        <div style={{
+          height: '10rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: '1rem',
+        }}>
+          <h1 style={{
+            color: 'white',
+            fontSize: '3rem',
+            fontWeight: 'bold',
+            margin: 0,
+            textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+            letterSpacing: '2px',
+          }} className="logo-text">MyLSP</h1>
         </div>
       </div>
 
-      {/* Content */}
-      <div style={contentCardStyle}>
-        <div style={headerWithTextStyle}>
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '0 0 0.8rem 0.8rem',
+        padding: '1.5rem',
+        marginTop: '0',
+        border: 'none',
+      }} className="content-card">
+        <div style={{
+          marginBottom: '1rem',
+          paddingBottom: '0.8rem',
+          borderBottom: '2px solid #f1f5f9',
+          textAlign: 'center',
+        }}>
           <div style={{ position: 'relative' }}>
-            {/* Logo positioned at top left corner */}
             <img
               src="/src/img/LOGO_LSP_SMKN_24.jpg"
               alt="Logo LSP"
               style={{
                 position: 'absolute',
-                top: '-10px',
+                top: '-0.5rem',
                 left: '0',
-                width: '80px',
-                height: '80px',
+                width: '4rem',
+                height: '4rem',
                 objectFit: 'contain',
-                zIndex: 1
+                zIndex: 1,
               }}
             />
-
-            <h2 style={{ margin: 0, fontSize: '22px', fontWeight: 'bold', color: '#0f172a', textAlign: 'center' }}>
+            <h2 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 'bold', color: '#0f172a', textAlign: 'center' }}>
               FR.IA.02.TPD
             </h2>
-            <p style={{ margin: '6px 0 0 0', fontSize: '14px', color: '#475569', fontWeight: '600', textAlign: 'center' }}>
+            <p style={{ margin: '0.3rem 0 0 0', fontSize: '0.8rem', color: '#475569', fontWeight: '600', textAlign: 'center' }}>
               TUGAS PRAKTIK DEMONSTRASI
             </p>
           </div>
         </div>
 
-        {/* Remove the separate logo container */}
-
-        {/* form section */}
-        <div style={formSectionStyle}>
-          <div style={tableContainerStyle}>
-            <table style={tableStyle}>
+        <div style={{ marginTop: '1rem' }}>
+          <div style={{
+            overflowX: 'auto',
+            borderRadius: '0.5rem',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.03)',
+            border: '1px solid #e6edf3',
+            backgroundColor: 'white',
+          }}>
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              backgroundColor: 'white',
+            }} className="form-table">
               <tbody>
-                <tr>
-                  <td style={{ ...tdStyle, fontWeight: 'bold', backgroundColor: '#f8fafc', width: '250px', borderRight: '1px solid #e6edf3' }}>
-                    Skema Sertifikasi<br />(KKN/OKUPASI/KLASTER)
-                  </td>
-                  <td style={tdStyle}>:</td>
-                  <td style={{ ...tdStyle, padding: '8px' }}>
-                    <input
-                      type="text"
-                      style={{
-                        width: '100%',
-                        padding: '8px 12px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        backgroundColor: 'white',
-                        outline: 'none',
-                        boxSizing: 'border-box',
-                        fontFamily: 'Arial, sans-serif',
-                        color: '#374151'
-                      }}
-                      value={formData.skemaSertifikasi}
-                      onChange={(e) => handleInputChange('skemaSertifikasi', e.target.value)}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#3b82f6';
-                        e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.1)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#d1d5db';
-                        e.target.style.boxShadow = 'none';
-                      }}
-                      placeholder="Masukkan skema sertifikasi"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ ...tdStyle, fontWeight: 'bold', backgroundColor: '#f8fafc', borderRight: '1px solid #e6edf3' }}>
-                    Judul Unit
-                  </td>
-                  <td style={tdStyle}>:</td>
-                  <td style={{ ...tdStyle, padding: '8px' }}>
-                    <input
-                      type="text"
-                      style={{
-                        width: '100%',
-                        padding: '8px 12px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        backgroundColor: 'white',
-                        outline: 'none',
-                        boxSizing: 'border-box',
-                        fontFamily: 'Arial, sans-serif',
-                        color: '#374151'
-                      }}
-                      value={formData.judulUnit}
-                      onChange={(e) => handleInputChange('judulUnit', e.target.value)}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#3b82f6';
-                        e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.1)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#d1d5db';
-                        e.target.style.boxShadow = 'none';
-                      }}
-                      placeholder="Masukkan judul unit"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ ...tdStyle, fontWeight: 'bold', backgroundColor: '#f8fafc', borderRight: '1px solid #e6edf3' }}>
-                    Kode Unit
-                  </td>
-                  <td style={tdStyle}>:</td>
-                  <td style={{ ...tdStyle, padding: '8px' }}>
-                    <input
-                      type="text"
-                      style={{
-                        width: '100%',
-                        padding: '8px 12px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        backgroundColor: 'white',
-                        outline: 'none',
-                        boxSizing: 'border-box',
-                        fontFamily: 'Arial, sans-serif',
-                        color: '#374151'
-                      }}
-                      value={formData.kodeUnit}
-                      onChange={(e) => handleInputChange('kodeUnit', e.target.value)}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#3b82f6';
-                        e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.1)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#d1d5db';
-                        e.target.style.boxShadow = 'none';
-                      }}
-                      placeholder="Masukkan kode unit"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ ...tdStyle, fontWeight: 'bold', backgroundColor: '#f8fafc', borderRight: '1px solid #e6edf3' }}>
-                    TUK
-                  </td>
-                  <td style={tdStyle}>:</td>
-                  <td style={{ ...tdStyle, padding: '8px' }}>
-                    <input
-                      type="text"
-                      style={{
-                        width: '100%',
-                        padding: '8px 12px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        backgroundColor: 'white',
-                        outline: 'none',
-                        boxSizing: 'border-box',
-                        fontFamily: 'Arial, sans-serif',
-                        color: '#374151'
-                      }}
-                      value={formData.tuk || ''}
-                      onChange={(e) => handleInputChange('tuk', e.target.value)}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#3b82f6';
-                        e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.1)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#d1d5db';
-                        e.target.style.boxShadow = 'none';
-                      }}
-                      placeholder="Masukkan TUK"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ ...tdStyle, fontWeight: 'bold', backgroundColor: '#f8fafc', borderRight: '1px solid #e6edf3' }}>
-                    Nama Asesor
-                  </td>
-                  <td style={tdStyle}>:</td>
-                  <td style={{ ...tdStyle, padding: '8px' }}>
-                    <input
-                      type="text"
-                      style={{
-                        width: '100%',
-                        padding: '8px 12px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        backgroundColor: 'white',
-                        outline: 'none',
-                        boxSizing: 'border-box',
-                        fontFamily: 'Arial, sans-serif',
-                        color: '#374151'
-                      }}
-                      value={formData.namaAssesor}
-                      onChange={(e) => handleInputChange('namaAssesor', e.target.value)}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#3b82f6';
-                        e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.1)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#d1d5db';
-                        e.target.style.boxShadow = 'none';
-                      }}
-                      placeholder="Masukkan nama asesor"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ ...tdStyle, fontWeight: 'bold', backgroundColor: '#f8fafc', borderRight: '1px solid #e6edf3' }}>
-                    Nama Asesi
-                  </td>
-                  <td style={tdStyle}>:</td>
-                  <td style={{ ...tdStyle, padding: '8px' }}>
-                    <input
-                      type="text"
-                      style={{
-                        width: '100%',
-                        padding: '8px 12px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        backgroundColor: 'white',
-                        outline: 'none',
-                        boxSizing: 'border-box',
-                        fontFamily: 'Arial, sans-serif',
-                        color: '#374151'
-                      }}
-                      value={formData.namaAsesi}
-                      onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#3b82f6';
-                        e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.1)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#d1d5db';
-                        e.target.style.boxShadow = 'none';
-                      }}
-                      placeholder="Masukkan nama asesi"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ ...tdStyle, fontWeight: 'bold', backgroundColor: '#f8fafc', borderRight: '1px solid #e6edf3', borderBottom: 'none' }}>
-                    Tanggal
-                  </td>
-                  <td style={{ ...tdStyle, borderBottom: 'none' }}>:</td>
-                  <td style={{ ...tdStyle, padding: '8px', borderBottom: 'none' }}>
-                    <input
-                      type="date"
-                      style={{
-                        width: '100%',
-                        padding: '8px 12px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        backgroundColor: 'white',
-                        outline: 'none',
-                        boxSizing: 'border-box',
-                        fontFamily: 'Arial, sans-serif',
-                        color: '#374151'
-                      }}
-                      value={formData.tanggalAsesmen}
-                      onChange={(e) => handleInputChange('tanggalAsesmen', e.target.value)}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#3b82f6';
-                        e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.1)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#d1d5db';
-                        e.target.style.boxShadow = 'none';
-                      }}
-                    />
-                  </td>
-                </tr>
+                {[
+                  { label: 'Skema Sertifikasi<br />(KKN/OKUPASI/KLASTER)', key: 'skemaSertifikasi', placeholder: 'Masukkan skema sertifikasi' },
+                  { label: 'Judul Unit', key: 'judulUnit', placeholder: 'Masukkan judul unit' },
+                  { label: 'Kode Unit', key: 'kodeUnit', placeholder: 'Masukkan kode unit' },
+                  { label: 'TUK', key: 'tuk', placeholder: 'Masukkan TUK' },
+                  { label: 'Nama Asesor', key: 'namaAssesor', placeholder: 'Masukkan nama asesor' },
+                  { label: 'Nama Asesi', key: 'namaAsesi', placeholder: 'Masukkan nama asesi' },
+                  { label: 'Tanggal', key: 'tanggalAsesmen', type: 'date' },
+                ].map((field, index) => (
+                  <tr key={field.key} className="table-row">
+                    <td style={{
+                      fontWeight: 'bold',
+                      backgroundColor: '#f8fafc',
+                      width: '40%',
+                      borderRight: '1px solid #e6edf3',
+                      padding: '0.5rem 1rem',
+                      fontSize: '0.9rem',
+                      color: '#0f172a',
+                      borderBottom: index === 6 ? 'none' : '1px solid #f3f6f9',
+                    }} dangerouslySetInnerHTML={{ __html: field.label }} />
+                    <td style={{
+                      padding: '0.5rem 1rem',
+                      fontSize: '0.9rem',
+                      color: '#475569',
+                      borderBottom: index === 6 ? 'none' : '1px solid #f3f6f9',
+                    }}>:</td>
+                    <td style={{
+                      padding: '0.5rem',
+                      borderBottom: index === 6 ? 'none' : '1px solid #f3f6f9',
+                    }}>
+                      <input
+                        type={field.type || 'text'}
+                        style={{
+                          width: '100%',
+                          padding: '0.5rem 0.7rem',
+                          border: '1px solid #d1d5db',
+                          borderRadius: '0.3rem',
+                          fontSize: '0.9rem',
+                          backgroundColor: 'white',
+                          outline: 'none',
+                          boxSizing: 'border-box',
+                          fontFamily: 'Arial, sans-serif',
+                          color: '#374151',
+                        }}
+                        value={formData[field.key]}
+                        onChange={(e) => handleInputChange(field.key, e.target.value)}
+                        onFocus={handleInputFocus}
+                        onBlur={handleInputBlur}
+                        placeholder={field.placeholder}
+                      />
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
 
-          {/* instructions */}
-          <div style={{ ...instructionStyle, backgroundColor: '#fff3cd', border: '1px solid #ffeaa7', borderLeft: '4px solid #fdcb6e' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#856404', margin: '0 0 10px 0' }}>
+          <div style={{
+            backgroundColor: '#fff3cd',
+            padding: '1rem',
+            borderRadius: '0.5rem',
+            marginTop: '0.8rem',
+            border: '1px solid #ffeaa7',
+            borderLeft: '4px solid #fdcb6e',
+          }}>
+            <h3 style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#856404', margin: '0 0 0.5rem 0' }}>
               A. Petunjuk
             </h3>
-            <div style={{ color: '#856404', fontSize: '14px' }}>
-              <div style={{ marginBottom: '5px' }}>1. Baca dan pelajari setiap instruksi kerja di bawah ini dengan cermat sebelum melaksanakan praktek.</div>
-              <div style={{ marginBottom: '5px' }}>2. Klarifikasi kepada asesor kompetesi apabila ada hal-hal yang belum jelas.</div>
-              <div style={{ marginBottom: '5px' }}>3. Laksanakan pekerjaan sesuai dengan urutan proses yang sudah di tetapkan.</div>
+            <div style={{ color: '#856404', fontSize: '0.8rem' }}>
+              <div style={{ marginBottom: '0.3rem' }}>1. Baca dan pelajari setiap instruksi kerja di bawah ini dengan cermat sebelum melaksanakan praktek.</div>
+              <div style={{ marginBottom: '0.3rem' }}>2. Klarifikasi kepada asesor kompetesi apabila ada hal-hal yang belum jelas.</div>
+              <div style={{ marginBottom: '0.3rem' }}>3. Laksanakan pekerjaan sesuai dengan urutan proses yang sudah di tetapkan.</div>
               <div>4. Seluruh proses kerja mengacu kepada SOP/WI yang dipersyaratkan.</div>
             </div>
           </div>
 
-          {/* scenario */}
-          <div style={{ marginTop: '20px' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#0f172a', marginBottom: '8px' }}>
+          <div style={{ marginTop: '1rem' }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 'bold', color: '#0f172a', marginBottom: '0.5rem' }}>
               B. Skenario Tugas Praktik Demonstrasi
             </h3>
-            <p style={{ fontSize: '13px', color: '#6b7280', fontStyle: 'italic', marginBottom: '15px' }}>
+            <p style={{ fontSize: '0.8rem', color: '#6b7280', fontStyle: 'italic', marginBottom: '0.8rem' }}>
               Kelompok Pekerjaan I
             </p>
 
             <div style={{
               border: '1px solid #d1d5db',
-              borderRadius: '8px',
+              borderRadius: '0.5rem',
               overflow: 'hidden',
-              marginBottom: '20px'
+              marginBottom: '1rem',
             }}>
               <table style={{
                 width: '100%',
                 borderCollapse: 'collapse',
                 backgroundColor: 'white',
-              }}>
+              }} className="scenario-table">
                 <thead>
                   <tr>
                     <th style={{
-                      padding: '10px 15px',
+                      padding: '0.6rem 0.9rem',
                       textAlign: 'center',
                       backgroundColor: '#f9fafb',
                       fontWeight: 'bold',
-                      fontSize: '14px',
+                      fontSize: '0.9rem',
                       color: '#374151',
                       border: '1px solid #d1d5db',
-                      width: '80px'
-                    }}>
-
-                    </th>
+                      width: '15%',
+                    }}></th>
                     <th style={{
-                      padding: '10px 15px',
+                      padding: '0.6rem 0.9rem',
                       textAlign: 'center',
                       backgroundColor: '#f9fafb',
                       fontWeight: 'bold',
-                      fontSize: '14px',
+                      fontSize: '0.9rem',
                       color: '#374151',
                       border: '1px solid #d1d5db',
-                      width: '180px'
-                    }}>
-                      Kode Unit
-                    </th>
+                      width: '30%',
+                    }}>Kode Unit</th>
                     <th style={{
-                      padding: '10px 15px',
+                      padding: '0.6rem 0.9rem',
                       textAlign: 'center',
                       backgroundColor: '#f9fafb',
                       fontWeight: 'bold',
-                      fontSize: '14px',
+                      fontSize: '0.9rem',
                       color: '#374151',
-                      border: '1px solid #d1d5db'
-                    }}>
-                      Judul Unit
-                    </th>
+                      border: '1px solid #d1d5db',
+                    }}>Judul Unit</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td style={{
-                      padding: '8px 15px',
-                      textAlign: 'center',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      1.
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white',
-                      fontFamily: 'monospace'
-                    }}>
-                      GAR.CM01.001.01
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      Memberikan Layanan Secara Prima Kepada Pelanggan
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{
-                      padding: '8px 15px',
-                      textAlign: 'center',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      2.
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white',
-                      fontFamily: 'monospace'
-                    }}>
-                      GAR.CM01.002.01
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      Melakukan Pekerjaan dalam Lingkungan Sosial yang Beragam
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{
-                      padding: '8px 15px',
-                      textAlign: 'center',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      3.
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white',
-                      fontFamily: 'monospace'
-                    }}>
-                      GAR.CM01.003.01
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      Mengikuti Prosedur Kesehatan, Keselamatan dan Keamanan dalam Bekerja
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{
-                      padding: '8px 15px',
-                      textAlign: 'center',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      4.
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white',
-                      fontFamily: 'monospace'
-                    }}>
-                      GAR.CM01.004.01
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      Memelihara Alat Jahit
-                    </td>
-                  </tr>
+                  {[
+                    { code: 'GAR.CM01.001.01', title: 'Memberikan Layanan Secara Prima Kepada Pelanggan' },
+                    { code: 'GAR.CM01.002.01', title: 'Melakukan Pekerjaan dalam Lingkungan Sosial yang Beragam' },
+                    { code: 'GAR.CM01.003.01', title: 'Mengikuti Prosedur Kesehatan, Keselamatan dan Keamanan dalam Bekerja' },
+                    { code: 'GAR.CM01.004.01', title: 'Memelihara Alat Jahit' },
+                  ].map((item, index) => (
+                    <tr key={index}>
+                      <td style={{
+                        padding: '0.5rem 0.9rem',
+                        textAlign: 'center',
+                        fontSize: '0.9rem',
+                        color: '#374151',
+                        border: '1px solid #d1d5db',
+                        backgroundColor: 'white',
+                      }}>{index + 1}.</td>
+                      <td style={{
+                        padding: '0.5rem 0.9rem',
+                        fontSize: '0.9rem',
+                        color: '#374151',
+                        border: '1px solid #d1d5db',
+                        backgroundColor: 'white',
+                        fontFamily: 'monospace',
+                      }}>{item.code}</td>
+                      <td style={{
+                        padding: '0.5rem 0.9rem',
+                        fontSize: '0.9rem',
+                        color: '#374151',
+                        border: '1px solid #d1d5db',
+                        backgroundColor: 'white',
+                      }}>{item.title}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
 
             <div style={{
-              marginBottom: '20px',
-              padding: '0'
+              fontSize: '0.9rem',
+              fontWeight: 'bold',
+              color: '#374151',
+              marginBottom: '0.5rem',
             }}>
-              <div style={{
-                fontSize: '16px',
-                fontWeight: 'bold',
-                color: '#374151',
-                marginBottom: '8px'
-              }}>
-                Skenario Tugas Praktik Demonstrasi : <span style={{
-                  fontWeight: 'normal',
-                  fontStyle: 'italic',
-                  color: '#9ca3af',
-                  marginLeft: '10px'
-                }}>stimulus demonstrasi</span>
-              </div>
+              Skenario Tugas Praktik Demonstrasi : <span style={{
+                fontWeight: 'normal',
+                fontStyle: 'italic',
+                color: '#9ca3af',
+                marginLeft: '0.5rem',
+              }}>stimulus demonstrasi</span>
             </div>
           </div>
 
-          {/* bottom sections */}
           <div style={{
             borderTop: '1px solid #d1d5db',
-            paddingTop: '15px',
-            marginTop: '20px'
+            paddingTop: '0.8rem',
+            marginTop: '1rem',
           }}>
-            {/* Perlengkapan dan Peralatan */}
             <div style={{
               display: 'flex',
               alignItems: 'flex-start',
-              marginBottom: '15px',
-              paddingBottom: '10px',
-              borderBottom: '1px solid #e5e7eb'
-            }}>
+              marginBottom: '0.8rem',
+              paddingBottom: '0.5rem',
+              borderBottom: '1px solid #e5e7eb',
+              flexWrap: 'wrap',
+            }} className="bottom-section">
               <div style={{
-                fontSize: '16px',
+                fontSize: '0.9rem',
                 fontWeight: 'bold',
                 color: '#374151',
-                width: '250px',
-                flexShrink: 0
+                width: '100%',
+                maxWidth: '15rem',
+                flexShrink: 0,
               }}>
                 Perlengkapan dan Peralatan
               </div>
               <div style={{
-                fontSize: '16px',
+                fontSize: '0.9rem',
                 fontWeight: 'bold',
                 color: '#374151',
-                marginRight: '20px'
-              }}>
-                :
-              </div>
+                marginRight: '1rem',
+              }}>:</div>
               <div style={{
-                fontSize: '14px',
+                fontSize: '0.8rem',
                 color: '#374151',
-                lineHeight: '1.6'
+                lineHeight: '1.6',
               }}>
                 <div>• peralatan 1</div>
                 <div>• peralatan 2</div>
               </div>
             </div>
 
-            {/* Durasi Waktu */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              marginBottom: '25px'
-            }}>
+              marginBottom: '1rem',
+              flexWrap: 'wrap',
+            }} className="bottom-section">
               <div style={{
-                fontSize: '16px',
+                fontSize: '0.9rem',
                 fontWeight: 'bold',
                 color: '#374151',
-                width: '250px',
+                width: '100%',
+                maxWidth: '15rem',
                 flexShrink: 0,
-                textDecoration: 'underline'
+                textDecoration: 'underline',
               }}>
                 Durasi Waktu
               </div>
               <div style={{
-                fontSize: '16px',
+                fontSize: '0.9rem',
                 fontWeight: 'bold',
                 color: '#374151',
-                marginRight: '20px'
-              }}>
-                :
-              </div>
+                marginRight: '1rem',
+              }}>:</div>
               <div style={{
-                fontSize: '14px',
-                color: '#374151'
-              }}>
-                30 Menit
-              </div>
+                fontSize: '0.8rem',
+                color: '#374151',
+              }}>30 Menit</div>
 
-              {/* Button Kirim */}
               <div style={{ marginLeft: 'auto' }}>
                 <button
                   className="submit-btn"
                   style={{
                     backgroundColor: '#3b82f6',
                     color: 'white',
-                    padding: '8px 25px',
-                    borderRadius: '20px',
+                    padding: '0.5rem 1.5rem',
+                    borderRadius: '1rem',
                     border: 'none',
                     cursor: 'pointer',
-                    fontSize: '14px',
+                    fontSize: '0.9rem',
                     fontWeight: 'bold',
                     boxShadow: '0 2px 8px rgba(59,130,246,0.3)',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.2s ease',
                   }}
                   onClick={handleSubmit}
                   onMouseEnter={(e) => {
@@ -1045,45 +561,103 @@ const IA02 = () => {
         </div>
       </div>
 
-      {/* Success Popup dengan design yang konsisten */}
       {showSuccess && (
-        <div style={popupOverlayStyle} onClick={handleOkay}>
-          <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
-            <div style={iconContainerStyle}>
-              <div style={successIconStyle}>
-                {/* Check mark circle - di atas */}
-                <div style={checkCircleStyle}>
-                  <div style={checkMarkStyle}>✓</div>
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+        }} onClick={handleOkay}>
+          <div style={{
+            backgroundColor: '#f0f0f0',
+            borderRadius: '1rem',
+            padding: '1.5rem 2rem',
+            textAlign: 'center',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+            minWidth: '90%',
+            maxWidth: '30rem',
+            position: 'relative',
+          }} className="popup-container" onClick={(e) => e.stopPropagation()}>
+            <div style={{ marginBottom: '1rem' }}>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 1.5rem',
+                gap: '0.8rem',
+              }}>
+                <div style={{
+                  width: '3rem',
+                  height: '3rem',
+                  borderRadius: '50%',
+                  backgroundColor: '#FF8C00',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                  <div style={{
+                    color: 'white',
+                    fontSize: '1.5rem',
+                    fontWeight: 'bold',
+                  }}>✓</div>
                 </div>
-
-                {/* List lines (3 horizontal lines) - di bawah */}
-                <div style={listLinesStyle}>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.3rem',
+                }}>
                   <div style={{
-                    width: '80px',
-                    height: '10px',
+                    width: '4rem',
+                    height: '0.5rem',
                     backgroundColor: '#FF8C00',
-                    borderRadius: '5px'
+                    borderRadius: '0.3rem',
                   }}></div>
                   <div style={{
-                    width: '120px',
-                    height: '10px',
+                    width: '6rem',
+                    height: '0.5rem',
                     backgroundColor: '#FF8C00',
-                    borderRadius: '5px'
+                    borderRadius: '0.3rem',
                   }}></div>
                   <div style={{
-                    width: '140px',
-                    height: '10px',
+                    width: '8rem',
+                    height: '0.5rem',
                     backgroundColor: '#FF8C00',
-                    borderRadius: '5px'
+                    borderRadius: '0.3rem',
                   }}></div>
                 </div>
               </div>
             </div>
-
-            <div style={popupTitleStyle}>Jawaban anda telah direkam!</div>
-
+            <div style={{
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              color: '#333',
+              marginBottom: '1.5rem',
+              lineHeight: '1.4',
+            }}>
+              Jawaban anda telah direkam!
+            </div>
             <button
-              style={okayButtonStyle}
+              style={{
+                backgroundColor: '#FF8C00',
+                border: 'none',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                color: 'white',
+                cursor: 'pointer',
+                padding: '0.5rem 1.5rem',
+                borderRadius: '1rem',
+                position: 'absolute',
+                bottom: '1rem',
+                right: '1.5rem',
+                transition: 'all 0.2s ease',
+              }}
               onClick={handleOkay}
               onMouseEnter={(e) => e.target.style.backgroundColor = '#e67e00'}
               onMouseLeave={(e) => e.target.style.backgroundColor = '#FF8C00'}
