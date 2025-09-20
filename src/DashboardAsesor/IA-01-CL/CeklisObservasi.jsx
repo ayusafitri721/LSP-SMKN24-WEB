@@ -276,7 +276,8 @@ const modalOverlayStyle = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  zIndex: 1000
+  zIndex: 1000,
+  padding: '10px',
 };
 
 const CeklisObservasi = () => {
@@ -332,20 +333,312 @@ const CeklisObservasi = () => {
   };
 
   return (
-    <div style={pageContainerStyle}>
+    <div style={pageContainerStyle} className="page-container">
+      {/* RESPONSIVE CSS */}
+      <style>
+        {`
+          /* RESPONSIVE STYLES */
+          @media (max-width: 768px) {
+            .page-container {
+              padding: 10px !important;
+            }
+            
+            .content-card {
+              padding: 20px !important;
+            }
+            
+            .logo-text {
+              font-size: 36px !important;
+            }
+            
+            .logo-container {
+              height: 150px !important;
+              margin-top: 15px !important;
+              margin-bottom: 15px !important;
+            }
+            
+            .header-section2 {
+              flex-direction: column !important;
+              text-align: center !important;
+              align-items: center !important;
+              gap: 15px !important;
+            }
+            
+            .logo-container2 {
+              align-self: center !important;
+            }
+            
+            .title-text {
+              font-size: 14px !important;
+            }
+            
+            .subtitle-text {
+              font-size: 13px !important;
+            }
+            
+            .data-table {
+              font-size: 11px !important;
+            }
+            
+            .data-table td {
+              padding: 8px !important;
+            }
+            
+            .input-field {
+              font-size: 11px !important;
+              padding: 3px 6px !important;
+              min-width: 0 !important;
+            }
+            
+            .table-input-row {
+              flex-wrap: wrap !important;
+              gap: 5px !important;
+            }
+            
+            .table-input-row span {
+              min-width: auto !important;
+            }
+            
+            .table-input-row input {
+              min-width: 150px !important;
+              flex: 1 !important;
+            }
+            
+            .instruction-section {
+              grid-template-columns: 1fr !important;
+              gap: 20px !important;
+            }
+            
+            .instruction-box {
+              padding: 15px !important;
+              margin-bottom: 15px !important;
+            }
+            
+            .instruction-title {
+              font-size: 13px !important;
+            }
+            
+            .instruction-item {
+              font-size: 11px !important;
+            }
+            
+            .kelompok-pekerjaan {
+              padding: 15px !important;
+            }
+            
+            .kelompok-header {
+              font-size: 13px !important;
+            }
+            
+            .kelompok-item {
+              font-size: 11px !important;
+            }
+            
+            .main-content {
+              grid-template-columns: 1fr !important;
+              gap: 20px !important;
+            }
+            
+            .element-box {
+              padding: 15px !important;
+              margin-bottom: 15px !important;
+            }
+            
+            .element-title {
+              font-size: 13px !important;
+            }
+            
+            .criteria-item {
+              flex-direction: column !important;
+              align-items: flex-start !important;
+              gap: 10px !important;
+            }
+            
+            .checkbox-group {
+              gap: 15px !important;
+              min-width: auto !important;
+            }
+            
+            .checkbox-label {
+              font-size: 11px !important;
+            }
+            
+            .pertanyaan-section {
+              padding: 15px !important;
+            }
+            
+            .pertanyaan-header {
+              flex-direction: column !important;
+              text-align: center !important;
+              gap: 10px !important;
+            }
+            
+            .pertanyaan-item-content {
+              flex-direction: column !important;
+              gap: 15px !important;
+            }
+            
+            .pencapaian-controls {
+              align-self: flex-start !important;
+              width: 100% !important;
+            }
+            
+            .pencapaian-checkboxes {
+              gap: 20px !important;
+            }
+            
+            .pertanyaan-text {
+              font-size: 11px !important;
+            }
+            
+            .tanggapan-label {
+              font-size: 11px !important;
+            }
+            
+            .button-container {
+              flex-direction: column !important;
+              gap: 10px !important;
+              margin-top: 20px !important;
+            }
+            
+            .approve-button {
+              width: 100% !important;
+              min-width: auto !important;
+              padding: 12px 20px !important;
+              font-size: 13px !important;
+            }
+            
+            .modal-container {
+              min-width: 90% !important;
+              margin: 10px !important;
+              padding: 20px 25px !important;
+            }
+            
+            .modal-header {
+              margin-bottom: 20px !important;
+            }
+            
+            .modal-icon {
+              width: 40px !important;
+              height: 40px !important;
+            }
+            
+            .modal-title {
+              font-size: 18px !important;
+              padding-top: 2px !important;
+            }
+            
+            .modal-description {
+              font-size: 13px !important;
+              margin-bottom: 20px !important;
+            }
+            
+            .textarea-field {
+              font-size: 10px !important;
+              min-height: 25px !important;
+              padding: 5px !important;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .logo-text {
+              font-size: 28px !important;
+            }
+            
+            .logo-container {
+              height: 120px !important;
+            }
+            
+            .content-card {
+              padding: 15px !important;
+            }
+            
+            .instruction-box {
+              padding: 12px !important;
+            }
+            
+            .kelompok-pekerjaan {
+              padding: 12px !important;
+            }
+            
+            .element-box {
+              padding: 12px !important;
+            }
+            
+            .pertanyaan-section {
+              padding: 12px !important;
+            }
+            
+            .data-table {
+              font-size: 10px !important;
+            }
+            
+            .data-table td {
+              padding: 6px !important;
+            }
+            
+            .input-field {
+              font-size: 10px !important;
+              padding: 2px 4px !important;
+            }
+            
+            .table-input-row input {
+              min-width: 120px !important;
+            }
+            
+            .instruction-title {
+              font-size: 12px !important;
+            }
+            
+            .instruction-item {
+              font-size: 10px !important;
+            }
+            
+            .element-title {
+              font-size: 12px !important;
+            }
+            
+            .criteria-item {
+              font-size: 10px !important;
+            }
+            
+            .pertanyaan-text {
+              font-size: 10px !important;
+            }
+            
+            .approve-button {
+              font-size: 12px !important;
+              padding: 10px 15px !important;
+            }
+            
+            .modal-container {
+              padding: 15px 20px !important;
+            }
+            
+            .modal-title {
+              font-size: 16px !important;
+            }
+            
+            .modal-description {
+              font-size: 12px !important;
+            }
+          }
+        `}
+      </style>
+
       {/* Header Section matching IA01 design - ENLARGED */}
       <div style={headerSectionStyle}>
-        <div style={logoContainerStyle}>
-          <h1 style={logoTextStyle}>
+        <div style={logoContainerStyle} className="logo-container">
+          <h1 style={logoTextStyle} className="logo-text">
             MyLSP
           </h1>
         </div>
       </div>
 
       {/* Content Card */}
-      <div style={contentCardStyle}>
-        <div style={headerSectionStyle2}>
-          <div style={logoContainer2Style}>
+      <div style={contentCardStyle} className="content-card">
+        <div style={headerSectionStyle2} className="header-section2">
+          <div style={logoContainer2Style} className="logo-container2">
             <img
               src="/src/img/image 12.png"
               alt="LSP Logo"
@@ -360,13 +653,13 @@ const CeklisObservasi = () => {
             />
           </div>
           <div style={headerContentStyle}>
-            <div style={titleStyle}>FR.IA.01.CL</div>
-            <div style={subtitleStyle}>CEKLIS OBSERVASI AKTIVITAS DI TEMPAT KERJA ATAU TEMPAT KERJA SIMULASI</div>
+            <div style={titleStyle} className="title-text">FR.IA.01.CL</div>
+            <div style={subtitleStyle} className="subtitle-text">CEKLIS OBSERVASI AKTIVITAS DI TEMPAT KERJA ATAU TEMPAT KERJA SIMULASI</div>
           </div>
         </div>
 
         {/* Skema Sertifikasi */}
-        <table style={{width: '100%', marginBottom: '15px', fontSize: '12px'}}>
+        <table style={{width: '100%', marginBottom: '15px', fontSize: '12px'}} className="data-table">
           <tbody>
             <tr>
               <td style={{
@@ -386,7 +679,7 @@ const CeklisObservasi = () => {
                 backgroundColor: 'white'
               }}>
                 <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-                  <div style={{display: 'flex', alignItems: 'center'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}} className="table-input-row">
                     <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Judul Unit</span>
                     <span style={{margin: '0 8px'}}>:</span>
                     <input
@@ -398,12 +691,13 @@ const CeklisObservasi = () => {
                         borderRadius: '4px',
                         fontSize: '12px'
                       }}
+                      className="input-field"
                       value={formData.judulUnit}
                       onChange={(e) => handleInputChange('judulUnit', e.target.value)}
                       placeholder="Masukkan judul unit"
                     />
                   </div>
-                  <div style={{display: 'flex', alignItems: 'center'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}} className="table-input-row">
                     <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Nomor Unit</span>
                     <span style={{margin: '0 8px'}}>:</span>
                     <input
@@ -415,6 +709,7 @@ const CeklisObservasi = () => {
                         borderRadius: '4px',
                         fontSize: '12px'
                       }}
+                      className="input-field"
                       value={formData.nomorUnit}
                       onChange={(e) => handleInputChange('nomorUnit', e.target.value)}
                       placeholder="Masukkan nomor unit"
@@ -426,33 +721,33 @@ const CeklisObservasi = () => {
           </tbody>
         </table>
 
-        <div style={instructionSectionStyle}>
-          <div style={instructionBoxStyle}>
-            <div style={instructionTitleStyle}>PADUAN ASESMEN MANDIRI</div>
-            <div style={instructionTitleStyle}>Instruksi:</div>
+        <div style={instructionSectionStyle} className="instruction-section">
+          <div style={instructionBoxStyle} className="instruction-box">
+            <div style={instructionTitleStyle} className="instruction-title">PADUAN ASESMEN MANDIRI</div>
+            <div style={instructionTitleStyle} className="instruction-title">Instruksi:</div>
             <ul style={instructionListStyle}>
-              <li style={instructionItemStyle}>Lengkapi nama unit kompetensi, elemen, dan kriteria/unjuk kerja sesuai/kolom dalam tabel.</li>
-              <li style={instructionItemStyle}>Isi kolom standar industri atau tempat kerja</li>
-              <li style={instructionItemStyle}>Beri tanda centang (O) pada kolom "YA" jika Anda yakin asesi dapat melakukan/mendemonstrasikan tugas sesuai KUK, atau centang(O) pada kolom "Tidak" bila sebaliknya.</li>
-              <li style={instructionItemStyle}>Penilaian lanjut bila hasil belum dapat disimpulkan, untuk itu gunakan/metode lain</li>
-              <li style={instructionItemStyle}>sehingga keputusan dapat/dibuat.</li>
-              <li style={instructionItemStyle}>isi kolom KUK sesuai dengan Unit Kompetensi/SKKNI</li>
+              <li style={instructionItemStyle} className="instruction-item">Lengkapi nama unit kompetensi, elemen, dan kriteria/unjuk kerja sesuai/kolom dalam tabel.</li>
+              <li style={instructionItemStyle} className="instruction-item">Isi kolom standar industri atau tempat kerja</li>
+              <li style={instructionItemStyle} className="instruction-item">Beri tanda centang (O) pada kolom "YA" jika Anda yakin asesi dapat melakukan/mendemonstrasikan tugas sesuai KUK, atau centang(O) pada kolom "Tidak" bila sebaliknya.</li>
+              <li style={instructionItemStyle} className="instruction-item">Penilaian lanjut bila hasil belum dapat disimpulkan, untuk itu gunakan/metode lain</li>
+              <li style={instructionItemStyle} className="instruction-item">sehingga keputusan dapat/dibuat.</li>
+              <li style={instructionItemStyle} className="instruction-item">isi kolom KUK sesuai dengan Unit Kompetensi/SKKNI</li>
             </ul>
           </div>
 
-          <div style={kelompokPekerjaanStyle}>
-            <div style={kelompokHeaderStyle}>Kelompok Pekerjaan 1</div>
+          <div style={kelompokPekerjaanStyle} className="kelompok-pekerjaan">
+            <div style={kelompokHeaderStyle} className="kelompok-header">Kelompok Pekerjaan 1</div>
             <ol style={kelompokListStyle}>
-              <li style={kelompokItemStyle}>1.J620100.004.02 Menggunakan Struktur Data</li>
-              <li style={kelompokItemStyle}>2. dst</li>
-              <li style={kelompokItemStyle}>3. dst</li>
-              <li style={kelompokItemStyle}>4. dst</li>
+              <li style={kelompokItemStyle} className="kelompok-item">1.J620100.004.02 Menggunakan Struktur Data</li>
+              <li style={kelompokItemStyle} className="kelompok-item">2. dst</li>
+              <li style={kelompokItemStyle} className="kelompok-item">3. dst</li>
+              <li style={kelompokItemStyle} className="kelompok-item">4. dst</li>
             </ol>
           </div>
         </div>
 
         {/* Unit Kompetensi Table */}
-        <table style={{width: '100%', marginBottom: '20px', fontSize: '12px', borderCollapse: 'collapse'}}>
+        <table style={{width: '100%', marginBottom: '20px', fontSize: '12px', borderCollapse: 'collapse'}} className="data-table">
           <tbody>
             <tr>
               <td style={{
@@ -472,7 +767,7 @@ const CeklisObservasi = () => {
                 backgroundColor: 'white'
               }}>
                 <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-                  <div style={{display: 'flex', alignItems: 'center'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}} className="table-input-row">
                     <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Kode Unit</span>
                     <span style={{margin: '0 8px'}}>:</span>
                     <input
@@ -484,12 +779,13 @@ const CeklisObservasi = () => {
                         borderRadius: '4px',
                         fontSize: '12px'
                       }}
+                      className="input-field"
                       value={formData.kodeUnit}
                       onChange={(e) => handleInputChange('kodeUnit', e.target.value)}
                       placeholder="Masukkan kode unit"
                     />
                   </div>
-                  <div style={{display: 'flex', alignItems: 'center'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}} className="table-input-row">
                     <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Judul Unit</span>
                     <span style={{margin: '0 8px'}}>:</span>
                     <input
@@ -501,6 +797,7 @@ const CeklisObservasi = () => {
                         borderRadius: '4px',
                         fontSize: '12px'
                       }}
+                      className="input-field"
                       value={formData.judulUnitKompetensi}
                       onChange={(e) => handleInputChange('judulUnitKompetensi', e.target.value)}
                       placeholder="Masukkan judul unit kompetensi"
@@ -512,7 +809,7 @@ const CeklisObservasi = () => {
           </tbody>
         </table>
 
-        <div style={mainContentStyle}>
+        <div style={mainContentStyle} className="main-content">
           <div style={leftContentStyle}>
             {/* Box Elemen 1 - Made compact */}
             <div style={{
@@ -520,15 +817,15 @@ const CeklisObservasi = () => {
               borderRadius: '8px',
               padding: '20px',
               marginBottom: '10px'
-            }}>
-              <div style={elementTitleStyle}>Elemen 1: Mengidentifikasi konsep data dan struktur data</div>
-              <div style={elementTitleStyle}>Kriteria Untuk Kerja</div>
+            }} className="element-box">
+              <div style={elementTitleStyle} className="element-title">Elemen 1: Mengidentifikasi konsep data dan struktur data</div>
+              <div style={elementTitleStyle} className="element-title">Kriteria Untuk Kerja</div>
               
               <div style={criteriaListStyle}>
-                <div style={criteriaItemStyle}>
+                <div style={criteriaItemStyle} className="criteria-item">
                   <span>• Mengidentifikasi konsep data dan struktur data sesuai dengan konteks</span>
-                  <div style={checkboxGroupStyle}>
-                    <label style={checkboxLabelStyle}>
+                  <div style={checkboxGroupStyle} className="checkbox-group">
+                    <label style={checkboxLabelStyle} className="checkbox-label">
                       <input 
                         type="checkbox" 
                         style={checkboxStyle}
@@ -537,7 +834,7 @@ const CeklisObservasi = () => {
                       />
                       Ya
                     </label>
-                    <label style={checkboxLabelStyle}>
+                    <label style={checkboxLabelStyle} className="checkbox-label">
                       <input 
                         type="checkbox" 
                         style={checkboxStyle}
@@ -548,10 +845,10 @@ const CeklisObservasi = () => {
                     </label>
                   </div>
                 </div>
-                <div style={criteriaItemStyle}>
+                <div style={criteriaItemStyle} className="criteria-item">
                   <span>• Membandingkan alternatif struktur data kelebihan dan kekurangannya untuk konteks permasalahan yang diselesaikan</span>
-                  <div style={checkboxGroupStyle}>
-                    <label style={checkboxLabelStyle}>
+                  <div style={checkboxGroupStyle} className="checkbox-group">
+                    <label style={checkboxLabelStyle} className="checkbox-label">
                       <input 
                         type="checkbox" 
                         style={checkboxStyle}
@@ -560,7 +857,7 @@ const CeklisObservasi = () => {
                       />
                       Ya
                     </label>
-                    <label style={checkboxLabelStyle}>
+                    <label style={checkboxLabelStyle} className="checkbox-label">
                       <input 
                         type="checkbox" 
                         style={checkboxStyle}
@@ -590,12 +887,13 @@ const CeklisObservasi = () => {
                 backgroundColor: '#e9ecef',
                 color: '#6c757d'
               }}
+              className="textarea-field"
             ></textarea>
           </div>
 
           <div style={rightContentStyle}>
-            <div style={pertanyaanSectionStyle}>
-              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px'}}>
+            <div style={pertanyaanSectionStyle} className="pertanyaan-section">
+              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px'}} className="pertanyaan-header">
                 <div style={{fontSize: '12px', fontWeight: 'bold', color: '#333'}}>
                   Pertanyaan
                 </div>
@@ -605,14 +903,14 @@ const CeklisObservasi = () => {
               </div>
               
               <div style={pertanyaanItemStyle}>
-                <div style={{display: 'flex', gap: '20px', alignItems: 'flex-start'}}>
+                <div style={{display: 'flex', gap: '20px', alignItems: 'flex-start'}} className="pertanyaan-item-content">
                   <div style={{flex: 1}}>
-                    <div style={pertanyaanTextStyle}>
+                    <div style={pertanyaanTextStyle} className="pertanyaan-text">
                       1. Anda seorang operator yunior busana, sebelum memulai kegiatan menjahit blus, anda perlu memperhatikan SOP kesehatan dan keselamatan kerja, apa yang akan anda lakukan supaya tidak terjadi kecelakaan kerja pada waktu menjahit blus? (JRES)
                     </div>
                   </div>
-                  <div style={{minWidth: '120px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px'}}>
-                    <div style={{display: 'flex', gap: '30px', alignItems: 'center', width: '100%'}}>
+                  <div style={{minWidth: '120px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px'}} className="pencapaian-controls">
+                    <div style={{display: 'flex', gap: '30px', alignItems: 'center', width: '100%'}} className="pencapaian-checkboxes">
                       <label style={{display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: '#333', cursor: 'pointer'}}>
                         <input 
                           type="checkbox" 
@@ -651,7 +949,7 @@ const CeklisObservasi = () => {
 
                 {/* Tanggapan di bawah */}
                 <div style={tanggapanContainerStyle}>
-                  <div style={tanggapanLabelStyle}>Tanggapan:</div>
+                  <div style={tanggapanLabelStyle} className="tanggapan-label">Tanggapan:</div>
                   <textarea 
                     style={{
                       width: '100%',
@@ -665,6 +963,7 @@ const CeklisObservasi = () => {
                       outline: 'none',
                       backgroundColor: '#e9ecef'
                     }}
+                    className="textarea-field"
                     placeholder=""
                   ></textarea>
                 </div>
@@ -674,9 +973,10 @@ const CeklisObservasi = () => {
         </div>
         
         {/* Approve/Reject Buttons */}
-        <div style={buttonContainerStyle}>
+        <div style={buttonContainerStyle} className="button-container">
           <button 
             style={approveButtonStyle}
+            className="approve-button"
             onClick={handleApprove}
             onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
             onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
@@ -685,6 +985,7 @@ const CeklisObservasi = () => {
           </button>
           <button 
             style={approveButtonStyle}
+            className="approve-button"
             onClick={handleReject}
             onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
             onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
@@ -703,14 +1004,14 @@ const CeklisObservasi = () => {
               minWidth: '500px',
               boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
               position: 'relative'
-            }}>
+            }} className="modal-container">
               {/* Header dengan Icon dan Close Button */}
               <div style={{
                 display: 'flex',
                 alignItems: 'flex-start',
                 justifyContent: 'space-between',
                 marginBottom: '25px'
-              }}>
+              }} className="modal-header">
                 {/* Icon clipboard biru dengan checkmark di kiri */}
                 <div style={{
                   width: '50px',
@@ -722,7 +1023,7 @@ const CeklisObservasi = () => {
                   justifyContent: 'center',
                   flexShrink: 0,
                   position: 'relative'
-                }}>
+                }} className="modal-icon">
                   {/* Clipboard shape */}
                   <div style={{
                     width: '36px',
@@ -761,7 +1062,7 @@ const CeklisObservasi = () => {
                     color: '#333',
                     marginBottom: '4px',
                     lineHeight: '1.2'
-                  }}>
+                  }} className="modal-title">
                     Anda menyetujui
                   </h3>
                   <h3 style={{
@@ -770,7 +1071,7 @@ const CeklisObservasi = () => {
                     color: '#333',
                     margin: '0',
                     lineHeight: '1.2'
-                  }}>
+                  }} className="modal-title">
                     rekaman Asesmen ini
                   </h3>
                 </div>
@@ -813,7 +1114,7 @@ const CeklisObservasi = () => {
                 lineHeight: '1.5',
                 fontStyle: 'italic',
                 textAlign: 'center'
-              }}>
+              }} className="modal-description">
                 Anda menyetujui dokumen sertifikat asesi ini dengan penilaian yang sebenar-benarnya
               </p>
               
@@ -852,14 +1153,14 @@ const CeklisObservasi = () => {
               minWidth: '500px',
               boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
               position: 'relative'
-            }}>
+            }} className="modal-container">
               {/* Header dengan Icon dan Close Button */}
               <div style={{
                 display: 'flex',
                 alignItems: 'flex-start',
                 justifyContent: 'space-between',
                 marginBottom: '25px'
-              }}>
+              }} className="modal-header">
                 {/* Icon document dengan X orange di kiri */}
                 <div style={{
                   width: '50px',
@@ -869,7 +1170,7 @@ const CeklisObservasi = () => {
                   justifyContent: 'center',
                   flexShrink: 0,
                   position: 'relative'
-                }}>
+                }} className="modal-icon">
                   {/* Document outline */}
                   <div style={{
                     width: '36px',
@@ -950,7 +1251,7 @@ const CeklisObservasi = () => {
                     color: '#333',
                     marginBottom: '4px',
                     lineHeight: '1.2'
-                  }}>
+                  }} className="modal-title">
                     Anda menolak
                   </h3>
                   <h3 style={{
@@ -959,7 +1260,7 @@ const CeklisObservasi = () => {
                     color: '#333',
                     margin: '0',
                     lineHeight: '1.2'
-                  }}>
+                  }} className="modal-title">
                     rekaman Asesmen ini
                   </h3>
                 </div>
@@ -1002,7 +1303,7 @@ const CeklisObservasi = () => {
                 lineHeight: '1.5',
                 fontStyle: 'italic',
                 textAlign: 'center'
-              }}>
+              }} className="modal-description">
                 Dokumen ini ditolak karena dokumen dan keaslian data tidak valid.
               </p>
               
