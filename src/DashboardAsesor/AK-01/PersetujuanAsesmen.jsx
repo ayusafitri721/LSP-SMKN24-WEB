@@ -415,7 +415,7 @@ const PersetujuanAsesmen = () => {
                   <span style={{minWidth: '90px', fontSize: '12px'}}>Hari/Tanggal</span>
                   <span style={{margin: '0 5px'}}>:</span>
                   <input
-                    type="text"
+                    type="date"
                     style={{flex: 1, fontSize: '11px', padding: '4px 6px', border: '1px solid #ddd', borderRadius: '3px'}}
                     value={formData.tanggal}
                     onChange={(e) => handleInputChange('tanggal', e.target.value)}
@@ -425,7 +425,7 @@ const PersetujuanAsesmen = () => {
                   <span style={{minWidth: '90px', fontSize: '12px'}}>Waktu</span>
                   <span style={{margin: '0 5px'}}>:</span>
                   <input
-                    type="text"
+                    type="time"
                     style={{flex: 1, fontSize: '11px', padding: '4px 6px', border: '1px solid #ddd', borderRadius: '3px'}}
                     value={formData.waktu}
                     onChange={(e) => handleInputChange('waktu', e.target.value)}
