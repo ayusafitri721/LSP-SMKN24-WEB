@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
 
-// Modal styles - Updated to match APL-01 design with responsive adjustments
+// Modal styles - Updated to match APL-01 design
 const modalOverlayStyle = {
   position: 'fixed',
   top: 0,
@@ -21,11 +21,11 @@ const modalOverlayStyle = {
 const modalContainerStyle = {
   backgroundColor: '#f0f0f0',
   borderRadius: '20px',
-  padding: '20px',
+  padding: '30px 50px',
   textAlign: 'center',
   boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-  width: '90%',
-  maxWidth: '550px',
+  minWidth: '550px',
+  maxWidth: '600px',
   position: 'relative',
   maxHeight: '90vh',
   overflowY: 'auto',
@@ -67,12 +67,11 @@ const checkMarkStyle = {
 };
 
 const modalTitleStyle = {
-  fontSize: '16px',
+  fontSize: '18px',
   fontWeight: 'bold',
   color: '#333',
   marginBottom: '30px',
   lineHeight: '1.4',
-  paddingBottom: '30px',
 };
 
 const okayButtonStyle = {
@@ -84,10 +83,10 @@ const okayButtonStyle = {
   cursor: 'pointer',
   padding: '10px 25px',
   borderRadius: '20px',
+  position: 'absolute',
+  bottom: '20px',
+  right: '30px',
   transition: 'all 0.2s ease',
-  width: '100%',
-  maxWidth: '120px',
-  margin: '0 auto',
 };
 
 const warningNotificationStyle = {
@@ -114,7 +113,7 @@ const pageContainerStyle = {
   minHeight: '100vh',
 };
 
-// Header section matching APL-01 design with responsive adjustments
+// Header section matching APL-01 design
 const headerSectionStyle = {
   backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
   backgroundSize: 'cover',
@@ -124,7 +123,7 @@ const headerSectionStyle = {
   marginBottom: '0',
 };
 
-// Navigation container with responsive adjustments
+// Navigation container matching APL-01
 const navContainerStyle = {
   backgroundColor: 'rgba(255, 255, 255, 0.95)',
   padding: '5px 15px',
@@ -132,16 +131,16 @@ const navContainerStyle = {
   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
   margin: '0',
   overflowX: 'auto',
-  maxWidth: '100%',
+  maxWidth: '50%',
   whiteSpace: 'nowrap',
   backdropFilter: 'blur(10px)',
   position: 'relative',
   zIndex: 2,
 };
 
-// Logo container with responsive adjustments
+// Logo container matching APL-01
 const logoContainerStyle = {
-  height: '100px',
+  height: '120px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -149,10 +148,10 @@ const logoContainerStyle = {
   marginBottom: '10px',
 };
 
-// Logo text with responsive font size
+// Logo text matching APL-01
 const logoTextStyle = {
   color: 'white',
-  fontSize: '32px',
+  fontSize: '36px',
   fontWeight: 'bold',
   margin: 0,
   textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
@@ -162,7 +161,7 @@ const logoTextStyle = {
 const contentCardStyle = {
   backgroundColor: 'white',
   borderRadius: '0 0 15px 15px',
-  padding: '20px',
+  padding: '30px',
   boxShadow: 'none',
   marginTop: '0',
   border: 'none',
@@ -171,11 +170,10 @@ const contentCardStyle = {
 const headerSectionStyle2 = {
   display: 'flex',
   alignItems: 'flex-start',
-  gap: '15px',
+  gap: '20px',
   marginBottom: '20px',
   paddingBottom: '15px',
   borderBottom: '2px solid #FF8C00',
-  flexWrap: 'wrap',
 };
 
 const logoContainer2Style = {
@@ -184,7 +182,6 @@ const logoContainer2Style = {
 
 const headerContentStyle = {
   flex: 1,
-  minWidth: '200px',
 };
 
 const titleStyle = {
@@ -196,7 +193,7 @@ const titleStyle = {
 };
 
 const subtitleStyle = {
-  fontSize: '14px',
+  fontSize: '16px',
   fontWeight: 'bold',
   margin: '0 0 15px 0',
   color: '#333',
@@ -207,7 +204,7 @@ const transparentBoxStyle = {
   backgroundColor: 'rgba(240, 240, 240, 0.7)',
   border: '1px solid #ddd',
   borderRadius: '8px',
-  padding: '12px',
+  padding: '15px',
   marginBottom: '10px',
 };
 
@@ -228,7 +225,7 @@ const boxTextStyle = {
 
 const checkboxGridStyle = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+  gridTemplateColumns: '1fr 1fr',
   gap: '4px 8px',
   marginTop: '8px',
 };
@@ -268,7 +265,7 @@ const sectionTextStyle = {
   marginBottom: '6px',
 };
 
-// Style for date and time input with responsive adjustments
+// Style for date and time input
 const dateInputStyle = {
   flex: 1, 
   fontSize: '11px', 
@@ -412,8 +409,8 @@ const AK01 = () => {
   };
 
   return (
-    <div style={pageContainerStyle}>
-      {/* Responsive CSS and scrollbar styling */}
+    <div style={pageContainerStyle} className="page-container">
+      {/* Scrollbar styling for WebKit browsers + RESPONSIVE CSS */}
       <style>
         {`
           .nav-scrollbar::-webkit-scrollbar {
@@ -441,18 +438,22 @@ const AK01 = () => {
             }
           }
 
-          /* Responsive styles */
+          /* RESPONSIVE STYLES */
           @media (max-width: 768px) {
             .page-container {
               padding: 10px !important;
             }
             
             .content-card {
-              padding: 15px !important;
+              padding: 20px !important;
             }
             
             .logo-text {
-              font-size: 24px !important;
+              font-size: 28px !important;
+            }
+            
+            .logo-container {
+              height: 100px !important;
             }
             
             .nav-container {
@@ -462,6 +463,7 @@ const AK01 = () => {
             .header-section2 {
               flex-direction: column !important;
               text-align: center !important;
+              align-items: center !important;
             }
             
             .logo-container2 {
@@ -473,7 +475,7 @@ const AK01 = () => {
             }
             
             .subtitle-text {
-              font-size: 12px !important;
+              font-size: 14px !important;
             }
             
             .two-column-layout {
@@ -484,7 +486,7 @@ const AK01 = () => {
             .transparent-box {
               height: auto !important;
               min-height: 100px !important;
-              padding: 10px !important;
+              padding: 12px !important;
             }
             
             .checkbox-grid {
@@ -508,6 +510,7 @@ const AK01 = () => {
             .input-field {
               font-size: 11px !important;
               padding: 3px 6px !important;
+              min-width: 0 !important;
             }
             
             .date-time-input {
@@ -523,20 +526,53 @@ const AK01 = () => {
             }
             
             .modal-container {
+              min-width: 90% !important;
+              max-width: 90% !important;
+              padding: 20px 30px !important;
               margin: 10px !important;
-              padding: 15px !important;
             }
             
             .modal-title {
-              font-size: 14px !important;
+              font-size: 16px !important;
               margin-bottom: 20px !important;
               padding-bottom: 20px !important;
+            }
+            
+            .modal-button {
+              position: relative !important;
+              bottom: auto !important;
+              right: auto !important;
+              width: 100% !important;
+              margin-top: 20px !important;
+            }
+
+            .table-input-row {
+              flex-wrap: wrap !important;
+              gap: 5px !important;
+            }
+            
+            .table-input-row span {
+              min-width: auto !important;
+            }
+            
+            .table-input-row input {
+              min-width: 150px !important;
+              flex: 1 !important;
+            }
+
+            .form-row {
+              flex-wrap: wrap !important;
+              gap: 3px !important;
+            }
+            
+            .form-row strong {
+              min-width: auto !important;
             }
           }
           
           @media (max-width: 480px) {
             .logo-text {
-              font-size: 20px !important;
+              font-size: 24px !important;
             }
             
             .nav-container {
@@ -545,11 +581,11 @@ const AK01 = () => {
             }
             
             .content-card {
-              padding: 10px !important;
+              padding: 15px !important;
             }
             
             .transparent-box {
-              padding: 8px !important;
+              padding: 10px !important;
             }
             
             .section-text {
@@ -572,6 +608,18 @@ const AK01 = () => {
               font-size: 12px !important;
               padding: 10px 20px !important;
             }
+            
+            .data-table {
+              font-size: 10px !important;
+            }
+            
+            .data-table td {
+              padding: 6px !important;
+            }
+
+            .table-input-row input {
+              min-width: 120px !important;
+            }
           }
         `}
       </style>
@@ -589,7 +637,7 @@ const AK01 = () => {
           <NavAsesi activeTab="FR.AK.01" />
         </div>
 
-        <div style={logoContainerStyle}>
+        <div style={logoContainerStyle} className="logo-container">
           <h1 style={logoTextStyle} className="logo-text">
             MyLSP
           </h1>
@@ -641,14 +689,13 @@ const AK01 = () => {
                   backgroundColor: 'white'
                 }}>
                   <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-                    <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '5px'}}>
+                    <div style={{display: 'flex', alignItems: 'center'}} className="table-input-row">
                       <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Judul Unit</span>
-                      <span>:</span>
+                      <span style={{margin: '0 8px'}}>:</span>
                       <input
                         type="text"
                         style={{
                           flex: 1,
-                          minWidth: '150px',
                           padding: '4px 8px',
                           border: '1px solid #ddd',
                           borderRadius: '4px',
@@ -660,14 +707,13 @@ const AK01 = () => {
                         placeholder="Masukkan judul unit"
                       />
                     </div>
-                    <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '5px'}}>
+                    <div style={{display: 'flex', alignItems: 'center'}} className="table-input-row">
                       <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Nomor Unit</span>
-                      <span>:</span>
+                      <span style={{margin: '0 8px'}}>:</span>
                       <input
                         type="text"
                         style={{
                           flex: 1,
-                          minWidth: '150px',
                           padding: '4px 8px',
                           border: '1px solid #ddd',
                           borderRadius: '4px',
@@ -696,9 +742,9 @@ const AK01 = () => {
             <div style={{ flex: 1 }}>
               {/* Box 1 Kiri - TUK, Nama Asesor, Nama Asesi */}
               <div style={{...transparentBoxStyle, height: '120px', display: 'flex', flexDirection: 'column', padding: '15px', justifyContent: 'flex-start'}} className="transparent-box">
-                <div style={{...sectionTextStyle, marginBottom: '8px', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '3px'}} className="section-text">
+                <div style={{...sectionTextStyle, marginBottom: '8px', display: 'flex', alignItems: 'center'}} className="section-text form-row">
                   <strong style={{minWidth: '25px'}}>TUK</strong>
-                  <span>{' : '}</span>
+                  <span style={{margin: '0 5px'}}>{' : '}</span>
                   <input
                     type="text"
                     style={editableTextStyle}
@@ -707,23 +753,23 @@ const AK01 = () => {
                     placeholder="Coret yang tidak perlu"
                   />
                 </div>
-                <div style={{...sectionTextStyle, marginBottom: '8px', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '3px'}} className="section-text">
+                <div style={{...sectionTextStyle, marginBottom: '8px', display: 'flex', alignItems: 'center'}} className="section-text form-row">
                   <strong style={{minWidth: '90px'}}>Nama Asesor</strong>
-                  <span>{' : '}</span>
+                  <span style={{margin: '0 5px'}}>{' : '}</span>
                   <input
                     type="text"
-                    style={{ flex: 1, minWidth: '100px', fontSize: '11px', padding: '3px 6px', border: '1px solid #ddd', borderRadius: '3px' }}
+                    style={{ flex: 1, fontSize: '11px', padding: '3px 6px', border: '1px solid #ddd', borderRadius: '3px' }}
                     className="input-field"
                     value={formData.namaAsesor}
                     onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
                   />
                 </div>
-                <div style={{...sectionTextStyle, marginBottom: '0', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '3px'}} className="section-text">
+                <div style={{...sectionTextStyle, marginBottom: '0', display: 'flex', alignItems: 'center'}} className="section-text form-row">
                   <strong style={{minWidth: '90px'}}>Nama Asesi</strong>
-                  <span>{' : '}</span>
+                  <span style={{margin: '0 5px'}}>{' : '}</span>
                   <input
                     type="text"
-                    style={{ flex: 1, minWidth: '100px', fontSize: '11px', padding: '3px 6px', border: '1px solid #ddd', borderRadius: '3px' }}
+                    style={{ flex: 1, fontSize: '11px', padding: '3px 6px', border: '1px solid #ddd', borderRadius: '3px' }}
                     className="input-field"
                     value={formData.namaAsesi}
                     onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
@@ -765,9 +811,9 @@ const AK01 = () => {
                   Pelaksanaan asesmen disepakati pada:
                 </div>
                 <div style={{flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: '10px'}}>
-                  <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '3px'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}} className="form-row">
                     <span style={{minWidth: '90px', fontSize: '12px'}}>Tanggal</span>
-                    <span>{' : '}</span>
+                    <span style={{margin: '0 5px'}}>{' : '}</span>
                     <input
                       type="date"
                       style={dateInputStyle}
@@ -776,9 +822,9 @@ const AK01 = () => {
                       onChange={(e) => handleInputChange('tanggal', e.target.value)}
                     />
                   </div>
-                  <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '3px'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}} className="form-row">
                     <span style={{minWidth: '90px', fontSize: '12px'}}>Waktu</span>
-                    <span>{' : '}</span>
+                    <span style={{margin: '0 5px'}}>{' : '}</span>
                     <input
                       type="time"
                       style={dateInputStyle}
@@ -787,12 +833,12 @@ const AK01 = () => {
                       onChange={(e) => handleInputChange('waktu', e.target.value)}
                     />
                   </div>
-                  <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '3px'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}} className="form-row">
                     <span style={{minWidth: '90px', fontSize: '12px'}}>TUK</span>
-                    <span>{' : '}</span>
+                    <span style={{margin: '0 5px'}}>{' : '}</span>
                     <input
                       type="text"
-                      style={{flex: 1, minWidth: '100px', fontSize: '11px', padding: '4px 6px', border: '1px solid #ddd', borderRadius: '3px'}}
+                      style={{flex: 1, fontSize: '11px', padding: '4px 6px', border: '1px solid #ddd', borderRadius: '3px'}}
                       className="input-field"
                       value={formData.tukPelaksanaan}
                       onChange={(e) => handleInputChange('tukPelaksanaan', e.target.value)}
@@ -875,7 +921,7 @@ const AK01 = () => {
             
             <button 
               style={okayButtonStyle} 
-              className="submit-button"
+              className="modal-button"
               onClick={handleCloseModal}
               onMouseEnter={(e) => e.target.style.backgroundColor = '#e67e00'}
               onMouseLeave={(e) => e.target.style.backgroundColor = '#FF8C00'}
