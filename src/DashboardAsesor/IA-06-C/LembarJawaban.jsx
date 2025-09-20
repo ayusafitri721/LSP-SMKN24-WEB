@@ -12,6 +12,7 @@ const IA06C = () => {
     namaAsesor: '',
     namaAsesi: '',
     tanggal: '',
+    waktu: '',
     responses: {
       q1: { answer: '', text: '' },
       q2: { answer: '', text: '' },
@@ -70,18 +71,18 @@ const IA06C = () => {
     backgroundColor: '#FFA500',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    height: '220px',
+    height: '200px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     color: 'white',
     textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
-    fontSize: '60px',
+    fontSize: 'clamp(32px, 8vw, 60px)',
     fontWeight: 'bold',
     position: 'relative',
     overflow: 'hidden',
     borderRadius: '0 0 30px 30px',
-    margin: '15px 0'
+    margin: '15px 0',
   };
 
   const overlayStyle = {
@@ -111,8 +112,8 @@ const IA06C = () => {
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    padding: '20px 30px',
-    margin: '0 20px',
+    padding: 'clamp(15px, 3vw, 30px) clamp(15px, 3vw, 30px)',
+    margin: '0 clamp(10px, 2vw, 20px)',
     borderRadius: '0 0 15px 15px',
     transform: 'translateY(-15px)',
     position: 'relative',
@@ -121,8 +122,8 @@ const IA06C = () => {
   };
 
   const contentContainerStyle = {
-    padding: '25px 30px',
-    margin: '0 20px',
+    padding: 'clamp(15px, 3vw, 30px) clamp(15px, 3vw, 30px)',
+    margin: '0 clamp(10px, 2vw, 20px)',
     backgroundColor: 'white',
     borderRadius: '15px',
     marginTop: '15px',
@@ -133,28 +134,31 @@ const IA06C = () => {
     width: '100%',
     borderCollapse: 'collapse',
     marginBottom: '20px',
-    border: '1px solid #ddd',
+    border: '2px solid #333',
   };
 
   const tableCellStyle = {
-    padding: '8px',
+    padding: 'clamp(6px, 1.5vw, 12px)',
     border: '1px solid #333',
-    fontSize: '14px',
+    fontSize: 'clamp(12px, 2.5vw, 14px)',
     color: '#333',
+    verticalAlign: 'middle',
   };
 
   const tableTopCellStyle = {
     ...tableCellStyle,
     backgroundColor: '#f5f5f5',
     fontWeight: 'bold',
+    textAlign: 'center',
+    verticalAlign: 'middle',
   };
 
   const formSectionHeaderStyle = {
     backgroundColor: '#f8f8f8',
     border: '1px solid #333',
-    padding: '15px',
+    padding: 'clamp(10px, 2vw, 15px)',
     textAlign: 'center',
-    fontSize: '16px',
+    fontSize: 'clamp(14px, 3vw, 16px)',
     fontWeight: 'bold',
     margin: '20px 0',
     color: '#333',
@@ -163,13 +167,13 @@ const IA06C = () => {
   const questionBoxStyle = {
     border: '1px solid #333',
     borderRadius: '8px',
-    padding: '15px',
+    padding: 'clamp(10px, 2vw, 15px)',
     marginBottom: '15px',
     backgroundColor: 'white',
   };
 
   const questionTextStyle = {
-    fontSize: '14px',
+    fontSize: 'clamp(12px, 2.5vw, 14px)',
     lineHeight: '1.5',
     marginBottom: '15px',
     color: '#333',
@@ -182,7 +186,7 @@ const IA06C = () => {
     border: '1px solid #ddd',
     borderRadius: '5px',
     backgroundColor: 'white',
-    fontSize: '14px',
+    fontSize: 'clamp(12px, 2.5vw, 14px)',
     boxSizing: 'border-box',
     resize: 'vertical',
     marginBottom: '10px',
@@ -191,10 +195,12 @@ const IA06C = () => {
   const responseSectionStyle = {
     display: 'flex',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: '10px',
   };
 
   const responseLabelStyle = {
-    fontSize: '14px',
+    fontSize: 'clamp(12px, 2.5vw, 14px)',
     fontWeight: 'bold',
     color: '#495057',
     marginRight: '15px',
@@ -204,10 +210,11 @@ const IA06C = () => {
     display: 'flex',
     alignItems: 'center',
     gap: '20px',
+    flexWrap: 'wrap',
   };
 
   const checkboxLabelStyle = {
-    fontSize: '14px',
+    fontSize: 'clamp(12px, 2.5vw, 14px)',
     color: '#555',
     cursor: 'pointer',
     display: 'flex',
@@ -218,21 +225,22 @@ const IA06C = () => {
   const buttonContainerStyle = {
     display: 'flex',
     justifyContent: 'center',
-    gap: '20px',
+    gap: 'clamp(15px, 3vw, 20px)',
     marginTop: '40px',
-    paddingTop: '25px'
+    paddingTop: '25px',
+    flexWrap: 'wrap',
   };
 
   const buttonStyle = {
-    padding: '12px 35px',
+    padding: 'clamp(10px, 2vw, 12px) clamp(25px, 5vw, 35px)',
     backgroundColor: 'white',
     color: '#333',
     border: '1px solid #ccc',
     borderRadius: '25px',
     cursor: 'pointer',
-    fontSize: '14px',
+    fontSize: 'clamp(12px, 2.5vw, 14px)',
     fontWeight: '500',
-    minWidth: '120px',
+    minWidth: 'clamp(100px, 20vw, 120px)',
     transition: 'all 0.2s ease'
   };
 
@@ -246,7 +254,18 @@ const IA06C = () => {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1000
+    zIndex: 1000,
+    padding: '20px'
+  };
+
+  const modalContentStyle = {
+    backgroundColor: 'white',
+    borderRadius: '16px',
+    padding: 'clamp(20px, 4vw, 40px)',
+    width: '100%',
+    maxWidth: '500px',
+    boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
+    position: 'relative'
   };
 
   const handleInputChange = (field, value) => {
@@ -322,20 +341,20 @@ const IA06C = () => {
 
       {/* Sub Header */}
       <div style={subHeaderStyle}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', width: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(10px, 2vw, 20px)', width: '100%' }}>
           <img
             src="/src/img/image 12.png"
             alt="LSP Logo"
             style={{
-              width: '50px',
-              height: '50px',
+              width: 'clamp(40px, 8vw, 50px)',
+              height: 'clamp(40px, 8vw, 50px)',
               borderRadius: '4px',
               objectFit: 'contain'
             }}
           />
           <div style={{ flex: 1, textAlign: 'center' }}>
             <div style={{
-              fontSize: '18px',
+              fontSize: 'clamp(14px, 3vw, 18px)',
               fontWeight: 'bold',
               margin: 0,
               color: '#333'
@@ -349,83 +368,146 @@ const IA06C = () => {
         <table style={tableStyle}>
           <tbody>
             <tr>
-              <td style={{ ...tableTopCellStyle, width: '25%' }} rowSpan="2">Skema Sertifikasi (KKNI/OKUPASI/KLASTER)</td>
-              <td style={{ ...tableTopCellStyle, width: '25%' }} rowSpan="2">
-                <input
-                  type="text"
-                  style={{ width: '100%', border: 'none', outline: 'none', backgroundColor: 'transparent' }}
-                  value={formData.skemaSertifikasi}
-                  onChange={(e) => handleInputChange('skemaSertifikasi', e.target.value)}
-                />
+              <td style={{ ...tableTopCellStyle, width: '20%', verticalAlign: 'middle' }} rowSpan="2">
+                Skema Sertifikasi<br/>
+                (KKNI/OKUPASI/KLASTER)
               </td>
-              <td style={{ ...tableCellStyle, width: '15%' }}>Judul Unit</td>
-              <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
-              <td style={{ ...tableCellStyle, width: '34%' }}>
-                <input
-                  type="text"
-                  style={{ width: '100%', border: 'none', outline: 'none', backgroundColor: 'transparent' }}
-                  value={formData.judulUnit}
-                  onChange={(e) => handleInputChange('judulUnit', e.target.value)}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td style={{ ...tableCellStyle, width: '15%' }}>Kode Unit</td>
-              <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
-              <td style={{ ...tableCellStyle, width: '34%' }}>
-                <input
-                  type="text"
-                  style={{ width: '100%', border: 'none', outline: 'none', backgroundColor: 'transparent' }}
-                  value={formData.kodeUnit}
-                  onChange={(e) => handleInputChange('kodeUnit', e.target.value)}
-                />
+              <td style={{ ...tableTopCellStyle, width: '2%', verticalAlign: 'middle' }} rowSpan="2">:</td>
+
+              <td style={{ ...tableCellStyle, width: '78%', verticalAlign: 'middle' }}>
+                <div style={{ marginBottom: '8px' }}>
+                  <label style={{ fontSize: 'clamp(10px, 2vw, 12px)', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>
+                    Judul Unit:
+                  </label>
+                  <input
+                    type="text"
+                    style={{ 
+                      width: '100%', 
+                      border: '1px solid #ddd', 
+                      outline: 'none', 
+                      backgroundColor: 'white',
+                      fontSize: 'clamp(11px, 2vw, 13px)',
+                      padding: '4px',
+                      borderRadius: '3px'
+                    }}
+                    value={formData.judulUnit}
+                    onChange={(e) => handleInputChange('judulUnit', e.target.value)}
+                  />
+                </div>
               </td>
             </tr>
             <tr>
-              <td style={{ ...tableCellStyle, width: '25%' }}>TUK</td>
-              <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
-              <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
+              <td style={{ ...tableCellStyle, width: '78%', verticalAlign: 'middle' }}>
+                <div>
+                  <label style={{ fontSize: 'clamp(10px, 2vw, 12px)', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>
+                    Kode Unit:
+                  </label>
+                  <input
+                    type="text"
+                    style={{ 
+                      width: '100%', 
+                      border: '1px solid #ddd', 
+                      outline: 'none', 
+                      backgroundColor: 'white',
+                      fontSize: 'clamp(11px, 2vw, 13px)',
+                      padding: '4px',
+                      borderRadius: '3px'
+                    }}
+                    value={formData.kodeUnit}
+                    onChange={(e) => handleInputChange('kodeUnit', e.target.value)}
+                  />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style={{ ...tableCellStyle, width: '20%' }}>TUK</td>
+              <td style={{ ...tableCellStyle, width: '2%' }}>:</td>
+              <td style={{ ...tableCellStyle, width: '78%' }} colSpan="2">
                 <input
                   type="text"
-                  style={{ width: '100%', border: 'none', outline: 'none', backgroundColor: 'transparent' }}
+                  style={{ 
+                    width: '100%', 
+                    border: 'none', 
+                    outline: 'none', 
+                    backgroundColor: 'transparent',
+                    fontSize: 'clamp(12px, 2.5vw, 14px)'
+                  }}
                   value={formData.tuk}
                   onChange={(e) => handleInputChange('tuk', e.target.value)}
                 />
               </td>
             </tr>
             <tr>
-              <td style={{ ...tableCellStyle, width: '25%' }}>Nama Asesor</td>
-              <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
-              <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
+              <td style={{ ...tableCellStyle, width: '20%' }}>Nama Asesor</td>
+              <td style={{ ...tableCellStyle, width: '2%' }}>:</td>
+              <td style={{ ...tableCellStyle, width: '78%' }} colSpan="2">
                 <input
                   type="text"
-                  style={{ width: '100%', border: 'none', outline: 'none', backgroundColor: 'transparent' }}
+                  style={{ 
+                    width: '100%', 
+                    border: 'none', 
+                    outline: 'none', 
+                    backgroundColor: 'transparent',
+                    fontSize: 'clamp(12px, 2.5vw, 14px)'
+                  }}
                   value={formData.namaAsesor}
                   onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
                 />
               </td>
             </tr>
             <tr>
-              <td style={{ ...tableCellStyle, width: '25%' }}>Nama Asesi</td>
-              <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
-              <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
+              <td style={{ ...tableCellStyle, width: '20%' }}>Nama Asesi</td>
+              <td style={{ ...tableCellStyle, width: '2%' }}>:</td>
+              <td style={{ ...tableCellStyle, width: '78%' }} colSpan="2">
                 <input
                   type="text"
-                  style={{ width: '100%', border: 'none', outline: 'none', backgroundColor: 'transparent' }}
+                  style={{ 
+                    width: '100%', 
+                    border: 'none', 
+                    outline: 'none', 
+                    backgroundColor: 'transparent',
+                    fontSize: 'clamp(12px, 2.5vw, 14px)'
+                  }}
                   value={formData.namaAsesi}
                   onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
                 />
               </td>
             </tr>
             <tr>
-              <td style={{ ...tableCellStyle, width: '25%' }}>Tanggal</td>
-              <td style={{ ...tableCellStyle, width: '1%' }}>:</td>
-              <td style={{ ...tableCellStyle, width: '74%' }} colSpan="4">
+              <td style={{ ...tableCellStyle, width: '20%' }}>Tanggal</td>
+              <td style={{ ...tableCellStyle, width: '2%' }}>:</td>
+              <td style={{ ...tableCellStyle, width: '78%' }} colSpan="2">
                 <input
-                  type="text"
-                  style={{ width: '100%', border: 'none', outline: 'none', backgroundColor: 'transparent' }}
+                  type="date"
+                  style={{ 
+                    width: '100%', 
+                    border: 'none', 
+                    outline: 'none', 
+                    backgroundColor: 'transparent',
+                    fontSize: 'clamp(12px, 2.5vw, 14px)',
+                    color: '#333'
+                  }}
                   value={formData.tanggal}
                   onChange={(e) => handleInputChange('tanggal', e.target.value)}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td style={{ ...tableCellStyle, width: '20%' }}>Waktu</td>
+              <td style={{ ...tableCellStyle, width: '2%' }}>:</td>
+              <td style={{ ...tableCellStyle, width: '78%' }} colSpan="2">
+                <input
+                  type="time"
+                  style={{ 
+                    width: '100%', 
+                    border: 'none', 
+                    outline: 'none', 
+                    backgroundColor: 'transparent',
+                    fontSize: 'clamp(12px, 2.5vw, 14px)',
+                    color: '#333'
+                  }}
+                  value={formData.waktu}
+                  onChange={(e) => handleInputChange('waktu', e.target.value)}
                 />
               </td>
             </tr>
@@ -498,14 +580,7 @@ const IA06C = () => {
       {/* Modal Notifikasi */}
       {showModal && (
         <div style={modalOverlayStyle}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            padding: '30px 40px',
-            minWidth: '500px',
-            boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
-            position: 'relative'
-          }}>
+          <div style={modalContentStyle}>
             {/* Header dengan Icon dan Close Button */}
             <div style={{
               display: 'flex',
@@ -515,8 +590,8 @@ const IA06C = () => {
             }}>
               {/* Icon clipboard biru dengan checkmark di kiri */}
               <div style={{
-                width: '50px',
-                height: '50px',
+                width: 'clamp(40px, 8vw, 50px)',
+                height: 'clamp(40px, 8vw, 50px)',
                 backgroundColor: '#4A90E2',
                 borderRadius: '6px',
                 display: 'flex',
@@ -527,8 +602,8 @@ const IA06C = () => {
               }}>
                 {/* Clipboard shape */}
                 <div style={{
-                  width: '36px',
-                  height: '40px',
+                  width: '70%',
+                  height: '80%',
                   backgroundColor: 'white',
                   borderRadius: '3px',
                   position: 'relative',
@@ -540,14 +615,14 @@ const IA06C = () => {
                   <div style={{
                     position: 'absolute',
                     top: '-3px',
-                    width: '16px',
+                    width: '50%',
                     height: '6px',
                     backgroundColor: '#4A90E2',
                     borderRadius: '3px 3px 0 0'
                   }}></div>
                   
                   {/* Checkmark */}
-                  <Check size={18} color="#4A90E2" strokeWidth={4} />
+                  <Check size="clamp(16px, 3vw, 18px)" color="#4A90E2" strokeWidth={4} />
                 </div>
               </div>
               
@@ -558,7 +633,7 @@ const IA06C = () => {
                 paddingTop: '5px'
               }}>
                 <h3 style={{
-                  fontSize: '22px',
+                  fontSize: 'clamp(18px, 4vw, 22px)',
                   fontWeight: '600',
                   color: '#333',
                   marginBottom: '4px',
@@ -567,7 +642,7 @@ const IA06C = () => {
                   Anda menyetujui
                 </h3>
                 <h3 style={{
-                  fontSize: '22px',
+                  fontSize: 'clamp(18px, 4vw, 22px)',
                   fontWeight: '600',
                   color: '#333',
                   margin: '0',
@@ -601,7 +676,7 @@ const IA06C = () => {
             
             {/* Description */}
             <p style={{
-              fontSize: '14px',
+              fontSize: 'clamp(12px, 2.5vw, 14px)',
               color: '#666',
               marginBottom: '25px',
               lineHeight: '1.5',
@@ -615,13 +690,13 @@ const IA06C = () => {
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
                 style={{
-                  padding: '10px 30px',
+                  padding: 'clamp(8px, 2vw, 10px) clamp(20px, 4vw, 30px)',
                   backgroundColor: '#4A90E2',
                   color: 'white',
                   border: 'none',
                   borderRadius: '20px',
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: 'clamp(12px, 2.5vw, 14px)',
                   fontWeight: '600',
                   transition: 'all 0.2s ease'
                 }}
@@ -639,14 +714,7 @@ const IA06C = () => {
       {/* Modal Notifikasi Reject */}
       {showRejectModal && (
         <div style={modalOverlayStyle}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            padding: '30px 40px',
-            minWidth: '500px',
-            boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
-            position: 'relative'
-          }}>
+          <div style={modalContentStyle}>
             {/* Header dengan Icon dan Close Button */}
             <div style={{
               display: 'flex',
@@ -656,8 +724,8 @@ const IA06C = () => {
             }}>
               {/* Icon document dengan X orange di kiri */}
               <div style={{
-                width: '50px',
-                height: '50px',
+                width: 'clamp(40px, 8vw, 50px)',
+                height: 'clamp(40px, 8vw, 50px)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -666,8 +734,8 @@ const IA06C = () => {
               }}>
                 {/* Document outline */}
                 <div style={{
-                  width: '36px',
-                  height: '42px',
+                  width: '70%',
+                  height: '80%',
                   border: '2px solid #FF8C00',
                   borderRadius: '2px',
                   backgroundColor: 'white',
@@ -739,7 +807,7 @@ const IA06C = () => {
                 paddingTop: '5px'
               }}>
                 <h3 style={{
-                  fontSize: '22px',
+                  fontSize: 'clamp(18px, 4vw, 22px)',
                   fontWeight: '600',
                   color: '#333',
                   marginBottom: '4px',
@@ -748,7 +816,7 @@ const IA06C = () => {
                   Anda menolak
                 </h3>
                 <h3 style={{
-                  fontSize: '22px',
+                  fontSize: 'clamp(18px, 4vw, 22px)',
                   fontWeight: '600',
                   color: '#333',
                   margin: '0',
@@ -790,7 +858,7 @@ const IA06C = () => {
             
             {/* Description */}
             <p style={{
-              fontSize: '14px',
+              fontSize: 'clamp(12px, 2.5vw, 14px)',
               color: '#666',
               marginBottom: '25px',
               lineHeight: '1.5',
@@ -804,13 +872,13 @@ const IA06C = () => {
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
                 style={{
-                  padding: '10px 30px',
+                  padding: 'clamp(8px, 2vw, 10px) clamp(20px, 4vw, 30px)',
                   backgroundColor: '#FF8C00',
                   color: 'white',
                   border: 'none',
                   borderRadius: '20px',
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: 'clamp(12px, 2.5vw, 14px)',
                   fontWeight: '600',
                   transition: 'all 0.2s ease'
                 }}
