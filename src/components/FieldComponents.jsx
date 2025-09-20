@@ -199,6 +199,50 @@ export const DateField = ({
   );
 };
 
+// FieldComponents.jsx
+export const DateTimeField = ({ 
+  label, 
+  value, 
+  onChange, 
+  required = false, 
+  error,
+  ...props 
+}) => {
+  // Konversi ke format input datetime-local (tambah "T" & trim detik)
+  const formatForInput = (val) => {
+    if (!val) return "";
+    return val.replace(" ", "T").slice(0, 16); // 2025-10-16T16:26
+  };
+
+  const handleChange = (e) => {
+    const rawValue = e.target.value; // 2025-10-16T16:26
+    const formatted = rawValue.replace("T", " ") + ":00"; // 2025-10-16 16:26:00
+    onChange({ target: { name: e.target.name, value: formatted } });
+  };
+
+  return (
+    <BaseField label={label} required={required} error={error}>
+      <input
+        type="datetime-local"
+        value={formatForInput(value)}
+        onChange={handleChange}
+        style={{
+          width: '100%',
+          padding: '8px 12px',
+          border: error ? '1px solid #dc3545' : '1px solid #ccc',
+          borderRadius: '8px',
+          fontSize: '13px',
+          boxSizing: 'border-box',
+          backgroundColor: '#f8f9fa',
+        }}
+        {...props}
+      />
+    </BaseField>
+  );
+};
+
+
+
 // Jurusan options constant
 export const JURUSAN_OPTIONS = [
   { value: "1", label: "Rekayasa Perangkat Lunak" },

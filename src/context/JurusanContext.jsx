@@ -1,9 +1,18 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { jurusans as apiJurusans, putJurusan, deleteJurusan } from "../Api/api"; // service ambil jurusan
-import { createJurusan } from "../Api/api";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
+import {
+  jurusans as apiJurusans,
+  putJurusan,
+  deleteJurusan,
+  createJurusan,
+} from "../Api/api";
 
-import { data } from "react-router-dom";
-// Context
 const JurusanContext = createContext();
 
 export function JurusanProvider({ children }) {
@@ -11,22 +20,20 @@ export function JurusanProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch jurusan
-  const fetchJurusans = async () => {
+  const fetchJurusans = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const res = await apiJurusans();
-      console.log("cek", res.data.data );
       setJurusanList(res.data.data || []);
     } catch (err) {
       setError(err.response?.data?.message || "Gagal mengambil data jurusan!");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const postJurusan = async (data) => {
+  const postJurusan = useCallback(async (data) => {
     setLoading(true);
     setError(null);
     try {
@@ -36,48 +43,72 @@ export function JurusanProvider({ children }) {
     } catch (err) {
       setError(err.response?.data?.message || "Gagal menambah jurusan!");
       throw err;
+    } finally {
+      setLoading(false);
     }
-  }
-
-  const updateJurusan = async (id, data) => {
-    setLoading(true);
-    setError(null);
-    try{
-      const res = await putJurusan(id, data);
-      return res.data?.data;
-    }catch(err){
-      setError(err.response?.data?.message || "Gagal menambah jurusan!");
-      throw err;
-    }
-  }
-
-  const removeJurusan = async (id) => {
-    setLoading(true);
-    setError(null);
-    try{
-      const res = await deleteJurusan(id);
-      return res.data?.data;
-    }catch(err){
-      setError(err.response?.data?.message || "Gagal menghapus jurusan!");
-      throw err;
-    }
-  }
-
-  // Auto load saat pertama
-  useEffect(() => {
-    fetchJurusans();
   }, []);
 
+  const updateJurusan = useCallback(async (id, data) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await putJurusan(id, data);
+      setJurusanList((prev) =>
+        prev.map((jurusan) => (jurusan.id === id ? res.data?.data : jurusan))
+      );
+      return res.data?.data;
+    } catch (err) {
+      setError(err.response?.data?.message || "Gagal mengubah jurusan!");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const removeJurusan = useCallback(async (id) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await deleteJurusan(id);
+      setJurusanList((prev) => prev.filter((jurusan) => jurusan.id !== id));
+    } catch (err) {
+      setError(err.response?.data?.message || "Gagal menghapus jurusan!");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchJurusans();
+  }, [fetchJurusans]);
+
+  const value = useMemo(
+    () => ({
+      jurusanList,
+      loading,
+      error,
+      fetchJurusans,
+      postJurusan,
+      updateJurusan,
+      removeJurusan,
+    }),
+    [
+      jurusanList,
+      loading,
+      error,
+      fetchJurusans,
+      postJurusan,
+      updateJurusan,
+      removeJurusan,
+    ]
+  );
+
   return (
-    <JurusanContext.Provider
-      value={{ jurusanList, loading, error, fetchJurusans, postJurusan, updateJurusan, removeJurusan }}
-    >
-      {children}
-    </JurusanContext.Provider>
+    <JurusanContext.Provider value={value}>{children}</JurusanContext.Provider>
   );
 }
 
-// Hook
 export function useJurusan() {
   const context = useContext(JurusanContext);
   if (!context) {

@@ -1,6 +1,17 @@
-import React from 'react';
+import React from "react";
+import { useAsesi } from "../context/AsesiContext";
+import { useAsesor } from "../context/AsesorContext";
+import { useJurusan } from "../context/JurusanContext";
+import { useSkema } from "../context/SkemaContext";
+import { useAssesment } from "../context/AssesmentContext";
 
 function ManajemenData({ onNavigate }) {
+  const { asesis } = useAsesi();
+  const { asesors } = useAsesor();
+  const { jurusanList } = useJurusan();
+  const { skemaList } = useSkema();
+  const { assesments } = useAssesment();
+
   const styles = {
     container: {
       width: '100%',
@@ -128,60 +139,51 @@ function ManajemenData({ onNavigate }) {
   };
 
   const sections = [
-    // LIST MUK moved to the top
     {
-      title: 'LIST MUK',
+      title: "LIST MUK",
       stats: [
-        { label: 'Program:', value: '5' },
-        { label: 'Kompetensi:', value: '45' },
-        { label: 'Unit:', value: '180' }
+        { label: "Program:", value: skemaList.length }, // jumlah skema
+        { label: "Unit:", value: skemaList.reduce((acc, s) => acc + (s.total_units || 0), 0) },
+        { label: "Elemen:", value: skemaList.reduce((acc, s) => acc + (s.total_elements || 0), 0) },
       ],
-       route: 'ListMuk', 
-      isMuk: true
+      route: "ListMuk",
+      isMuk: true,
     },
     {
-      title: 'ASESOR',
+      title: "ASESOR",
       stats: [
-        { label: 'Peserta:', value: '67' },
-        { label: 'Aktif:', value: '67' },
-        { label: 'Tervalidasi:', value: '61' }
+        { label: "Jumlah Asesor:", value: asesors.length },
       ],
-      route: 'Asesor'
+      route: "Asesor",
     },
     {
-      title: 'ASESI',
+      title: "ASESI",
       stats: [
-        { label: 'Peserta:', value: '4000' },
-        { label: 'Lorem Ipsum', value: '' },
-        { label: 'Lorem Ipsum', value: '' }
+        { label: "Jumlah Asesi:", value: asesis.length },
       ],
-      route: 'Asesi'
+      route: "Asesi",
     },
     {
-      title: 'ASESMEN',
+      title: "ASESMEN",
       stats: [
-        { label: 'Skema:', value: '4000' }
+        { label: "Jumlah Assesment:", value: assesments.length },
       ],
-      route: 'Asesmen'
+      route: "Asesmen",
     },
     {
-      title: 'JURUSAN',
+      title: "JURUSAN",
       stats: [
-        { label: 'Program:', value: '5' },
-        { label: 'Aktif:', value: '5' },
-        { label: 'Mahasiswa:', value: '1,250' }
+        { label: "Jumlah Jurusan:", value: jurusanList.length },
       ],
-      route: 'Jurusan'
+      route: "Jurusan",
     },
     {
-      title: 'SKEMA',
+      title: "SKEMA",
       stats: [
-        { label: 'Program:', value: '5' },
-        { label: 'Kompetensi:', value: '45' },
-        { label: 'Unit:', value: '180' }
+        { label: "Jumlah Skema:", value: skemaList.length },
       ],
-      route: 'Kompetensi'
-    }
+      route: "Kompetensi",
+    },
   ];
 
   return (
