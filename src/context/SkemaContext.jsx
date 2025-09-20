@@ -1,57 +1,74 @@
-import {createContext, useContext, useState, useEffect} from "react";
-import { getSkemas, postApl02 } from "../Api/api"; // service ambil skema
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
+import { getSkemas, postApl02 } from "../Api/api";
+import { useAuth } from "./AuthContext";
 
 const SkemaContext = createContext();
 
 export function SkemaProvider({ children }) {
-    const [skemaList, setSkemaList] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+  const { user } = useAuth();
+  const [skemaList, setSkemaList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isFetched, setIsFetched] = useState(false); // Caching flag
 
-    const fetchSkemas = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const res = await getSkemas();
-            console.log("Fetched skemas:", res.data.data);
-            setSkemaList(res.data.data || []);
-        } catch (err) {
-            setError(err.response?.data?.message || "Gagal mengambil data skema!");
-            console.log(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const importFile = async (data) => {
-        setLoading(true);
-        setError(null);
-        try{
-            const res = await postApl02(data);
-        }catch(err){
-            setError(err.response?.data?.message || "gagal import data");
-        }finally{
-            setLoading(false)
-        }
+  const fetchSkemas = useCallback(async () => {
+    if (!user || isFetched) return; // Skip if not logged in or already fetched
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await getSkemas();
+      setSkemaList(res.data.data || []);
+      setIsFetched(true); // Mark as fetched
+    } catch (err) {
+      setError(err.response?.data?.message || "Gagal mengambil data skema!");
+    } finally {
+      setLoading(false);
     }
+  }, [user, isFetched]);
 
-    useEffect(() => {
-        fetchSkemas();
-    }, []);
+  const importFile = useCallback(async (data) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await postApl02(data);
+    } catch (err) {
+      setError(err.response?.data?.message || "Gagal import data");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-    return (
-        <SkemaContext.Provider
-            value={{ skemaList, loading, error, fetchSkemas, importFile }}
-        >
-            {children}
-        </SkemaContext.Provider>
-    );
+  useEffect(() => {
+    fetchSkemas();
+  }, [fetchSkemas]);
+
+  const value = useMemo(
+    () => ({
+      skemaList,
+      loading,
+      error,
+      fetchSkemas,
+      importFile,
+    }),
+    [skemaList, loading, error, fetchSkemas, importFile]
+  );
+
+  return (
+    <SkemaContext.Provider value={value}>{children}</SkemaContext.Provider>
+  );
 }
 
 export function useSkema() {
-    const context = useContext(SkemaContext);
-    if (!context) {
-        throw new Error("useSkema must be used within a SkemaProvider");
-    }
-    return context;
+  const context = useContext(SkemaContext);
+  if (!context) {
+    throw new Error("useSkema must be used within a SkemaProvider");
+  }
+  return context;
 }

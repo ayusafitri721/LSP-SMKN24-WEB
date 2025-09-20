@@ -1,112 +1,109 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { getAsesors, createAsesor, updateAsesor, deleteAsesor } from "../Api/api";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
+import {
+  getAsesors,
+  createAsesor,
+  updateAsesor,
+  deleteAsesor,
+} from "../Api/api";
+import { useAuth } from "./AuthContext";
 
 const AsesorContext = createContext();
 
 export const AsesorProvider = ({ children }) => {
+  const { user } = useAuth();
   const [asesors, setAsesors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isFetched, setIsFetched] = useState(false);
 
-  // ================== FETCH ==================
-  const fetchAsesors = async () => {
+  const fetchAsesors = useCallback(async () => {
+    if (!user || isFetched) return;
     setLoading(true);
     setError(null);
-
     try {
       const res = await getAsesors(1, 100);
       setAsesors(res.data?.data.data || []);
-      console.log("Fetched asesors:", res.data);
     } catch (err) {
-      setError(err.response?.data?.message || err.message || "Gagal fetch data asesor");
-      setAsesors([]);
+      setError(err.response?.data?.message || "Gagal fetch data asesor");
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, isFetched]);
 
-  // ================== CREATE ==================
-  const addAsesor = async (data) => {
+  const addAsesor = useCallback(async (data) => {
     setLoading(true);
-    setError(null);
-
     try {
       const res = await createAsesor(data);
-      const newAsesor = res.data?.data;
-      if (newAsesor) setAsesors((prev) => [...prev, newAsesor]);
-      return newAsesor;
+      setAsesors((prev) => [...prev, res.data?.data]);
+      return res.data?.data;
     } catch (err) {
-      setError(err.response?.data?.message || err.message || "Gagal tambah asesor");
+      setError(err.response?.data?.message || "Gagal tambah asesor");
       throw err;
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  // ================== UPDATE ==================
-  const editAsesor = async (id, data) => {
+  const editAsesor = useCallback(async (id, data) => {
     setLoading(true);
-    setError(null);
-
     try {
       const res = await updateAsesor(id, data);
-      const updated = res.data?.data;
-      setAsesors((prev) =>
-        prev.map((a) => (a.id === id ? updated : a))
-      );
-      return updated;
+      setAsesors((prev) => prev.map((a) => (a.id === id ? res.data?.data : a)));
+      return res.data?.data;
     } catch (err) {
-      setError(err.response?.data?.message || err.message || "Gagal update asesor");
+      setError(err.response?.data?.message || "Gagal update asesor");
       throw err;
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  // ================== DELETE ==================
-  const removeAsesor = async (id) => {
+  const removeAsesor = useCallback(async (id) => {
     setLoading(true);
-    setError(null);
-
     try {
       await deleteAsesor(id);
       setAsesors((prev) => prev.filter((a) => a.id !== id));
-      return true;
     } catch (err) {
-      setError(err.response?.data?.message || err.message || "Gagal hapus asesor");
+      setError(err.response?.data?.message || "Gagal hapus asesor");
       throw err;
     } finally {
       setLoading(false);
     }
-  };
-
-  // fetch saat provider mount
-  useEffect(() => {
-    fetchAsesors();
   }, []);
 
+  useEffect(() => {
+    fetchAsesors();
+  }, [fetchAsesors]);
+
+  const value = useMemo(
+    () => ({
+      asesors,
+      loading,
+      error,
+      fetchAsesors,
+      addAsesor,
+      editAsesor,
+      removeAsesor,
+    }),
+    [asesors, loading, error, fetchAsesors, addAsesor, editAsesor, removeAsesor]
+  );
+
   return (
-    <AsesorContext.Provider
-      value={{
-        asesors,
-        loading,
-        error,
-        fetchAsesors,
-        addAsesor,
-        editAsesor,
-        removeAsesor,
-      }}
-    >
-      {children}
-    </AsesorContext.Provider>
+    <AsesorContext.Provider value={value}>{children}</AsesorContext.Provider>
   );
 };
 
-// Hook custom
 export const useAsesor = () => {
   const context = useContext(AsesorContext);
   if (!context) {
-    throw new Error("useAsesor harus digunakan di dalam AsesorProvider");
+    throw new Error("useAsesor must be used within an AsesorProvider");
   }
   return context;
 };

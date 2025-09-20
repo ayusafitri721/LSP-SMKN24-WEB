@@ -1,51 +1,58 @@
 // context/AuthContext.jsx
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo, useEffect } from "react";
 import api from "../Api/api"; // axios instance misalnya
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // LOGIN
   const login = async (credentials) => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
       const res = await api.post("/auth/login", credentials);
-      setUser(res.data.user);
-      console.log("Login response:", res.data);
-      localStorage.setItem("user", JSON.stringify({id: res.data.user.id, role: res.data.user.role, token: res.data.token})); // simpan token
+      const userData = {
+        id: res.data.user.id,
+        username: res.data.user.username,
+        role: res.data.user.role,
+        token: res.data.token,
+      };
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+      api.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
       return res.data;
     } catch (err) {
-      throw err.response?.data || err;
-      console.log(err);
+      setError(err.response?.data || "Gagal login!");
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  // REGISTER (ini yang belum ada)
-  const register = async (formData) => {
-    try {
-      setLoading(true);
-      const res = await api.post("/auth/register", formData);
-      return res.data;
-    } catch (err) {
-      throw err.response?.data || err;
-    } finally {
-      setLoading(false);
-    }
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+    delete api.defaults.headers.common["Authorization"];
   };
 
-  return (
-    <AuthContext.Provider
-      value={{ user, login, register, loading, error }}
-    >
-      {children}
-    </AuthContext.Provider>
+  useEffect(() => {
+    if (user?.token) {
+      api.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
+    }
+  }, [user]);
+
+  const value = useMemo(
+    () => ({ user, login, logout, loading, error }),
+    [user, loading, error]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
