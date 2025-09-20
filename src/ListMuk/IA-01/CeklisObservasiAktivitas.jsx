@@ -399,7 +399,16 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
       { no: 1, kode: "J.620100.025.02", judul: "Melakukan Debugging" },
       { no: 2, kode: "J.62010.033.02", judul: "Melaksanakan Pengujian Unit Program" },
     ],
-    umpanBalik: ""
+    umpanBalik: "",
+    kelompokPekerjaanRekomen: "",
+    unitRekomen: "",
+    elemenRekomen: "",
+    kukRekomen: "",
+    namaAsesiTandaTangan: "",
+    tandaTanganAsesi: "",
+    namaAsesorTandaTangan: "",
+    noRegAsesor: "",
+    tandaTanganAsesor: ""
   });
 
   const handleInputChange = (field, value) => {
@@ -437,15 +446,25 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
     }));
   };
 
+  const handleSimpan = () => {
+    alert("Data berhasil disimpan");
+  };
+
+  const handleBatal = () => {
+    if (onBack) {
+      onBack();
+    }
+  };
+
   const tableStyle = {
     width: "100%",
     borderCollapse: "collapse",
-    border: "2px solid #d35400", // Garis tabel oranye tua lebih gelap
+    border: "2px solid #d35400",
     marginBottom: "20px",
   };
 
   const cellStyle = {
-    border: "1px solid #d35400", // Garis sel oranye tua lebih gelap
+    border: "1px solid #d35400",
     padding: "8px",
     fontSize: "12px",
     backgroundColor: "white",
@@ -454,7 +473,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
 
   const headerCellStyle = {
     ...cellStyle,
-    backgroundColor: "#ff8c42", // Warna tabel oranye
+    backgroundColor: "#ff8c42",
     color: "white",
     fontWeight: "600",
     textAlign: "center",
@@ -462,7 +481,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
 
   const subHeaderStyle = {
     ...cellStyle,
-    backgroundColor: "#ff8c42", // Warna tabel oranye
+    backgroundColor: "#ff8c42",
     color: "white",
     fontWeight: "600",
     textAlign: "center",
@@ -471,7 +490,6 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
 
   const renderAssessmentTable = (aktivitasData, sectionName, unitTitle) => (
     <>
-      {/* Unit Kompetensi Detail */}
       <table style={{ ...tableStyle, marginTop: "20px" }}>
         <tbody>
           <tr>
@@ -507,7 +525,6 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         </tbody>
       </table>
 
-      {/* Assessment Table */}
       <table style={tableStyle}>
         <thead>
           <tr>
@@ -605,12 +622,11 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
     >
       <ListMukHeader active="ia-01" onBack={onBack} onNavigate={onNavigate} />
 
-      {/* Header */}
       <h2
         style={{
           textAlign: "center",
           color: "white",
-          backgroundColor: "#ff8c42", // Warna header oranye
+          backgroundColor: "#ff8c42",
           padding: "10px",
           margin: "0 0 20px 0",
           fontSize: "14px",
@@ -621,14 +637,13 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         KERJA SIMULASI
       </h2>
 
-      {/* Info Table */}
       <table style={tableStyle}>
         <tbody>
           <tr>
             <td
               style={{
                 ...headerCellStyle,
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 width: "200px",
               }}
             >
@@ -637,7 +652,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             <td
               style={{
                 ...headerCellStyle,
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 width: "80px",
               }}
             >
@@ -649,28 +664,28 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             <td
               style={{
                 ...cellStyle,
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 color: "white",
                 fontWeight: "600",
               }}
             ></td>
-            <td style={{ ...headerCellStyle, backgroundColor: "#ff8c42" }}> {/* Warna tabel oranye */}
+            <td style={{ ...headerCellStyle, backgroundColor: "#ff8c42" }}>
               Nomor
             </td>
             <td style={cellStyle}>{formData.nomorSkema}</td>
           </tr>
           <tr>
-            <td style={{ ...headerCellStyle, backgroundColor: "#ff8c42" }}> {/* Warna tabel oranye */}
+            <td style={{ ...headerCellStyle, backgroundColor: "#ff8c42" }}>
               TUK
             </td>
-            <td style={{ ...cellStyle, backgroundColor: "#ff8c42" }}></td> {/* Warna tabel oranye */}
+            <td style={{ ...cellStyle, backgroundColor: "#ff8c42" }}></td>
             <td style={cellStyle}>{formData.tuk}</td>
           </tr>
           <tr>
-            <td style={{ ...headerCellStyle, backgroundColor: "#ff8c42" }}> {/* Warna tabel oranye */}
+            <td style={{ ...headerCellStyle, backgroundColor: "#ff8c42" }}>
               Nama Asesor
             </td>
-            <td style={{ ...cellStyle, backgroundColor: "#ff8c42" }}></td> {/* Warna tabel oranye */}
+            <td style={{ ...cellStyle, backgroundColor: "#ff8c42" }}></td>
             <td style={cellStyle}>
               <input
                 type="text"
@@ -687,10 +702,10 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             </td>
           </tr>
           <tr>
-            <td style={{ ...headerCellStyle, backgroundColor: "#ff8c42" }}> {/* Warna tabel oranye */}
+            <td style={{ ...headerCellStyle, backgroundColor: "#ff8c42" }}>
               Nama Asesi
             </td>
-            <td style={{ ...cellStyle, backgroundColor: "#ff8c42" }}></td> {/* Warna tabel oranye */}
+            <td style={{ ...cellStyle, backgroundColor: "#ff8c42" }}></td>
             <td style={cellStyle}>
               <input
                 type="text"
@@ -707,10 +722,10 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             </td>
           </tr>
           <tr>
-            <td style={{ ...headerCellStyle, backgroundColor: "#ff8c42" }}> {/* Warna tabel oranye */}
+            <td style={{ ...headerCellStyle, backgroundColor: "#ff8c42" }}>
               Tanggal
             </td>
-            <td style={{ ...cellStyle, backgroundColor: "#ff8c42" }}></td> {/* Warna tabel oranye */}
+            <td style={{ ...cellStyle, backgroundColor: "#ff8c42" }}></td>
             <td style={cellStyle}>
               <input
                 type="date"
@@ -727,15 +742,13 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         </tbody>
       </table>
 
-      {/* Note */}
       <p style={{ fontSize: "12px", marginBottom: "20px" }}>
         *Coret yang tidak perlu
       </p>
 
-      {/* Panduan */}
       <div
         style={{
-          backgroundColor: "#ff8c42", // Warna panduan oranye
+          backgroundColor: "#ff8c42",
           color: "white",
           padding: "15px",
           marginBottom: "20px",
@@ -765,14 +778,13 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         </ul>
       </div>
 
-      {/* Unit Kompetensi Table */}
       <table style={tableStyle}>
         <tbody>
           <tr>
             <td
               style={{
                 ...headerCellStyle,
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 width: "150px",
               }}
             >
@@ -786,7 +798,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             <td
               style={{
                 ...cellStyle,
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 color: "white",
               }}
             ></td>
@@ -797,18 +809,16 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         </tbody>
       </table>
 
-      {/* Unit Kompetensi 1 Assessment */}
       {renderAssessmentTable(
         formData.aktivitas,
         "aktivitas",
         "Unit Kompetensi 1"
       )}
 
-      {/* Umpan Balik after Unit Kompetensi 1 */}
       <table style={tableStyle}>
         <tbody>
           <tr>
-            <td style={{ ...headerCellStyle, backgroundColor: "#ff8c42" }}> {/* Warna tabel oranye */}
+            <td style={{ ...headerCellStyle, backgroundColor: "#ff8c42" }}>
               Umpan Balik untuk asesi:
             </td>
           </tr>
@@ -833,7 +843,6 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         </tbody>
       </table>
 
-      {/* Kelompok Pekerjaan 2 */}
       <table
         style={{
           borderCollapse: "collapse",
@@ -845,19 +854,19 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
           <tr>
             <th
               style={{
-                border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                border: "1px solid #d35400",
                 padding: "8px",
                 width: "20%",
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 color: "white",
               }}
             ></th>
             <th
               style={{
-                border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                border: "1px solid #d35400",
                 padding: "8px",
                 width: "5%",
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 color: "white",
               }}
             >
@@ -865,10 +874,10 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             </th>
             <th
               style={{
-                border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                border: "1px solid #d35400",
                 padding: "8px",
                 width: "25%",
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 color: "white",
               }}
             >
@@ -876,9 +885,9 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             </th>
             <th
               style={{
-                border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                border: "1px solid #d35400",
                 padding: "8px",
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 color: "white",
               }}
             >
@@ -893,12 +902,12 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 <td
                   rowSpan={formData.kelompokPekerjaan2.length}
                   style={{
-                    border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                    border: "1px solid #d35400",
                     padding: "8px",
                     textAlign: "center",
                     fontWeight: "bold",
                     fontSize: "12px",
-                    backgroundColor: "#ff8c42", // Warna tabel oranye
+                    backgroundColor: "#ff8c42",
                     color: "white",
                   }}
                 >
@@ -907,7 +916,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
               )}
               <td
                 style={{
-                  border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                  border: "1px solid #d35400",
                   padding: "8px",
                   textAlign: "center",
                   fontSize: "12px",
@@ -917,7 +926,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
               </td>
               <td
                 style={{
-                  border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                  border: "1px solid #d35400",
                   padding: "8px",
                   fontSize: "12px",
                 }}
@@ -926,7 +935,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
               </td>
               <td
                 style={{
-                  border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                  border: "1px solid #d35400",
                   padding: "8px",
                   fontSize: "12px",
                 }}
@@ -938,42 +947,36 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         </tbody>
       </table>
 
-      {/* Unit Kompetensi 2 Assessment */}
       {renderAssessmentTable(
         formData.aktivitas2,
         "aktivitas2",
         "Unit Kompetensi 2"
       )}
 
-      {/* Unit Kompetensi 3 Assessment */}
       {renderAssessmentTable(
         formData.aktivitas3,
         "aktivitas3",
         "Unit Kompetensi 3"
       )}
 
-      {/* Unit Kompetensi 4 Assessment */}
       {renderAssessmentTable(
         formData.aktivitas4,
         "aktivitas4",
         "Unit Kompetensi 4"
       )}
 
-      {/* Unit Kompetensi 5 Assessment */}
       {renderAssessmentTable(
         formData.aktivitas5,
         "aktivitas5",
         "Unit Kompetensi 5"
       )}
 
-      {/* Unit Kompetensi 6 Assessment */}
       {renderAssessmentTable(
         formData.aktivitas6,
         "aktivitas6",
         "Unit Kompetensi 6"
       )}
 
-      {/* Kelompok Pekerjaan 3 */}
       <table
         style={{
           borderCollapse: "collapse",
@@ -985,19 +988,19 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
           <tr>
             <th
               style={{
-                border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                border: "1px solid #d35400",
                 padding: "8px",
                 width: "20%",
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 color: "white",
               }}
             ></th>
             <th
               style={{
-                border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                border: "1px solid #d35400",
                 padding: "8px",
                 width: "5%",
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 color: "white",
               }}
             >
@@ -1005,10 +1008,10 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             </th>
             <th
               style={{
-                border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                border: "1px solid #d35400",
                 padding: "8px",
                 width: "25%",
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 color: "white",
               }}
             >
@@ -1016,9 +1019,9 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
             </th>
             <th
               style={{
-                border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                border: "1px solid #d35400",
                 padding: "8px",
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 color: "white",
               }}
             >
@@ -1033,12 +1036,12 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 <td
                   rowSpan={formData.kelompokPekerjaan3.length}
                   style={{
-                    border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                    border: "1px solid #d35400",
                     padding: "8px",
                     textAlign: "center",
                     fontWeight: "bold",
                     fontSize: "12px",
-                    backgroundColor: "#ff8c42", // Warna tabel oranye
+                    backgroundColor: "#ff8c42",
                     color: "white",
                   }}
                 >
@@ -1047,7 +1050,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
               )}
               <td
                 style={{
-                  border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                  border: "1px solid #d35400",
                   padding: "8px",
                   textAlign: "center",
                   fontSize: "12px",
@@ -1057,7 +1060,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
               </td>
               <td
                 style={{
-                  border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                  border: "1px solid #d35400",
                   padding: "8px",
                   fontSize: "12px",
                 }}
@@ -1066,7 +1069,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
               </td>
               <td
                 style={{
-                  border: "1px solid #d35400", // Garis oranye tua lebih gelap
+                  border: "1px solid #d35400",
                   padding: "8px",
                   fontSize: "12px",
                 }}
@@ -1078,50 +1081,46 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         </tbody>
       </table>
 
-      {/* Unit Kompetensi 7 Assessment */}
       {renderAssessmentTable(
         formData.aktivitas7,
         "aktivitas7",
         "Unit Kompetensi 7"
       )}
 
-      {/* Unit Kompetensi 8 Assessment */}
       {renderAssessmentTable(
         formData.aktivitas8,
         "aktivitas8",
         "Unit Kompetensi 8"
       )}
 
-      {/* Rekomendasi dan Tanda Tangan Table */}
       <table style={{
         width: "100%",
         borderCollapse: "collapse",
-        border: "2px solid #d35400" // Garis tabel oranye tua lebih gelap
+        border: "2px solid #d35400"
       }}>
         <thead>
           <tr>
             <th style={{
-              backgroundColor: "#ff8c42", // Warna tabel oranye
+              backgroundColor: "#ff8c42",
               color: "white",
               fontWeight: "bold",
               padding: "8px",
-              border: "1px solid #d35400", // Garis oranye tua lebih gelap
+              border: "1px solid #d35400",
               width: "40%"
             }}>Rekomendasi</th>
             <th style={{
-              backgroundColor: "#ff8c42", // Warna tabel oranye
+              backgroundColor: "#ff8c42",
               color: "white",
               fontWeight: "bold",
               padding: "8px",
-              border: "1px solid #d35400", // Garis oranye tua lebih gelap
+              border: "1px solid #d35400",
               width: "60%"
             }}>Asesi</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            {/* Kolom Rekomendasi */}
-            <td style={{ border: "1px solid #d35400", padding: "12px", fontSize: "12px", verticalAlign: "top" }}> {/* Garis oranye tua lebih gelap */}
+            <td style={{ border: "1px solid #d35400", padding: "12px", fontSize: "12px", verticalAlign: "top" }}>
               <div style={{ marginBottom: "10px" }}>
                 <label style={{ display: "flex", alignItems: "flex-start", marginBottom: "8px" }}>
                   <input type="checkbox" style={{ marginRight: "8px", marginTop: "2px", transform: "scale(1.1)" }} />
@@ -1194,10 +1193,7 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                 </div>
               </div>
             </td>
-
-            {/* Kolom Asesi & Asesor */}
-            <td style={{ border: "1px solid #d35400", padding: "12px", verticalAlign: "top" }} rowSpan={2}> {/* Garis oranye tua lebih gelap */}
-              {/* Asesi */}
+            <td style={{ border: "1px solid #d35400", padding: "12px", verticalAlign: "top" }} rowSpan={2}>
               <div style={{ marginBottom: "30px" }}>
                 <div style={{ fontSize: "11px", marginBottom: "5px", display: "flex", alignItems: "center" }}>
                   <span style={{ minWidth: "40px" }}>Nama</span>
@@ -1230,18 +1226,15 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
                     width: "100%"
                   }} />
               </div>
-
-              {/* Asesor */}
               <div style={{
                 fontSize: "12px",
                 fontWeight: "600",
                 marginBottom: "15px",
                 textAlign: "center",
-                backgroundColor: "#ff8c42", // Warna tabel oranye
+                backgroundColor: "#ff8c42",
                 color: "white",
                 padding: "5px"
               }}>Asesor</div>
-
               <div style={{ marginBottom: "20px" }}>
                 <div style={{ fontSize: "11px", marginBottom: "5px", display: "flex", alignItems: "center" }}>
                   <span style={{ minWidth: "40px" }}>Nama</span>
@@ -1297,7 +1290,6 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         </tbody>
       </table>
 
-      {/* Action Buttons */}
       <div
         style={{
           display: "flex",
@@ -1307,13 +1299,14 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
         }}
       >
         <button
+          onClick={handleBatal}
           style={{
             padding: "10px 20px",
             fontSize: "14px",
             fontWeight: "600",
-            border: "2px solid #d35400", // Garis tombol oranye tua lebih gelap
+            border: "2px solid #d35400",
             backgroundColor: "white",
-            color: "#d35400", // Warna teks oranye tua lebih gelap
+            color: "#d35400",
             borderRadius: "8px",
             cursor: "pointer",
           }}
@@ -1321,12 +1314,13 @@ function CeklisObservasiAktivitas({ onBack, onNavigate }) {
           Batal
         </button>
         <button
+          onClick={handleSimpan}
           style={{
             padding: "10px 20px",
             fontSize: "14px",
             fontWeight: "600",
             border: "none",
-            backgroundColor: "#ff8c42", // Warna tombol oranye
+            backgroundColor: "#ff8c42",
             color: "white",
             borderRadius: "8px",
             cursor: "pointer",
