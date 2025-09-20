@@ -171,6 +171,9 @@ const fileInputStyle = {
   width: '100%',
   height: '100%',
   cursor: 'pointer',
+  top: 0,
+  left: 0,
+  zIndex: 1,
 };
 
 const fileButtonStyle = {
@@ -346,6 +349,16 @@ const APL01 = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
+  
+  // State untuk menyimpan file yang diupload
+  const [uploadedFiles, setUploadedFiles] = useState({
+    ktp: null,
+    foto: null,
+    sertifikat: null,
+    suratTH: null,
+    suratUNIK: null
+  });
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -389,6 +402,33 @@ const APL01 = () => {
     };
   }, [isFormSubmitted]);
 
+  // Fungsi untuk handle file upload
+  const handleFileUpload = (fileType, event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Validasi tipe file
+      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('File harus berformat PNG, JPG, JPEG, atau PDF');
+        event.target.value = '';
+        return;
+      }
+
+      // Validasi ukuran file (maksimal 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        alert('Ukuran file maksimal 5MB');
+        event.target.value = '';
+        return;
+      }
+
+      setUploadedFiles(prev => ({
+        ...prev,
+        [fileType]: file
+      }));
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Tampilkan pop-up
@@ -402,6 +442,15 @@ const APL01 = () => {
     setTimeout(() => {
       navigate('/dashboard-asesi/apl-02');
     }, 300);
+  };
+
+  // Fungsi untuk menampilkan nama file yang sudah diupload
+  const getFileDisplayName = (fileType) => {
+    const file = uploadedFiles[fileType];
+    if (file) {
+      return file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
+    }
+    return '';
   };
 
   return (
@@ -502,9 +551,16 @@ const APL01 = () => {
             <div style={inputGroupStyle}>
               <label style={labelStyle}>KTP/Kartu Pelajar</label>
               <div style={fileUploadStyle}>
-                <input type="file" style={fileInputStyle} />
+                <input 
+                  type="file" 
+                  accept=".png,.jpg,.jpeg,.pdf"
+                  style={fileInputStyle}
+                  onChange={(e) => handleFileUpload('ktp', e)}
+                />
                 <div style={fileButtonStyle}>
-                  <span></span>
+                  <span style={{ color: uploadedFiles.ktp ? '#333' : '#666' }}>
+                    {getFileDisplayName('ktp') || ''}
+                  </span>
                   <span style={uploadIconStyle}>↑</span>
                 </div>
               </div>
@@ -513,9 +569,16 @@ const APL01 = () => {
             <div style={inputGroupStyle}>
               <label style={labelStyle}>Foto 3x4</label>
               <div style={fileUploadStyle}>
-                <input type="file" style={fileInputStyle} />
+                <input 
+                  type="file" 
+                  accept=".png,.jpg,.jpeg,.pdf"
+                  style={fileInputStyle}
+                  onChange={(e) => handleFileUpload('foto', e)}
+                />
                 <div style={fileButtonStyle}>
-                  <span></span>
+                  <span style={{ color: uploadedFiles.foto ? '#333' : '#666' }}>
+                    {getFileDisplayName('foto') || ''}
+                  </span>
                   <span style={uploadIconStyle}>↑</span>
                 </div>
               </div>
@@ -524,9 +587,16 @@ const APL01 = () => {
             <div style={inputGroupStyle}>
               <label style={labelStyle}>Sertifikat</label>
               <div style={fileUploadStyle}>
-                <input type="file" style={fileInputStyle} />
+                <input 
+                  type="file" 
+                  accept=".png,.jpg,.jpeg,.pdf"
+                  style={fileInputStyle}
+                  onChange={(e) => handleFileUpload('sertifikat', e)}
+                />
                 <div style={fileButtonStyle}>
-                  <span></span>
+                  <span style={{ color: uploadedFiles.sertifikat ? '#333' : '#666' }}>
+                    {getFileDisplayName('sertifikat') || ''}
+                  </span>
                   <span style={uploadIconStyle}>↑</span>
                 </div>
               </div>
@@ -574,9 +644,16 @@ const APL01 = () => {
             <div style={inputGroupStyle}>
               <label style={labelStyle}>Surat keterangan TH</label>
               <div style={fileUploadStyle}>
-                <input type="file" style={fileInputStyle} />
+                <input 
+                  type="file" 
+                  accept=".png,.jpg,.jpeg,.pdf"
+                  style={fileInputStyle}
+                  onChange={(e) => handleFileUpload('suratTH', e)}
+                />
                 <div style={fileButtonStyle}>
-                  <span></span>
+                  <span style={{ color: uploadedFiles.suratTH ? '#333' : '#666' }}>
+                    {getFileDisplayName('suratTH') || ''}
+                  </span>
                   <span style={uploadIconStyle}>↑</span>
                 </div>
               </div>
@@ -585,9 +662,16 @@ const APL01 = () => {
             <div style={inputGroupStyle}>
               <label style={labelStyle}>Surat keterangan UNIK</label>
               <div style={fileUploadStyle}>
-                <input type="file" style={fileInputStyle} />
+                <input 
+                  type="file" 
+                  accept=".png,.jpg,.jpeg,.pdf"
+                  style={fileInputStyle}
+                  onChange={(e) => handleFileUpload('suratUNIK', e)}
+                />
                 <div style={fileButtonStyle}>
-                  <span></span>
+                  <span style={{ color: uploadedFiles.suratUNIK ? '#333' : '#666' }}>
+                    {getFileDisplayName('suratUNIK') || ''}
+                  </span>
                   <span style={uploadIconStyle}>↑</span>
                 </div>
               </div>
