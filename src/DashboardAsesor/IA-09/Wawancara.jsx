@@ -2,6 +2,23 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Check } from 'lucide-react';
 
+// Media query hooks untuk responsive design
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(false);
+
+  React.useEffect(() => {
+    const media = window.matchMedia(query);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+    const listener = () => setMatches(media.matches);
+    window.addEventListener("resize", listener);
+    return () => window.removeEventListener("resize", listener);
+  }, [matches, query]);
+
+  return matches;
+};
+
 // Header styles from AK-02 RekamanAsesmen
 const headerSectionStyle = {
   backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
@@ -198,14 +215,30 @@ const buttonStyle = {
 
 const approveButtonStyle = {
   ...buttonStyle,
-  backgroundColor: '#ff9800',
-  color: 'white',
+  padding: '12px 35px',
+    backgroundColor: 'white',
+    color: '#333',
+    border: '1px solid #ccc',
+    borderRadius: '25px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: '500',
+    minWidth: '120px',
+    transition: 'all 0.2s ease'
 };
 
 const rejectButtonStyle = {
   ...buttonStyle,
-  backgroundColor: '#f44336',
-  color: 'white',
+  padding: '12px 35px',
+    backgroundColor: 'white',
+    color: '#333',
+    border: '1px solid #ccc',
+    borderRadius: '25px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: '500',
+    minWidth: '120px',
+    transition: 'all 0.2s ease'
 };
 
 // Modal styles from AK-02
@@ -225,6 +258,102 @@ const modalOverlayStyle = {
 const Wawancara = () => {
   const { nis } = useParams();
   const navigate = useNavigate();
+  
+  // Media queries untuk responsive design
+  const isMobile = useMediaQuery('(max-width: 767px)');
+  const isTablet = useMediaQuery('(min-width: 768px) and (max-width: 1024px)');
+  const isDesktop = useMediaQuery('(min-width: 1025px)');
+
+  // Responsive styles
+  const getResponsiveStyles = () => {
+    if (isMobile) {
+      return {
+        pageContainer: { ...pageContainerStyle, padding: '10px 0' },
+        contentContainer: { ...contentContainerStyle, margin: '0 10px' },
+        logoText: { ...logoTextStyle, fontSize: '32px' },
+        logoContainer: { ...logoContainerStyle, height: '120px', marginTop: '10px', marginBottom: '10px' },
+        nameBox: { ...nameBoxStyle, margin: '0 10px', padding: '10px 15px' },
+        name: { ...nameStyle, fontSize: '14px' },
+        tableHeader: { ...tableHeaderStyle, padding: '8px 15px', fontSize: '11px' },
+        table: { ...tableStyle, fontSize: '10px' },
+        tableCell: { ...tableCellStyle, padding: '6px 8px' },
+        inputCell: { ...inputCellStyle, padding: '3px 6px' },
+        input: { ...inputStyle, fontSize: '9px', padding: '3px' },
+        section: { ...sectionStyle, margin: '15px 10px' },
+        sectionHeader: { ...sectionHeaderStyle, padding: '6px 10px', fontSize: '10px' },
+        mainContent: { ...mainContentStyle, padding: '10px 15px', flexDirection: 'column', gap: '15px' },
+        leftColumn: { ...leftColumnStyle, width: '100%' },
+        rightColumn: { ...rightColumnStyle, width: '100%', gap: '10px' },
+        formBox: { ...formBoxStyle, padding: '10px' },
+        textarea: { ...textareaStyle, fontSize: '9px', minHeight: '50px' },
+        wawancaraTable: { ...wawancaraTableStyle, margin: '15px 10px', fontSize: '9px' },
+        wawancaraTh: { ...wawancaraThStyle, padding: '6px', fontSize: '9px' },
+        wawancaraTd: { ...wawancaraTdStyle, padding: '4px 6px', fontSize: '9px' },
+        buttonContainer: { ...buttonContainerStyle, margin: '15px 10px', gap: '10px' },
+        button: { ...buttonStyle, padding: '6px 15px', fontSize: '11px' },
+        approveButton: { ...approveButtonStyle, fontSize: '12px', padding: '8px 15px', minWidth: '80px' },
+        rejectButton: { ...rejectButtonStyle, fontSize: '12px', padding: '8px 15px', minWidth: '80px' }
+      };
+    } else if (isTablet) {
+      return {
+        pageContainer: { ...pageContainerStyle, padding: '15px 0' },
+        contentContainer: { ...contentContainerStyle, margin: '0 15px' },
+        logoText: { ...logoTextStyle, fontSize: '42px' },
+        logoContainer: { ...logoContainerStyle, height: '150px', marginTop: '15px', marginBottom: '15px' },
+        nameBox: { ...nameBoxStyle, margin: '0 15px', padding: '12px 18px' },
+        name: { ...nameStyle, fontSize: '15px' },
+        tableHeader: { ...tableHeaderStyle, padding: '10px 18px', fontSize: '11px' },
+        table: { ...tableStyle, fontSize: '10px' },
+        tableCell: { ...tableCellStyle, padding: '7px 10px' },
+        inputCell: { ...inputCellStyle, padding: '4px 7px' },
+        input: { ...inputStyle, fontSize: '9px', padding: '4px' },
+        section: { ...sectionStyle, margin: '18px 15px' },
+        sectionHeader: { ...sectionHeaderStyle, padding: '7px 11px', fontSize: '10px' },
+        mainContent: { ...mainContentStyle, padding: '12px 18px', gap: '18px' },
+        leftColumn: { ...leftColumnStyle, flex: 1.2 },
+        rightColumn: { ...rightColumnStyle, width: '280px', gap: '12px' },
+        formBox: { ...formBoxStyle, padding: '12px' },
+        textarea: { ...textareaStyle, fontSize: '9px', minHeight: '55px' },
+        wawancaraTable: { ...wawancaraTableStyle, margin: '18px 15px', fontSize: '9px' },
+        wawancaraTh: { ...wawancaraThStyle, padding: '7px', fontSize: '9px' },
+        wawancaraTd: { ...wawancaraTdStyle, padding: '5px 7px', fontSize: '9px' },
+        buttonContainer: { ...buttonContainerStyle, margin: '18px 15px', gap: '12px' },
+        button: { ...buttonStyle, padding: '7px 20px', fontSize: '11px' },
+        approveButton: { ...approveButtonStyle, fontSize: '12px', padding: '10px 20px', minWidth: '100px' },
+        rejectButton: { ...rejectButtonStyle, fontSize: '12px', padding: '10px 20px', minWidth: '100px' }
+      };
+    } else {
+      return {
+        pageContainer: pageContainerStyle,
+        contentContainer: contentContainerStyle,
+        logoText: logoTextStyle,
+        logoContainer: logoContainerStyle,
+        nameBox: nameBoxStyle,
+        name: nameStyle,
+        tableHeader: tableHeaderStyle,
+        table: tableStyle,
+        tableCell: tableCellStyle,
+        inputCell: inputCellStyle,
+        input: inputStyle,
+        section: sectionStyle,
+        sectionHeader: sectionHeaderStyle,
+        mainContent: mainContentStyle,
+        leftColumn: leftColumnStyle,
+        rightColumn: rightColumnStyle,
+        formBox: formBoxStyle,
+        textarea: textareaStyle,
+        wawancaraTable: wawancaraTableStyle,
+        wawancaraTh: wawancaraThStyle,
+        wawancaraTd: wawancaraTdStyle,
+        buttonContainer: buttonContainerStyle,
+        button: buttonStyle,
+        approveButton: approveButtonStyle,
+        rejectButton: rejectButtonStyle
+      };
+    }
+  };
+
+  const responsiveStyles = getResponsiveStyles();
 
   // State untuk form data
   const [formData, setFormData] = useState({
@@ -247,6 +376,31 @@ const Wawancara = () => {
       { pertanyaan: 'Sesuai dengan bukti :', rekomendasi: false, reject: false }
     ]
   });
+
+  // Mencegah navigasi dengan menonaktifkan back button dan shortcuts
+    React.useEffect(() => {
+      const handleKeyDown = (e) => {
+        if (e.key === 'F5' || 
+            (e.ctrlKey && e.key === 'r') || 
+            (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) ||
+            (e.ctrlKey && e.key === 'w') ||
+            (e.ctrlKey && e.key === 't')) {
+          e.preventDefault();
+          return false;
+        }
+      };
+  
+      document.addEventListener('keydown', handleKeyDown);
+  
+      window.history.pushState(null, '', window.location.href);
+      window.addEventListener('popstate', () => {
+        window.history.pushState(null, '', window.location.href);
+      });
+  
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+      };
+    }, []);
 
   const [showModal, setShowModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -323,43 +477,198 @@ const Wawancara = () => {
   };
 
   return (
-    <div style={pageContainerStyle}>
+    <>
+      {/* CSS untuk responsive design */}
+      <style>
+        {`
+          @media (max-width: 767px) {
+            .responsive-table {
+              font-size: 9px !important;
+              min-width: 100% !important;
+            }
+            .responsive-table td {
+              padding: 4px 6px !important;
+              white-space: nowrap !important;
+            }
+            .responsive-table th {
+              padding: 6px !important;
+              font-size: 9px !important;
+              white-space: nowrap !important;
+            }
+            .responsive-input {
+              font-size: 8px !important;
+              padding: 3px !important;
+              width: 100% !important;
+              box-sizing: border-box !important;
+            }
+            .responsive-textarea {
+              font-size: 9px !important;
+              min-height: 50px !important;
+              width: 100% !important;
+              box-sizing: border-box !important;
+            }
+            .responsive-button {
+              font-size: 10px !important;
+              padding: 6px 10px !important;
+            }
+            .responsive-modal {
+              padding: 20px 25px !important;
+              min-width: 300px !important;
+              max-width: 90vw !important;
+            }
+            .responsive-modal h3 {
+              font-size: 16px !important;
+            }
+            .responsive-modal p {
+              font-size: 12px !important;
+            }
+            .responsive-modal button {
+              font-size: 12px !important;
+              padding: 8px 20px !important;
+            }
+            .table-container {
+              overflow-x: auto !important;
+              -webkit-overflow-scrolling: touch !important;
+            }
+            .mobile-flex-column {
+              flex-direction: column !important;
+            }
+            .mobile-main-content {
+              flex-direction: column !important;
+            }
+            .mobile-full-width {
+              width: 100% !important;
+            }
+            .mobile-form-box {
+              margin-bottom: 10px !important;
+            }
+            .mobile-form-row {
+              flex-direction: column !important;
+            }
+            .mobile-button-row {
+              flex-direction: column !important;
+            }
+            .mobile-signature-row {
+              flex-direction: column !important;
+            }
+            .mobile-form-row {
+              flex-direction: column !important;
+            }
+          }
+          
+          @media (min-width: 768px) and (max-width: 1024px) {
+            .responsive-table {
+              font-size: 10px !important;
+              min-width: 100% !important;
+            }
+            .responsive-table td {
+              padding: 7px 10px !important;
+            }
+            .responsive-table th {
+              padding: 7px !important;
+              font-size: 10px !important;
+            }
+            .responsive-input {
+              font-size: 9px !important;
+              padding: 4px !important;
+              width: 100% !important;
+              box-sizing: border-box !important;
+            }
+            .responsive-textarea {
+              font-size: 9px !important;
+              min-height: 55px !important;
+              width: 100% !important;
+              box-sizing: border-box !important;
+            }
+            .responsive-button {
+              font-size: 11px !important;
+              padding: 7px 20px !important;
+            }
+            .responsive-modal {
+              padding: 25px 35px !important;
+              min-width: 400px !important;
+            }
+            .responsive-modal h3 {
+              font-size: 20px !important;
+            }
+            .responsive-modal p {
+              font-size: 13px !important;
+            }
+            .responsive-modal button {
+              font-size: 13px !important;
+              padding: 9px 25px !important;
+            }
+            .table-container {
+              overflow-x: auto !important;
+              -webkit-overflow-scrolling: touch !important;
+            }
+            .tablet-flex-column {
+              flex-direction: column !important;
+            }
+            .tablet-main-content {
+              flex-direction: column !important;
+            }
+            .tablet-full-width {
+              width: 100% !important;
+            }
+            .tablet-form-box {
+              margin-bottom: 8px !important;
+            }
+            .tablet-form-row {
+              flex-direction: column !important;
+            }
+            .tablet-button-row {
+              flex-direction: column !important;
+            }
+            .tablet-signature-row {
+              flex-direction: column !important;
+            }
+            .tablet-form-row {
+              flex-direction: column !important;
+            }
+          }
+        `}
+      </style>
+      
+      <div style={responsiveStyles.pageContainer}>
       {/* Header Section matching AK-02 design */}
       <div style={headerSectionStyle}>
-        <div style={logoContainerStyle}>
-          <h1 style={logoTextStyle}>
+        <div style={responsiveStyles.logoContainer}>
+          <h1 style={responsiveStyles.logoText}>
             MyLSP
           </h1>
         </div>
       </div>
 
       {/* Name Box */}
-      <div style={nameBoxStyle}>
-        <div style={nameStyle}>AFDHAL EZHAR RAHMA PANGESTU</div>
+      <div style={responsiveStyles.nameBox}>
+        <div style={responsiveStyles.name}>FR-IA-09 Wawancara </div>
       </div>
 
       {/* Konten Utama */}
-      <div style={contentContainerStyle}>
+      <div style={responsiveStyles.contentContainer}>
         {/* Header Tabel */}
-        <div style={tableHeaderStyle}>
+        <div style={responsiveStyles.tableHeader}>
           Skema Sertifikasi
         </div>
 
         {/* Tabel Skema Sertifikasi */}
-        <table style={tableStyle}>
+        <div className="table-container">
+          <table style={responsiveStyles.table} className="responsive-table">
           <tbody>
             <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, width: '150px', backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...responsiveStyles.tableCell, width: isMobile ? '100px' : '150px', backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: isMobile ? '9px' : '11px' }}>
                 Skema Sertifikasi
                 <br />
-                <span style={{ fontWeight: 'normal', fontSize: '10px' }}>(KKNI/OKUPASI/KLASTER)</span>
+                <span style={{ fontWeight: 'normal', fontSize: isMobile ? '8px' : '10px' }}>(KKNI/OKUPASI/KLASTER)</span>
               </td>
-              <td style={{ ...tableCellStyle, width: '80px', backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...responsiveStyles.tableCell, width: isMobile ? '60px' : '80px', backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: isMobile ? '9px' : '11px' }}>
                 Judul Unit
               </td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }}>
+              <td style={{ ...responsiveStyles.inputCell, backgroundColor: 'white' }}>
                 <input
-                  style={inputStyle}
+                  style={responsiveStyles.input}
+                  className="responsive-input"
                   type="text"
                   value={formData.judulUnit}
                   onChange={(e) => handleInputChange('judulUnit', e.target.value)}
@@ -367,15 +676,16 @@ const Wawancara = () => {
               </td>
             </tr>
             <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...responsiveStyles.tableCell, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: isMobile ? '9px' : '11px' }}>
                 TUK
               </td>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...responsiveStyles.tableCell, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: isMobile ? '9px' : '11px' }}>
                 Kode Unit
               </td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }}>
+              <td style={{ ...responsiveStyles.inputCell, backgroundColor: 'white' }}>
                 <input
-                  style={inputStyle}
+                  style={responsiveStyles.input}
+                  className="responsive-input"
                   type="text"
                   value={formData.kodeUnit}
                   onChange={(e) => handleInputChange('kodeUnit', e.target.value)}
@@ -383,13 +693,14 @@ const Wawancara = () => {
               </td>
             </tr>
             <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...responsiveStyles.tableCell, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: isMobile ? '9px' : '11px' }}>
                 Nama Asesor
               </td>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa' }}></td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }}>
+              <td style={{ ...responsiveStyles.tableCell, backgroundColor: '#f8f9fa' }}></td>
+              <td style={{ ...responsiveStyles.inputCell, backgroundColor: 'white' }}>
                 <input
-                  style={inputStyle}
+                  style={responsiveStyles.input}
+                  className="responsive-input"
                   type="text"
                   value={formData.namaAsesor}
                   onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
@@ -397,13 +708,14 @@ const Wawancara = () => {
               </td>
             </tr>
             <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...responsiveStyles.tableCell, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: isMobile ? '9px' : '11px' }}>
                 Nama Asesi
               </td>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa' }}></td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }}>
+              <td style={{ ...responsiveStyles.tableCell, backgroundColor: '#f8f9fa' }}></td>
+              <td style={{ ...responsiveStyles.inputCell, backgroundColor: 'white' }}>
                 <input
-                  style={inputStyle}
+                  style={responsiveStyles.input}
+                  className="responsive-input"
                   type="text"
                   value={formData.namaAsesi}
                   onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
@@ -411,13 +723,14 @@ const Wawancara = () => {
               </td>
             </tr>
             <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...responsiveStyles.tableCell, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: isMobile ? '9px' : '11px' }}>
                 Tanggal
               </td>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa' }}></td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }}>
+              <td style={{ ...responsiveStyles.tableCell, backgroundColor: '#f8f9fa' }}></td>
+              <td style={{ ...responsiveStyles.inputCell, backgroundColor: 'white' }}>
                 <input
-                  style={inputStyle}
+                  style={responsiveStyles.input}
+                  className="responsive-input"
                   type="date"
                   value={formData.tanggal}
                   onChange={(e) => handleInputChange('tanggal', e.target.value)}
@@ -425,13 +738,14 @@ const Wawancara = () => {
               </td>
             </tr>
             <tr style={tableRowStyle}>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: '11px' }}>
+              <td style={{ ...responsiveStyles.tableCell, backgroundColor: '#f8f9fa', fontWeight: 'bold', fontSize: isMobile ? '9px' : '11px' }}>
                 Waktu
               </td>
-              <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa' }}></td>
-              <td style={{ ...inputCellStyle, backgroundColor: 'white' }}>
+              <td style={{ ...responsiveStyles.tableCell, backgroundColor: '#f8f9fa' }}></td>
+              <td style={{ ...responsiveStyles.inputCell, backgroundColor: 'white' }}>
                 <input
-                  style={inputStyle}
+                  style={responsiveStyles.input}
+                  className="responsive-input"
                   type="time"
                   value={formData.waktu}
                   onChange={(e) => handleInputChange('waktu', e.target.value)}
@@ -440,225 +754,288 @@ const Wawancara = () => {
             </tr>
           </tbody>
         </table>
+        </div>
 
         {/* Unit Kompetensi Section */}
-        <div style={sectionStyle}>
-          <div style={sectionHeaderStyle}>Unit Kompetensi 1</div>
-          <table style={tableStyle}>
-            <tbody>
-              <tr>
-                <td style={{...tableCellStyle, fontWeight: 'bold', width: '80px', backgroundColor: '#f8f9fa'}}>Judul Unit</td>
-                <td style={tableCellStyle}>{formData.unitKompetensi}</td>
-              </tr>
-              <tr>
-                <td style={{...tableCellStyle, fontWeight: 'bold', backgroundColor: '#f8f9fa'}}>Kode Unit</td>
-                <td style={tableCellStyle}>{formData.kodeUnitKompetensi}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div style={responsiveStyles.section}>
+          <div style={responsiveStyles.sectionHeader}>Unit Kompetensi 1</div>
+          <div className="table-container">
+            <table style={responsiveStyles.table} className="responsive-table">
+              <tbody>
+                <tr>
+                  <td style={{...responsiveStyles.tableCell, fontWeight: 'bold', width: isMobile ? '60px' : '80px', backgroundColor: '#f8f9fa'}}>Judul Unit</td>
+                  <td style={responsiveStyles.tableCell}>{formData.unitKompetensi}</td>
+                </tr>
+                <tr>
+                  <td style={{...responsiveStyles.tableCell, fontWeight: 'bold', backgroundColor: '#f8f9fa'}}>Kode Unit</td>
+                  <td style={responsiveStyles.tableCell}>{formData.kodeUnitKompetensi}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Section dengan Elemen */}
-        <div style={sectionStyle}>
-          <div style={sectionHeaderStyle}>
+        <div style={responsiveStyles.section}>
+          <div style={responsiveStyles.sectionHeader}>
             Setiap pertanyaan harus terkait dengan Elemen
           </div>
-          <div style={{padding: '15px'}}>
-            <p style={{fontSize: '10px', marginBottom: '15px', fontStyle: 'italic'}}>
+          <div style={{padding: isMobile ? '10px' : '15px'}}>
+            <p style={{fontSize: isMobile ? '9px' : '10px', marginBottom: isMobile ? '10px' : '15px', fontStyle: 'italic'}}>
               Tuliskan bukti-bukti yang terdapat pada Ceklis Verifikasi Portofolio 
               yang memerlukan wawancara
             </p>
             
-            <div style={mainContentStyle}>
-              {/* Left Column - Bukti Kompetensi */}
-              <div style={leftColumnStyle}>
-                <h4 style={{fontSize: '12px', marginBottom: '10px', fontWeight: 'bold'}}>
-                  Bukti-bukti Kompetensi
-                </h4>
-                {formData.buktiKompetensi.map((bukti, index) => (
-                  <div key={index} style={{marginBottom: '12px'}}>
-                    <div style={{fontSize: '10px', fontWeight: 'bold', marginBottom: '3px'}}>
-                      {index + 1}.
+            <div className={isMobile ? 'mobile-main-content' : isTablet ? 'tablet-main-content' : ''} style={responsiveStyles.mainContent}>
+              {/* Left Column - Bukti Kompetensi dan Daftar Pertanyaan */}
+              <div className={isMobile ? 'mobile-full-width' : isTablet ? 'tablet-full-width' : ''} style={responsiveStyles.leftColumn}>
+                {/* Bukti-bukti Kompetensi */}
+                <div style={{
+                  border: '1px solid #dee2e6',
+                  borderRadius: '8px',
+                  padding: isMobile ? '10px' : '15px',
+                  backgroundColor: 'white',
+                  marginBottom: isMobile ? '15px' : '20px'
+                }}>
+                  <h4 style={{fontSize: isMobile ? '11px' : '12px', marginBottom: isMobile ? '10px' : '15px', fontWeight: 'bold', color: '#333'}}>
+                    Bukti-bukti Kompetensi
+                  </h4>
+                  {formData.buktiKompetensi.map((bukti, index) => (
+                    <div key={index} style={{marginBottom: isMobile ? '8px' : '12px'}}>
+                      <div style={{fontSize: isMobile ? '9px' : '10px', fontWeight: 'bold', marginBottom: '3px'}}>
+                        {index + 1}.
+                      </div>
+                      <textarea
+                        style={responsiveStyles.textarea}
+                        className="responsive-textarea"
+                        value={bukti}
+                        onChange={(e) => handleBuktiChange(index, e.target.value)}
+                        placeholder={'Masukkan bukti kompetensi ${index + 1}'}
+                      />
                     </div>
-                    <textarea
-                      style={textareaStyle}
-                      value={bukti}
-                      onChange={(e) => handleBuktiChange(index, e.target.value)}
-                      placeholder={`Masukkan bukti kompetensi ${index + 1}`}  // Benar - dengan backticks
-                    />
+                  ))}
+                </div>
+
+                {/* Daftar Pertanyaan Wawancara */}
+                <div style={{
+                  border: '1px solid #dee2e6',
+                  borderRadius: '8px',
+                  backgroundColor: 'white',
+                  overflow: 'hidden'
+                }}>
+                  <div style={{
+                    backgroundColor: '#e9ecef',
+                    padding: isMobile ? '8px 12px' : '12px 15px',
+                    fontSize: isMobile ? '11px' : '12px',
+                    fontWeight: 'bold',
+                    color: '#333',
+                    borderBottom: '1px solid #dee2e6'
+                  }}>
+                    Daftar Pertanyaan Wawancara
                   </div>
-                ))}
+                  
+                  <div className="table-container">
+                    <table style={{...responsiveStyles.wawancaraTable, margin: '0'}} className="responsive-table">
+                      <thead>
+                        <tr>
+                          <td style={{...responsiveStyles.wawancaraTh, backgroundColor: '#f8f9fa'}}>Pertanyaan</td>
+                          <td style={{...responsiveStyles.wawancaraTh, width: isMobile ? '60px' : '80px', backgroundColor: '#f8f9fa'}}>Rekomendasi</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {formData.pertanyaanWawancara.map((item, index) => (
+                          <tr key={index}>
+                            <td style={responsiveStyles.wawancaraTd}>
+                              <div style={{fontSize: isMobile ? '9px' : '10px', fontWeight: 'bold', marginBottom: '3px'}}>
+                                {index + 1}. Sesuai dengan bukti :
+                              </div>
+                              <input 
+                                type="text" 
+                                className="responsive-input"
+                                style={{...responsiveStyles.input, border: '1px solid #ccc', padding: '3px', fontSize: isMobile ? '8px' : '9px'}}
+                                value={item.pertanyaan}
+                                onChange={(e) => handlePertanyaanChange(index, 'pertanyaan', e.target.value)}
+                                placeholder="Masukkan pertanyaan wawancara"
+                              />
+                            </td>
+                            <td style={responsiveStyles.wawancaraTd}>
+                              <div style={{display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}>
+                                <label style={{fontSize: isMobile ? '8px' : '9px', display: 'flex', alignItems: 'center', cursor: 'pointer'}}>
+                                  <input 
+                                    type="checkbox" 
+                                    checked={item.rekomendasi}
+                                    onChange={(e) => handlePertanyaanChange(index, 'rekomendasi', e.target.checked)}
+                                    style={{marginRight: '2px', transform: isMobile ? 'scale(0.7)' : 'scale(0.8)'}}
+                                  />
+                                  ✓
+                                </label>
+                                <label style={{fontSize: isMobile ? '8px' : '9px', display: 'flex', alignItems: 'center', cursor: 'pointer'}}>
+                                  <input 
+                                    type="checkbox" 
+                                    checked={item.reject}
+                                    onChange={(e) => handlePertanyaanChange(index, 'reject', e.target.checked)}
+                                    style={{marginRight: '2px', transform: isMobile ? 'scale(0.7)' : 'scale(0.8)'}}
+                                  />
+                                  ✗
+                                </label>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
               
               {/* Right Column - Form Fields */}
-              <div style={rightColumnStyle}>
-                <div style={formBoxStyle}>
-                  <h4 style={{fontSize: '12px', textAlign: 'center', marginBottom: '8px'}}>
-                    Nama Asesi
-                  </h4>
-                  <input 
-                    type="text" 
-                    style={{...inputStyle, border: '1px solid #ccc', padding: '6px', fontSize: '10px'}}
-                    value={formData.namaAsesiForm}
-                    onChange={(e) => handleInputChange('namaAsesiForm', e.target.value)}
-                  />
+              <div className={isMobile ? 'mobile-full-width' : isTablet ? 'tablet-full-width' : ''} style={responsiveStyles.rightColumn}>
+                {/* Nama Asesi dan Nama Asesor berdampingan */}
+                <div className={isMobile ? 'mobile-form-row' : isTablet ? 'tablet-form-row' : ''} style={{display: 'flex', gap: isMobile ? '8px' : '10px', flexDirection: isMobile ? 'column' : 'row'}}>
+                  <div className={isMobile ? 'mobile-form-box' : isTablet ? 'tablet-form-box' : ''} style={{...responsiveStyles.formBox, flex: 1}}>
+                    <h4 style={{fontSize: isMobile ? '10px' : '11px', textAlign: 'center', marginBottom: '6px'}}>
+                      Nama Asesi
+                    </h4>
+                    <input 
+                      type="text" 
+                      className="responsive-input"
+                      style={{...responsiveStyles.input, border: '1px solid #ccc', padding: isMobile ? '4px' : '6px', fontSize: isMobile ? '9px' : '10px'}}
+                      value={formData.namaAsesiForm}
+                      onChange={(e) => handleInputChange('namaAsesiForm', e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className={isMobile ? 'mobile-form-box' : isTablet ? 'tablet-form-box' : ''} style={{...responsiveStyles.formBox, flex: 1}}>
+                    <h4 style={{fontSize: isMobile ? '10px' : '11px', textAlign: 'center', marginBottom: '6px'}}>
+                      Nama Asesor
+                    </h4>
+                    <input 
+                      type="text" 
+                      className="responsive-input"
+                      style={{...responsiveStyles.input, border: '1px solid #ccc', padding: isMobile ? '4px' : '6px', fontSize: isMobile ? '9px' : '10px'}}
+                      value={formData.namaAsesorForm}
+                      onChange={(e) => handleInputChange('namaAsesorForm', e.target.value)}
+                    />
+                  </div>
                 </div>
-                
-                <div style={formBoxStyle}>
-                  <h4 style={{fontSize: '12px', textAlign: 'center', marginBottom: '8px'}}>
-                    Nama Asesor
-                  </h4>
-                  <input 
-                    type="text" 
-                    style={{...inputStyle, border: '1px solid #ccc', padding: '6px', fontSize: '10px'}}
-                    value={formData.namaAsesorForm}
-                    onChange={(e) => handleInputChange('namaAsesorForm', e.target.value)}
-                  />
+
+                {/* Tanda Tangan dan Tombol berdampingan */}
+                <div className={isMobile ? 'mobile-signature-row' : isTablet ? 'tablet-signature-row' : ''} style={{display: 'flex', gap: isMobile ? '8px' : '10px', alignItems: 'stretch', flexDirection: isMobile ? 'column' : 'row'}}>
+                  <div className={isMobile ? 'mobile-form-box' : isTablet ? 'tablet-form-box' : ''} style={{...responsiveStyles.formBox, flex: 1}}>
+                    <h4 style={{fontSize: isMobile ? '10px' : '11px', textAlign: 'center', marginBottom: '6px'}}>
+                      Tanda Tangan Asesi
+                    </h4>
+                    <div style={{
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      padding: isMobile ? '6px' : '8px',
+                      minHeight: isMobile ? '40px' : '50px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#fafafa',
+                      flexDirection: 'column',
+                      gap: isMobile ? '4px' : '6px'
+                    }}>
+                      {formData.tandaTanganAsesi ? (
+                        <div style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: isMobile ? '4px' : '6px'
+                        }}>
+                          <span style={{fontSize: isMobile ? '8px' : '9px', color: '#333', textAlign: 'center'}}>
+                            {formData.tandaTanganAsesi.name}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, tandaTanganAsesi: null }))}
+                            style={{
+                              padding: isMobile ? '2px 4px' : '3px 6px',
+                              backgroundColor: '#dc3545',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '3px',
+                              fontSize: isMobile ? '7px' : '8px',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Hapus
+                          </button>
+                        </div>
+                      ) : (
+                        <label style={{
+                          cursor: 'pointer',
+                          padding: isMobile ? '4px 8px' : '6px 12px',
+                          backgroundColor: '#007bff',
+                          color: 'white',
+                          borderRadius: '4px',
+                          fontSize: isMobile ? '8px' : '9px',
+                          fontWeight: 'bold',
+                          textAlign: 'center'
+                        }}>
+                          <input
+                            type="file"
+                            accept=".pdf,.png"
+                            onChange={handleFileUpload}
+                            style={{ display: 'none' }}
+                          />
+                          Upload PDF/PNG
+                        </label>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Tombol Approve dan Reject */}
+                  <div className={isMobile ? 'mobile-button-row' : isTablet ? 'tablet-button-row' : ''} style={{
+                    display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
+                    justifyContent: 'center',
+                    gap: isMobile ? '6px' : '8px',
+                    minWidth: isMobile ? 'auto' : '100px',
+                    alignItems: 'center'
+                  }}>
+                    <button 
+                      onClick={handleApprove}
+                      className="responsive-button"
+                      style={{
+                        ...responsiveStyles.approveButton,
+                        fontSize: isMobile ? '10px' : '11px',
+                        padding: isMobile ? '6px 10px' : '8px 12px',
+                        minWidth: isMobile ? '50px' : '60px'
+                      }}
+                    >
+                      Approve
+                    </button>
+                    <button 
+                      onClick={handleReject}
+                      className="responsive-button"
+                      style={{
+                        ...responsiveStyles.rejectButton,
+                        fontSize: isMobile ? '10px' : '11px',
+                        padding: isMobile ? '6px 10px' : '8px 12px',
+                        minWidth: isMobile ? '50px' : '60px'
+                      }}
+                    >
+                      Reject
+                    </button>
+                  </div>
                 </div>
-                
-                 <div style={formBoxStyle}>
-                   <h4 style={{fontSize: '12px', textAlign: 'center', marginBottom: '8px'}}>
-                     Tanda Tangan Asesi
-                   </h4>
-                   <div style={{
-                     border: '1px solid #ddd',
-                     borderRadius: '4px',
-                     padding: '10px',
-                     minHeight: '60px',
-                     display: 'flex',
-                     alignItems: 'center',
-                     justifyContent: 'center',
-                     backgroundColor: '#fafafa',
-                     flexDirection: 'column',
-                     gap: '8px'
-                   }}>
-                     {formData.tandaTanganAsesi ? (
-                       <div style={{
-                         display: 'flex',
-                         flexDirection: 'column',
-                         alignItems: 'center',
-                         gap: '8px'
-                       }}>
-                         <span style={{fontSize: '10px', color: '#333'}}>
-                           {formData.tandaTanganAsesi.name}
-                         </span>
-                         <button
-                           type="button"
-                           onClick={() => setFormData(prev => ({ ...prev, tandaTanganAsesi: null }))}
-                           style={{
-                             padding: '4px 8px',
-                             backgroundColor: '#dc3545',
-                             color: 'white',
-                             border: 'none',
-                             borderRadius: '3px',
-                             fontSize: '9px',
-                             cursor: 'pointer'
-                           }}
-                         >
-                           Hapus
-                         </button>
-                       </div>
-                     ) : (
-                       <label style={{
-                         cursor: 'pointer',
-                         padding: '8px 16px',
-                         backgroundColor: '#007bff',
-                         color: 'white',
-                         borderRadius: '4px',
-                         fontSize: '10px',
-                         fontWeight: 'bold',
-                         textAlign: 'center'
-                       }}>
-                         <input
-                           type="file"
-                           accept=".pdf,.png"
-                           onChange={handleFileUpload}
-                           style={{ display: 'none' }}
-                         />
-                         Upload PDF/PNG
-                       </label>
-                     )}
-                   </div>
-                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Daftar Pertanyaan Wawancara */}
-        <table style={wawancaraTableStyle}>
-          <thead>
-            <tr>
-              <td style={{...wawancaraThStyle, width: '150px'}}>Daftar Pertanyaan Wawancara</td>
-              <td style={{...wawancaraThStyle, width: '80px'}}>Rekomendasi</td>
-            </tr>
-          </thead>
-          <tbody>
-            {formData.pertanyaanWawancara.map((item, index) => (
-              <tr key={index}>
-                <td style={wawancaraTdStyle}>
-                  <div style={{fontSize: '10px', fontWeight: 'bold', marginBottom: '3px'}}>
-                    {index + 1}. {item.pertanyaan}
-                  </div>
-                  <input 
-                    type="text" 
-                    style={{...inputStyle, border: '1px solid #ccc', padding: '3px', fontSize: '9px'}}
-                    value={item.pertanyaan}
-                    onChange={(e) => handlePertanyaanChange(index, 'pertanyaan', e.target.value)}
-                  />
-                </td>
-                <td style={wawancaraTdStyle}>
-                  <div style={{display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}>
-                    <label style={{fontSize: '9px', display: 'flex', alignItems: 'center', cursor: 'pointer'}}>
-                      <input 
-                        type="checkbox" 
-                        checked={item.rekomendasi}
-                        onChange={(e) => handlePertanyaanChange(index, 'rekomendasi', e.target.checked)}
-                        style={{marginRight: '2px', transform: 'scale(0.8)'}}
-                      />
-                      ✓
-                    </label>
-                    <label style={{fontSize: '9px', display: 'flex', alignItems: 'center', cursor: 'pointer'}}>
-                      <input 
-                        type="checkbox" 
-                        checked={item.reject}
-                        onChange={(e) => handlePertanyaanChange(index, 'reject', e.target.checked)}
-                        style={{marginRight: '2px', transform: 'scale(0.8)'}}
-                      />
-                      ✗
-                    </label>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Action Buttons */}
-        <div style={buttonContainerStyle}>
-          <button 
-            onClick={handleApprove}
-            style={approveButtonStyle}
-          >
-            Approve
-          </button>
-          <button 
-            onClick={handleReject}
-            style={rejectButtonStyle}
-          >
-            Reject
-          </button>
         </div>
       </div>
 
       {/* Modal Notifikasi Approve - dari AK-02 */}
       {showModal && (
         <div style={modalOverlayStyle}>
-          <div style={{
+          <div className="responsive-modal" style={{
             backgroundColor: 'white',
             borderRadius: '16px',
-            padding: '30px 40px',
-            minWidth: '500px',
+            padding: isMobile ? '20px 25px' : '30px 40px',
+            minWidth: isMobile ? '300px' : '500px',
+            maxWidth: isMobile ? '90vw' : '500px',
             boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
             position: 'relative'
           }}>
@@ -671,8 +1048,8 @@ const Wawancara = () => {
             }}>
               {/* Icon clipboard biru dengan checkmark di kiri */}
               <div style={{
-                width: '50px',
-                height: '50px',
+                width: isMobile ? '40px' : '50px',
+                height: isMobile ? '40px' : '50px',
                 backgroundColor: '#4A90E2',
                 borderRadius: '6px',
                 display: 'flex',
@@ -683,8 +1060,8 @@ const Wawancara = () => {
               }}>
                 {/* Clipboard shape */}
                 <div style={{
-                  width: '36px',
-                  height: '40px',
+                  width: isMobile ? '28px' : '36px',
+                  height: isMobile ? '32px' : '40px',
                   backgroundColor: 'white',
                   borderRadius: '3px',
                   position: 'relative',
@@ -696,14 +1073,14 @@ const Wawancara = () => {
                   <div style={{
                     position: 'absolute',
                     top: '-3px',
-                    width: '16px',
-                    height: '6px',
+                    width: isMobile ? '12px' : '16px',
+                    height: isMobile ? '4px' : '6px',
                     backgroundColor: '#4A90E2',
                     borderRadius: '3px 3px 0 0'
                   }}></div>
 
                   {/* Checkmark */}
-                  <Check size={18} color="#4A90E2" strokeWidth={4} />
+                  <Check size={isMobile ? 14 : 18} color="#4A90E2" strokeWidth={4} />
                 </div>
               </div>
 
@@ -713,8 +1090,8 @@ const Wawancara = () => {
                 textAlign: 'center',
                 paddingTop: '5px'
               }}>
-                <h3 style={{
-                  fontSize: '22px',
+                <h3 className="responsive-modal" style={{
+                  fontSize: isMobile ? '16px' : '22px',
                   fontWeight: '600',
                   color: '#333',
                   marginBottom: '4px',
@@ -722,8 +1099,8 @@ const Wawancara = () => {
                 }}>
                   Anda menyetujui
                 </h3>
-                <h3 style={{
-                  fontSize: '22px',
+                <h3 className="responsive-modal" style={{
+                  fontSize: isMobile ? '16px' : '22px',
                   fontWeight: '600',
                   color: '#333',
                   margin: '0',
@@ -764,8 +1141,8 @@ const Wawancara = () => {
             }}></div>
 
             {/* Description */}
-            <p style={{
-              fontSize: '14px',
+            <p className="responsive-modal" style={{
+              fontSize: isMobile ? '12px' : '14px',
               color: '#666',
               marginBottom: '25px',
               lineHeight: '1.5',
@@ -778,14 +1155,15 @@ const Wawancara = () => {
             {/* Button di kanan */}
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
+                className="responsive-button"
                 style={{
-                  padding: '10px 30px',
+                  padding: isMobile ? '8px 20px' : '10px 30px',
                   backgroundColor: '#4A90E2',
                   color: 'white',
                   border: 'none',
                   borderRadius: '20px',
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: isMobile ? '12px' : '14px',
                   fontWeight: '600',
                   transition: 'all 0.2s ease'
                 }}
@@ -803,11 +1181,12 @@ const Wawancara = () => {
       {/* Modal Notifikasi Reject - dari AK-02 */}
       {showRejectModal && (
         <div style={modalOverlayStyle}>
-          <div style={{
+          <div className="responsive-modal" style={{
             backgroundColor: 'white',
             borderRadius: '16px',
-            padding: '30px 40px',
-            minWidth: '500px',
+            padding: isMobile ? '20px 25px' : '30px 40px',
+            minWidth: isMobile ? '300px' : '500px',
+            maxWidth: isMobile ? '90vw' : '500px',
             boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
             position: 'relative'
           }}>
@@ -820,8 +1199,8 @@ const Wawancara = () => {
             }}>
               {/* Icon document dengan X orange di kiri */}
               <div style={{
-                width: '50px',
-                height: '50px',
+                width: isMobile ? '40px' : '50px',
+                height: isMobile ? '40px' : '50px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -830,15 +1209,15 @@ const Wawancara = () => {
               }}>
                 {/* Document outline */}
                 <div style={{
-                  width: '36px',
-                  height: '42px',
+                  width: isMobile ? '28px' : '36px',
+                  height: isMobile ? '34px' : '42px',
                   border: '2px solid #FF8C00',
                   borderRadius: '2px',
                   backgroundColor: 'white',
                   position: 'relative',
                   display: 'flex',
                   flexDirection: 'column',
-                  padding: '4px'
+                  padding: isMobile ? '3px' : '4px'
                 }}>
                   {/* Document lines */}
                   <div style={{
@@ -879,14 +1258,14 @@ const Wawancara = () => {
                   position: 'absolute',
                   bottom: '2px',
                   right: '2px',
-                  width: '18px',
-                  height: '18px',
+                  width: isMobile ? '14px' : '18px',
+                  height: isMobile ? '14px' : '18px',
                   backgroundColor: '#FF8C00',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '12px',
+                  fontSize: isMobile ? '10px' : '12px',
                   color: 'white',
                   fontWeight: 'bold',
                   border: '2px solid white',
@@ -902,8 +1281,8 @@ const Wawancara = () => {
                 textAlign: 'center',
                 paddingTop: '5px'
               }}>
-                <h3 style={{
-                  fontSize: '22px',
+                <h3 className="responsive-modal" style={{
+                  fontSize: isMobile ? '16px' : '22px',
                   fontWeight: '600',
                   color: '#333',
                   marginBottom: '4px',
@@ -911,8 +1290,8 @@ const Wawancara = () => {
                 }}>
                   Anda menolak
                 </h3>
-                <h3 style={{
-                  fontSize: '22px',
+                <h3 className="responsive-modal" style={{
+                  fontSize: isMobile ? '16px' : '22px',
                   fontWeight: '600',
                   color: '#333',
                   margin: '0',
@@ -953,8 +1332,8 @@ const Wawancara = () => {
             }}></div>
 
             {/* Description */}
-            <p style={{
-              fontSize: '14px',
+            <p className="responsive-modal" style={{
+              fontSize: isMobile ? '12px' : '14px',
               color: '#666',
               marginBottom: '25px',
               lineHeight: '1.5',
@@ -967,14 +1346,15 @@ const Wawancara = () => {
             {/* Button di kanan */}
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
+                className="responsive-button"
                 style={{
-                  padding: '10px 30px',
+                  padding: isMobile ? '8px 20px' : '10px 30px',
                   backgroundColor: '#FF8C00',
                   color: 'white',
                   border: 'none',
                   borderRadius: '20px',
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: isMobile ? '12px' : '14px',
                   fontWeight: '600',
                   transition: 'all 0.2s ease'
                 }}
@@ -988,7 +1368,8 @@ const Wawancara = () => {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 };
 
