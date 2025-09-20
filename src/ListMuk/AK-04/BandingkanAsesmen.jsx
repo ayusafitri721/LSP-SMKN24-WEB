@@ -5,18 +5,20 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
     namaAsesi: "",
     namaAsesor: "",
     tanggalAsesmen: "",
-    
+
     // Pertanyaan banding
     jawabPertanyaan: { ya: false, tidak: false },
     prosesBanding: { ya: false, tidak: false },
     diskusiBanding: { ya: false, tidak: false },
     bantuan: { ya: false, tidak: false },
-    
+
     // Text areas
     alasanBanding: "",
-    hakMengajukan: "",
-    tandaTangan: ""
+    tandaTangan: null,
+    tanggalTandaTangan: "",
   });
+
+  const [showNotification, setShowNotification] = useState(false);
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
@@ -25,10 +27,38 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
     }));
   };
 
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (
+      file &&
+      (file.type === "application/pdf" || file.type.startsWith("image/"))
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        tandaTangan: file,
+      }));
+    } else {
+      alert("Mohon pilih file PDF atau gambar (PNG, JPG, dll)");
+    }
+  };
+
+  const handleSave = () => {
+    // Simulasi proses save
+    setShowNotification(true);
+
+    // Auto hide notification after 3 seconds
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
+  };
+
   const handleRadioChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
-      [field]: { ya: value === 'ya', tidak: value === 'tidak' }
+      [field]: {
+        ya: value === "ya" ? !prev[field].ya : false,
+        tidak: value === "tidak" ? !prev[field].tidak : false,
+      },
     }));
   };
 
@@ -38,7 +68,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
     border: "1px solid #ddd",
     borderRadius: "6px",
     fontSize: "14px",
-    backgroundColor: "white"
+    backgroundColor: "white",
   };
 
   const labelStyle = {
@@ -46,7 +76,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
     fontWeight: "500",
     color: "#333",
     marginBottom: "8px",
-    display: "block"
+    display: "block",
   };
 
   const tableStyle = {
@@ -63,14 +93,16 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
     border: "1px solid #ff8c42",
     padding: "12px",
     fontSize: "14px",
-    backgroundColor: "white"
+    backgroundColor: "white",
   };
 
+  // Updated header cell style - removed textAlign: "center"
   const headerCellStyle = {
     ...cellStyle,
     backgroundColor: "#e6f3ff",
     fontWeight: "600",
-    textAlign: "center"
+    textAlign: "left", // Changed from "center" to "left"
+    width: "180px", // Fixed width to fit the text properly
   };
 
   return (
@@ -82,6 +114,55 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
         fontFamily: "Arial, sans-serif",
       }}
     >
+      {/* Success Notification */}
+      {showNotification && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            backgroundColor: "#4CAF50",
+            color: "white",
+            padding: "16px 24px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            fontSize: "14px",
+            fontWeight: "500",
+            animation: "slideIn 0.3s ease-out",
+          }}
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Data berhasil disimpan!
+        </div>
+      )}
+
+      <style jsx>{`
+        @keyframes slideIn {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+      `}</style>
       {/* Header with back + nav buttons */}
       <div
         style={{
@@ -125,7 +206,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
             backgroundColor: "#ffffff",
             borderRadius: "8px",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-            padding: "4px"
+            padding: "4px",
           }}
         >
           <button
@@ -141,7 +222,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
               margin: "4px",
               borderRadius: "8px",
               flexShrink: 0,
-              minWidth: "fit-content"
+              minWidth: "fit-content",
             }}
           >
             FR.AK.02
@@ -159,7 +240,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
               margin: "4px",
               borderRadius: "8px",
               flexShrink: 0,
-              minWidth: "fit-content"
+              minWidth: "fit-content",
             }}
           >
             FR.AK.03
@@ -176,13 +257,15 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
               cursor: "pointer",
               margin: "4px",
               flexShrink: 0,
-              minWidth: "fit-content"
+              minWidth: "fit-content",
             }}
           >
             FR.AK.04
           </button>
           <button
-            onClick={() => onNavigate && onNavigate("listmuk/AK-05/LaporanAsesment")}
+            onClick={() =>
+              onNavigate && onNavigate("listmuk/AK-05/LaporanAsesment")
+            }
             style={{
               padding: "12px 20px",
               fontSize: "14px",
@@ -194,13 +277,15 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
               margin: "4px",
               borderRadius: "8px",
               flexShrink: 0,
-              minWidth: "fit-content"
+              minWidth: "fit-content",
             }}
           >
             FR.AK.05
           </button>
           <button
-            onClick={() => onNavigate && onNavigate("listmuk/IA-01/CeklisObservasiAktivitas")}
+            onClick={() =>
+              onNavigate && onNavigate("listmuk/IA-01/CeklisObservasiAktivitas")
+            }
             style={{
               padding: "12px 20px",
               fontSize: "14px",
@@ -212,7 +297,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
               margin: "4px",
               borderRadius: "8px",
               flexShrink: 0,
-              minWidth: "fit-content"
+              minWidth: "fit-content",
             }}
           >
             FR.IA.01
@@ -230,13 +315,15 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
               margin: "4px",
               borderRadius: "8px",
               flexShrink: 0,
-              minWidth: "fit-content"
+              minWidth: "fit-content",
             }}
           >
             FR.IA.02
           </button>
           <button
-            onClick={() => onNavigate && onNavigate("listmuk/IA-05C/LembarJawabanPG")}
+            onClick={() =>
+              onNavigate && onNavigate("listmuk/IA-05C/LembarJawabanPG")
+            }
             style={{
               padding: "12px 20px",
               fontSize: "14px",
@@ -248,7 +335,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
               margin: "4px",
               borderRadius: "8px",
               flexShrink: 0,
-              minWidth: "fit-content"
+              minWidth: "fit-content",
             }}
           >
             FR.IA.05.C
@@ -274,7 +361,9 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
                 <input
                   type="text"
                   value={formData.namaAsesi}
-                  onChange={(e) => handleInputChange("namaAsesi", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("namaAsesi", e.target.value)
+                  }
                   style={{ ...inputStyle, border: "none", padding: "4px" }}
                 />
               </td>
@@ -285,7 +374,9 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
                 <input
                   type="text"
                   value={formData.namaAsesor}
-                  onChange={(e) => handleInputChange("namaAsesor", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("namaAsesor", e.target.value)
+                  }
                   style={{ ...inputStyle, border: "none", padding: "4px" }}
                 />
               </td>
@@ -294,9 +385,11 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
               <td style={headerCellStyle}>Tanggal Asesmen:</td>
               <td style={cellStyle}>
                 <input
-                  type="text"
+                  type="date"
                   value={formData.tanggalAsesmen}
-                  onChange={(e) => handleInputChange("tanggalAsesmen", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("tanggalAsesmen", e.target.value)
+                  }
                   style={{ ...inputStyle, border: "none", padding: "4px" }}
                 />
               </td>
@@ -309,10 +402,27 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
           <tbody>
             <tr>
               <td style={cellStyle}>
-                Jawablah dengan "Ya atau Tidak pertanyaan-pertanyaan berikut ini :"
+                Jawablah dengan "Ya atau Tidak pertanyaan-pertanyaan berikut ini
+                :"
               </td>
-              <td style={{ ...headerCellStyle, width: "80px" }}>YA</td>
-              <td style={{ ...headerCellStyle, width: "80px" }}>TIDAK</td>
+              <td
+                style={{
+                  ...headerCellStyle,
+                  width: "80px",
+                  textAlign: "center",
+                }}
+              >
+                YA
+              </td>
+              <td
+                style={{
+                  ...headerCellStyle,
+                  width: "80px",
+                  textAlign: "center",
+                }}
+              >
+                TIDAK
+              </td>
             </tr>
 
             <tr>
@@ -321,8 +431,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
               </td>
               <td style={{ ...cellStyle, textAlign: "center" }}>
                 <input
-                  type="radio"
-                  name="prosesBanding"
+                  type="checkbox"
                   checked={formData.prosesBanding.ya}
                   onChange={() => handleRadioChange("prosesBanding", "ya")}
                   style={{ transform: "scale(1.2)" }}
@@ -330,8 +439,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
               </td>
               <td style={{ ...cellStyle, textAlign: "center" }}>
                 <input
-                  type="radio"
-                  name="prosesBanding"
+                  type="checkbox"
                   checked={formData.prosesBanding.tidak}
                   onChange={() => handleRadioChange("prosesBanding", "tidak")}
                   style={{ transform: "scale(1.2)" }}
@@ -345,8 +453,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
               </td>
               <td style={{ ...cellStyle, textAlign: "center" }}>
                 <input
-                  type="radio"
-                  name="diskusiBanding"
+                  type="checkbox"
                   checked={formData.diskusiBanding.ya}
                   onChange={() => handleRadioChange("diskusiBanding", "ya")}
                   style={{ transform: "scale(1.2)" }}
@@ -354,8 +461,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
               </td>
               <td style={{ ...cellStyle, textAlign: "center" }}>
                 <input
-                  type="radio"
-                  name="diskusiBanding"
+                  type="checkbox"
                   checked={formData.diskusiBanding.tidak}
                   onChange={() => handleRadioChange("diskusiBanding", "tidak")}
                   style={{ transform: "scale(1.2)" }}
@@ -365,12 +471,12 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
 
             <tr>
               <td style={cellStyle}>
-                Apakah Anda mau melibatkan "orang lain" membantu Anda dalam Proses Banding?
+                Apakah Anda mau melibatkan "orang lain" membantu Anda dalam
+                Proses Banding?
               </td>
               <td style={{ ...cellStyle, textAlign: "center" }}>
                 <input
-                  type="radio"
-                  name="bantuan"
+                  type="checkbox"
                   checked={formData.bantuan.ya}
                   onChange={() => handleRadioChange("bantuan", "ya")}
                   style={{ transform: "scale(1.2)" }}
@@ -378,8 +484,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
               </td>
               <td style={{ ...cellStyle, textAlign: "center" }}>
                 <input
-                  type="radio"
-                  name="bantuan"
+                  type="checkbox"
                   checked={formData.bantuan.tidak}
                   onChange={() => handleRadioChange("bantuan", "tidak")}
                   style={{ transform: "scale(1.2)" }}
@@ -395,13 +500,16 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
             <tr>
               <td style={cellStyle}>
                 <strong>
-                  Banding ini diajukan atas keputusan Asesmen yang dibuat terhadap Skema Sertifikasi 
-                  (Kualifikasi/Kluster/Okupasi) berikut:
+                  Banding ini diajukan atas keputusan Asesmen yang dibuat
+                  terhadap Skema Sertifikasi (Kualifikasi/Kluster/Okupasi)
+                  berikut:
                 </strong>
-                <br /><br />
-                Skema Sertifikasi&nbsp;&nbsp;&nbsp;&nbsp;: Pemrogram Junior (Junior Coder)
                 <br />
-                No. Skema Sertifikasi&nbsp;&nbsp;: 
+                <br />
+                Skema Sertifikasi&nbsp;&nbsp;&nbsp;&nbsp;: Pemrogram Junior
+                (Junior Coder)
+                <br />
+                No. Skema Sertifikasi&nbsp;&nbsp;:
                 <input
                   type="text"
                   style={{
@@ -409,7 +517,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
                     borderBottom: "1px solid #333",
                     padding: "2px 4px",
                     marginLeft: "8px",
-                    width: "200px"
+                    width: "200px",
                   }}
                 />
               </td>
@@ -417,11 +525,16 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
 
             <tr>
               <td style={cellStyle}>
-                <strong>Banding ini diajukan atas alasan sebagai berikut :</strong>
-                <br /><br />
+                <strong>
+                  Banding ini diajukan atas alasan sebagai berikut :
+                </strong>
+                <br />
+                <br />
                 <textarea
                   value={formData.alasanBanding}
-                  onChange={(e) => handleInputChange("alasanBanding", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("alasanBanding", e.target.value)
+                  }
                   style={{
                     width: "100%",
                     height: "100px",
@@ -429,7 +542,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
                     borderRadius: "4px",
                     padding: "8px",
                     fontSize: "14px",
-                    resize: "vertical"
+                    resize: "vertical",
                   }}
                   placeholder="Tulis alasan banding di sini..."
                 />
@@ -439,54 +552,70 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
             <tr>
               <td style={cellStyle}>
                 <strong>
-                  Anda mempunyai hak mengajukan banding jika Anda menilai Proses Asesmen tidak sesuai SOP dan tidak 
-                  memenuhi Prinsip Asesmen.
+                  Anda mempunyai hak mengajukan banding jika Anda menilai Proses
+                  Asesmen tidak sesuai SOP dan tidak memenuhi Prinsip Asesmen.
                 </strong>
-                <br /><br />
-                <textarea
-                  value={formData.hakMengajukan}
-                  onChange={(e) => handleInputChange("hakMengajukan", e.target.value)}
-                  style={{
-                    width: "100%",
-                    height: "80px",
-                    border: "1px solid #ddd",
-                    borderRadius: "4px",
-                    padding: "8px",
-                    fontSize: "14px",
-                    resize: "vertical"
-                  }}
-                  placeholder="Jelaskan hak mengajukan banding..."
-                />
               </td>
             </tr>
 
             <tr>
               <td style={cellStyle}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "start",
+                  }}
+                >
                   <div>
                     <strong>Tanda tangan Asesi :</strong>
                     <div style={{ marginTop: "10px", marginBottom: "10px" }}>
                       <input
-                        type="text"
+                        type="file"
+                        accept=".pdf,.png,.jpg,.jpeg,.gif"
+                        onChange={handleFileUpload}
                         style={{
-                          border: "none",
-                          borderBottom: "1px solid #333",
-                          padding: "2px 4px",
-                          width: "200px"
+                          border: "1px solid #ddd",
+                          borderRadius: "4px",
+                          padding: "8px",
+                          fontSize: "14px",
+                          width: "250px",
+                          backgroundColor: "white",
                         }}
                       />
+                      {formData.tandaTangan && (
+                        <div
+                          style={{
+                            marginTop: "8px",
+                            fontSize: "12px",
+                            color: "#666",
+                            fontStyle: "italic",
+                          }}
+                        >
+                          File terpilih: {formData.tandaTangan.name}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div>
                     <strong>Tanggal :</strong>
                     <div style={{ marginTop: "10px", marginBottom: "10px" }}>
                       <input
-                        type="text"
+                        type="date"
+                        value={formData.tanggalTandaTangan}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "tanggalTandaTangan",
+                            e.target.value
+                          )
+                        }
                         style={{
-                          border: "none",
-                          borderBottom: "1px solid #333",
-                          padding: "2px 4px",
-                          width: "150px"
+                          border: "1px solid #ddd",
+                          borderRadius: "4px",
+                          padding: "8px",
+                          fontSize: "14px",
+                          width: "150px",
+                          backgroundColor: "white",
                         }}
                       />
                     </div>
@@ -530,6 +659,7 @@ function BandingkanAsesmen({ onBack, onNavigate }) {
             Batal
           </button>
           <button
+            onClick={handleSave}
             style={{
               padding: "12px 24px",
               fontSize: "14px",
