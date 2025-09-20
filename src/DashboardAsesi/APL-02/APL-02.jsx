@@ -416,6 +416,88 @@ const APL02 = () => {
               opacity: 1;
             }
           }
+
+          /* Responsive Design */
+          @media (max-width: 768px) {
+            .main-form-content {
+              flex-direction: column !important;
+              gap: 15px !important;
+            }
+            
+            .bukti-section {
+              min-width: unset !important;
+              max-width: unset !important;
+              width: 100% !important;
+            }
+            
+            .assessor-section {
+              flex-direction: column !important;
+              gap: 10px !important;
+              align-items: stretch !important;
+            }
+            
+            .assessor-row {
+              flex-direction: column !important;
+              gap: 10px !important;
+              align-items: stretch !important;
+            }
+            
+            .assessor-input-group {
+              min-width: unset !important;
+              width: 100% !important;
+            }
+            
+            .assessor-approval {
+              align-items: stretch !important;
+              padding-right: 0 !important;
+            }
+            
+            .approval-button {
+              width: 100% !important;
+              text-align: center !important;
+            }
+            
+            .popup-container {
+              min-width: 90vw !important;
+              max-width: 90vw !important;
+              margin: 0 20px !important;
+              padding: 20px 30px !important;
+            }
+            
+            .popup-okay-button {
+              position: static !important;
+              margin-top: 20px !important;
+              width: 100% !important;
+            }
+          }
+
+          @media (max-width: 480px) {
+            .content-card {
+              padding: 15px !important;
+            }
+            
+            .form-table-responsive {
+              display: block !important;
+            }
+            
+            .form-table-responsive > div {
+              display: block !important;
+              border-right: none !important;
+              border-bottom: 1px solid #ddd !important;
+            }
+            
+            .form-table-responsive > div:last-child {
+              border-bottom: none !important;
+            }
+            
+            .logo-text {
+              font-size: 24px !important;
+            }
+            
+            .nav-container {
+              max-width: 80% !important;
+            }
+          }
         `}
       </style>
       
@@ -428,16 +510,16 @@ const APL02 = () => {
       
       {/* Navigation dan Header dengan background image */}
       <div style={headerSectionStyle}>
-        <div style={navContainerStyle} className="nav-scrollbar">
+        <div style={navContainerStyle} className="nav-scrollbar nav-container">
           <NavAsesi activeTab="FR.APL.02" />
         </div>
 
         <div style={logoContainerStyle}>
-          <h1 style={logoTextStyle}>MyLSP</h1>
+          <h1 style={logoTextStyle} className="logo-text">MyLSP</h1>
         </div>
       </div>
 
-      <div style={contentCardStyle}>
+      <div style={contentCardStyle} className="content-card">
         {/* Header dengan logo - diganti dengan gambar */}
         <div style={{
           display: 'flex',
@@ -488,7 +570,7 @@ const APL02 = () => {
           fontWeight: 'bold',
           display: 'flex',
           overflow: 'hidden'
-        }}>
+        }} className="form-table-responsive">
           <div style={{ 
             minWidth: '140px',
             padding: '15px 10px',
@@ -507,7 +589,7 @@ const APL02 = () => {
             <div style={{ 
               display: 'flex',
               borderBottom: '1px solid #ddd'
-            }}>
+            }} className="form-table-responsive">
               <div style={{
                 padding: '8px 10px',
                 borderRight: '1px solid #ddd',
@@ -542,7 +624,7 @@ const APL02 = () => {
             </div>
             <div style={{ 
               display: 'flex'
-            }}>
+            }} className="form-table-responsive">
               <div style={{
                 padding: '8px 10px',
                 borderRight: '1px solid #ddd',
@@ -634,7 +716,7 @@ const APL02 = () => {
         }}>
           <div style={{
             display: 'flex'
-          }}>
+          }} className="form-table-responsive">
             {/* Left side - Unit Kompetensi 1 */}
             <div style={{
               backgroundColor: '#e9ecef',
@@ -654,7 +736,7 @@ const APL02 = () => {
               <div style={{
                 display: 'flex',
                 borderBottom: '1px solid #ddd'
-              }}>
+              }} className="form-table-responsive">
                 <div style={{
                   padding: '8px 15px',
                   fontSize: '12px',
@@ -695,7 +777,7 @@ const APL02 = () => {
               
               <div style={{
                 display: 'flex'
-              }}>
+              }} className="form-table-responsive">
                 <div style={{
                   padding: '8px 15px',
                   fontSize: '12px',
@@ -757,7 +839,7 @@ const APL02 = () => {
             padding: '20px',
             display: 'flex',
             gap: '25px'
-          }}>
+          }} className="main-form-content">
             {/* Left side - Form content */}
             <div style={{ flex: '1' }}>
               <div style={{
@@ -858,7 +940,7 @@ const APL02 = () => {
               backgroundColor: '#f8f9fa',
               minWidth: '400px',
               maxWidth: '400px'
-            }}>
+            }} className="bukti-section">
               <div style={{
                 fontWeight: 'bold',
                 fontSize: '13px',
@@ -916,13 +998,13 @@ const APL02 = () => {
             gap: '15px',
             marginBottom: '30px',
             fontSize: '12px'
-          }}>
+          }} className="assessor-section assessor-row">
             <div style={{
               display: 'flex',
               flexDirection: 'column',
               gap: '5px',
               minWidth: '100px'
-            }}>
+            }} className="assessor-input-group">
               <span style={{ fontSize: '11px', color: '#666' }}>Nama Asesi</span>
               <input 
                 type="text" 
@@ -944,7 +1026,7 @@ const APL02 = () => {
               flexDirection: 'column',
               gap: '5px',
               minWidth: '80px'
-            }}>
+            }} className="assessor-input-group">
               <span style={{ fontSize: '11px', color: '#666' }}>Tanggal</span>
               <input 
                 type="text" 
@@ -968,7 +1050,7 @@ const APL02 = () => {
               alignItems: 'flex-end',
               flex: 1,
               paddingRight: '50px'
-            }}>
+            }} className="assessor-approval">
               <span style={{ fontSize: '11px', color: '#666' }}>Persetujuan Asesi</span>
               <button 
                 onClick={() => setAsesiApproval(asesiApproval === 'Approve' ? 'Menunggu' : 'Approve')}
@@ -983,6 +1065,7 @@ const APL02 = () => {
                   cursor: 'pointer',
                   transition: 'all 0.2s ease'
                 }}
+                className="approval-button"
               >
                 {asesiApproval}
               </button>
@@ -1009,13 +1092,13 @@ const APL02 = () => {
             gap: '15px',
             marginBottom: '30px',
             fontSize: '12px'
-          }}>
+          }} className="assessor-section assessor-row">
             <div style={{
               display: 'flex',
               flexDirection: 'column',
               gap: '5px',
               minWidth: '100px'
-            }}>
+            }} className="assessor-input-group">
               <span style={{ fontSize: '11px', color: '#666' }}>Nama Asesor</span>
               <input 
                 type="text" 
@@ -1037,7 +1120,7 @@ const APL02 = () => {
               flexDirection: 'column',
               gap: '5px',
               minWidth: '80px'
-            }}>
+            }} className="assessor-input-group">
               <span style={{ fontSize: '11px', color: '#666' }}>Tanggal</span>
               <input 
                 type="text" 
@@ -1061,7 +1144,7 @@ const APL02 = () => {
               alignItems: 'flex-end',
               flex: 1,
               paddingRight: '50px'
-            }}>
+            }} className="assessor-approval">
               <span style={{ fontSize: '11px', color: '#666' }}>Persetujuan Asesor</span>
               <button 
                 onClick={() => setAsesorApproval(asesorApproval === 'Approve' ? 'Menunggu' : 'Approve')}
@@ -1076,6 +1159,7 @@ const APL02 = () => {
                   cursor: 'pointer',
                   transition: 'all 0.2s ease'
                 }}
+                className="approval-button"
               >
                 {asesorApproval}
               </button>
@@ -1109,7 +1193,7 @@ const APL02 = () => {
       {/* Success Popup */}
       {showPopup && (
         <div style={popupOverlayStyle} onClick={handleClosePopup}>
-          <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
+          <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()} className="popup-container">
             <div style={iconContainerStyle}>
               <div style={successIconStyle}>
                 <div style={checkCircleStyle}>
@@ -1146,6 +1230,7 @@ const APL02 = () => {
               onClick={handleClosePopup}
               onMouseEnter={(e) => e.target.style.backgroundColor = '#e67e00'}
               onMouseLeave={(e) => e.target.style.backgroundColor = '#FF8C00'}
+              className="popup-okay-button"
             >
               Okay
             </button>
