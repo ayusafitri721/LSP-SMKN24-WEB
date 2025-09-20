@@ -176,12 +176,12 @@ const popupOverlayStyle = {
 
 const popupContainerStyle = {
   backgroundColor: 'white',
-  borderRadius: '20px',
-  padding: '40px',
+  borderRadius: '30px',
+  padding: '70px',
   textAlign: 'center',
   boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-  minWidth: '320px',
-  maxWidth: '400px',
+  minWidth: '800px',
+  maxWidth: '200px',
 };
 
 const iconContainerStyle = {
