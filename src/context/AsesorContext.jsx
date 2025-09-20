@@ -30,6 +30,8 @@ export const AsesorProvider = ({ children }) => {
     try {
       const res = await getAsesors(1, 100);
       setAsesors(res.data?.data.data || []);
+
+      setIsFetched(true);
     } catch (err) {
       setError(err.response?.data?.message || "Gagal fetch data asesor");
     } finally {

@@ -47,6 +47,9 @@ export const createAssesment = (data) => api.post("/assesment", data);
 export const updateAssesment = (id, data) => api.put(`/assesment/${id}`, data);
 export const deleteAssesment = (id) => api.delete(`/assesment/${id}`);
 
+// Assesment Asesi CRUD operations
+export const getAssesmentAsesis = () => api.get("/assesment-asesi");
+
 // Apl01 CRUD operations
 export const getApl01s = () => api.get("/assesment/formapl01");
 export const approvementApl01 = (id, data) => api.post(`approvement/assesment/formapl01/${id}`, data);

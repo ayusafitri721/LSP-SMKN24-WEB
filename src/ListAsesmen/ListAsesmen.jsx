@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { useAssesment } from '../context/AssesmentContext';
+import { useNavigate } from 'react-router-dom';
 
 function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const { assesments }  = useAssesment();
+  const navigate = useNavigate();
 
   // Data dummy sesuai dengan gambar
   const sampleData = [
@@ -23,11 +27,11 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
   ];
 
   // Filter data berdasarkan search term
-  const filteredData = sampleData.filter(item => {
+  const filteredData = assesments.filter(item => {
     if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
     return (
-      item.namaAssessment.toLowerCase().includes(searchLower) ||
+      item.schema.judul_skema.toLowerCase().includes(searchLower) ||
       item.id.toLowerCase().includes(searchLower)
     );
   });
@@ -42,11 +46,7 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
 
   // Handle click untuk tombol aksi - mengarah ke LihatListAsesmen
   const handleActionClick = (item) => {
-    if (onNavigate && typeof onNavigate === 'function') {
-      onNavigate('lihatlistasesmen', item);
-    } else {
-      console.log('Action clicked for:', item.id);
-    }
+    navigate(`/dashboard/list-asesmen/${item.id}`);
   };
 
   return (
@@ -188,9 +188,27 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
                 fontWeight: '600',
                 color: '#333',
                 borderBottom: '1px solid #e0e0e0',
+                borderRight: '1px solid #e0e0e0'
+              }}>Nama Assesor</th>
+              <th style={{
+                padding: '20px 24px',
+                textAlign: 'left',
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#333',
+                borderBottom: '1px solid #e0e0e0',
                 borderRight: '1px solid #e0e0e0',
                 width: '180px'
               }}>Tanggal Ujian</th>
+              <th style={{
+                padding: '20px 24px',
+                textAlign: 'left',
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#333',
+                borderBottom: '1px solid #e0e0e0',
+                borderRight: '1px solid #e0e0e0'
+              }}>TUK</th>
               <th style={{
                 padding: '20px 24px',
                 textAlign: 'center',
@@ -226,7 +244,7 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
                     borderRight: '1px solid #f0f0f0',
                     verticalAlign: 'middle'
                   }}>
-                    {item.namaAssessment}
+                    {item.schema.judul_skema}
                   </td>
                   <td style={{
                     padding: '24px',
@@ -235,7 +253,25 @@ function ListAsesmen({ onBack, onNavigate, assessmentData, setAssessmentData }) 
                     borderRight: '1px solid #f0f0f0',
                     verticalAlign: 'middle'
                   }}>
-                    {item.tanggalUjian}
+                    {item.assesor.nama_lengkap}
+                  </td>
+                  <td style={{
+                    padding: '24px',
+                    fontSize: '14px',
+                    color: '#333',
+                    borderRight: '1px solid #f0f0f0',
+                    verticalAlign: 'middle'
+                  }}>
+                    {item.tanggal_assesment}
+                  </td>
+                  <td style={{
+                    padding: '24px',
+                    fontSize: '14px',
+                    color: '#333',
+                    borderRight: '1px solid #f0f0f0',
+                    verticalAlign: 'middle'
+                  }}>
+                    {item.tuk}
                   </td>
                   <td style={{
                     padding: '0',

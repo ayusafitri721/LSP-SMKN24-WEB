@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import {
   getAssesments,
+  getAssesmentAsesis,
   createAssesment,
   updateAssesment,
   deleteAssesment,
@@ -22,20 +23,40 @@ export const AssesmentProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isFetched, setIsFetched] = useState(false);
+  const [assesmentAsesisisFetched, setAssesmentAsesisFetched] = useState(false);
+  const [assesmentAsesis, setAssesmentAsesis] = useState([]);
 
   const fetchAssesments = useCallback(async () => {
-    if (!user || isFetched) return;
+    if (!user) return;
     setLoading(true);
     setError(null);
     try {
       const res = await getAssesments();
       setAssesments(res.data?.data || []);
+      setIsFetched(true);
     } catch (err) {
       setError(err.response?.data?.message || "Gagal fetch data assesment");
     } finally {
       setLoading(false);
     }
-  }, [user, isFetched]);
+  }, [user]);
+
+  const fetchAssesmentAsesis = useCallback(async () => {
+    if (!user) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await getAssesmentAsesis();
+      setAssesmentAsesis(res.data?.data || []);
+      setAssesmentAsesisFetched(true);
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Gagal fetch data assesment asesi"
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
 
   const addAssesment = useCallback(async (data) => {
     setLoading(true);
@@ -86,24 +107,38 @@ export const AssesmentProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    fetchAssesments();
-  }, [fetchAssesments]);
+    if (!isFetched) {
+      fetchAssesments();
+    }
+    if (!assesmentAsesisisFetched) {
+      fetchAssesmentAsesis();
+    }
+  }, [
+    fetchAssesments,
+    fetchAssesmentAsesis,
+    isFetched,
+    assesmentAsesisisFetched,
+  ]);
 
   const value = useMemo(
     () => ({
       assesments,
+      assesmentAsesis, // 👈 tambahan
       loading,
       error,
       fetchAssesments,
+      fetchAssesmentAsesis, // 👈 tambahan
       addAssesment,
       editAssesment,
       removeAssesment,
     }),
     [
       assesments,
+      assesmentAsesis,
       loading,
       error,
       fetchAssesments,
+      fetchAssesmentAsesis,
       addAssesment,
       editAssesment,
       removeAssesment,

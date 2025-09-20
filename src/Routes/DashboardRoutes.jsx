@@ -533,13 +533,12 @@ const DashboardRoutes = () => {
       />
       {/* Fixed route untuk LihatListAsesmen */}
       <Route
-        path="/list-asesmen/lihat"
+        path="/list-asesmen/:id"
         element={
           <DashboardLayout>
             <LihatListAsesmen
               onBack={() => navigate("/dashboard/list-asesmen")}
               onNavigate={handleNavigate}
-              data={editData}
             />
           </DashboardLayout>
         }
@@ -569,13 +568,12 @@ const DashboardRoutes = () => {
       />
 
       <Route
-        path="/approvement/lihat"
+        path="/approvement/lihat/:id"
         element={
           <DashboardLayout>
             <LihatApprovement
               onBack={() => navigate("/dashboard/approvement/detail")}
               onNavigate={handleNavigate}
-              data={editData}
             />
           </DashboardLayout>
         }
