@@ -1,5 +1,3 @@
-// src/DashboardAsesi/AK-04/AK-04.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
@@ -7,27 +5,30 @@ import NavAsesi from '../../components/NavAsesi';
 const pageContainerStyle = {
   backgroundColor: 'white',
   fontFamily: 'Arial, sans-serif',
-  padding: '10px',
+  padding: '2vw',
   minHeight: '100vh',
+  width: '100%',
+  boxSizing: 'border-box',
 };
 
 const headerSectionStyle = {
   backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
   backgroundSize: 'cover',
   backgroundPosition: 'center',
-  borderRadius: '0 0 20px 20px',
+  borderRadius: '0 0 2rem 2rem',
   overflow: 'hidden',
   marginBottom: '0',
+  width: '100%',
 };
 
 const navContainerStyle = {
   backgroundColor: 'rgba(255, 255, 255, 0.95)',
-  padding: '5px 10px',
-  borderRadius: '0 15px 20px 15px',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  margin: '0',
+  padding: '0.5rem 1rem',
+  borderRadius: '0 1rem 2rem 1rem',
+  boxShadow: '0 0.2rem 0.8rem rgba(0,0,0,0.1)',
+  margin: '0 auto',
   overflowX: 'auto',
-  maxWidth: '100%',
+  maxWidth: '90%',
   whiteSpace: 'nowrap',
   backdropFilter: 'blur(10px)',
   position: 'relative',
@@ -35,85 +36,85 @@ const navContainerStyle = {
 };
 
 const logoContainerStyle = {
-  height: '80px',
+  height: '20vw',
+  maxHeight: '120px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  marginTop: '10px',
-  marginBottom: '10px',
+  marginTop: '1rem',
+  marginBottom: '1rem',
 };
 
 const logoTextStyle = {
   color: 'white',
-  fontSize: 'clamp(24px, 5vw, 36px)',
+  fontSize: 'clamp(1.5rem, 5vw, 2.25rem)',
   fontWeight: 'bold',
   margin: 0,
-  textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-  letterSpacing: '1px',
+  textShadow: '0.125rem 0.125rem 0.25rem rgba(0,0,0,0.3)',
+  letterSpacing: '0.0625rem',
 };
 
 const contentCardStyle = {
   backgroundColor: 'white',
-  borderRadius: '0 0 15px 15px',
-  padding: '15px',
+  borderRadius: '0 0 1rem 1rem',
+  padding: 'clamp(1rem, 3vw, 1.5rem)',
   boxShadow: 'none',
   marginTop: '0',
   border: 'none',
+  width: '100%',
+  boxSizing: 'border-box',
 };
 
 const headerStyle = {
   display: 'flex',
-  flexDirection: 'row',
   alignItems: 'center',
-  gap: '10px',
-  marginBottom: '20px',
+  gap: '1rem',
+  marginBottom: '2rem',
   borderBottom: '1px solid #FF8C00',
-  paddingBottom: '15px',
+  paddingBottom: '1.25rem',
   flexWrap: 'wrap',
 };
 
 const logoStyle = {
-  width: '40px',
-  height: '40px',
+  width: 'clamp(2.5rem, 8vw, 3.125rem)',
+  height: 'clamp(2.5rem, 8vw, 3.125rem)',
   backgroundColor: '#ff8c00',
-  borderRadius: '8px',
+  borderRadius: '0.5rem',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   color: 'white',
   fontWeight: 'bold',
-  fontSize: '16px',
+  fontSize: 'clamp(1rem, 3vw, 1.25rem)',
   overflow: 'hidden',
-  flexShrink: 0,
 };
 
 const logoImageStyle = {
   width: '100%',
   height: '100%',
   objectFit: 'cover',
-  borderRadius: '8px',
+  borderRadius: '0.5rem',
 };
 
 const titleStyle = {
-  fontSize: 'clamp(16px, 3vw, 18px)',
+  fontSize: 'clamp(1rem, 3vw, 1.125rem)',
   fontWeight: 'bold',
   margin: 0,
   color: '#333',
 };
 
 const subtitleStyle = {
-  fontSize: 'clamp(10px, 2vw, 12px)',
+  fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
   color: '#333',
-  margin: '2px 0 0 0',
+  margin: '0.125rem 0 0 0',
 };
 
-// Input field style - responsive
 const inputStyle = {
   width: '100%',
-  padding: '8px 12px',
+  padding: 'clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)',
   border: '1px solid #ddd',
-  borderRadius: '4px',
-  fontSize: 'clamp(10px, 2vw, 12px)',
+  borderRadius: '0.25rem',
+  fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
   backgroundColor: 'white',
   outline: 'none',
   boxSizing: 'border-box',
@@ -121,18 +122,16 @@ const inputStyle = {
 
 const textareaStyle = {
   width: '100%',
-  padding: '8px 12px',
+  padding: 'clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)',
   border: '1px solid #ddd',
-  borderRadius: '4px',
-  fontSize: 'clamp(10px, 2vw, 12px)',
+  borderRadius: '0.25rem',
+  fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
   backgroundColor: 'white',
   outline: 'none',
   resize: 'vertical',
-  minHeight: '60px',
-  boxSizing: 'border-box',
+  minHeight: '3.75rem',
 };
 
-// Popup overlay style - responsive
 const popupOverlayStyle = {
   position: 'fixed',
   top: 0,
@@ -144,121 +143,103 @@ const popupOverlayStyle = {
   justifyContent: 'center',
   alignItems: 'center',
   zIndex: 1000,
-  padding: '20px',
-  boxSizing: 'border-box',
 };
 
-// Popup container style - responsive
 const popupContainerStyle = {
   backgroundColor: '#f0f0f0',
-  borderRadius: '20px',
-  padding: '20px',
+  borderRadius: '1.25rem',
+  padding: 'clamp(1.5rem, 4vw, 2rem) clamp(2rem, 5vw, 3rem)',
   textAlign: 'center',
-  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-  width: '100%',
-  maxWidth: '500px',
+  boxShadow: '0 0.625rem 1.875rem rgba(0, 0, 0, 0.2)',
+  minWidth: 'clamp(15rem, 80vw, 37.5rem)',
+  maxWidth: '90%',
   position: 'relative',
-  boxSizing: 'border-box',
 };
 
-// Icon container style
 const iconContainerStyle = {
-  marginBottom: '15px',
+  marginBottom: '1.25rem',
 };
 
-// Success icon style
 const successIconStyle = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  margin: '0 auto 20px',
-  gap: '10px',
+  margin: '0 auto 1.5rem',
+  gap: '0.9375rem',
 };
 
-// List lines container
 const listLinesStyle = {
   display: 'flex',
   flexDirection: 'column',
-  gap: '4px',
+  gap: '0.375rem',
 };
 
-// Check mark circle style - responsive
 const checkCircleStyle = {
-  width: 'clamp(50px, 10vw, 60px)',
-  height: 'clamp(50px, 10vw, 60px)',
+  width: 'clamp(2.5rem, 8vw, 3.75rem)',
+  height: 'clamp(2.5rem, 8vw, 3.75rem)',
   borderRadius: '50%',
   backgroundColor: '#FF8C00',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  marginTop: '6px',
+  marginTop: '0.375rem',
 };
 
-// Check mark style
 const checkMarkStyle = {
   color: 'white',
-  fontSize: 'clamp(18px, 4vw, 24px)',
+  fontSize: 'clamp(1rem, 3vw, 1.5rem)',
   fontWeight: 'bold',
 };
 
-// Popup text styles - responsive
 const popupTitleStyle = {
-  fontSize: 'clamp(14px, 3vw, 18px)',
+  fontSize: 'clamp(1rem, 3vw, 1.125rem)',
   fontWeight: 'bold',
   color: '#333',
-  marginBottom: '20px',
+  marginBottom: '1.875rem',
   lineHeight: '1.4',
 };
 
-// Okay button style - responsive
 const okayButtonStyle = {
   backgroundColor: '#FF8C00',
   border: 'none',
-  fontSize: 'clamp(12px, 2.5vw, 14px)',
+  fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
   fontWeight: '600',
   color: 'white',
   cursor: 'pointer',
-  padding: '10px 20px',
-  borderRadius: '20px',
+  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(1rem, 3vw, 1.5rem)',
+  borderRadius: '1.25rem',
   position: 'absolute',
-  bottom: '15px',
-  right: '20px',
+  bottom: '1.25rem',
+  right: '1.875rem',
   transition: 'all 0.2s ease',
 };
 
-// Warning notification style - responsive
 const warningNotificationStyle = {
   position: 'fixed',
-  top: '20px',
-  right: '20px',
-  left: '20px',
+  top: '1.25rem',
+  right: '1.25rem',
   backgroundColor: '#ff6b6b',
   color: 'white',
-  padding: '15px',
-  borderRadius: '10px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+  padding: 'clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.25rem)',
+  borderRadius: '0.625rem',
+  boxShadow: '0 0.25rem 0.9375rem rgba(0,0,0,0.2)',
   zIndex: 1001,
-  fontSize: 'clamp(12px, 2.5vw, 14px)',
+  fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
   fontWeight: 'bold',
   animation: 'slideIn 0.3s ease-out',
-  textAlign: 'center',
-  maxWidth: '400px',
-  margin: '0 auto',
 };
 
 const AK04 = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [answers, setAnswers] = useState({
     question1: { yes: false, no: false },
     question2: { yes: false, no: false },
     question3: { yes: false, no: false },
   });
 
-  // Form input states
   const [formData, setFormData] = useState({
     namaAsesor: '',
     namaAsesi: '',
@@ -270,17 +251,6 @@ const AK04 = () => {
 
   const navigate = useNavigate();
 
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Block navigation - tidak bisa ke page lain dan tidak bisa back
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (!isFormSubmitted) {
@@ -289,7 +259,6 @@ const AK04 = () => {
       }
     };
 
-    // Intercept navigation attempts dengan history API
     const originalPushState = window.history.pushState;
     const originalReplaceState = window.history.replaceState;
 
@@ -311,7 +280,6 @@ const AK04 = () => {
       originalReplaceState.apply(window.history, args);
     };
 
-    // Blokir browser back button secara permanen
     const handlePopState = (e) => {
       e.preventDefault();
       window.history.pushState(null, null, window.location.pathname);
@@ -319,7 +287,6 @@ const AK04 = () => {
       setTimeout(() => setShowWarning(false), 3000);
     };
 
-    // Push current state to prevent back navigation
     window.history.pushState(null, null, window.location.pathname);
     window.addEventListener('popstate', handlePopState);
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -346,7 +313,6 @@ const AK04 = () => {
   const handleClosePopup = () => {
     setShowPopup(false);
     setIsFormSubmitted(true);
-    // Auto redirect ke IA-01 setelah close popup
     setTimeout(() => {
       navigate('/dashboard-asesi/ia-01');
     }, 300);
@@ -362,68 +328,19 @@ const AK04 = () => {
     }));
   };
 
-  // Responsive table cell styles
-  const tableCellHeaderStyle = {
-    padding: isMobile ? '8px 10px' : '10px 15px',
-    backgroundColor: '#f8f8f8',
-    border: '1px solid #ddd',
-    fontWeight: 'bold',
-    color: '#333',
-    width: isMobile ? '30%' : '20%',
-    fontSize: 'clamp(10px, 2vw, 12px)',
-    verticalAlign: 'top',
-  };
-
-  const tableCellContentStyle = {
-    padding: isMobile ? '8px 10px' : '10px 15px',
-    border: '1px solid #ddd',
-    backgroundColor: 'white',
-    width: isMobile ? '70%' : '80%',
-    verticalAlign: 'top',
-  };
-
-  // Responsive question container style
-  const questionContainerStyle = {
-    display: 'flex',
-    flexDirection: isMobile ? 'column' : 'row',
-    justifyContent: 'space-between',
-    alignItems: isMobile ? 'stretch' : 'flex-start',
-    padding: '12px 15px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    backgroundColor: 'white',
-    fontSize: 'clamp(10px, 2vw, 12px)',
-    gap: isMobile ? '10px' : '15px',
-  };
-
-  const questionTextStyle = {
-    flex: '1',
-    lineHeight: '1.4',
-    paddingRight: isMobile ? '0' : '15px',
-    marginBottom: isMobile ? '8px' : '0',
-  };
-
-  const answerOptionsStyle = {
-    display: 'flex',
-    gap: isMobile ? '15px' : '20px',
-    alignItems: 'center',
-    minWidth: isMobile ? 'auto' : '100px',
-    justifyContent: isMobile ? 'center' : 'flex-end',
-  };
-
   return (
     <div style={pageContainerStyle}>
       <style>
         {`
           .nav-scrollbar::-webkit-scrollbar {
-            height: 5px;
+            height: 0.3125rem;
           }
           .nav-scrollbar::-webkit-scrollbar-track {
             background: transparent;
           }
           .nav-scrollbar::-webkit-scrollbar-thumb {
             background: #888;
-            border-radius: 5px;
+            border-radius: 0.3125rem;
           }
           .nav-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #555;
@@ -438,66 +355,85 @@ const AK04 = () => {
               opacity: 1;
             }
           }
-
-          /* Responsive breakpoints */
           @media (max-width: 768px) {
+            .flex-container {
+              flex-direction: column;
+            }
+            .question-container, .banding-form {
+              width: 100%;
+            }
+            .popup-container {
+              padding: 1rem;
+              min-width: 90%;
+            }
             .nav-container {
-              max-width: 100% !important;
-              padding: 5px 10px !important;
-              border-radius: 0 10px 15px 10px !important;
+              max-width: 100%;
             }
-            
-            .header-section {
-              border-radius: 0 0 15px 15px !important;
+            .logo-container {
+              height: 15vw;
             }
-            
-            .content-card {
-              padding: 10px !important;
+            .table-cell {
+              font-size: clamp(0.625rem, 2vw, 0.75rem);
+              padding: 0.5rem;
             }
-            
-            .popup-ok-button {
-              position: static !important;
-              width: 100% !important;
-              margin-top: 15px !important;
+            .input-field {
+              font-size: clamp(0.625rem, 2vw, 0.75rem);
+            }
+            .checkbox-container {
+              min-width: 80px;
+            }
+            .list-lines div {
+              width: clamp(3rem, 20vw, 8rem);
             }
           }
-          
           @media (max-width: 480px) {
-            .warning-notification {
-              left: 10px !important;
-              right: 10px !important;
-              top: 10px !important;
+            .header-style {
+              flex-direction: column;
+              align-items: flex-start;
             }
-            
-            .checkbox-input {
-              width: 18px !important;
-              height: 18px !important;
+            .logo-style {
+              width: clamp(2rem, 10vw, 2.5rem);
+              height: clamp(2rem, 10vw, 2.5rem);
+            }
+            .title-style {
+              font-size: clamp(0.875rem, 4vw, 1rem);
+            }
+            .subtitle-style {
+              font-size: clamp(0.5rem, 2.5vw, 0.625rem);
+            }
+            .button-kirim {
+              padding: 0.5rem 1rem;
+              font-size: clamp(0.625rem, 2vw, 0.75rem);
+            }
+            .okay-button {
+              padding: 0.5rem 1rem;
+              font-size: clamp(0.625rem, 2vw, 0.75rem);
+              right: 1rem;
+              bottom: 1rem;
             }
           }
         `}
       </style>
 
-      {/* Warning Notification */}
       {showWarning && (
-        <div style={warningNotificationStyle} className="warning-notification">
+        <div style={warningNotificationStyle}>
           Silakan isi dan kirim formulir AK-04 terlebih dahulu!
         </div>
       )}
 
-      <div style={headerSectionStyle} className="header-section">
+      <div style={headerSectionStyle}>
         <div style={navContainerStyle} className="nav-scrollbar nav-container">
           <NavAsesi activeTab="FR.AK.04" />
         </div>
 
-        <div style={logoContainerStyle}>
+        <div style={logoContainerStyle} className="logo-container">
           <h1 style={logoTextStyle}>MyLSP</h1>
         </div>
       </div>
 
-      <div style={contentCardStyle} className="content-card">
-        {/* Header with Logo */}
-        <div style={headerStyle}>
-          <div style={logoStyle}>
+      <div style={contentCardStyle}>
+        <div style={headerStyle} className="header-style">
+          <div style={logoStyle} className="logo-style">
             <img
               src="/src/img/LOGO_LSP_SMKN_24.jpg"
               alt="LSP SMKN 24 Logo"
@@ -509,47 +445,81 @@ const AK04 = () => {
             />
           </div>
           <div style={{ flex: 1, textAlign: 'center' }}>
-            <h1 style={titleStyle}>FR.AK.04</h1>
-            <p style={subtitleStyle}>REKAMAN ASESMEN KOMPETENSI</p>
+            <h1 style={titleStyle} className="title-style">FR.AK.04</h1>
+            <p style={subtitleStyle} className="subtitle-style">REKAMAN ASESMEN KOMPETENSI</p>
           </div>
         </div>
 
-        {/* Header Table with Editable Inputs */}
-        <div style={{ marginBottom: '20px', overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: isMobile ? '300px' : 'auto' }}>
+        <div style={{ marginBottom: '1.875rem' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'clamp(0.625rem, 2vw, 0.75rem)' }}>
             <tbody>
               <tr>
-                <td style={tableCellHeaderStyle}>Nama Asesor</td>
-                <td style={tableCellContentStyle}>
+                <td style={{
+                  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.75rem, 2vw, 1rem)',
+                  backgroundColor: '#f8f8f8',
+                  border: '1px solid #ddd',
+                  fontWeight: 'bold',
+                  color: '#333',
+                  width: '20%',
+                }} className="table-cell">Nama Asesor</td>
+                <td style={{
+                  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.75rem, 2vw, 1rem)',
+                  border: '1px solid #ddd',
+                  backgroundColor: 'white',
+                  width: '80%',
+                }} className="table-cell">
                   <input
                     type="text"
                     style={inputStyle}
                     value={formData.namaAsesor}
                     onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
                     placeholder="Masukkan nama asesor"
+                    className="input-field"
                   />
                 </td>
               </tr>
               <tr>
-                <td style={tableCellHeaderStyle}>Nama Asesi</td>
-                <td style={tableCellContentStyle}>
+                <td style={{
+                  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.75rem, 2vw, 1rem)',
+                  backgroundColor: '#f8f8f8',
+                  border: '1px solid #ddd',
+                  fontWeight: 'bold',
+                  color: '#333',
+                }} className="table-cell">Nama Asesi</td>
+                <td style={{
+                  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.75rem, 2vw, 1rem)',
+                  border: '1px solid #ddd',
+                  backgroundColor: 'white',
+                }} className="table-cell">
                   <input
                     type="text"
                     style={inputStyle}
                     value={formData.namaAsesi}
                     onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
                     placeholder="Masukkan nama asesi"
+                    className="input-field"
                   />
                 </td>
               </tr>
               <tr>
-                <td style={tableCellHeaderStyle}>Tanggal Asesmen</td>
-                <td style={tableCellContentStyle}>
+                <td style={{
+                  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.75rem, 2vw, 1rem)',
+                  backgroundColor: '#f8f8f8',
+                  border: '1px solid #ddd',
+                  fontWeight: 'bold',
+                  color: '#333',
+                }} className="table-cell">Tanggal Asesmen</td>
+                <td style={{
+                  padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.75rem, 2vw, 1rem)',
+                  border: '1px solid #ddd',
+                  backgroundColor: 'white',
+                }} className="table-cell">
                   <input
                     type="date"
                     style={inputStyle}
                     value={formData.tanggalAsesmen}
                     onChange={(e) => handleInputChange('tanggalAsesmen', e.target.value)}
+                    className="input-field"
                   />
                 </td>
               </tr>
@@ -557,44 +527,46 @@ const AK04 = () => {
           </table>
         </div>
 
-        <div style={{
-          display: 'flex',
-          flexDirection: isMobile ? 'column' : 'row',
-          gap: isMobile ? '20px' : '30px'
-        }}>
-          {/* Left Column - Questions */}
-          <div style={{ flex: '1', minWidth: isMobile ? 'auto' : '0' }}>
+        <div style={{ display: 'flex', gap: '1.875rem', flexWrap: 'wrap' }} className="flex-container">
+          <div style={{ flex: '1', minWidth: '100%' }} className="question-container">
             <h3 style={{
-              fontSize: 'clamp(12px, 3vw, 14px)',
+              fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
               fontWeight: 'bold',
-              marginBottom: '15px',
-              color: '#333'
+              marginBottom: '0.9375rem',
+              color: '#333',
             }}>
               Jawablah dengan Ya atau Tidak pertanyaan-pertanyaan berikut ini :
             </h3>
 
-            <div style={{ marginBottom: '8px' }}>
-              <div style={questionContainerStyle}>
-                <span style={questionTextStyle}>
+            <div style={{ marginBottom: '0.5rem' }}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                padding: 'clamp(0.625rem, 2vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)',
+                border: '1px solid #ddd',
+                borderRadius: '0.25rem',
+                backgroundColor: 'white',
+                fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
+              }}>
+                <span style={{ flex: '1', paddingRight: '0.9375rem', lineHeight: '1.4' }}>
                   Apakah proses branding telah di jelaskan kepada asesi?
                 </span>
-                <div style={answerOptionsStyle}>
+                <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', minWidth: '6.25rem' }} className="checkbox-container">
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 'clamp(9px, 2vw, 11px)', fontWeight: 'bold', marginBottom: '4px' }}>Ya</div>
+                    <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', fontWeight: 'bold', marginBottom: '0.25rem' }}>Ya</div>
                     <input
                       type="checkbox"
-                      className="checkbox-input"
-                      style={{ width: '16px', height: '16px' }}
+                      style={{ width: '1rem', height: '1rem' }}
                       checked={answers.question1.yes}
                       onChange={() => handleCheckboxChange('question1', 'yes', true)}
                     />
                   </div>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 'clamp(9px, 2vw, 11px)', fontWeight: 'bold', marginBottom: '4px' }}>Tidak</div>
+                    <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', fontWeight: 'bold', marginBottom: '0.25rem' }}>Tidak</div>
                     <input
                       type="checkbox"
-                      className="checkbox-input"
-                      style={{ width: '16px', height: '16px' }}
+                      style={{ width: '1rem', height: '1rem' }}
                       checked={answers.question1.no}
                       onChange={() => handleCheckboxChange('question1', 'no', false)}
                     />
@@ -603,28 +575,35 @@ const AK04 = () => {
               </div>
             </div>
 
-            <div style={{ marginBottom: '8px' }}>
-              <div style={questionContainerStyle}>
-                <span style={questionTextStyle}>
+            <div style={{ marginBottom: '0.5rem' }}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                padding: 'clamp(0.625rem, 2vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)',
+                border: '1px solid #ddd',
+                borderRadius: '0.25rem',
+                backgroundColor: 'white',
+                fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
+              }}>
+                <span style={{ flex: '1', paddingRight: '0.9375rem', lineHeight: '1.4' }}>
                   Apakah anda telah memperlihatkan branding dengan asesor?
                 </span>
-                <div style={answerOptionsStyle}>
+                <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', minWidth: '6.25rem' }} className="checkbox-container">
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 'clamp(9px, 2vw, 11px)', fontWeight: 'bold', marginBottom: '4px' }}>Ya</div>
+                    <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', fontWeight: 'bold', marginBottom: '0.25rem' }}>Ya</div>
                     <input
                       type="checkbox"
-                      className="checkbox-input"
-                      style={{ width: '16px', height: '16px' }}
+                      style={{ width: '1rem', height: '1rem' }}
                       checked={answers.question2.yes}
                       onChange={() => handleCheckboxChange('question2', 'yes', true)}
                     />
                   </div>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 'clamp(9px, 2vw, 11px)', fontWeight: 'bold', marginBottom: '4px' }}>Tidak</div>
+                    <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', fontWeight: 'bold', marginBottom: '0.25rem' }}>Tidak</div>
                     <input
                       type="checkbox"
-                      className="checkbox-input"
-                      style={{ width: '16px', height: '16px' }}
+                      style={{ width: '1rem', height: '1rem' }}
                       checked={answers.question2.no}
                       onChange={() => handleCheckboxChange('question2', 'no', false)}
                     />
@@ -633,28 +612,35 @@ const AK04 = () => {
               </div>
             </div>
 
-            <div style={{ marginBottom: '8px' }}>
-              <div style={questionContainerStyle}>
-                <span style={questionTextStyle}>
+            <div style={{ marginBottom: '0.5rem' }}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                padding: 'clamp(0.625rem, 2vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)',
+                border: '1px solid #ddd',
+                borderRadius: '0.25rem',
+                backgroundColor: 'white',
+                fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
+              }}>
+                <span style={{ flex: '1', paddingRight: '0.9375rem', lineHeight: '1.4' }}>
                   Apakah anda mau melibatkan "orang lain" membantu anda dalam proses branding?
                 </span>
-                <div style={answerOptionsStyle}>
+                <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', minWidth: '6.25rem' }} className="checkbox-container">
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 'clamp(9px, 2vw, 11px)', fontWeight: 'bold', marginBottom: '4px' }}>Ya</div>
+                    <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', fontWeight: 'bold', marginBottom: '0.25rem' }}>Ya</div>
                     <input
                       type="checkbox"
-                      className="checkbox-input"
-                      style={{ width: '16px', height: '16px' }}
+                      style={{ width: '1rem', height: '1rem' }}
                       checked={answers.question3.yes}
                       onChange={() => handleCheckboxChange('question3', 'yes', true)}
                     />
                   </div>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 'clamp(9px, 2vw, 11px)', fontWeight: 'bold', marginBottom: '4px' }}>Tidak</div>
+                    <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', fontWeight: 'bold', marginBottom: '0.25rem' }}>Tidak</div>
                     <input
                       type="checkbox"
-                      className="checkbox-input"
-                      style={{ width: '16px', height: '16px' }}
+                      style={{ width: '1rem', height: '1rem' }}
                       checked={answers.question3.no}
                       onChange={() => handleCheckboxChange('question3', 'no', false)}
                     />
@@ -664,35 +650,35 @@ const AK04 = () => {
             </div>
           </div>
 
-          {/* Right Column - Banding Form */}
-          <div style={{ flex: '1', minWidth: isMobile ? 'auto' : '0' }}>
+          <div style={{ flex: '1', minWidth: '100%' }} className="banding-form">
             <h4 style={{
-              fontSize: 'clamp(12px, 3vw, 14px)',
+              fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
               fontWeight: 'bold',
-              marginBottom: '15px',
-              color: '#333'
+              marginBottom: '0.9375rem',
+              color: '#333',
             }}>
               Banding ini di ajukan atas keputusan asesmen yang dibuat terhadap skema sertifikasi (Kualifikasi/Klaster/Okupasi) berikut :
             </h4>
 
             <div style={{
               border: '1px solid #ddd',
-              borderRadius: '4px',
-              padding: '12px',
+              borderRadius: '0.25rem',
+              padding: '0.75rem',
               backgroundColor: 'white',
-              marginBottom: '15px',
+              marginBottom: '0.9375rem',
             }}>
-              <div style={{ fontSize: 'clamp(9px, 2vw, 11px)', color: '#666', marginBottom: '8px' }}>
+              <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', color: '#666', marginBottom: '0.5rem' }}>
                 Skema Sertifikasi:
               </div>
               <input
                 type="text"
-                style={{ ...inputStyle, marginBottom: '10px' }}
+                style={{ ...inputStyle, marginBottom: '0.625rem' }}
                 value={formData.skemaSertifikasi}
                 onChange={(e) => handleInputChange('skemaSertifikasi', e.target.value)}
                 placeholder="Masukkan skema sertifikasi"
+                className="input-field"
               />
-              <div style={{ fontSize: 'clamp(9px, 2vw, 11px)', color: '#666', marginBottom: '8px' }}>
+              <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', color: '#666', marginBottom: '0.5rem' }}>
                 No. Skema Sertifikasi:
               </div>
               <input
@@ -701,17 +687,18 @@ const AK04 = () => {
                 value={formData.noSkemaSertifikasi}
                 onChange={(e) => handleInputChange('noSkemaSertifikasi', e.target.value)}
                 placeholder="Masukkan nomor skema sertifikasi"
+                className="input-field"
               />
             </div>
 
             <div style={{
               border: '1px solid #ddd',
-              borderRadius: '4px',
-              padding: '12px',
+              borderRadius: '0.25rem',
+              padding: '0.75rem',
               backgroundColor: 'white',
-              marginBottom: '15px'
+              marginBottom: '0.9375rem',
             }}>
-              <div style={{ fontSize: 'clamp(9px, 2vw, 11px)', color: '#666', marginBottom: '8px' }}>
+              <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', color: '#666', marginBottom: '0.5rem' }}>
                 Banding ini di ajukan atas alasan sebagai berikut:
               </div>
               <textarea
@@ -719,65 +706,56 @@ const AK04 = () => {
                 value={formData.alasanBanding}
                 onChange={(e) => handleInputChange('alasanBanding', e.target.value)}
                 placeholder="Masukkan alasan banding"
+                className="input-field"
               />
             </div>
 
-            <div style={{ marginBottom: '15px' }}>
-              <div style={{
-                fontSize: 'clamp(9px, 2vw, 11px)',
-                color: '#666',
-                marginBottom: '12px',
-                lineHeight: '1.4'
-              }}>
+            <div style={{ marginBottom: '0.9375rem' }}>
+              <div style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', color: '#666', marginBottom: '0.75rem', lineHeight: '1.4' }}>
                 Anda mempunyai hak mengajukan banding bila tidak merasa puas asesmen tidak sesuai SAP dan tidak memenuhi prinsip asesmen.
               </div>
 
-              <div style={{
-                display: 'flex',
-                flexDirection: isMobile ? 'column' : 'row',
-                gap: isMobile ? '15px' : '40px',
-                alignItems: isMobile ? 'stretch' : 'center',
-                marginBottom: '20px'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: 'clamp(9px, 2vw, 11px)', color: '#666' }}>Persyaratan asesi :</span>
+              <div style={{ display: 'flex', gap: '2.5rem', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', color: '#666' }}>Persyaratan asesi :</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: 'clamp(9px, 2vw, 11px)', color: '#666' }}>Tanggal :</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: 'clamp(0.5625rem, 1.5vw, 0.6875rem)', color: '#666' }}>Tanggal :</span>
                   <input
                     type="date"
-                    style={{ ...inputStyle, width: isMobile ? '100%' : '150px' }}
+                    style={{ ...inputStyle, width: 'clamp(8rem, 30vw, 9.375rem)' }}
                     value={formData.tanggalApprove || ''}
                     onChange={(e) => handleInputChange('tanggalApprove', e.target.value)}
+                    className="input-field"
                   />
                 </div>
               </div>
 
-              <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '1.25rem' }}>
                 <span style={{
                   backgroundColor: '#6c757d',
                   color: 'white',
-                  padding: '3px 10px',
-                  borderRadius: '12px',
-                  fontSize: 'clamp(8px, 2vw, 10px)'
+                  padding: '0.1875rem 0.625rem',
+                  borderRadius: '0.75rem',
+                  fontSize: 'clamp(0.5rem, 1.5vw, 0.625rem)',
                 }}>
                   Approve
                 </span>
               </div>
 
-              <div style={{ textAlign: isMobile ? 'center' : 'right' }}>
+              <div style={{ textAlign: 'right' }}>
                 <button
                   onClick={handleKirimClick}
                   style={{
                     backgroundColor: '#007bff',
                     color: 'white',
                     border: 'none',
-                    padding: '8px 20px',
-                    borderRadius: '15px',
-                    fontSize: 'clamp(10px, 2vw, 12px)',
+                    padding: 'clamp(0.5rem, 1.5vw, 0.5rem) clamp(0.75rem, 2vw, 1.25rem)',
+                    borderRadius: '0.9375rem',
+                    fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
                     cursor: 'pointer',
-                    width: isMobile ? '100%' : 'auto',
                   }}
+                  className="button-kirim"
                 >
                   Kirim
                 </button>
@@ -786,36 +764,32 @@ const AK04 = () => {
           </div>
         </div>
 
-        {/* Success Popup */}
         {showPopup && (
           <div style={popupOverlayStyle} onClick={handleClosePopup}>
-            <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
+            <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()} className="popup-container">
               <div style={iconContainerStyle}>
                 <div style={successIconStyle}>
-                  {/* Check mark circle - di atas */}
                   <div style={checkCircleStyle}>
                     <div style={checkMarkStyle}>✓</div>
                   </div>
-
-                  {/* List lines (3 horizontal lines) - di bawah */}
-                  <div style={listLinesStyle}>
+                  <div style={listLinesStyle} className="list-lines">
                     <div style={{
-                      width: 'clamp(60px, 15vw, 80px)',
-                      height: 'clamp(8px, 2vw, 10px)',
+                      width: 'clamp(3rem, 15vw, 5rem)',
+                      height: '0.625rem',
                       backgroundColor: '#FF8C00',
-                      borderRadius: '5px'
+                      borderRadius: '0.3125rem',
                     }}></div>
                     <div style={{
-                      width: 'clamp(90px, 20vw, 120px)',
-                      height: 'clamp(8px, 2vw, 10px)',
+                      width: 'clamp(4rem, 20vw, 7.5rem)',
+                      height: '0.625rem',
                       backgroundColor: '#FF8C00',
-                      borderRadius: '5px'
+                      borderRadius: '0.3125rem',
                     }}></div>
                     <div style={{
-                      width: 'clamp(105px, 25vw, 140px)',
-                      height: 'clamp(8px, 2vw, 10px)',
+                      width: 'clamp(5rem, 25vw, 8.75rem)',
+                      height: '0.625rem',
                       backgroundColor: '#FF8C00',
-                      borderRadius: '5px'
+                      borderRadius: '0.3125rem',
                     }}></div>
                   </div>
                 </div>
@@ -824,14 +798,11 @@ const AK04 = () => {
               <div style={popupTitleStyle}>Jawaban anda telah direkam!</div>
 
               <button
-                className="popup-ok-button"
-                style={isMobile ?
-                  { ...okayButtonStyle, position: 'static', width: '100%', marginTop: '15px' } :
-                  okayButtonStyle
-                }
+                style={okayButtonStyle}
                 onClick={handleClosePopup}
                 onMouseEnter={(e) => e.target.style.backgroundColor = '#e67e00'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = '#FF8C00'}
+                className="okay-button"
               >
                 Okay
               </button>
