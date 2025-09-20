@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Check } from 'lucide-react';
 
 const AsesmenMandiri = () => {
+  const navigate = useNavigate(); // Tambahkan hook navigasi
   const [showModal, setShowModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [formData, setFormData] = useState({
-    skemaSerifikasi: '',
+    skemaSerfikasi: '',
     judulUnit: '',
     nomorUnit: '',
     unitKompetensi: '',
@@ -24,7 +26,7 @@ const AsesmenMandiri = () => {
     keteranganAsesor: ''
   });
 
-  // Mencegah navigasi dengan menonaktifkan back button dan shortcuts
+  // Mencegah navigasi dengan menonaktifkan back button dan shortcuts + redirect back ke approved-unapproved
   React.useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'F5' || 
@@ -39,15 +41,21 @@ const AsesmenMandiri = () => {
 
     document.addEventListener('keydown', handleKeyDown);
 
+    // Handle browser back button - redirect ke approved-unapproved
     window.history.pushState(null, '', window.location.href);
-    window.addEventListener('popstate', () => {
-      window.history.pushState(null, '', window.location.href);
-    });
+    
+    const handlePopState = () => {
+      // Ketika user klik back button, redirect ke approved-unapproved
+      navigate('/dashboard-asesor/approved-unapproved/08939239239');
+    };
+    
+    window.addEventListener('popstate', handlePopState);
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('popstate', handlePopState);
     };
-  }, []);
+  }, [navigate]);
 
   const mainHeaderStyle = {
     backgroundImage: `url('/src/img/kontak.png')`,
@@ -367,22 +375,22 @@ const AsesmenMandiri = () => {
     setShowModal(true);
   };
 
+  // Perbaiki fungsi ini - gunakan navigate seperti di kode teman
   const handleModalOke = () => {
     setShowModal(false);
-    setTimeout(() => {
-      window.location.href = '/dashboard-asesor/persetujuan-asesmen/0893923923';
-    }, 100);
+    // Gunakan navigate dengan NIS yang sama seperti di kode teman
+    navigate('/dashboard-asesor/persetujuan-asesmen/0893923923');
   };
 
   const handleReject = () => {
     setShowRejectModal(true);
   };
 
+  // Perbaiki fungsi ini juga - gunakan navigate ke approved-unapproved
   const handleRejectModalOke = () => {
     setShowRejectModal(false);
-    setTimeout(() => {
-      window.location.href = '/dashboard-asesor/approved-unapproved/0893923923';
-    }, 100);
+    // Gunakan navigate ke approved-unapproved seperti di kode teman
+    navigate('/dashboard-asesor/approved-unapproved/0893923923');
   };
 
   return (
