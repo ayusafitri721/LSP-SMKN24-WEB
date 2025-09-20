@@ -770,7 +770,7 @@ const RekamanAsesmen = () => {
               Dokumen ini ditolak karena dokumen dan keaslian data tidak valid.
             </p>
 
-                        /* Button di kanan */
+                        
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
                 style={{
