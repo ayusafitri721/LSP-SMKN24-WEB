@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
 
 // Responsive styles
@@ -160,43 +160,18 @@ const checkboxCellStyle = {
 const buttonContainerStyle = {
   display: 'flex',
   justifyContent: 'center',
-  gap: '0.9375rem',
-  margin: '2.5rem 1.25rem 1.25rem 1.25rem',
+  gap: '1.25rem',
+  margin: '3rem 1.25rem 1.25rem 1.25rem',
   paddingBottom: '1.25rem',
-  flexWrap: 'wrap', // Allows wrapping on small screens
-};
-
-const buttonStyle = {
-  padding: '0.75rem 1.875rem',
-  border: 'none',
-  borderRadius: '1.5625rem',
-  cursor: 'pointer',
-  fontSize: '0.75rem',
-  fontWeight: 'bold',
-  flex: '1 1 auto', // Flexible sizing
-  minWidth: '120px', // Minimum width for buttons
-};
-
-const approveButtonStyle = {
-  ...buttonStyle,
-  backgroundColor: 'white',
-  color: '#333',
-  border: '1px solid #ddd',
-};
-
-const rejectButtonStyle = {
-  ...buttonStyle,
-  backgroundColor: 'white',
-  color: '#333',
-  border: '1px solid #ddd',
+  flexWrap: 'wrap',
 };
 
 const modalOverlayStyle = {
   position: 'fixed',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
+  top: '0',
+  left: '0',
+  right: '0',
+  bottom: '0',
   backgroundColor: 'rgba(0,0,0,0.5)',
   display: 'flex',
   justifyContent: 'center',
@@ -261,9 +236,9 @@ const mediaQueries = `
     .tableCellStyle, .inputCellStyle {
       padding: 0.25rem;
     }
-    .buttonStyle {
-      padding: 0.5rem 1rem;
-      font-size: 0.625rem;
+    .ak04-button {
+      padding: 0.3125rem 0.625rem !important;
+      font-size: 0.625rem !important;
     }
     .modalStyle {
       width: 85%;
@@ -315,6 +290,35 @@ const RekamanAsesmen = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
+
+  useEffect(() => {
+    // Menyisipkan gaya khusus untuk tombol AK.04
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+      .ak04-button {
+        padding: 0.375rem 0.75rem !important;
+        border: 1px solid #ddd !important;
+        border-radius: 0.5rem !important;
+        cursor: pointer !important;
+        font-size: 0.6875rem !important;
+        font-weight: bold !important;
+        background-color: white !important;
+        color: #333 !important;
+        white-space: nowrap !important;
+        min-width: auto !important;
+        box-sizing: border-box !important;
+      }
+      .ak04-button:hover {
+        background-color: #f5f5f5 !important; /* Efek hover opsional */
+      }
+    `;
+    document.head.appendChild(styleElement);
+
+    // Membersihkan gaya saat komponen unmount
+    return () => {
+      document.head.removeChild(styleElement);
+    };
+  }, []);
 
   const handleCheckboxChange = (section, item) => {
     setFormData((prev) => ({
@@ -577,10 +581,42 @@ const RekamanAsesmen = () => {
 
         {/* Button Container with More Spacing and Rounded Buttons */}
         <div style={buttonContainerStyle}>
-          <button style={approveButtonStyle} onClick={handleApprove}>
+          <button
+            className="ak04-button"
+            style={{
+              padding: '0.375rem 0.75rem',
+              border: '1px solid #ddd',
+              borderRadius: '0.5rem',
+              cursor: 'pointer',
+              fontSize: '0.6875rem',
+              fontWeight: 'bold',
+              backgroundColor: 'white',
+              color: '#333',
+              whiteSpace: 'nowrap',
+              minWidth: 'auto',
+              boxSizing: 'border-box',
+            }}
+            onClick={handleApprove}
+          >
             APPROVE
           </button>
-          <button style={rejectButtonStyle} onClick={handleReject}>
+          <button
+            className="ak04-button"
+            style={{
+              padding: '0.375rem 0.75rem',
+              border: '1px solid #ddd',
+              borderRadius: '0.5rem',
+              cursor: 'pointer',
+              fontSize: '0.6875rem',
+              fontWeight: 'bold',
+              backgroundColor: 'white',
+              color: '#333',
+              whiteSpace: 'nowrap',
+              minWidth: 'auto',
+              boxSizing: 'border-box',
+            }}
+            onClick={handleReject}
+          >
             REJECT
           </button>
         </div>
