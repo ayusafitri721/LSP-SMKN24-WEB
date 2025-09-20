@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const UmpanBalik = ({ onBack, data, onNavigate }) => {
   const [formData, setFormData] = useState({
@@ -10,13 +10,13 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
     namaAsesi: "",
     tanggalMulai: "",
     tanggalSelesai: "",
-    
+
     // Feedback responses
     feedbackResponses: Array(10).fill({ ya: false, tidak: false }),
     feedbackComments: Array(10).fill(""),
-    
+
     // Additional comments
-    catatanLainnya: ""
+    catatanLainnya: "",
   });
 
   const handleInputChange = (field, value) => {
@@ -29,10 +29,10 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
   const handleFeedbackChange = (index, type) => {
     setFormData((prev) => {
       const newResponses = [...prev.feedbackResponses];
-      newResponses[index] = { ya: type === 'ya', tidak: type === 'tidak' };
+      newResponses[index] = { ya: type === "ya", tidak: type === "tidak" };
       return {
         ...prev,
-        feedbackResponses: newResponses
+        feedbackResponses: newResponses,
       };
     });
   };
@@ -43,7 +43,7 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
       newComments[index] = value;
       return {
         ...prev,
-        feedbackComments: newComments
+        feedbackComments: newComments,
       };
     });
   };
@@ -54,7 +54,7 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
     border: "1px solid #ddd",
     borderRadius: "6px",
     fontSize: "14px",
-    backgroundColor: "white"
+    backgroundColor: "white",
   };
 
   const tableStyle = {
@@ -71,14 +71,14 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
     border: "1px solid #ff8c42",
     padding: "12px",
     fontSize: "14px",
-    backgroundColor: "white"
+    backgroundColor: "white",
   };
 
   const headerCellStyle = {
     ...cellStyle,
     backgroundColor: "#e6f3ff",
     fontWeight: "600",
-    textAlign: "center"
+    textAlign: "center",
   };
 
   const feedbackQuestions = [
@@ -91,7 +91,7 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
     "Asesor memberikan umpan balik yang mendukung setelah asesmen serta tindak lanjutnya",
     "Asesor bersama saya mempelajari semua dokumen asesmen serta menandatanganinya",
     "Saya mendapatkan jaminan kerahasiaan hasil asesmen serta penjelasan peranganan dokumen asesmen",
-    "Asesor menggunakan keterampilan komunikasi yang efektif selama asesmen"
+    "Asesor menggunakan keterampilan komunikasi yang efektif selama asesmen",
   ];
 
   return (
@@ -453,7 +453,7 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
               <td style={headerCellStyle}>Mulai</td>
               <td style={cellStyle}>
                 <input
-                  type="text"
+                  type="date"
                   value={formData.tanggalMulai}
                   onChange={(e) =>
                     handleInputChange("tanggalMulai", e.target.value)
@@ -467,7 +467,7 @@ const UmpanBalik = ({ onBack, data, onNavigate }) => {
               <td style={headerCellStyle}>Selesai</td>
               <td style={cellStyle}>
                 <input
-                  type="text"
+                  type="date"
                   value={formData.tanggalSelesai}
                   onChange={(e) =>
                     handleInputChange("tanggalSelesai", e.target.value)

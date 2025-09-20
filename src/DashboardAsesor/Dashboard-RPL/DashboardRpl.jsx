@@ -94,9 +94,7 @@ const DashboardRpl = () => {
             AA
           </div>
           <div>
-            <h2
-              style={{ fontSize: "18px", margin: "0", fontWeight: "600" }}
-            >
+            <h2 style={{ fontSize: "18px", margin: "0", fontWeight: "600" }}>
               Prof. Arul, M.Kom
             </h2>
             <p
@@ -132,7 +130,13 @@ const DashboardRpl = () => {
         </div>
         <div style={{ display: "flex", gap: "25px", textAlign: "right" }}>
           <div>
-            <h3 style={{ fontSize: "14px", color: "#6b7280", margin: "0 0 5px 0" }}>
+            <h3
+              style={{
+                fontSize: "14px",
+                color: "#6b7280",
+                margin: "0 0 5px 0",
+              }}
+            >
               Jumlah Asesi
             </h3>
             <p style={{ fontSize: "24px", margin: 0, fontWeight: "bold" }}>
@@ -140,7 +144,13 @@ const DashboardRpl = () => {
             </p>
           </div>
           <div>
-            <h3 style={{ fontSize: "14px", color: "#6b7280", margin: "0 0 5px 0" }}>
+            <h3
+              style={{
+                fontSize: "14px",
+                color: "#6b7280",
+                margin: "0 0 5px 0",
+              }}
+            >
               36 Siswa/i
             </h3>
           </div>
@@ -158,19 +168,36 @@ const DashboardRpl = () => {
       >
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <div
-            style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#10b981" }}
+            style={{
+              width: "12px",
+              height: "12px",
+              borderRadius: "50%",
+              backgroundColor: "#10b981",
+            }}
           ></div>
           <span style={{ fontSize: "14px", color: "#4b5563" }}>Hadir: 15</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <div
-            style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#ef4444" }}
+            style={{
+              width: "12px",
+              height: "12px",
+              borderRadius: "50%",
+              backgroundColor: "#ef4444",
+            }}
           ></div>
-          <span style={{ fontSize: "14px", color: "#4b5563" }}>Tidak Hadir: 2</span>
+          <span style={{ fontSize: "14px", color: "#4b5563" }}>
+            Tidak Hadir: 2
+          </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <div
-            style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#6b7280" }}
+            style={{
+              width: "12px",
+              height: "12px",
+              borderRadius: "50%",
+              backgroundColor: "#6b7280",
+            }}
           ></div>
           <span style={{ fontSize: "14px", color: "#4b5563" }}>Pending: 1</span>
         </div>
@@ -210,7 +237,9 @@ const DashboardRpl = () => {
                 width: "60px",
                 height: "60px",
                 borderRadius: "50%",
-                backgroundColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+                backgroundColor: `#${Math.floor(
+                  Math.random() * 16777215
+                ).toString(16)}`,
                 color: "white",
                 display: "flex",
                 alignItems: "center",
@@ -318,4 +347,4 @@ const DashboardRpl = () => {
   );
 };
 
-export default DashboardRpl;  
+export default DashboardRpl;
