@@ -129,7 +129,7 @@ const navContainerStyle = {
   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
   margin: '0',
   overflowX: 'auto',
-  maxWidth: '100%',
+  maxWidth: '50%',
   whiteSpace: 'nowrap',
   backdropFilter: 'blur(10px)',
   position: 'relative',
@@ -138,7 +138,7 @@ const navContainerStyle = {
 
 // Logo container matching AK-01 - responsive
 const logoContainerStyle = {
-  height: '80px',
+  height: '120px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -149,7 +149,7 @@ const logoContainerStyle = {
 // Logo text matching AK-01 - responsive
 const logoTextStyle = {
   color: 'white',
-  fontSize: '28px',
+  fontSize: '36px',
   fontWeight: 'bold',
   margin: 0,
   textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
@@ -159,7 +159,7 @@ const logoTextStyle = {
 const contentCardStyle = {
   backgroundColor: 'white',
   borderRadius: '0 0 15px 15px',
-  padding: '20px',
+  padding: '30px',
   boxShadow: 'none',
   marginTop: '0',
   border: 'none',
@@ -167,12 +167,11 @@ const contentCardStyle = {
 
 const headerSectionStyle2 = {
   display: 'flex',
-  alignItems: 'center',
-  gap: '15px',
+  alignItems: 'flex-start',
+  gap: '20px',
   marginBottom: '20px',
-  paddingBottom: '10px',
+  paddingBottom: '15px',
   borderBottom: '2px solid #FF8C00',
-  flexWrap: 'wrap',
 };
 
 const logoContainer2Style = {
@@ -181,7 +180,6 @@ const logoContainer2Style = {
 
 const headerContentStyle = {
   flex: 1,
-  minWidth: '200px',
 };
 
 const titleStyle = {
@@ -193,7 +191,7 @@ const titleStyle = {
 };
 
 const subtitleStyle = {
-  fontSize: '14px',
+  fontSize: '16px',
   fontWeight: 'bold',
   margin: '0 0 15px 0',
   color: '#333',
@@ -372,15 +370,16 @@ const submitButtonStyle = {
   backgroundColor: '#007bff',
   color: 'white',
   border: 'none',
-  borderRadius: '15px',
-  padding: '8px 20px',
-  fontSize: '12px',
+  borderRadius: '20px',
+  padding: '12px 40px',
+  fontSize: '14px',
   fontWeight: 'bold',
   cursor: 'pointer',
-  marginTop: '15px',
+  marginTop: '20px',
   alignSelf: 'flex-end',
   transition: 'all 0.2s ease',
   minWidth: '80px',
+  float: 'right',
 };
 
 const buttonContainerStyle = {
@@ -406,25 +405,25 @@ const inputStyle = {
 const tableStyle = {
   width: '100%',
   marginBottom: '15px',
-  fontSize: '11px',
+  fontSize: '12px',
   borderCollapse: 'collapse',
   overflowX: 'auto',
   display: 'block',
 };
 
 const tableCellStyle = {
-  padding: '8px',
+  padding: '10px',
   border: '1px solid #ddd',
   backgroundColor: '#f8f9fa',
   fontWeight: 'bold',
-  width: '120px',
+  width: '150px',
   textAlign: 'center',
   verticalAlign: 'middle',
   display: 'table-cell',
 };
 
 const tableContentStyle = {
-  padding: '8px',
+  padding: '10px',
   border: '1px solid #ddd',
   backgroundColor: 'white',
   display: 'table-cell',
@@ -559,12 +558,12 @@ const IA01 = () => {
 
   const responsiveLogoTextStyle = {
     ...logoTextStyle,
-    fontSize: isMobile ? '24px' : '28px',
+    fontSize: isMobile ? '28px' : '36px',
   };
 
   const responsiveSubtitleStyle = {
     ...subtitleStyle,
-    fontSize: isMobile ? '12px' : '14px',
+    fontSize: isMobile ? '14px' : '16px',
   };
 
   const responsiveModalOkayStyle = {
@@ -576,8 +575,8 @@ const IA01 = () => {
   };
 
   return (
-    <div style={pageContainerStyle}>
-      {/* Scrollbar styling for WebKit browsers */}
+    <div style={pageContainerStyle} className="page-container">
+      {/* Scrollbar styling for WebKit browsers + RESPONSIVE CSS */}
       <style>
         {`
           .nav-scrollbar::-webkit-scrollbar {
@@ -605,7 +604,108 @@ const IA01 = () => {
             }
           }
 
+          /* RESPONSIVE STYLES */
           @media (max-width: 768px) {
+            .page-container {
+              padding: 10px !important;
+            }
+            
+            .content-card {
+              padding: 20px !important;
+            }
+            
+            .logo-text {
+              font-size: 28px !important;
+            }
+            
+            .logo-container {
+              height: 100px !important;
+            }
+            
+            .nav-container {
+              max-width: 80% !important;
+            }
+            
+            .header-section2 {
+              flex-direction: column !important;
+              text-align: center !important;
+              align-items: center !important;
+            }
+            
+            .logo-container2 {
+              align-self: center !important;
+            }
+            
+            .title-text {
+              font-size: 14px !important;
+            }
+            
+            .subtitle-text {
+              font-size: 14px !important;
+            }
+            
+            .submit-button {
+              width: 100% !important;
+              float: none !important;
+              margin-top: 15px !important;
+            }
+            
+            .data-table {
+              font-size: 11px !important;
+            }
+            
+            .data-table td {
+              padding: 8px !important;
+            }
+            
+            .input-field {
+              font-size: 11px !important;
+              padding: 3px 6px !important;
+              min-width: 0 !important;
+            }
+            
+            .warning-notification {
+              right: 10px !important;
+              left: 10px !important;
+              max-width: none !important;
+              font-size: 12px !important;
+            }
+            
+            .modal-container {
+              min-width: 90% !important;
+              max-width: 90% !important;
+              padding: 20px 30px !important;
+              margin: 10px !important;
+            }
+            
+            .modal-title {
+              font-size: 16px !important;
+              margin-bottom: 20px !important;
+              padding-bottom: 20px !important;
+            }
+            
+            .modal-button {
+              position: relative !important;
+              bottom: auto !important;
+              right: auto !important;
+              width: 100% !important;
+              margin-top: 20px !important;
+            }
+
+            .table-input-row {
+              flex-wrap: wrap !important;
+              gap: 5px !important;
+            }
+            
+            .table-input-row span {
+              min-width: auto !important;
+            }
+            
+            .table-input-row input {
+              min-width: 150px !important;
+              flex: 1 !important;
+            }
+
             .responsive-table {
               display: block !important;
               overflow-x: auto !important;
@@ -641,39 +741,71 @@ const IA01 = () => {
               min-width: auto !important;
             }
           }
+          
+          @media (max-width: 480px) {
+            .logo-text {
+              font-size: 24px !important;
+            }
+            
+            .nav-container {
+              max-width: 90% !important;
+              padding: 5px 10px !important;
+            }
+            
+            .content-card {
+              padding: 15px !important;
+            }
+            
+            .submit-button {
+              font-size: 12px !important;
+              padding: 10px 20px !important;
+            }
+            
+            .data-table {
+              font-size: 10px !important;
+            }
+            
+            .data-table td {
+              padding: 6px !important;
+            }
+
+            .table-input-row input {
+              min-width: 120px !important;
+            }
+          }
         `}
       </style>
 
       {/* Warning Notification */}
       {showWarning && (
-        <div style={warningNotificationStyle}>
+        <div style={warningNotificationStyle} className="warning-notification">
           Silakan isi dan kirim formulir FR.IA.01.CL terlebih dahulu!
         </div>
       )}
 
       {/* Header Section matching AK-01 design */}
       <div style={headerSectionStyle}>
-        <div style={navContainerStyle} className="nav-scrollbar">
+        <div style={navContainerStyle} className="nav-scrollbar nav-container">
           <NavAsesi activeTab="FR.IA.01.CL" />
         </div>
 
-        <div style={logoContainerStyle}>
-          <h1 style={responsiveLogoTextStyle}>
+        <div style={logoContainerStyle} className="logo-container">
+          <h1 style={responsiveLogoTextStyle} className="logo-text">
             MyLSP
           </h1>
         </div>
       </div>
 
       {/* Content Card */}
-      <div style={contentCardStyle}>
-        <div style={headerSectionStyle2}>
-          <div style={logoContainer2Style}>
+      <div style={contentCardStyle} className="content-card">
+        <div style={headerSectionStyle2} className="header-section2">
+          <div style={logoContainer2Style} className="logo-container2">
             <img
               src="/src/img/image 12.png"
               alt="LSP Logo"
               style={{
-                width: isMobile ? '60px' : '80px',
-                height: isMobile ? '60px' : '80px',
+                width: '80px',
+                height: '80px',
                 borderRadius: '8px',
                 objectFit: 'contain',
                 backgroundColor: '#f8f9fa',
@@ -682,14 +814,14 @@ const IA01 = () => {
             />
           </div>
           <div style={headerContentStyle}>
-            <div style={titleStyle}>FR.IA.01.CL</div>
-            <div style={responsiveSubtitleStyle}>CEKLIS OBSERVASI AKTIVITAS DI TEMPAT KERJA ATAU TEMPAT KERJA SIMULASI</div>
+            <div style={titleStyle} className="title-text">FR.IA.01.CL</div>
+            <div style={responsiveSubtitleStyle} className="subtitle-text">CEKLIS OBSERVASI AKTIVITAS DI TEMPAT KERJA ATAU TEMPAT KERJA SIMULASI</div>
           </div>
         </div>
 
         {/* Skema Sertifikasi */}
         <div className="responsive-table" style={{...tableStyle, display: 'table'}}>
-          <table style={{width: '100%', borderCollapse: 'collapse'}}>
+          <table style={{width: '100%', borderCollapse: 'collapse'}} className="data-table">
             <tbody>
               <tr>
                 <td style={tableCellStyle}>
@@ -697,23 +829,25 @@ const IA01 = () => {
                 </td>
                 <td style={tableContentStyle}>
                   <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-                    <div className="responsive-form-row" style={{display: 'flex', alignItems: 'center'}}>
+                    <div className="responsive-form-row table-input-row" style={{display: 'flex', alignItems: 'center'}}>
                       <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Judul Unit</span>
                       <span style={{margin: '0 8px'}}>:</span>
                       <input
                         type="text"
                         style={inputStyle}
+                        className="input-field"
                         value={formData.judulUnit}
                         onChange={(e) => handleInputChange('judulUnit', e.target.value)}
                         placeholder="Masukkan judul unit"
                       />
                     </div>
-                    <div className="responsive-form-row" style={{display: 'flex', alignItems: 'center'}}>
+                    <div className="responsive-form-row table-input-row" style={{display: 'flex', alignItems: 'center'}}>
                       <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Nomor Unit</span>
                       <span style={{margin: '0 8px'}}>:</span>
                       <input
                         type="text"
                         style={inputStyle}
+                        className="input-field"
                         value={formData.nomorUnit}
                         onChange={(e) => handleInputChange('nomorUnit', e.target.value)}
                         placeholder="Masukkan nomor unit"
@@ -753,7 +887,7 @@ const IA01 = () => {
 
         {/* Unit Kompetensi Table */}
         <div className="responsive-table" style={{...tableStyle, display: 'table'}}>
-          <table style={{width: '100%', borderCollapse: 'collapse'}}>
+          <table style={{width: '100%', borderCollapse: 'collapse'}} className="data-table">
             <tbody>
               <tr>
                 <td style={tableCellStyle}>
@@ -761,23 +895,25 @@ const IA01 = () => {
                 </td>
                 <td style={tableContentStyle}>
                   <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-                    <div className="responsive-form-row" style={{display: 'flex', alignItems: 'center'}}>
+                    <div className="responsive-form-row table-input-row" style={{display: 'flex', alignItems: 'center'}}>
                       <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Kode Unit</span>
                       <span style={{margin: '0 8px'}}>:</span>
                       <input
                         type="text"
                         style={inputStyle}
+                        className="input-field"
                         value={formData.kodeUnit}
                         onChange={(e) => handleInputChange('kodeUnit', e.target.value)}
                         placeholder="Masukkan kode unit"
                       />
                     </div>
-                    <div className="responsive-form-row" style={{display: 'flex', alignItems: 'center'}}>
+                    <div className="responsive-form-row table-input-row" style={{display: 'flex', alignItems: 'center'}}>
                       <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Judul Unit</span>
                       <span style={{margin: '0 8px'}}>:</span>
                       <input
                         type="text"
                         style={inputStyle}
+                        className="input-field"
                         value={formData.judulUnitKompetensi}
                         onChange={(e) => handleInputChange('judulUnitKompetensi', e.target.value)}
                         placeholder="Masukkan judul unit kompetensi"
@@ -966,19 +1102,21 @@ const IA01 = () => {
             <button 
               type="submit" 
               style={submitButtonStyle}
+              className="submit-button"
               onMouseEnter={(e) => e.target.style.backgroundColor = '#0056b3'}
               onMouseLeave={(e) => e.target.style.backgroundColor = '#007bff'}
             >
               Kirim
             </button>
           </div>
+          <div style={{ clear: 'both', marginBottom: '20px' }}></div>
         </form>
       </div>
 
       {/* Success Modal matching AK-01 style */}
       {showModal && (
         <div style={modalOverlayStyle} onClick={handleCloseModal}>
-          <div style={modalContainerStyle} onClick={(e) => e.stopPropagation()}>
+          <div style={modalContainerStyle} className="modal-container" onClick={(e) => e.stopPropagation()}>
             <div style={iconContainerStyle}>
               <div style={successIconStyle}>
                 <div style={checkCircleStyle}>
@@ -1008,10 +1146,11 @@ const IA01 = () => {
               </div>
             </div>
             
-            <div style={modalTitleStyle}>Jawaban anda telah direkam!</div>
+            <div style={modalTitleStyle} className="modal-title">Jawaban anda telah direkam!</div>
             
             <button 
               style={responsiveModalOkayStyle} 
+              className="modal-button"
               onClick={handleCloseModal}
               onMouseEnter={(e) => e.target.style.backgroundColor = '#e67e00'}
               onMouseLeave={(e) => e.target.style.backgroundColor = '#FF8C00'}
