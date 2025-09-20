@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Check, User } from 'lucide-react';
 
 const PersetujuanAsesmen = () => {
   const [showModal, setShowModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [formData, setFormData] = useState({
     skemaSerifikasi: '',
     judulUnit: '',
@@ -24,8 +26,20 @@ const PersetujuanAsesmen = () => {
     tukPelaksanaan: ''
   });
 
-  // Mencegah navigasi dengan menonaktifkan back button dan shortcuts
-  React.useEffect(() => {
+  // Check if mobile
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
+
+  // Prevent navigation
+  useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'F5' || 
           (e.ctrlKey && e.key === 'r') || 
@@ -38,44 +52,37 @@ const PersetujuanAsesmen = () => {
     };
 
     document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Styles dari AK-01 Asesi
   const pageContainerStyle = {
     backgroundColor: 'white',
     fontFamily: 'Arial, sans-serif',
-    padding: '15px',
+    padding: isMobile ? '10px' : '15px',
     minHeight: '100vh',
   };
 
-  // Header section matching IA01 design - ENLARGED
   const headerSectionStyle = {
     backgroundImage: "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    borderRadius: '0 0 40px 40px',
+    borderRadius: isMobile ? '0 0 20px 20px' : '0 0 40px 40px',
     overflow: 'hidden',
     marginBottom: '0',
   };
 
-  // Logo container matching IA01 - ENLARGED
   const logoContainerStyle = {
-    height: '200px', // Increased from 160px to match IA01
+    height: isMobile ? '120px' : '200px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: '20px', // Increased from 15px to match IA01
-    marginBottom: '20px', // Increased from 15px to match IA01
+    marginTop: isMobile ? '10px' : '20px',
+    marginBottom: isMobile ? '10px' : '20px',
   };
 
-  // Logo text matching IA01 - ENLARGED
   const logoTextStyle = {
     color: 'white',
-    fontSize: '56px', // Increased from 36px to match IA01
+    fontSize: isMobile ? '36px' : '56px',
     fontWeight: 'bold',
     margin: 0,
     textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
@@ -85,7 +92,7 @@ const PersetujuanAsesmen = () => {
   const contentCardStyle = {
     backgroundColor: 'white',
     borderRadius: '0 0 15px 15px',
-    padding: '30px',
+    padding: isMobile ? '15px' : '30px',
     boxShadow: 'none',
     marginTop: '0',
     border: 'none',
@@ -93,23 +100,27 @@ const PersetujuanAsesmen = () => {
 
   const headerSectionStyle2 = {
     display: 'flex',
-    alignItems: 'flex-start',
-    gap: '20px',
+    flexDirection: isMobile ? 'column' : 'row',
+    alignItems: isMobile ? 'center' : 'flex-start',
+    gap: isMobile ? '15px' : '20px',
     marginBottom: '20px',
     paddingBottom: '15px',
     borderBottom: '2px solid #FF8C00',
+    textAlign: isMobile ? 'center' : 'left',
   };
 
   const logoContainer2Style = {
     flexShrink: 0,
+    order: isMobile ? 1 : 0,
   };
 
   const headerContentStyle = {
     flex: 1,
+    order: isMobile ? 2 : 1,
   };
 
   const titleStyle = {
-    fontSize: '16px',
+    fontSize: isMobile ? '14px' : '16px',
     fontWeight: 'bold',
     margin: '0 0 5px 0',
     color: '#333',
@@ -117,7 +128,7 @@ const PersetujuanAsesmen = () => {
   };
 
   const subtitleStyle = {
-    fontSize: '16px',
+    fontSize: isMobile ? '14px' : '16px',
     fontWeight: 'bold',
     margin: '0 0 15px 0',
     color: '#333',
@@ -128,12 +139,12 @@ const PersetujuanAsesmen = () => {
     backgroundColor: 'rgba(240, 240, 240, 0.7)',
     border: '1px solid #ddd',
     borderRadius: '8px',
-    padding: '15px',
+    padding: isMobile ? '12px' : '15px',
     marginBottom: '10px',
   };
 
   const boxTextStyle = {
-    fontSize: '11px',
+    fontSize: isMobile ? '10px' : '11px',
     color: '#333',
     lineHeight: '1.4',
     textAlign: 'center',
@@ -142,15 +153,15 @@ const PersetujuanAsesmen = () => {
 
   const checkboxGridStyle = {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '4px 8px',
+    gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+    gap: isMobile ? '6px' : '4px 8px',
     marginTop: '8px',
   };
 
   const checkboxItemStyle = {
     display: 'flex',
     alignItems: 'flex-start',
-    fontSize: '10px',
+    fontSize: isMobile ? '9px' : '10px',
     color: '#333',
     lineHeight: '1.3',
   };
@@ -163,7 +174,7 @@ const PersetujuanAsesmen = () => {
   };
 
   const sectionTextStyle = {
-    fontSize: '11px',
+    fontSize: isMobile ? '10px' : '11px',
     color: '#333',
     lineHeight: '1.3',
     marginBottom: '6px',
@@ -171,22 +182,23 @@ const PersetujuanAsesmen = () => {
 
   const buttonContainerStyle = {
     display: 'flex',
+    flexDirection: isMobile ? 'column' : 'row',
     justifyContent: 'center',
-    gap: '20px',
+    gap: isMobile ? '15px' : '20px',
     marginTop: '40px',
     paddingTop: '25px'
   };
 
   const buttonStyle = {
-    padding: '12px 35px',
+    padding: isMobile ? '14px 25px' : '12px 35px',
     backgroundColor: 'white',
     color: '#333',
     border: '1px solid #ccc',
     borderRadius: '25px',
     cursor: 'pointer',
-    fontSize: '14px',
+    fontSize: isMobile ? '16px' : '14px',
     fontWeight: '500',
-    minWidth: '120px',
+    minWidth: isMobile ? '100%' : '120px',
     transition: 'all 0.2s ease'
   };
 
@@ -200,7 +212,20 @@ const PersetujuanAsesmen = () => {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1000
+    zIndex: 1000,
+    padding: isMobile ? '20px' : '0'
+  };
+
+  const modalStyle = {
+    backgroundColor: 'white',
+    borderRadius: '16px',
+    padding: isMobile ? '20px 25px' : '30px 40px',
+    minWidth: isMobile ? '100%' : '500px',
+    maxWidth: isMobile ? '100%' : '500px',
+    boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
+    position: 'relative',
+    maxHeight: isMobile ? '90vh' : 'auto',
+    overflowY: isMobile ? 'auto' : 'visible'
   };
 
   const handleInputChange = (field, value) => {
@@ -237,7 +262,6 @@ const PersetujuanAsesmen = () => {
 
   const handleRejectModalOke = () => {
     setShowRejectModal(false);
-    // Redirect ke approved-unapproved page
     setTimeout(() => {
       window.location.href = '/dashboard-asesor/approved-unapproved/0893923923';
     }, 100);
@@ -245,7 +269,7 @@ const PersetujuanAsesmen = () => {
 
   return (
     <div style={pageContainerStyle}>
-      {/* Header Section matching APL-01 design */}
+      {/* Header Section */}
       <div style={headerSectionStyle}>
         <div style={logoContainerStyle}>
           <h1 style={logoTextStyle}>
@@ -262,8 +286,8 @@ const PersetujuanAsesmen = () => {
               src="/src/img/image 12.png"
               alt="LSP Logo"
               style={{
-                width: '80px',
-                height: '80px',
+                width: isMobile ? '60px' : '80px',
+                height: isMobile ? '60px' : '80px',
                 borderRadius: '8px',
                 objectFit: 'contain',
                 backgroundColor: '#f8f9fa',
@@ -278,65 +302,69 @@ const PersetujuanAsesmen = () => {
         </div>
 
         {/* Skema Sertifikasi */}
-        <table style={{width: '100%', marginBottom: '15px', fontSize: '12px'}}>
-          <tbody>
-            <tr>
-              <td style={{
-                padding: '10px',
-                border: '1px solid #ddd',
-                backgroundColor: '#f8f9fa',
-                fontWeight: 'bold',
-                width: '150px',
-                textAlign: 'center',
-                verticalAlign: 'middle'
-              }}>
-                Skema Sertifikasi
-              </td>
-              <td style={{
-                padding: '10px',
-                border: '1px solid #ddd',
-                backgroundColor: 'white'
-              }}>
-                <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-                  <div style={{display: 'flex', alignItems: 'center'}}>
-                    <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Judul Unit</span>
-                    <span style={{margin: '0 8px'}}>:</span>
-                    <input
-                      type="text"
-                      style={{
-                        flex: 1,
-                        padding: '4px 8px',
-                        border: '1px solid #ddd',
-                        borderRadius: '4px',
-                        fontSize: '12px'
-                      }}
-                      value={formData.judulUnit}
-                      onChange={(e) => handleInputChange('judulUnit', e.target.value)}
-                      placeholder="Masukkan judul unit"
-                    />
+        <div style={{marginBottom: '15px', overflowX: 'auto'}}>
+          <table style={{width: '100%', fontSize: isMobile ? '10px' : '12px', minWidth: isMobile ? '300px' : 'auto'}}>
+            <tbody>
+              <tr>
+                <td style={{
+                  padding: isMobile ? '8px' : '10px',
+                  border: '1px solid #ddd',
+                  backgroundColor: '#f8f9fa',
+                  fontWeight: 'bold',
+                  width: isMobile ? '120px' : '150px',
+                  textAlign: 'center',
+                  verticalAlign: 'middle'
+                }}>
+                  Skema Sertifikasi
+                </td>
+                <td style={{
+                  padding: isMobile ? '8px' : '10px',
+                  border: '1px solid #ddd',
+                  backgroundColor: 'white'
+                }}>
+                  <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
+                    <div style={{display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? '4px' : '0'}}>
+                      <span style={{minWidth: isMobile ? 'auto' : '80px', fontSize: isMobile ? '10px' : '12px', fontWeight: 'bold'}}>Judul Unit</span>
+                      {!isMobile && <span style={{margin: '0 8px'}}>:</span>}
+                      <input
+                        type="text"
+                        style={{
+                          flex: 1,
+                          width: isMobile ? '100%' : 'auto',
+                          padding: '4px 8px',
+                          border: '1px solid #ddd',
+                          borderRadius: '4px',
+                          fontSize: isMobile ? '10px' : '12px'
+                        }}
+                        value={formData.judulUnit}
+                        onChange={(e) => handleInputChange('judulUnit', e.target.value)}
+                        placeholder="Masukkan judul unit"
+                      />
+                    </div>
+                    <div style={{display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? '4px' : '0'}}>
+                      <span style={{minWidth: isMobile ? 'auto' : '80px', fontSize: isMobile ? '10px' : '12px', fontWeight: 'bold'}}>Nomor Unit</span>
+                      {!isMobile && <span style={{margin: '0 8px'}}>:</span>}
+                      <input
+                        type="text"
+                        style={{
+                          flex: 1,
+                          width: isMobile ? '100%' : 'auto',
+                          padding: '4px 8px',
+                          border: '1px solid #ddd',
+                          borderRadius: '4px',
+                          fontSize: isMobile ? '10px' : '12px'
+                        }}
+                        value={formData.nomorUnit}
+                        onChange={(e) => handleInputChange('nomorUnit', e.target.value)}
+                        placeholder="Masukkan nomor unit"
+                      />
+                    </div>
                   </div>
-                  <div style={{display: 'flex', alignItems: 'center'}}>
-                    <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Nomor Unit</span>
-                    <span style={{margin: '0 8px'}}>:</span>
-                    <input
-                      type="text"
-                      style={{
-                        flex: 1,
-                        padding: '4px 8px',
-                        border: '1px solid #ddd',
-                        borderRadius: '4px',
-                        fontSize: '12px'
-                      }}
-                      value={formData.nomorUnit}
-                      onChange={(e) => handleInputChange('nomorUnit', e.target.value)}
-                      placeholder="Masukkan nomor unit"
-                    />
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <div style={transparentBoxStyle}>
           <div style={boxTextStyle}>
@@ -345,32 +373,59 @@ const PersetujuanAsesmen = () => {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
-          <div style={{ flex: 1 }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
+          gap: isMobile ? '15px' : '20px', 
+          alignItems: 'flex-start' 
+        }}>
+          <div style={{ flex: 1, width: isMobile ? '100%' : 'auto' }}>
             {/* Box 1 Kiri - TUK, Nama Asesor, Nama Asesi */}
-            <div style={{...transparentBoxStyle, height: '120px', display: 'flex', flexDirection: 'column', padding: '15px', justifyContent: 'flex-start'}}>
+            <div style={{
+              ...transparentBoxStyle, 
+              height: isMobile ? 'auto' : '120px', 
+              minHeight: isMobile ? '140px' : '120px',
+              display: 'flex', 
+              flexDirection: 'column', 
+              padding: isMobile ? '12px' : '15px', 
+              justifyContent: 'flex-start'
+            }}>
               <div style={{...sectionTextStyle, marginBottom: '8px'}}>
                 <strong>TUK</strong> : <span style={{fontWeight: 'normal'}}>Sewaktu/Tempat Kerja/Mandiri*</span>{' '}
-                <span style={{ color: '#999', fontSize: '10px', fontWeight: 'normal' }}>
+                <span style={{ color: '#999', fontSize: isMobile ? '9px' : '10px', fontWeight: 'normal' }}>
                   (coret yang tidak perlu)
                 </span>
               </div>
-              <div style={{...sectionTextStyle, marginBottom: '8px', display: 'flex', alignItems: 'center'}}>
-                <strong style={{minWidth: '90px'}}>Nama Asesor</strong>
-                <span style={{margin: '0 5px'}}>:</span>
+              <div style={{...sectionTextStyle, marginBottom: '8px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? '4px' : '0'}}>
+                <strong style={{minWidth: isMobile ? 'auto' : '90px'}}>Nama Asesor</strong>
+                {!isMobile && <span style={{margin: '0 5px'}}>:</span>}
                 <input
                   type="text"
-                  style={{ flex: 1, fontSize: '11px', padding: '3px 6px', border: '1px solid #ddd', borderRadius: '3px' }}
+                  style={{ 
+                    flex: 1, 
+                    width: isMobile ? '100%' : 'auto',
+                    fontSize: isMobile ? '10px' : '11px', 
+                    padding: '3px 6px', 
+                    border: '1px solid #ddd', 
+                    borderRadius: '3px' 
+                  }}
                   value={formData.namaAsesor}
                   onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
                 />
               </div>
-              <div style={{...sectionTextStyle, marginBottom: '0', display: 'flex', alignItems: 'center'}}>
-                <strong style={{minWidth: '90px'}}>Nama Asesi</strong>
-                <span style={{margin: '0 5px'}}>:</span>
+              <div style={{...sectionTextStyle, marginBottom: '0', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? '4px' : '0'}}>
+                <strong style={{minWidth: isMobile ? 'auto' : '90px'}}>Nama Asesi</strong>
+                {!isMobile && <span style={{margin: '0 5px'}}>:</span>}
                 <input
                   type="text"
-                  style={{ flex: 1, fontSize: '11px', padding: '3px 6px', border: '1px solid #ddd', borderRadius: '3px' }}
+                  style={{ 
+                    flex: 1, 
+                    width: isMobile ? '100%' : 'auto',
+                    fontSize: isMobile ? '10px' : '11px', 
+                    padding: '3px 6px', 
+                    border: '1px solid #ddd', 
+                    borderRadius: '3px' 
+                  }}
                   value={formData.namaAsesi}
                   onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
                 />
@@ -378,11 +433,18 @@ const PersetujuanAsesmen = () => {
             </div>
 
             {/* Box 2 Kiri - Bukti yang akan dikumpulkan */}
-            <div style={{...transparentBoxStyle, height: '130px', display: 'flex', flexDirection: 'column', padding: '15px'}}>
-              <div style={{ ...sectionTextStyle, fontWeight: 'bold', marginBottom: '8px', fontSize: '13px' }}>
+            <div style={{
+              ...transparentBoxStyle, 
+              height: isMobile ? 'auto' : '130px', 
+              minHeight: isMobile ? '180px' : '130px',
+              display: 'flex', 
+              flexDirection: 'column', 
+              padding: isMobile ? '12px' : '15px'
+            }}>
+              <div style={{ ...sectionTextStyle, fontWeight: 'bold', marginBottom: '8px', fontSize: isMobile ? '11px' : '13px' }}>
                 Bukti yang akan dikumpulkan:
               </div>
-              <div style={{...checkboxGridStyle, gap: '5px 10px'}}>
+              <div style={checkboxGridStyle}>
                 {[
                   { key: 'portfolio', label: 'Hasil verifikasi Portofolio' },
                   { key: 'reviewProduk', label: 'Hasil review produk' },
@@ -392,7 +454,7 @@ const PersetujuanAsesmen = () => {
                   { key: 'pertanyaanTertulis', label: 'Hasil Pertanyaan Tertulis' },
                   { key: 'wawancara', label: 'Hasil Pertanyaan wawancara' },
                 ].map((item) => (
-                  <div key={item.key} style={{...checkboxItemStyle, fontSize: '11px'}}>
+                  <div key={item.key} style={checkboxItemStyle}>
                     <input
                       type="checkbox"
                       style={checkboxStyle}
@@ -406,37 +468,65 @@ const PersetujuanAsesmen = () => {
             </div>
 
             {/* Box 3 Kiri - Pelaksanaan Asesmen */}
-            <div style={{...transparentBoxStyle, height: '130px', display: 'flex', flexDirection: 'column', padding: '15px'}}>
-              <div style={{ ...sectionTextStyle, fontWeight: 'bold', marginBottom: '10px', fontSize: '13px' }}>
+            <div style={{
+              ...transparentBoxStyle, 
+              height: isMobile ? 'auto' : '130px', 
+              minHeight: isMobile ? '160px' : '130px',
+              display: 'flex', 
+              flexDirection: 'column', 
+              padding: isMobile ? '12px' : '15px'
+            }}>
+              <div style={{ ...sectionTextStyle, fontWeight: 'bold', marginBottom: '10px', fontSize: isMobile ? '11px' : '13px' }}>
                 Pelaksanaan asesmen disepakati pada:
               </div>
-              <div style={{flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-                <div style={{display: 'flex', alignItems: 'center', marginBottom: '5px'}}>
-                  <span style={{minWidth: '90px', fontSize: '12px'}}>Hari/Tanggal</span>
-                  <span style={{margin: '0 5px'}}>:</span>
+              <div style={{flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: isMobile ? '8px' : '5px'}}>
+                <div style={{display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', marginBottom: isMobile ? '0' : '5px', gap: isMobile ? '4px' : '0'}}>
+                  <span style={{minWidth: isMobile ? 'auto' : '90px', fontSize: isMobile ? '10px' : '12px'}}>Hari/Tanggal</span>
+                  {!isMobile && <span style={{margin: '0 5px'}}>:</span>}
                   <input
                     type="date"
-                    style={{flex: 1, fontSize: '11px', padding: '4px 6px', border: '1px solid #ddd', borderRadius: '3px'}}
+                    style={{
+                      flex: 1, 
+                      width: isMobile ? '100%' : 'auto',
+                      fontSize: isMobile ? '10px' : '11px', 
+                      padding: '4px 6px', 
+                      border: '1px solid #ddd', 
+                      borderRadius: '3px'
+                    }}
                     value={formData.tanggal}
                     onChange={(e) => handleInputChange('tanggal', e.target.value)}
                   />
                 </div>
-                <div style={{display: 'flex', alignItems: 'center', marginBottom: '5px'}}>
-                  <span style={{minWidth: '90px', fontSize: '12px'}}>Waktu</span>
-                  <span style={{margin: '0 5px'}}>:</span>
+                <div style={{display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', marginBottom: isMobile ? '0' : '5px', gap: isMobile ? '4px' : '0'}}>
+                  <span style={{minWidth: isMobile ? 'auto' : '90px', fontSize: isMobile ? '10px' : '12px'}}>Waktu</span>
+                  {!isMobile && <span style={{margin: '0 5px'}}>:</span>}
                   <input
                     type="time"
-                    style={{flex: 1, fontSize: '11px', padding: '4px 6px', border: '1px solid #ddd', borderRadius: '3px'}}
+                    style={{
+                      flex: 1, 
+                      width: isMobile ? '100%' : 'auto',
+                      fontSize: isMobile ? '10px' : '11px', 
+                      padding: '4px 6px', 
+                      border: '1px solid #ddd', 
+                      borderRadius: '3px'
+                    }}
                     value={formData.waktu}
                     onChange={(e) => handleInputChange('waktu', e.target.value)}
                   />
                 </div>
-                <div style={{display: 'flex', alignItems: 'center'}}>
-                  <span style={{minWidth: '90px', fontSize: '12px'}}>TUK</span>
-                  <span style={{margin: '0 5px'}}>:</span>
+                <div style={{display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? '4px' : '0'}}>
+                  <span style={{minWidth: isMobile ? 'auto' : '90px', fontSize: isMobile ? '10px' : '12px'}}>TUK</span>
+                  {!isMobile && <span style={{margin: '0 5px'}}>:</span>}
                   <input
                     type="text"
-                    style={{flex: 1, fontSize: '11px', padding: '4px 6px', border: '1px solid #ddd', borderRadius: '3px'}}
+                    style={{
+                      flex: 1, 
+                      width: isMobile ? '100%' : 'auto',
+                      fontSize: isMobile ? '10px' : '11px', 
+                      padding: '4px 6px', 
+                      border: '1px solid #ddd', 
+                      borderRadius: '3px'
+                    }}
                     value={formData.tukPelaksanaan}
                     onChange={(e) => handleInputChange('tukPelaksanaan', e.target.value)}
                   />
@@ -445,19 +535,35 @@ const PersetujuanAsesmen = () => {
             </div>
           </div>
 
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, width: isMobile ? '100%' : 'auto' }}>
             {/* Box 1 Kanan - Asesi */}
-            <div style={{...transparentBoxStyle, height: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '15px'}}>
-              <div style={{fontSize: '13px', fontWeight: 'bold', marginBottom: '10px', color: '#333'}}>Asesi:</div>
-              <div style={{ fontSize: '12px', color: '#333', lineHeight: '1.4', textAlign: 'justify', fontWeight: 'normal' }}>
+            <div style={{
+              ...transparentBoxStyle, 
+              height: isMobile ? 'auto' : '120px', 
+              minHeight: isMobile ? '100px' : '120px',
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'flex-start', 
+              padding: isMobile ? '12px' : '15px'
+            }}>
+              <div style={{fontSize: isMobile ? '11px' : '13px', fontWeight: 'bold', marginBottom: '10px', color: '#333'}}>Asesi:</div>
+              <div style={{ fontSize: isMobile ? '10px' : '12px', color: '#333', lineHeight: '1.4', textAlign: 'justify', fontWeight: 'normal' }}>
                 Bahwa saya telah mendapatkan penjelasan terkait hak dan prosedur banding asesmen dari asesor.
               </div>
             </div>
 
             {/* Box 2 Kanan - Asesor */}
-            <div style={{...transparentBoxStyle, height: '130px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '15px'}}>
-              <div style={{fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#333'}}>Asesor:</div>
-              <div style={{ fontSize: '11px', color: '#333', lineHeight: '1.3', textAlign: 'justify', fontWeight: 'normal' }}>
+            <div style={{
+              ...transparentBoxStyle, 
+              height: isMobile ? 'auto' : '130px', 
+              minHeight: isMobile ? '140px' : '130px',
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'flex-start', 
+              padding: isMobile ? '12px' : '15px'
+            }}>
+              <div style={{fontSize: isMobile ? '11px' : '13px', fontWeight: 'bold', marginBottom: '8px', color: '#333'}}>Asesor:</div>
+              <div style={{ fontSize: isMobile ? '9px' : '11px', color: '#333', lineHeight: '1.3', textAlign: 'justify', fontWeight: 'normal' }}>
                 Menyatakan tidak akan membuka hasil pekerjaan yang diperoleh karena penguasaan saya sebagai Asesor dalam
                 pekerjaan Asesmen kepada siapapun atau organisasi manapun selain kepada pihak yang berwenang sehubungan
                 dengan kewajiban saya sebagai Asesor yang ditugaskan oleh LSP.
@@ -465,9 +571,17 @@ const PersetujuanAsesmen = () => {
             </div>
 
             {/* Box 3 Kanan - Asesi */}
-            <div style={{...transparentBoxStyle, height: '130px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '15px'}}>
-              <div style={{fontSize: '13px', fontWeight: 'bold', marginBottom: '10px', color: '#333'}}>Asesi:</div>
-              <div style={{ fontSize: '12px', color: '#333', lineHeight: '1.4', textAlign: 'justify', fontWeight: 'normal' }}>
+            <div style={{
+              ...transparentBoxStyle, 
+              height: isMobile ? 'auto' : '130px', 
+              minHeight: isMobile ? '120px' : '130px',
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'flex-start', 
+              padding: isMobile ? '12px' : '15px'
+            }}>
+              <div style={{fontSize: isMobile ? '11px' : '13px', fontWeight: 'bold', marginBottom: '10px', color: '#333'}}>Asesi:</div>
+              <div style={{ fontSize: isMobile ? '10px' : '12px', color: '#333', lineHeight: '1.4', textAlign: 'justify', fontWeight: 'normal' }}>
                 Saya setuju mengikuti Asesmen dengan pemahaman bahwa informasi yang dikumpulkan hanya digunakan untuk
                 pengembangan profesional dan hanya dapat diakses oleh orang tertentu saja.
               </div>
@@ -499,14 +613,7 @@ const PersetujuanAsesmen = () => {
       {/* Modal Notifikasi Approve */}
       {showModal && (
         <div style={modalOverlayStyle}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            padding: '30px 40px',
-            minWidth: '500px',
-            boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
-            position: 'relative'
-          }}>
+          <div style={modalStyle}>
             {/* Header dengan Icon dan Close Button */}
             <div style={{
               display: 'flex',
@@ -516,8 +623,8 @@ const PersetujuanAsesmen = () => {
             }}>
               {/* Icon clipboard biru dengan checkmark di kiri */}
               <div style={{
-                width: '50px',
-                height: '50px',
+                width: isMobile ? '40px' : '50px',
+                height: isMobile ? '40px' : '50px',
                 backgroundColor: '#4A90E2',
                 borderRadius: '6px',
                 display: 'flex',
@@ -528,8 +635,8 @@ const PersetujuanAsesmen = () => {
               }}>
                 {/* Clipboard shape */}
                 <div style={{
-                  width: '36px',
-                  height: '40px',
+                  width: isMobile ? '28px' : '36px',
+                  height: isMobile ? '32px' : '40px',
                   backgroundColor: 'white',
                   borderRadius: '3px',
                   position: 'relative',
@@ -541,14 +648,14 @@ const PersetujuanAsesmen = () => {
                   <div style={{
                     position: 'absolute',
                     top: '-3px',
-                    width: '16px',
+                    width: isMobile ? '12px' : '16px',
                     height: '6px',
                     backgroundColor: '#4A90E2',
                     borderRadius: '3px 3px 0 0'
                   }}></div>
                   
                   {/* Checkmark */}
-                  <Check size={18} color="#4A90E2" strokeWidth={4} />
+                  <Check size={isMobile ? 14 : 18} color="#4A90E2" strokeWidth={4} />
                 </div>
               </div>
               
@@ -556,22 +663,15 @@ const PersetujuanAsesmen = () => {
               <div style={{ 
                 flex: 1, 
                 textAlign: 'center',
-                paddingTop: '5px'
+                paddingTop: '5px',
+                paddingLeft: isMobile ? '10px' : '0',
+                paddingRight: isMobile ? '10px' : '0'
               }}>
                 <h3 style={{
-                  fontSize: '22px',
+                  fontSize: isMobile ? '18px' : '22px',
                   fontWeight: '600',
                   color: '#333',
                   marginBottom: '4px',
-                  lineHeight: '1.2'
-                }}>
-                  Anda menyetujui
-                </h3>
-                <h3 style={{
-                  fontSize: '22px',
-                  fontWeight: '600',
-                  color: '#333',
-                  margin: '0',
                   lineHeight: '1.2'
                 }}>
                   rekaman Asesmen ini
@@ -610,7 +710,7 @@ const PersetujuanAsesmen = () => {
             
             {/* Description */}
             <p style={{
-              fontSize: '14px',
+              fontSize: isMobile ? '12px' : '14px',
               color: '#666',
               marginBottom: '25px',
               lineHeight: '1.5',
@@ -624,15 +724,16 @@ const PersetujuanAsesmen = () => {
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
                 style={{
-                  padding: '10px 30px',
+                  padding: isMobile ? '12px 25px' : '10px 30px',
                   backgroundColor: '#4A90E2',
                   color: 'white',
                   border: 'none',
                   borderRadius: '20px',
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: isMobile ? '16px' : '14px',
                   fontWeight: '600',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  width: isMobile ? '100%' : 'auto'
                 }}
                 onClick={handleModalOke}
                 onMouseOver={(e) => e.target.style.backgroundColor = '#357ABD'}
@@ -648,14 +749,7 @@ const PersetujuanAsesmen = () => {
       {/* Modal Notifikasi Reject */}
       {showRejectModal && (
         <div style={modalOverlayStyle}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            padding: '30px 40px',
-            minWidth: '500px',
-            boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
-            position: 'relative'
-          }}>
+          <div style={modalStyle}>
             {/* Header dengan Icon dan Close Button */}
             <div style={{
               display: 'flex',
@@ -665,8 +759,8 @@ const PersetujuanAsesmen = () => {
             }}>
               {/* Icon document dengan X orange di kiri */}
               <div style={{
-                width: '50px',
-                height: '50px',
+                width: isMobile ? '40px' : '50px',
+                height: isMobile ? '40px' : '50px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -675,8 +769,8 @@ const PersetujuanAsesmen = () => {
               }}>
                 {/* Document outline */}
                 <div style={{
-                  width: '36px',
-                  height: '42px',
+                  width: isMobile ? '28px' : '36px',
+                  height: isMobile ? '34px' : '42px',
                   border: '2px solid #FF8C00',
                   borderRadius: '2px',
                   backgroundColor: 'white',
@@ -724,14 +818,14 @@ const PersetujuanAsesmen = () => {
                   position: 'absolute',
                   bottom: '2px',
                   right: '2px',
-                  width: '18px',
-                  height: '18px',
+                  width: isMobile ? '14px' : '18px',
+                  height: isMobile ? '14px' : '18px',
                   backgroundColor: '#FF8C00',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '12px',
+                  fontSize: isMobile ? '10px' : '12px',
                   color: 'white',
                   fontWeight: 'bold',
                   border: '2px solid white',
@@ -745,10 +839,12 @@ const PersetujuanAsesmen = () => {
               <div style={{ 
                 flex: 1, 
                 textAlign: 'center',
-                paddingTop: '5px'
+                paddingTop: '5px',
+                paddingLeft: isMobile ? '10px' : '0',
+                paddingRight: isMobile ? '10px' : '0'
               }}>
                 <h3 style={{
-                  fontSize: '22px',
+                  fontSize: isMobile ? '18px' : '22px',
                   fontWeight: '600',
                   color: '#333',
                   marginBottom: '4px',
@@ -757,7 +853,7 @@ const PersetujuanAsesmen = () => {
                   Anda menolak
                 </h3>
                 <h3 style={{
-                  fontSize: '22px',
+                  fontSize: isMobile ? '18px' : '22px',
                   fontWeight: '600',
                   color: '#333',
                   margin: '0',
@@ -799,7 +895,7 @@ const PersetujuanAsesmen = () => {
             
             {/* Description */}
             <p style={{
-              fontSize: '14px',
+              fontSize: isMobile ? '12px' : '14px',
               color: '#666',
               marginBottom: '25px',
               lineHeight: '1.5',
@@ -813,15 +909,16 @@ const PersetujuanAsesmen = () => {
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
                 style={{
-                  padding: '10px 30px',
+                  padding: isMobile ? '12px 25px' : '10px 30px',
                   backgroundColor: '#FF8C00',
                   color: 'white',
                   border: 'none',
                   borderRadius: '20px',
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: isMobile ? '16px' : '14px',
                   fontWeight: '600',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  width: isMobile ? '100%' : 'auto'
                 }}
                 onClick={handleRejectModalOke}
                 onMouseOver={(e) => e.target.style.backgroundColor = '#E67A00'}

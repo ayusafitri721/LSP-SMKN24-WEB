@@ -810,7 +810,7 @@ const Wawancara = () => {
                         className="responsive-textarea"
                         value={bukti}
                         onChange={(e) => handleBuktiChange(index, e.target.value)}
-                        placeholder={'Masukkan bukti kompetensi ${index + 1}'}
+                        placeholder={"Masukkan bukti kompetensi " + (index + 1)}
                       />
                     </div>
                   ))}
