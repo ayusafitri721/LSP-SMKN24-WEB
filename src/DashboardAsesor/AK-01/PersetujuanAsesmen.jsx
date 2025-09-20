@@ -39,11 +39,6 @@ const PersetujuanAsesmen = () => {
 
     document.addEventListener('keydown', handleKeyDown);
 
-    window.history.pushState(null, '', window.location.href);
-    window.addEventListener('popstate', () => {
-      window.history.pushState(null, '', window.location.href);
-    });
-
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
