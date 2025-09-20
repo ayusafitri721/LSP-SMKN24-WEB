@@ -40,11 +40,12 @@ const DashboardAsesor = () => {
   };
 
   const handleJadwalClick = () => {
-    navigate("/jadwal");
+    navigate("/dashboard-asesor/jadwal");
   };
 
   const handlePenilaianClick = () => {
-    navigate("/penilaian");
+    // Updated to navigate to the specific dashboard-rpl route
+    navigate("/dashboard-asesor/dashboard-rpl");
   };
 
   return (
