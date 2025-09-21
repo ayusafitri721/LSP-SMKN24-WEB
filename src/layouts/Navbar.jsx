@@ -360,11 +360,44 @@ function Navbar({ onNavClick, onLoginClick }) {
                     cursor: "pointer",
                     fontWeight: "500",
                     padding: "6px 0",
+                    borderRadius: "6px",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.backgroundColor = "rgba(255, 131, 3, 0.1)";
+                    e.target.style.color = "#FF8303";
+                    e.target.style.transform = "translateY(-1px)";
+                    e.target.style.boxShadow =
+                      "0 2px 8px rgba(255, 131, 3, 0.2)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.color = "#333";
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "none";
+                  }}
+                  onMouseDown={(e) => {
+                    e.target.style.transform = "translateY(0) scale(0.98)";
+                    e.target.style.backgroundColor = "rgba(255, 131, 3, 0.2)";
+                  }}
+                  onMouseUp={(e) => {
+                    e.target.style.transform = "translateY(-1px) scale(1)";
+                    e.target.style.backgroundColor = "rgba(255, 131, 3, 0.1)";
                   }}
                 >
                   {name}{" "}
                   {["Profile", "Sertifikasi", "Galeri"].includes(name) && (
-                    <span style={{ fontSize: "10px" }}>▼</span>
+                    <span
+                      style={{
+                        fontSize: "10px",
+                        marginLeft: "4px",
+                        transition: "transform 0.2s ease",
+                      }}
+                    >
+                      ▼
+                    </span>
                   )}
                 </button>
 
@@ -614,17 +647,29 @@ function Navbar({ onNavClick, onLoginClick }) {
                 fontWeight: "500",
                 cursor: "pointer",
                 boxShadow: "0 6px 10px rgba(0, 0, 0, 0.2)",
-                transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                 whiteSpace: "nowrap",
                 flexShrink: 0,
               }}
               onMouseOver={(e) => {
-                e.target.style.transform = "translateY(-1px)";
-                e.target.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.25)";
+                e.target.style.backgroundColor = "#FF8303";
+                e.target.style.color = "white";
+                e.target.style.transform = "translateY(-2px) scale(1.05)";
+                e.target.style.boxShadow = "0 8px 20px rgba(255, 131, 3, 0.4)";
               }}
               onMouseOut={(e) => {
-                e.target.style.transform = "translateY(0)";
+                e.target.style.backgroundColor = "white";
+                e.target.style.color = "black";
+                e.target.style.transform = "translateY(0) scale(1)";
                 e.target.style.boxShadow = "0 6px 10px rgba(0, 0, 0, 0.2)";
+              }}
+              onMouseDown={(e) => {
+                e.target.style.transform = "translateY(-1px) scale(1.02)";
+                e.target.style.boxShadow = "0 4px 12px rgba(255, 131, 3, 0.6)";
+              }}
+              onMouseUp={(e) => {
+                e.target.style.transform = "translateY(-2px) scale(1.05)";
+                e.target.style.boxShadow = "0 8px 20px rgba(255, 131, 3, 0.4)";
               }}
             >
               Login
