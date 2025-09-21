@@ -1,11 +1,15 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useAuth } from "../context/AuthContext";
 import { useJurusan } from "../context/JurusanContext";
 import { useDashboardAsesi } from "../context/DashboardAsesiContext";
 import { useAssesment } from "../context/AssesmentContext";
 
-// Menerima prop 'onNavigate' dari komponen induk
-function DashboardAsesi({ onNavigate }) {
+// Hapus prop 'onNavigate'
+function DashboardAsesi() {
+  // Inisialisasi hook useNavigate
+  const navigate = useNavigate();
+
   const { assesments } = useAssesment();
   const { currentAssesi, apl01data } = useDashboardAsesi();
   const { user } = useAuth();
@@ -33,20 +37,15 @@ function DashboardAsesi({ onNavigate }) {
   };
 
   const handleLogout = () => {
-    // Konfirmasi logout dengan notifikasi
     const confirmLogout = window.confirm("Apakah Anda yakin ingin keluar?");
     if (confirmLogout) {
-      // Redirect ke home page setelah konfirmasi
       window.location.href = "/";
     }
   };
 
+  // Ubah fungsi ini untuk menggunakan 'navigate'
   const handleEditAccount = () => {
-    if (onNavigate) {
-      onNavigate("EditAccount");
-    } else {
-      alert("Edit Account function not implemented");
-    }
+    navigate("profile-asesi");
   };
 
   // Fix: Check if APL01 data exists properly
@@ -84,6 +83,7 @@ function DashboardAsesi({ onNavigate }) {
       >
         {/* Profile icon top right */}
         <div
+          onClick={() => navigate("profile-asesi")} // Gunakan navigate di sini
           style={{
             position: "absolute",
             top: "15px",
@@ -96,6 +96,7 @@ function DashboardAsesi({ onNavigate }) {
             alignItems: "center",
             justifyContent: "center",
             border: "2px solid rgba(255,255,255,0.3)",
+            cursor: "pointer", // Add a pointer cursor to indicate it's clickable
           }}
         >
           <svg
@@ -425,7 +426,7 @@ function DashboardAsesi({ onNavigate }) {
                   Data belum tersedia, silahkan isi form APL 01 dulu
                 </p>
                 <button
-                  onClick={() => onNavigate && onNavigate("APL.01")}
+                  onClick={() => navigate("apl-01")} // Gunakan navigate di sini
                   style={{
                     backgroundColor: "#FF5722",
                     color: "white",
@@ -600,7 +601,7 @@ function DashboardAsesi({ onNavigate }) {
                 Anda belum mengisi form APL01
               </p>
               <button
-                onClick={() => onNavigate && onNavigate("APL.01")}
+                onClick={() => navigate("apl-01")} // Gunakan navigate di sini
                 style={{
                   backgroundColor: "#FF5722",
                   color: "white",
@@ -660,7 +661,7 @@ function DashboardAsesi({ onNavigate }) {
                 Assessment tersedia - Siap untuk dimulai
               </span>
               <button
-                onClick={() => onNavigate && onNavigate("assessment")}
+                onClick={() => navigate("assessment")} // Gunakan navigate di sini
                 style={{
                   backgroundColor: "#D9D9D9",
                   color: "black",
@@ -772,8 +773,7 @@ function DashboardAsesi({ onNavigate }) {
                   </div>
                   <button
                     onClick={() =>
-                      onNavigate &&
-                      onNavigate("assessment", { assessmentId: assessment.id })
+                      navigate("assessment", { state: { assessmentId: assessment.id } }) // Gunakan navigate di sini dan sertakan state
                     }
                     style={{
                       backgroundColor: "#D9D9D9",

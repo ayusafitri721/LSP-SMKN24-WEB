@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import DashboardAsesi from "../DashboardAsesi/DashboardAsesi";
-import ProfileSection from "../DashboardAsesi/Profile/ProfilAsesi";
+import ProfileSection from "../DashboardAsesi/Profile/ProfileAsesi";
 
 // Import semua komponen formulir yang relevan dengan Asesi
 import APL01 from "../DashboardAsesi/APL-01/APL-01";
