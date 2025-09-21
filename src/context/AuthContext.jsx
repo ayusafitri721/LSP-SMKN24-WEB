@@ -1,74 +1,66 @@
 // context/AuthContext.jsx
-import { createContext, useContext, useState, useMemo, useEffect } from "react";
-import api from "../api/api"; // axios instance misalnya
-import { data } from "react-router-dom";
+import { createContext, useContext, useState } from "react";
+import api from "../api/api";
+import axios from "axios"; // untuk hit csrf-cookie di origin root
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const register = async (data) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await api.post("/auth/register", data);
-      return res.data;
-    } catch (err) {
-      setError(err.response?.data || "Gagal registrasi!");
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Helper: base host untuk sanctum csrf-cookie (tanpa /api)
+  const BASE_HOST = "http://127.0.0.1:8000";
 
   const login = async (credentials) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.post("/auth/login", credentials);
-      const userData = {
-        id: res.data.user.id,
-        username: res.data.user.username,
-        role: res.data.user.role,
-        token: res.data.token,
-        jurusan_id: res.data.user.jurusan_id,
-      };
-      setUser(userData);
-      localStorage.setItem("user", JSON.stringify(userData));
-      api.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
-      return res.data;
+      // 1) Ambil CSRF cookie agar Laravel set XSRF-TOKEN & sesi
+      await axios.get(`${BASE_HOST}/sanctum/csrf-cookie`, { withCredentials: true }); // penting
+      // 2) Login (cookie-based). Jika backend login berada di /api/auth/login, tetap ok asalkan Sanctum stateful
+      const res = await api.post("/auth/login", credentials); // api sudah withCredentials
+      // 3) Simpan info user; jika backend mengandalkan cookie, token mungkin tidak diperlukan
+      // optional: simpan token jika backend juga mengembalikan bearer, tetapi untuk SPA cookie tidak wajib
+      const minimalUser = { id: res.data?.user?.id, role: res.data?.user?.role };
+      localStorage.setItem("user", JSON.stringify(minimalUser));
+      // 4) Ambil profil user agar state terisi
+      try {
+        const me = await api.get("/user");
+        setUser(me.data?.data || me.data || res.data?.user);
+      } catch {
+        setUser(res.data?.user || minimalUser);
+      }
+      return true;
     } catch (err) {
-      setError(err.response?.data || "Gagal login!");
-      throw err;
+      setError(err?.response?.data?.message || "Login gagal");
+      throw err?.response?.data || err;
     } finally {
       setLoading(false);
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
-    delete api.defaults.headers.common["Authorization"];
+  const register = async (formData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await axios.get(`${BASE_HOST}/sanctum/csrf-cookie`, { withCredentials: true });
+      const res = await api.post("/auth/register", formData);
+      return res.data;
+    } catch (err) {
+      setError(err?.response?.data?.message || "Register gagal");
+      throw err?.response?.data || err;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => {
-    if (user?.token) {
-      api.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
-    }
-  }, [user]);
-
-  const value = useMemo(
-    () => ({ user, login, register, logout, loading, error }),
-    [user, loading, error]
+  return (
+    <AuthContext.Provider value={{ user, login, register, loading, error }}>
+      {children}
+    </AuthContext.Provider>
   );
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import NavAsesi from "../../components/NavAsesi";
+import { submitFormAk02 } from "../../api/api";
 
 const pageContainerStyle = {
   backgroundColor: "white",
@@ -229,7 +230,7 @@ const AK02 = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validasi form
@@ -282,8 +283,17 @@ const AK02 = () => {
       return;
     }
 
-    setIsFormSubmitted(true);
-    setShowPopup(true);
+    try {
+      await submitFormAk02(formData);
+      setIsFormSubmitted(true);
+      setShowPopup(true);
+    } catch (err) {
+      console.error("Gagal submit FR.AK.02 ke server:", err);
+      try {
+        localStorage.setItem("ak02FormData", JSON.stringify(formData));
+      } catch {}
+      alert("Gagal mengirim ke server. Data disimpan sementara di perangkat Anda. Coba lagi nanti.");
+    }
   };
 
   const handleClosePopup = () => {

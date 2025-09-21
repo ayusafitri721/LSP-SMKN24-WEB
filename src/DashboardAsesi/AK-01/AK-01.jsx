@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
+import { submitFormAk01 } from '../../api/api';
 
 // Modal styles - Updated to match APL-01 design
 const modalOverlayStyle = {
@@ -389,15 +390,24 @@ const AK01 = () => {
     return hasRequiredFields && hasCheckedItems;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isFormValid()) {
-      console.log('Form FR.AK.01 submitted:', formData);
-      localStorage.setItem('ak01FormData', JSON.stringify(formData));
+    if (!isFormValid()) {
+      alert('Harap lengkapi semua field yang diperlukan dan pilih minimal satu bukti yang akan dikumpulkan.');
+      return;
+    }
+    try {
+      // Attempt to submit to backend
+      await submitFormAk01(formData);
       setIsFormSubmitted(true);
       setShowModal(true);
-    } else {
-      alert('Harap lengkapi semua field yang diperlukan dan pilih minimal satu bukti yang akan dikumpulkan.');
+    } catch (err) {
+      // Fallback: store locally if backend fails, and inform the user
+      console.error('Gagal submit FR.AK.01 ke server:', err);
+      try {
+        localStorage.setItem('ak01FormData', JSON.stringify(formData));
+      } catch {}
+      alert('Gagal mengirim ke server. Data disimpan sementara di perangkat Anda. Coba lagi nanti.');
     }
   };
 
