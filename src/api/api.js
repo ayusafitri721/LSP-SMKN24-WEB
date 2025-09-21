@@ -33,7 +33,9 @@ api.interceptors.request.use(
 // Helper to refresh Sanctum CSRF cookie
 export const fetchCsrfCookie = async () => {
   try {
-    await axios.get("http://127.0.0.1:8000/sanctum/csrf-cookie", { withCredentials: true });
+    await axios.get("http://127.0.0.1:8000/sanctum/csrf-cookie", {
+      withCredentials: true,
+    });
   } catch (e) {
     // swallow; caller may handle
   }
@@ -77,6 +79,9 @@ export const register = (data) => api.post("/auth/register", data);
 export const getCurrentAsesi = () => api.get("/asesi");
 export const showapl01 = () => api.get("/formApl01");
 
+// -------- Self / Assesor scope (auth:sanctum) --------
+export const getCurrentAsesor = () => api.get("/asesor");
+
 // -------- Asesi CRUD (admin-protected on server for write ops) --------
 export const getAsesis = () => api.get("/assesi");
 export const createAsesi = (data) => api.post("/assesi", data);
@@ -85,7 +90,8 @@ export const deleteAsesi = (id) => api.delete(`/assesi/${id}`);
 export const getAsesiById = (id) => api.get(`/assesi/${id}`);
 
 // -------- Asesor CRUD --------
-export const getAsesors = (page = 1, size = 10) => api.get(`/assesor?page=${page}&size=${size}`);
+export const getAsesors = (page = 1, size = 10) =>
+  api.get(`/assesor?page=${page}&size=${size}`);
 export const createAsesor = (data) => api.post("/assesor", data);
 export const updateAsesor = (id, data) => api.put(`/assesor/${id}`, data);
 export const deleteAsesor = (id) => api.delete(`/assesor/${id}`);
@@ -99,13 +105,18 @@ export const deleteAssesment = (id) => api.delete(`/assesment/${id}`);
 
 // Assesment-Asesi relations
 export const getAssesmentAsesis = () => api.get("/assesment-asesi");
-export const createAssesmentAsesi = (data) => api.post("/assesment-asesi", data);
-export const getAssesmentByAsesi = (assesiId) => api.get(`/assesment-asesi/byAsesi/${assesiId}`);
-export const getAssesmentByAssesor = (assesorId) => api.get(`/assesment-asesi/byAsesor/${assesorId}`);
+export const createAssesmentAsesi = (data) =>
+  api.post("/assesment-asesi", data);
+export const getAssesmentByAsesi = (assesiId) =>
+  api.get(`/assesment-asesi/byAsesi/${assesiId}`);
+export const getAssesmentByAssesor = (assesorId) =>
+  api.get(`/assesment-asesi/byAsesor/${assesorId}`);
 
 // Status endpoints
-export const getAssesmentAssesiStatus = () => api.get("/status/asesi/assesment");
-export const updateAssesmentAssesiStatus = (data) => api.post("/status/asesi/assesment", data);
+export const getAssesmentAssesiStatus = () =>
+  api.get("/status/asesi/assesment");
+export const updateAssesmentAssesiStatus = (data) =>
+  api.post("/status/asesi/assesment", data);
 
 // Schema (requires approve middleware server-side)
 export const getSkemas = () => api.get("/schema");
@@ -113,35 +124,44 @@ export const getSkemas = () => api.get("/schema");
 // APL01
 export const submitFormApl01 = (data) => api.post("/assesment/formapl01", data);
 export const getApl01s = () => api.get("/assesment/formapl01"); // admin scope per routes
-export const approvementApl01 = (id, data) => api.post(`approvement/assesment/formapl01/${id}`, data);
-export const viewAttachment = (id) => api.get(`/form-apl01/attachment/${id}/view`);
+export const approvementApl01 = (id, data) =>
+  api.post(`approvement/assesment/formapl01/${id}`, data);
+export const viewAttachment = (id) =>
+  api.get(`/form-apl01/attachment/${id}/view`);
 
 // APL02
 export const submitFormApl02 = (data) => api.post("/assesment/formapl02", data);
-export const getApl02ByAssesi = (assesiId) => api.get(`/apl02/assesi/${assesiId}`);
+export const getApl02ByAssesi = (assesiId) =>
+  api.get(`/apl02/assesi/${assesiId}`);
 export const getApl02ById = (id) => api.get(`/apl02/${id}`);
 export const postApl02 = (data) => api.post("/apl02/import", data); // admin
 
 // AK01
 export const submitFormAk01 = (data) => api.post("/assesment/formak01", data);
-export const getFormAk01ByAssesi = (assesiId) => api.get(`/assesment/formak01/${assesiId}`);
-export const approveFormAk01ByUser = (id, data) => api.post(`/user/assesment/formak01/${id}`, data);
+export const getFormAk01ByAssesi = (assesiId) =>
+  api.get(`/assesment/formak01/${assesiId}`);
+export const approveFormAk01ByUser = (id, data) =>
+  api.post(`/user/assesment/formak01/${id}`, data);
 
 // AK02
 export const submitFormAk02 = (data) => api.post("/assesment/formak02", data);
-export const getFormAk02ByAssesi = (assesiId) => api.get(`/assesment/formak02/${assesiId}`);
+export const getFormAk02ByAssesi = (assesiId) =>
+  api.get(`/assesment/formak02/${assesiId}`);
 
 // AK03
 export const submitFormAk03 = (data) => api.post("/assesment/formak03", data);
-export const getFormAk03ByAssesi = (assesiId) => api.get(`/assesment/formak03/${assesiId}`);
+export const getFormAk03ByAssesi = (assesiId) =>
+  api.get(`/assesment/formak03/${assesiId}`);
 
 // AK05
 export const submitFormAk05 = (data) => api.post("/assesment/formak05", data);
-export const getFormAk05ByAssesi = (assesiId) => api.get(`/assesment/formak05/${assesiId}`);
+export const getFormAk05ByAssesi = (assesiId) =>
+  api.get(`/assesment/formak05/${assesiId}`);
 
 // IA01
 export const submitFormIa01 = (data) => api.post("/assesment/formia01", data);
-export const getFormIa01ByAssesi = (assesiId) => api.get(`/assesment/formia01/${assesiId}`);
+export const getFormIa01ByAssesi = (assesiId) =>
+  api.get(`/assesment/formia01/${assesiId}`);
 
 // Bukti dokumen generic
 // User approval endpoints

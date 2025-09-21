@@ -1,14 +1,22 @@
 import React, { useState, useRef } from "react";
 import { User, FileText, Calendar, Edit3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAsesi } from "../context/AsesiContext";
+import { useSkema } from "../context/SkemaContext";
+import { useDashboardAsesor } from "../context/DashboardAsesorContext";
 
 const DashboardAsesor = () => {
+  const { skemaList } = useSkema();
+  const { asesis } = useAsesi();
+  const { currentAsesor } = useDashboardAsesor();
   const navigate = useNavigate();
   const [hoveredCard, setHoveredCard] = useState(null);
   const scrollRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+
+  
 
   const handleCardClick = (index) => {
     if (!isDragging) {
@@ -101,7 +109,7 @@ const DashboardAsesor = () => {
               margin: "0",
             }}
           >
-            7098
+            {asesis.length || 0}
           </p>
         </div>
 
@@ -176,7 +184,7 @@ const DashboardAsesor = () => {
               margin: "0",
             }}
           >
-            7098
+            {skemaList.length || 0}
           </p>
         </div>
       </div>
@@ -200,7 +208,7 @@ const DashboardAsesor = () => {
             lineHeight: "1.2",
           }}
         >
-          Selamat datang di MyLsp, Asesor Arul!
+          Selamat datang di MyLsp, Asesor {currentAsesor && currentAsesor?.user.nama_lengkap}!
         </h2>
         <p
           style={{

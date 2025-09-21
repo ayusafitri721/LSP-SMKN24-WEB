@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 function LihatApprovement({ onBack, onNavigate }) {
   const id = useParams();
-  const { apl01s } = useApl01();
+  const { apl01s, approveApl01, setApl01s } = useApl01();
 
   const selectedApl01 = apl01s.find((item) => item.user_id === parseInt(id.id));
   console.log("apl01: ", selectedApl01);
@@ -12,6 +12,48 @@ function LihatApprovement({ onBack, onNavigate }) {
   // Tambahkan import dan state di bagian atas component
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAttachment, setSelectedAttachment] = useState(null);
+
+  const handleApprove = async () => {
+    if (!selectedApl01) return;
+    try {
+      // Panggil API untuk approve
+      await approveApl01(selectedApl01.id, { status: "accepted" });
+
+      // Perbarui state lokal apl01s
+      setApl01s((prev) =>
+        prev.map((item) =>
+          item.id === selectedApl01.id ? { ...item, status: "accepted" } : item
+        )
+      );
+
+      alert("APL01 disetujui");
+      if (onBack) onBack();
+    } catch (err) {
+      alert("Gagal menyetujui APL01");
+      console.error(err);
+    }
+  };
+
+  const handleReject = async () => {
+    if (!selectedApl01) return;
+    try {
+      // Panggil API untuk reject
+      await approveApl01(selectedApl01.id, { status: "rejected" });
+
+      // Perbarui state lokal apl01s
+      setApl01s((prev) =>
+        prev.map((item) =>
+          item.id === selectedApl01.id ? { ...item, status: "rejected" } : item
+        )
+      );
+
+      alert("APL01 ditolak");
+      if (onBack) onBack();
+    } catch (err) {
+      alert("Gagal menolak APL01");
+      console.error(err);
+    }
+  };
 
   const handleViewAttachment = (attachment) => {
     setSelectedAttachment(attachment);
@@ -228,46 +270,6 @@ function LihatApprovement({ onBack, onNavigate }) {
                 }}
               >
                 FR.APL.01
-              </button>
-              <button
-                onClick={() =>
-                  onNavigate && onNavigate("approvement/APL-02/lihat")
-                }
-                style={{
-                  padding: "12px 20px",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  border: "none",
-                  backgroundColor: "transparent",
-                  color: "#666",
-                  cursor: "pointer",
-                  margin: "4px",
-                  borderRadius: "8px",
-                  flexShrink: 0,
-                  minWidth: "fit-content",
-                }}
-              >
-                FR.APL.02
-              </button>
-              <button
-                onClick={() =>
-                  onNavigate && onNavigate("approvement/AK-01/lihat")
-                }
-                style={{
-                  padding: "12px 20px",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  border: "none",
-                  backgroundColor: "transparent",
-                  color: "#666",
-                  cursor: "pointer",
-                  margin: "4px",
-                  borderRadius: "8px",
-                  flexShrink: 0,
-                  minWidth: "fit-content",
-                }}
-              >
-                FR.AK.01
               </button>
             </div>
           </div>
@@ -1009,52 +1011,56 @@ function LihatApprovement({ onBack, onNavigate }) {
                     ))}
                   </div>
                 )}
-              {/* Upload Barcode */}
-              <div
-                style={{
-                  marginBottom: "24px",
-                  border: "2px solid #fd7e14",
-                  borderRadius: "8px",
-                  padding: "24px",
-                  backgroundColor: "white",
-                  textAlign: "center",
-                }}
-              >
+              {/* Upload Barcode */ console.log(selectedApl01?.status)}
+              {selectedApl01?.status === "pending" && (
                 <div
                   style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: "16px",
+                    marginBottom: "24px",
+                    border: "2px solid #fd7e14",
+                    borderRadius: "8px",
+                    padding: "24px",
+                    backgroundColor: "white",
+                    textAlign: "center",
                   }}
                 >
-                  <button
+                  <div
                     style={{
-                      padding: "10px 20px",
-                      backgroundColor: "#28a745",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "6px",
-                      cursor: "pointer",
-                      fontWeight: "500",
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "16px",
                     }}
                   >
-                    Approve
-                  </button>
-                  <button
-                    style={{
-                      padding: "10px 20px",
-                      backgroundColor: "#dc3545",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "6px",
-                      cursor: "pointer",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Decline
-                  </button>
+                    <button
+                      onClick={handleApprove}
+                      style={{
+                        padding: "10px 20px",
+                        backgroundColor: "#28a745",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        fontWeight: "500",
+                      }}
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={handleReject}
+                      style={{
+                        padding: "10px 20px",
+                        backgroundColor: "#dc3545",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        fontWeight: "500",
+                      }}
+                    >
+                      Decline
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Kolom Kanan */}

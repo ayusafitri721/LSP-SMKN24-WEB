@@ -14,17 +14,18 @@ export default function DetailJurusan({
   const { jurusanList } = useJurusan();
   const navigate = useNavigate();
 
+  console.log("apl01s:", apl01s);
   const merged = [
-    // Ambil semua form_apl01 → status asli
+    // APL-01
     ...apl01s.map((f) => ({
       user_id: f.user_id,
       nama_lengkap: f.nama_lengkap,
       email: f.email,
       status: f.status,
-      jurusan: null, // form belum tentu punya jurusan
+      jurusan: jurusanList.find((j) => j.id === f.user.jurusan_id) || null,
     })),
 
-    // Ambil semua asesi → status otomatis accepted
+    // Asesi (accepted)
     ...asesis.map((a) => ({
       user_id: a.user_id,
       nama_lengkap: a.nama_lengkap,
@@ -33,7 +34,13 @@ export default function DetailJurusan({
       jurusan: jurusanList.find((j) => j.id === a.jurusan_id) || null,
     })),
   ];
-  console.log("Merged Data:", merged);
+
+  // Hilangkan duplikat berdasarkan user_id (prioritas asesi → karena sudah accepted)
+  const uniqueMerged = Array.from(
+    new Map(merged.map((item) => [item.user_id, item])).values()
+  );
+
+  console.log("Unique Merged:", uniqueMerged);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedKelas, setSelectedKelas] = useState("Semua");
@@ -69,7 +76,7 @@ export default function DetailJurusan({
       case "accepted":
         return "#28a745";
       case "rejected":
-        return "#6c757d";
+        return "#dc3545";
       default:
         return "#ffc107";
     }
@@ -97,7 +104,7 @@ export default function DetailJurusan({
         };
       default:
         return {
-          backgroundColor: "#6c757d",
+          backgroundColor: "#ffc107",
           color: "white",
           padding: "4px 8px",
           borderRadius: "4px",
@@ -204,15 +211,15 @@ export default function DetailJurusan({
               backgroundSize: "12px",
             }}
           >
-              {/* Default option */}
-              <option value="Semua">Semua</option>
+            {/* Default option */}
+            <option value="Semua">Semua</option>
 
-              {/* Loop jurusan dari database */}
-              {jurusanList.map((kelas) => (
-                <option key={kelas.id} value={kelas.kode_jurusan}>
-                  {kelas.kode_jurusan}
-                </option>
-              ))}
+            {/* Loop jurusan dari database */}
+            {jurusanList.map((kelas) => (
+              <option key={kelas.id} value={kelas.kode_jurusan}>
+                {kelas.kode_jurusan}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -404,7 +411,9 @@ export default function DetailJurusan({
                     >
                       <button
                         onClick={() =>
-                          navigate(`/dashboard/approvement/lihat/${item.user_id}`)
+                          navigate(
+                            `/dashboard/approvement/lihat/${item.user_id}`
+                          )
                         }
                         style={{
                           backgroundColor: "#ff6b35",
