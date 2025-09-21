@@ -529,14 +529,60 @@ const TempatUji = ({ onNavigate }) => {
             min-height: 200px;
           }
           
+          /* FOOTER MOBILE RESPONSIVE */
           .footer {
             flex-direction: column;
             height: auto;
+            background: linear-gradient(135deg, #ff7a00 0%, #ff7a00 40%, #4a9eff 40%, #4a9eff 100%);
+            text-align: center;
+          }
+          
+          .footer-left {
+            padding: 30px 20px;
+            align-items: center;
+            text-align: center;
+          }
+          
+          .footer-description {
+            text-align: center;
+            max-width: 100%;
+          }
+          
+          .social-icons {
+            justify-content: center;
           }
           
           .footer-right {
             flex-direction: column;
             gap: 30px;
+            padding: 30px 20px;
+            align-items: center;
+            text-align: center;
+          }
+          
+          .footer-column {
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+          }
+          
+          .contact-column {
+            width: 100%;
+            max-width: 200px;
+            text-align: center;
+          }
+          
+          .footer-title {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          
+          .footer-links {
+            text-align: center;
+          }
+          
+          .footer-link {
+            justify-content: center;
           }
 
           .tempat-uji-section {
