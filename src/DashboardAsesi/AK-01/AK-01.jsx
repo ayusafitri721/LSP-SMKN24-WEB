@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
-import { submitFormAk01 } from '../../api/api';
+import { submitFormAk01, fetchCsrfCookie } from '../../api/api';
+import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
 
 // Modal styles - Updated to match APL-01 design
 const modalOverlayStyle = {
@@ -293,6 +294,7 @@ const editableTextStyle = {
 const AK01 = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { userAssessments } = useDashboardAsesi();
 
   const [formData, setFormData] = useState({
     skemaSertifikasi: '',
@@ -318,6 +320,8 @@ const AK01 = () => {
   const [showModal, setShowModal] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
+  const [files, setFiles] = useState([]); // PDF files
+  const [fileDescription, setFileDescription] = useState('Persetujuan asesmen');
 
   // Block navigation jika form belum di-submit
   useEffect(() => {
@@ -396,16 +400,42 @@ const AK01 = () => {
       alert('Harap lengkapi semua field yang diperlukan dan pilih minimal satu bukti yang akan dikumpulkan.');
       return;
     }
+    // Derive assesment_asesi_id and skema_id from userAssessments
+    const activeAss = (userAssessments || []).find((a) => a?.status === 'active') || (userAssessments || [])[0];
+    const assesmentAsesiId = activeAss?.id;
+    const skemaId = activeAss?.assesment?.skema_id || activeAss?.skema_id || activeAss?.schema_id;
+
+    if (!assesmentAsesiId || !skemaId) {
+      alert('Tidak menemukan assesment aktif untuk dikaitkan (assesment_asesi_id/skema_id). Hubungi admin atau muat ulang halaman.');
+      return;
+    }
+
+    if (!files || files.length === 0) {
+      alert('Lampirkan minimal satu file PDF untuk persetujuan (attachments).');
+      return;
+    }
     try {
+      // Ensure CSRF/session is fresh before posting (Sanctum)
+      await fetchCsrfCookie();
+      // Build multipart payload per backend validation
+      const payload = new FormData();
+      payload.append('assesment_asesi_id', String(assesmentAsesiId));
+      payload.append('skema_id', String(skemaId));
+      files.forEach((file, idx) => {
+        payload.append(`attachments[${idx}][file]`, file);
+        payload.append(`attachments[${idx}][description]`, fileDescription || 'Lampiran AK01');
+      });
+
       // Attempt to submit to backend
-      await submitFormAk01(formData);
+      await submitFormAk01(payload);
       setIsFormSubmitted(true);
       setShowModal(true);
     } catch (err) {
       // Fallback: store locally if backend fails, and inform the user
       console.error('Gagal submit FR.AK.01 ke server:', err);
       try {
-        localStorage.setItem('ak01FormData', JSON.stringify(formData));
+        const backup = { assesment_asesi_id: assesmentAsesiId, skema_id: skemaId, description: fileDescription, filenames: Array.from(files).map(f => f.name) };
+        localStorage.setItem('ak01FormData', JSON.stringify({ form: formData, attachments: backup }));
       } catch {}
       alert('Gagal mengirim ke server. Data disimpan sementara di perangkat Anda. Coba lagi nanti.');
     }
@@ -885,6 +915,36 @@ const AK01 = () => {
                   pengembangan profesional dan hanya dapat diakses oleh orang tertentu saja.
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Attachments Section (required by backend) */}
+          <div style={{...transparentBoxStyle, marginTop: '10px'}} className="transparent-box">
+            <div style={{ ...sectionTextStyle, fontWeight: 'bold', marginBottom: '8px', fontSize: '13px' }} className="section-text">
+              Lampiran Persetujuan (PDF)
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <input
+                type="file"
+                accept="application/pdf"
+                multiple
+                onChange={(e) => setFiles(Array.from(e.target.files || []))}
+                style={{ fontSize: '12px' }}
+              />
+              <input
+                type="text"
+                placeholder="Deskripsi lampiran"
+                value={fileDescription}
+                onChange={(e) => setFileDescription(e.target.value)}
+                style={{ fontSize: '12px', padding: '6px 8px', border: '1px solid #ddd', borderRadius: '4px' }}
+              />
+              {files?.length > 0 && (
+                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '12px', color: '#555' }}>
+                  {files.map((f, idx) => (
+                    <li key={idx}>{f.name}</li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
 

@@ -16,8 +16,19 @@ function DashboardAsesi({ onNavigate }) {
   console.log("Current Assesi:", currentAssesi);
   console.log("APL01 Data:", apl01Data);
 
-  // Fix: Handle case when jurusanList or user might be null/undefined
-  const jurusan = jurusanList?.find((j) => j.id === user?.jurusan_id);
+  // Prefer richer profile data from currentAsesi (which is fetched from /asesi)
+  let asesiProfileLS = null;
+  try { asesiProfileLS = JSON.parse(localStorage.getItem("asesiProfile")); } catch {}
+  const derivedUser = {
+    // currentAssesi might be either a user object or an object with nested user
+    username: currentAssesi?.user?.username ?? currentAssesi?.username ?? asesiProfileLS?.user?.username ?? asesiProfileLS?.username ?? user?.username,
+    role: currentAssesi?.user?.role ?? currentAssesi?.role ?? asesiProfileLS?.user?.role ?? asesiProfileLS?.role ?? user?.role,
+    jurusan_id: currentAssesi?.user?.jurusan_id ?? currentAssesi?.jurusan_id ?? asesiProfileLS?.user?.jurusan_id ?? asesiProfileLS?.jurusan_id ?? user?.jurusan_id,
+  };
+
+  // Handle case when jurusanList or IDs might be undefined
+  const jurusanIdNum = derivedUser?.jurusan_id != null ? Number(derivedUser.jurusan_id) : undefined;
+  const jurusan = jurusanList?.find((j) => Number(j.id) === jurusanIdNum);
   const namaJurusan = jurusan?.kode_jurusan || "Jurusan tidak ditemukan";
 
   const [profileImage, setProfileImage] = useState(null);
@@ -33,10 +44,14 @@ function DashboardAsesi({ onNavigate }) {
     }
   };
 
-  // Fix: Check if APL01 data exists properly
-  const hasApl01Data = apl01Data && (Array.isArray(apl01Data) ? apl01Data.length > 0 : Object.keys(apl01Data).length > 0);
+  // Robust check for APL01 presence (supports object or array response shapes)
+  const hasApl01Data = Boolean(
+    (Array.isArray(apl01Data) && apl01Data.length > 0) ||
+      (!Array.isArray(apl01Data) && apl01Data && (apl01Data.id || Object.keys(apl01Data).length > 0))
+  );
 
   const hasAssesments = assesments && assesments.length > 0;
+  const isProfileValid = hasApl01Data || Boolean(currentAssesi);
 
   return (
     <div
@@ -208,9 +223,9 @@ function DashboardAsesi({ onNavigate }) {
             }}
           >
             {[
-              { label: "Username", value: user?.username || "Tidak tersedia" },
+              { label: "Username", value: derivedUser?.username || "Tidak tersedia" },
               { label: "Jurusan", value: namaJurusan },
-              { label: "Role", value: user?.role || "Tidak tersedia" },
+              { label: "Role", value: derivedUser?.role || "Tidak tersedia" },
             ].map((item, index) => (
               <p
                 key={index}
@@ -240,31 +255,47 @@ function DashboardAsesi({ onNavigate }) {
               gap: "12px",
             }}
           >
-            {currentAssesi ? (
+            {isProfileValid ? (
               <>
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: "#666",
-                    margin: "0",
-                    lineHeight: "1.5",
-                    fontWeight: "500",
-                  }}
-                >
-                  Alamat: {currentAssesi.alamat || "Alamat tidak tersedia"}
-                </p>
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: "#666",
-                    margin: "0",
-                    lineHeight: "1.5",
-                    fontWeight: "500",
-                  }}
-                >
-                  Jenis Kelamin:{" "}
-                  {currentAssesi.jenis_kelamin || "Tidak diketahui"}
-                </p>
+                {currentAssesi ? (
+                  <>
+                    <p
+                      style={{
+                        fontSize: "12px",
+                        color: "#666",
+                        margin: "0",
+                        lineHeight: "1.5",
+                        fontWeight: "500",
+                      }}
+                    >
+                      Alamat: {currentAssesi.alamat || "Alamat tidak tersedia"}
+                    </p>
+                    <p
+                      style={{
+                        fontSize: "12px",
+                        color: "#666",
+                        margin: "0",
+                        lineHeight: "1.5",
+                        fontWeight: "500",
+                      }}
+                    >
+                      Jenis Kelamin: {" "}
+                      {currentAssesi.jenis_kelamin || "Tidak diketahui"}
+                    </p>
+                  </>
+                ) : (
+                  <p
+                    style={{
+                      fontSize: "12px",
+                      color: "#666",
+                      margin: "0",
+                      lineHeight: "1.5",
+                      fontWeight: "500",
+                    }}
+                  >
+                    Profil APL-01 ditemukan. Data detail akan tersedia setelah sinkronisasi.
+                  </p>
+                )}
                 <button
                   style={{
                     backgroundColor: "#4CAF50",
@@ -315,138 +346,139 @@ function DashboardAsesi({ onNavigate }) {
               </div>
             )}
           </div>
+          {/* Close Left Panel wrapper */}
         </div>
 
-        {/* Right Panel - Assessment Preview Card */}
-        <div
-          style={{
-            flex: 1,
-            backgroundColor: "white",
-            borderRadius: "15px",
-            padding: "25px",
-            boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
-            height: "fit-content",
-            minHeight: "200px",
-          }}
-        >
-          <h3
+          {/* Right Panel - Assessment Preview Card */}
+          <div
             style={{
-              fontSize: "16px",
-              fontWeight: "600",
-              margin: "0 0 20px 0",
-              color: "#333",
+              flex: 1,
+              backgroundColor: "white",
+              borderRadius: "15px",
+              padding: "25px",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+              height: "fit-content",
+              minHeight: "200px",
             }}
           >
-            Status Assessment
-          </h3>
+            <h3
+              style={{
+                fontSize: "16px",
+                fontWeight: "600",
+                margin: "0 0 20px 0",
+                color: "#333",
+              }}
+            >
+              Status Assessment
+            </h3>
 
-          {/* Show status based on APL01 and assessment data */}
-          {!hasApl01Data ? (
-            <div
-              style={{
-                backgroundColor: "#fff3cd",
-                padding: "20px",
-                borderRadius: "12px",
-                border: "1px solid #ffeeba",
-                textAlign: "center",
-              }}
-            >
-              <p
+            {/* Show status based on APL01 and assessment data */}
+            {!hasApl01Data ? (
+              <div
                 style={{
-                  fontSize: "14px",
-                  color: "#856404",
-                  margin: "0 0 15px 0",
-                  fontWeight: "500",
+                  backgroundColor: "#fff3cd",
+                  padding: "20px",
+                  borderRadius: "12px",
+                  border: "1px solid #ffeeba",
+                  textAlign: "center",
                 }}
               >
-                Anda belum mengisi form APL01
-              </p>
-              <button
-                onClick={() => onNavigate && onNavigate("APL.01")}
+                <p
+                  style={{
+                    fontSize: "14px",
+                    color: "#856404",
+                    margin: "0 0 15px 0",
+                    fontWeight: "500",
+                  }}
+                >
+                  Anda belum mengisi form APL01
+                </p>
+                <button
+                  onClick={() => onNavigate && onNavigate("APL.01")}
+                  style={{
+                    backgroundColor: "#FF5722",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "25px",
+                    padding: "12px 25px",
+                    fontSize: "13px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  Isi Form APL01
+                </button>
+              </div>
+            ) : !hasAssesments ? (
+              <div
                 style={{
-                  backgroundColor: "#FF5722",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "25px",
-                  padding: "12px 25px",
-                  fontSize: "13px",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  backgroundColor: "#d1ecf1",
+                  padding: "20px",
+                  borderRadius: "12px",
+                  border: "1px solid #bee5eb",
+                  textAlign: "center",
                 }}
               >
-                Isi Form APL01
-              </button>
-            </div>
-          ) : !hasAssesments ? (
-            <div
-              style={{
-                backgroundColor: "#d1ecf1",
-                padding: "20px",
-                borderRadius: "12px",
-                border: "1px solid #bee5eb",
-                textAlign: "center",
-              }}
-            >
-              <p
+                <p
+                  style={{
+                    fontSize: "14px",
+                    color: "#0c5460",
+                    margin: "0",
+                    fontWeight: "500",
+                  }}
+                >
+                  Form APL01 sudah diisi. Menunggu jadwal assessment dari admin.
+                </p>
+              </div>
+            ) : (
+              <div
                 style={{
-                  fontSize: "14px",
-                  color: "#0c5460",
-                  margin: "0",
-                  fontWeight: "500",
+                  backgroundColor: "#2C94FF",
+                  borderRadius: "12px",
+                  padding: "18px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  boxShadow: "0 4px 12px rgba(44, 148, 255, 0.3)",
                 }}
               >
-                Form APL01 sudah diisi. Menunggu jadwal assessment dari admin.
-              </p>
-            </div>
-          ) : (
-            <div
-              style={{
-                backgroundColor: "#2C94FF",
-                borderRadius: "12px",
-                padding: "18px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                boxShadow: "0 4px 12px rgba(44, 148, 255, 0.3)",
-              }}
-            >
-              <span
-                style={{
-                  color: "white",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  flex: 1,
-                }}
-              >
-                Assessment tersedia - Siap untuk dimulai
-              </span>
-              <button
-                onClick={() => onNavigate && onNavigate("assessment")}
-                style={{
-                  backgroundColor: "#D9D9D9",
-                  color: "black",
-                  border: "none",
-                  borderRadius: "25px",
-                  padding: "10px 25px",
-                  fontSize: "13px",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                  marginLeft: "15px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  transition: "transform 0.2s ease",
-                }}
-                onMouseEnter={(e) =>
-                  (e.target.style.transform = "translateY(-1px)")
-                }
-                onMouseLeave={(e) => (e.target.style.transform = "translateY(0)")}
-              >
-                Lihat Detail
-              </button>
-            </div>
-          )}
+                <span
+                  style={{
+                    color: "white",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    flex: 1,
+                  }}
+                >
+                  Assessment tersedia - Siap untuk dimulai
+                </span>
+                <button
+                  onClick={() => onNavigate && onNavigate("assessment")}
+                  style={{
+                    backgroundColor: "#D9D9D9",
+                    color: "black",
+                    border: "none",
+                    borderRadius: "25px",
+                    padding: "10px 25px",
+                    fontSize: "13px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    marginLeft: "15px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                    transition: "transform 0.2s ease",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.target.style.transform = "translateY(-1px)")
+                  }
+                  onMouseLeave={(e) => (e.target.style.transform = "translateY(0)")}
+                >
+                  Lihat Detail
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
       {/* Assessment Terjadwal Component - Fix: Remove duplicate content */}
       {hasApl01Data && (

@@ -1,5 +1,5 @@
 // context/AuthContext.jsx
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import api from "../api/api";
 import axios from "axios"; // untuk hit csrf-cookie di origin root
 
@@ -23,14 +23,20 @@ export function AuthProvider({ children }) {
       const res = await api.post("/auth/login", credentials); // api sudah withCredentials
       // 3) Simpan info user; jika backend mengandalkan cookie, token mungkin tidak diperlukan
       // optional: simpan token jika backend juga mengembalikan bearer, tetapi untuk SPA cookie tidak wajib
-      const minimalUser = { id: res.data?.user?.id, role: res.data?.user?.role };
-      localStorage.setItem("user", JSON.stringify(minimalUser));
-      // 4) Ambil profil user agar state terisi
+      const backendUser = res.data?.user || null;
+      const token = res.data?.token || null;
+      const minimalUser = backendUser ? { id: backendUser.id, role: backendUser.role, username: backendUser.username, jurusan_id: backendUser.jurusan_id, token } : null;
+      if (minimalUser) localStorage.setItem("user", JSON.stringify(minimalUser));
+      // 4) Ambil profil user dari endpoint yang tersedia (/asesi)
       try {
-        const me = await api.get("/user");
-        setUser(me.data?.data || me.data || res.data?.user);
+        const profile = await api.get("/asesi");
+        // Simpan profil asesi secara terpisah bila diperlukan oleh komponen lain
+        const asesiProfile = profile.data?.data ?? profile.data?.user ?? profile.data ?? null;
+        try { if (asesiProfile) localStorage.setItem("asesiProfile", JSON.stringify(asesiProfile)); } catch {}
+        // Tetap gunakan user dari response login untuk role/jurusan/username, sertakan token
+        setUser(minimalUser || backendUser);
       } catch {
-        setUser(res.data?.user || minimalUser);
+        setUser(minimalUser || res.data?.user);
       }
       return true;
     } catch (err) {
@@ -40,6 +46,19 @@ export function AuthProvider({ children }) {
       setLoading(false);
     }
   };
+
+  // Hydrate user from localStorage on initial mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("user");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.id) {
+          setUser(parsed);
+        }
+      }
+    } catch {}
+  }, []);
 
   const register = async (formData) => {
     setLoading(true);

@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
+import { showapl01, fetchCsrfCookie, submitFormApl01 } from '../../api/api';
+import { useAuth } from '../../context/AuthContext';
 
 const pageContainerStyle = {
   backgroundColor: 'white',
@@ -336,10 +338,16 @@ const warningNotificationStyle = {
 };
 
 const APL01 = () => {
+  const { user } = useAuth();
   const [showPopup, setShowPopup] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-  
+  const [apl01Loading, setApl01Loading] = useState(false);
+  const [apl01Error, setApl01Error] = useState(null);
+  const [apl01Data, setApl01Data] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+
   const [uploadedFiles, setUploadedFiles] = useState({
     ktp: null,
     foto: null,
@@ -348,10 +356,55 @@ const APL01 = () => {
     suratUNIK: null
   });
 
+  // Controlled inputs for backend-required fields
+  const [form, setForm] = useState({
+    tujuan_asesmen: '',
+    schema_id: '', // numeric but keep as string for input
+    nama_lengkap: '',
+    no_ktp: '',
+    tanggal_lahir: '',
+    tempat_lahir: '',
+    jenis_kelamin: '', // 'Laki-laki' | 'Perempuan'
+    kebangsaan: 'Indonesia',
+    alamat_rumah: '',
+    kode_pos: '',
+    no_telepon_rumah: '',
+    no_telepon_kantor: '',
+    no_telepon: '',
+    email: '',
+    kualifikasi_pendidikan: 'SMK',
+    nama_institusi: 'SMKN 24 Jakarta',
+    jabatan: 'Siswa',
+    alamat_kantor: '',
+    kode_pos_kantor: '',
+    fax_kantor: '',
+    email_kantor: '',
+  });
+
+  const updateForm = (key, val) => setForm((prev) => ({ ...prev, [key]: val }));
+
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
+    const fetchApl01 = async () => {
+      setApl01Loading(true);
+      setApl01Error(null);
+      try {
+        await fetchCsrfCookie();
+        const res = await showapl01();
+        const payload = res.data?.data ?? res.data?.user ?? res.data ?? null;
+        setApl01Data(payload);
+      } catch (err) {
+        setApl01Error(err?.response?.status === 404 ? 'Belum ada data APL-01' : (err?.response?.data?.message || 'Gagal mengambil status APL-01'));
+        setApl01Data(null);
+        console.warn('APL-01 fetch error:', err?.response?.status, err?.response?.data || err?.message);
+      } finally {
+        setApl01Loading(false);
+      }
+    };
+    fetchApl01();
+
     const handleBeforeUnload = (e) => {
       if (!isFormSubmitted) {
         e.preventDefault();
@@ -392,16 +445,16 @@ const APL01 = () => {
   const handleFileUpload = (fileType, event) => {
     const file = event.target.files[0];
     if (file) {
-      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
+      const allowedTypes = ['application/pdf'];
       if (!allowedTypes.includes(file.type)) {
-        alert('File harus berformat PNG, JPG, JPEG, atau PDF');
+        alert('File harus berformat PDF (sesuai validasi backend).');
         event.target.value = '';
         return;
       }
 
-      const maxSize = 5 * 1024 * 1024; // 5MB
+      const maxSize = 2 * 1024 * 1024; // 2MB (backend max: 2048 KB)
       if (file.size > maxSize) {
-        alert('Ukuran file maksimal 5MB');
+        alert('Ukuran file maksimal 2MB (sesuai validasi backend).');
         event.target.value = '';
         return;
       }
@@ -413,9 +466,91 @@ const APL01 = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowPopup(true);
+    setSubmitError(null);
+
+    // Basic validation
+    const requiredKeys = [
+      'tujuan_asesmen','schema_id','nama_lengkap','no_ktp','tanggal_lahir','tempat_lahir','jenis_kelamin',
+      'kebangsaan','alamat_rumah','kode_pos','no_telepon_rumah','no_telepon','email','kualifikasi_pendidikan',
+      'nama_institusi','jabatan'
+    ];
+    const missing = requiredKeys.filter((k) => !form[k] || String(form[k]).trim() === '');
+    if (missing.length > 0) {
+      alert('Mohon lengkapi semua field wajib: ' + missing.join(', '));
+      return;
+    }
+
+    // At least one attachment (PDFs accepted; images also allowed by UI but backend requires PDF)
+    const attachments = [];
+    const fileMap = [
+      ['ktp','KTP/Kartu Pelajar'],
+      ['foto','Foto 3x4'],
+      ['sertifikat','Sertifikat'],
+      ['suratTH','Surat Keterangan TH'],
+      ['suratUNIK','Surat Keterangan UNIK']
+    ];
+    fileMap.forEach(([key, desc]) => {
+      const f = uploadedFiles[key];
+      if (f) attachments.push({ file: f, description: desc });
+    });
+    if (attachments.length === 0) {
+      alert('Lampirkan minimal satu dokumen (PDF disarankan)');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      await fetchCsrfCookie();
+      const fd = new FormData();
+      // Required fields
+      fd.append('tujuan_asesmen', form.tujuan_asesmen);
+      fd.append('schema_id', String(form.schema_id));
+      fd.append('nama_lengkap', form.nama_lengkap);
+      fd.append('no_ktp', form.no_ktp);
+      fd.append('tanggal_lahir', form.tanggal_lahir);
+      fd.append('tempat_lahir', form.tempat_lahir);
+      fd.append('jenis_kelamin', form.jenis_kelamin);
+      fd.append('kebangsaan', form.kebangsaan);
+      fd.append('alamat_rumah', form.alamat_rumah);
+      fd.append('kode_pos', form.kode_pos);
+      fd.append('no_telepon_rumah', form.no_telepon_rumah);
+      if (form.no_telepon_kantor) fd.append('no_telepon_kantor', form.no_telepon_kantor);
+      fd.append('no_telepon', form.no_telepon);
+      fd.append('email', form.email);
+      fd.append('kualifikasi_pendidikan', form.kualifikasi_pendidikan);
+      fd.append('nama_institusi', form.nama_institusi);
+      fd.append('jabatan', form.jabatan);
+      if (form.alamat_kantor) fd.append('alamat_kantor', form.alamat_kantor);
+      if (form.kode_pos_kantor) fd.append('kode_pos_kantor', form.kode_pos_kantor);
+      if (form.fax_kantor) fd.append('fax_kantor', form.fax_kantor);
+      if (form.email_kantor) fd.append('email_kantor', form.email_kantor);
+      fd.append('status', 'pending');
+
+      attachments.forEach((att, idx) => {
+        fd.append(`attachments[${idx}][file]`, att.file);
+        fd.append(`attachments[${idx}][description]`, att.description);
+      });
+
+      await submitFormApl01(fd);
+      setShowPopup(true);
+    } catch (err) {
+      console.error('Submit APL-01 failed:', err);
+      const msg = err?.response?.data?.message || 'Gagal mengirim APL-01';
+      const errors = err?.response?.data?.errors;
+      setSubmitError(msg);
+      if (errors && typeof errors === 'object') {
+        const flat = Object.entries(errors)
+          .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`)
+          .join('\n');
+        alert(`Validasi gagal:\n${flat}`);
+      } else {
+        alert(msg);
+      }
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleClosePopup = () => {
@@ -737,17 +872,31 @@ const APL01 = () => {
 
       <div style={contentCardStyle} className="content-card">
         <h2 style={titleStyle} className="title">Lengkapi identitas anda</h2>
-        
+        {/* Status panel */}
+        <div style={{
+          padding: '12px',
+          borderRadius: '10px',
+          marginBottom: '10px',
+          backgroundColor: apl01Loading ? '#f1f3f5' : (apl01Data ? '#d1ecf1' : '#fff3cd'),
+          border: `1px solid ${apl01Data ? '#bee5eb' : '#ffeeba'}`,
+          color: apl01Data ? '#0c5460' : '#856404',
+          fontSize: '13px',
+        }}>
+          {apl01Loading && 'Memeriksa status APL-01...'}
+          {!apl01Loading && apl01Data && 'Status: Data APL-01/Profil ditemukan.'}
+          {!apl01Loading && !apl01Data && (apl01Error || 'Belum ada data APL-01, silakan lengkapi dan kirim formulir ini.')}
+        </div>
+
         <form style={formContainerStyle} className="form-container" onSubmit={handleSubmit}>
           <div style={leftColumnStyle}>
             <div style={inputGroupStyle} className="input-group">
               <label style={labelStyle} className="label">Nama Lengkap</label>
-              <input type="text" style={inputStyle} className="input" />
+              <input type="text" style={inputStyle} className="input" value={form.nama_lengkap} onChange={(e)=>updateForm('nama_lengkap', e.target.value)} />
             </div>
             
             <div style={inputGroupStyle} className="input-group">
               <label style={labelStyle} className="label">Tanggal lahir</label>
-              <input type="date" style={inputStyle} className="input" />
+              <input type="date" style={inputStyle} className="input" value={form.tanggal_lahir} onChange={(e)=>updateForm('tanggal_lahir', e.target.value)} />
             </div>
             
             <div style={inputGroupStyle} className="input-group">
@@ -762,18 +911,18 @@ const APL01 = () => {
             
             <div style={inputGroupStyle} className="input-group">
               <label style={labelStyle} className="label">Alamat</label>
-              <textarea style={textareaStyle} className="textarea"></textarea>
+              <textarea style={textareaStyle} className="textarea" value={form.alamat_rumah} onChange={(e)=>updateForm('alamat_rumah', e.target.value)}></textarea>
             </div>
             
             <div style={inputGroupStyle} className="input-group">
               <label style={labelStyle} className="label">Jenis kelamin</label>
               <div style={radioGroupStyle} className="radio-group">
                 <label style={radioLabelStyle} className="radio-label">
-                  <input type="radio" name="gender" value="laki-laki" style={radioInputStyle} className="radio-input" />
+                  <input type="radio" name="gender" value="Laki-laki" checked={form.jenis_kelamin==='Laki-laki'} onChange={(e)=>updateForm('jenis_kelamin', e.target.value)} style={radioInputStyle} className="radio-input" />
                   Laki-laki
                 </label>
                 <label style={radioLabelStyle} className="radio-label">
-                  <input type="radio" name="gender" value="perempuan" style={radioInputStyle} className="radio-input" />
+                  <input type="radio" name="gender" value="Perempuan" checked={form.jenis_kelamin==='Perempuan'} onChange={(e)=>updateForm('jenis_kelamin', e.target.value)} style={radioInputStyle} className="radio-input" />
                   Perempuan
                 </label>
               </div>
@@ -837,31 +986,31 @@ const APL01 = () => {
           <div style={rightColumnStyle}>
             <div style={inputGroupStyle} className="input-group">
               <label style={labelStyle} className="label">Jenis Skema</label>
-              <input type="text" style={inputStyle} className="input" />
+              <input type="text" style={inputStyle} className="input" placeholder="Tujuan asesmen" value={form.tujuan_asesmen} onChange={(e)=>updateForm('tujuan_asesmen', e.target.value)} />
             </div>
-            
+
             <div style={inputGroupStyle} className="input-group">
               <label style={labelStyle} className="label">No Skema</label>
-              <input type="text" style={inputStyle} className="input" />
+              <input type="number" style={inputStyle} className="input" placeholder="Schema ID" value={form.schema_id} onChange={(e)=>updateForm('schema_id', e.target.value)} />
             </div>
             
             <div style={inputGroupStyle} className="input-group">
               <label style={labelStyle} className="label">Tujuan Assessment</label>
               <div style={checkboxGroupStyle} className="checkbox-group">
                 <label style={checkboxLabelStyle} className="checkbox-label">
-                  <input type="radio" name="tujuan_assessment" value="sertifikasi" style={radioAssessmentInputStyle} className="radio-assessment-input" />
+                  <input type="radio" name="tujuan_assessment" value="Sertifikasi" checked={form.tujuan_asesmen==='Sertifikasi'} onChange={(e)=>updateForm('tujuan_asesmen', e.target.value)} style={radioAssessmentInputStyle} className="radio-assessment-input" />
                   <span>Sertifikasi</span>
                 </label>
                 <label style={checkboxLabelStyle} className="checkbox-label">
-                  <input type="radio" name="tujuan_assessment" value="pkt" style={radioAssessmentInputStyle} className="radio-assessment-input" />
+                  <input type="radio" name="tujuan_assessment" value="PKT" checked={form.tujuan_asesmen==='PKT'} onChange={(e)=>updateForm('tujuan_asesmen', e.target.value)} style={radioAssessmentInputStyle} className="radio-assessment-input" />
                   <span>Pengakuan Kompetensi Terkini (PKT)</span>
                 </label>
                 <label style={checkboxLabelStyle} className="checkbox-label">
-                  <input type="radio" name="tujuan_assessment" value="rpl" style={radioAssessmentInputStyle} className="radio-assessment-input" />
+                  <input type="radio" name="tujuan_assessment" value="RPL" checked={form.tujuan_asesmen==='RPL'} onChange={(e)=>updateForm('tujuan_asesmen', e.target.value)} style={radioAssessmentInputStyle} className="radio-assessment-input" />
                   <span>Rekognisi Pembelajaran Lampau (RPL)</span>
                 </label>
                 <label style={checkboxLabelStyle} className="checkbox-label">
-                  <input type="radio" name="tujuan_assessment" value="lainnya" style={radioAssessmentInputStyle} className="radio-assessment-input" />
+                  <input type="radio" name="tujuan_assessment" value="Lainnya" checked={form.tujuan_asesmen==='Lainnya'} onChange={(e)=>updateForm('tujuan_asesmen', e.target.value)} style={radioAssessmentInputStyle} className="radio-assessment-input" />
                   <span>Lainnya</span>
                 </label>
               </div>
@@ -909,10 +1058,54 @@ const APL01 = () => {
             </div>
             
             <button type="submit" style={submitButtonStyle} className="submit-button">
-              Kirim
+              {submitting ? 'Mengirim...' : 'Kirim'}
             </button>
           </div>
         </form>
+
+        {/* Data Pribadi Tambahan (wajib backend) */}
+        <div style={{ marginTop: '20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+          <div style={inputGroupStyle} className="input-group">
+            <label style={labelStyle} className="label">No KTP</label>
+            <input type="text" style={inputStyle} className="input" value={form.no_ktp} onChange={(e)=>updateForm('no_ktp', e.target.value)} />
+          </div>
+          <div style={inputGroupStyle} className="input-group">
+            <label style={labelStyle} className="label">Tempat Lahir</label>
+            <input type="text" style={inputStyle} className="input" value={form.tempat_lahir} onChange={(e)=>updateForm('tempat_lahir', e.target.value)} />
+          </div>
+          <div style={inputGroupStyle} className="input-group">
+            <label style={labelStyle} className="label">Kebangsaan</label>
+            <input type="text" style={inputStyle} className="input" value={form.kebangsaan} onChange={(e)=>updateForm('kebangsaan', e.target.value)} />
+          </div>
+          <div style={inputGroupStyle} className="input-group">
+            <label style={labelStyle} className="label">Kode Pos</label>
+            <input type="text" style={inputStyle} className="input" value={form.kode_pos} onChange={(e)=>updateForm('kode_pos', e.target.value)} />
+          </div>
+          <div style={inputGroupStyle} className="input-group">
+            <label style={labelStyle} className="label">Telepon Rumah</label>
+            <input type="text" style={inputStyle} className="input" value={form.no_telepon_rumah} onChange={(e)=>updateForm('no_telepon_rumah', e.target.value)} />
+          </div>
+          <div style={inputGroupStyle} className="input-group">
+            <label style={labelStyle} className="label">Telepon</label>
+            <input type="text" style={inputStyle} className="input" value={form.no_telepon} onChange={(e)=>updateForm('no_telepon', e.target.value)} />
+          </div>
+          <div style={inputGroupStyle} className="input-group">
+            <label style={labelStyle} className="label">Email</label>
+            <input type="email" style={inputStyle} className="input" value={form.email} onChange={(e)=>updateForm('email', e.target.value)} />
+          </div>
+          <div style={inputGroupStyle} className="input-group">
+            <label style={labelStyle} className="label">Pendidikan</label>
+            <input type="text" style={inputStyle} className="input" value={form.kualifikasi_pendidikan} onChange={(e)=>updateForm('kualifikasi_pendidikan', e.target.value)} />
+          </div>
+          <div style={inputGroupStyle} className="input-group">
+            <label style={labelStyle} className="label">Nama Institusi</label>
+            <input type="text" style={inputStyle} className="input" value={form.nama_institusi} onChange={(e)=>updateForm('nama_institusi', e.target.value)} />
+          </div>
+          <div style={inputGroupStyle} className="input-group">
+            <label style={labelStyle} className="label">Jabatan</label>
+            <input type="text" style={inputStyle} className="input" value={form.jabatan} onChange={(e)=>updateForm('jabatan', e.target.value)} />
+          </div>
+        </div>
       </div>
 
       {/* Success Popup */}
