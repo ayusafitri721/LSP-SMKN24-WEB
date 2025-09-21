@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import DashboardAsesi from "../DashboardAsesi/DashboardAsesi";
-import ProfileSection from "../layouts/ProfileSection";
+import ProfileSection from "../DashboardAsesi/Profile/ProfilAsesi";
 
 // Import semua komponen formulir yang relevan dengan Asesi
 import APL01 from "../DashboardAsesi/APL-01/APL-01";
@@ -204,7 +204,7 @@ const DashboardAsesiRoutes = () => {
         }
       />
       <Route
-        path="/profile"
+        path="/profile-asesi"
         element={
           <FormLayout>
             <ProfileSection />
