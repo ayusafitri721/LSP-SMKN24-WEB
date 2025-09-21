@@ -1,9 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
-function GaleriVideo({onBack}) {
+function GaleriVideo({ onBack }) {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [imageLoadStates, setImageLoadStates] = useState({});
+  const [screenSize, setScreenSize] = useState("desktop");
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const width = window.innerWidth;
+      if (width < 768) {
+        setScreenSize("mobile");
+      } else if (width < 1024) {
+        setScreenSize("tablet");
+      } else {
+        setScreenSize("desktop");
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   const handleImageLoad = (videoId) => {
     setImageLoadStates(prev => ({ ...prev, [videoId]: 'loaded' }));
@@ -11,7 +29,7 @@ function GaleriVideo({onBack}) {
 
   const handleImageError = (videoId, e) => {
     const currentSrc = e.target.src;
-    
+
     if (currentSrc.includes('maxresdefault')) {
       e.target.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
     } else if (currentSrc.includes('hqdefault')) {
@@ -127,7 +145,7 @@ function GaleriVideo({onBack}) {
 
   const renderThumbnail = (video) => {
     const isError = imageLoadStates[video.videoId] === 'error';
-    
+
     if (isError) {
       return (
         <div style={{
@@ -155,8 +173,8 @@ function GaleriVideo({onBack}) {
           }}>
             🎬
           </div>
-          <div style={{ 
-            fontSize: '16px', 
+          <div style={{
+            fontSize: '16px',
             fontWeight: '600',
             textAlign: 'center',
             padding: '0 20px',
@@ -182,7 +200,7 @@ function GaleriVideo({onBack}) {
     }
 
     return (
-      <img 
+      <img
         src={`https://img.youtube.com/vi/${video.videoId}/maxresdefault.jpg`}
         alt={video.title}
         style={{
@@ -203,6 +221,185 @@ function GaleriVideo({onBack}) {
     );
   };
 
+  const getResponsiveFooterStyles = () => {
+    switch (screenSize) {
+      case "mobile":
+        return {
+          footer: {
+            background: 'linear-gradient(135deg, #f97316 0%, #f97316 40%, #2C94FF 40%, #2C94FF 100%)',
+            padding: '30px 20px',
+            color: 'white',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '30px',
+            minHeight: 'auto',
+            position: 'relative',
+            overflow: 'hidden',
+          },
+          leftSection: {
+            flex: 'none',
+            paddingRight: '0',
+            textAlign: 'center',
+          },
+          rightSection: {
+            flex: 'none',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '25px',
+            maxWidth: 'none',
+          },
+          knowMoreSection: {
+            flex: 'none',
+            paddingRight: '0',
+            textAlign: 'center',
+          },
+          contactSection: {
+            flex: 'none',
+            textAlign: 'center',
+          },
+          title: {
+            fontSize: '28px',
+            fontWeight: 'bold',
+            marginBottom: '12px',
+            color: 'white',
+          },
+          description: {
+            fontSize: '13px',
+            lineHeight: '1.5',
+            color: 'white',
+            opacity: '0.95',
+            marginBottom: '20px',
+          },
+          sectionTitle: {
+            fontSize: '16px',
+            fontWeight: 'bold',
+            marginBottom: '15px',
+            color: 'white',
+          },
+        };
+      case "tablet":
+        return {
+          footer: {
+            background: 'linear-gradient(135deg, #f97316 0%, #f97316 40%, #2C94FF 40%, #2C94FF 100%)',
+            padding: '35px 40px',
+            color: 'white',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '30px',
+            minHeight: '180px',
+            position: 'relative',
+            overflow: 'hidden',
+          },
+          leftSection: {
+            flex: 'none',
+            paddingRight: '0',
+            textAlign: 'center',
+            marginBottom: '20px',
+          },
+          rightSection: {
+            flex: 'none',
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'flex-start',
+            maxWidth: 'none',
+          },
+          knowMoreSection: {
+            flex: '1',
+            paddingRight: '20px',
+          },
+          contactSection: {
+            flex: '0 0 200px',
+            textAlign: 'center',
+          },
+          title: {
+            fontSize: '30px',
+            fontWeight: 'bold',
+            marginBottom: '13px',
+            color: 'white',
+          },
+          description: {
+            fontSize: '13px',
+            lineHeight: '1.5',
+            color: 'white',
+            opacity: '0.95',
+            marginBottom: '22px',
+          },
+          sectionTitle: {
+            fontSize: '17px',
+            fontWeight: 'bold',
+            marginBottom: '18px',
+            color: 'white',
+          },
+        };
+      default: // desktop
+        return {
+          footer: {
+            background: 'linear-gradient(135deg, #f97316 0%, #f97316 40%, #2C94FF 40%, #2C94FF 100%)',
+            padding: '40px 60px',
+            color: 'white',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            minHeight: '200px',
+            position: 'relative',
+            overflow: 'hidden',
+          },
+          leftSection: {
+            flex: '0 0 300px',
+            paddingRight: '40px',
+          },
+          rightSection: {
+            flex: '1',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            maxWidth: '600px',
+          },
+          knowMoreSection: {
+            flex: '1',
+            paddingRight: '40px',
+          },
+          contactSection: {
+            flex: '0 0 180px',
+            textAlign: 'center',
+          },
+          title: {
+            fontSize: '32px',
+            fontWeight: 'bold',
+            marginBottom: '15px',
+            color: 'white',
+          },
+          description: {
+            fontSize: '14px',
+            lineHeight: '1.6',
+            color: 'white',
+            opacity: '0.95',
+            marginBottom: '25px',
+          },
+          sectionTitle: {
+            fontSize: '18px',
+            fontWeight: 'bold',
+            marginBottom: '20px',
+            color: 'white',
+          },
+        };
+    }
+  };
+
+  const footerStyles = getResponsiveFooterStyles();
+
+  const knowMoreLinks = [
+    { text: 'Tentang Kami', path: '/#profile' },
+    { text: 'Visi dan Misi', path: '/visi-misi' },
+    { text: 'Skema Sertifikasi', path: '/detail-sertifikasi' }
+  ];
+
+  const additionalLinks = [
+    { text: 'Jadwal Asesmen', path: '/jadwal-asesmen' },
+    { text: 'Berita', path: '/berita' },
+    { text: 'Lihat Foto dan Video', path: '/galeri-foto' }
+  ];
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -221,7 +418,6 @@ function GaleriVideo({onBack}) {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        {/* Blue overlay */}
         <div style={{
           position: 'absolute',
           top: 0,
@@ -232,7 +428,6 @@ function GaleriVideo({onBack}) {
           zIndex: 1
         }}></div>
 
-        {/* Hero Content */}
         <div style={{
           position: 'relative',
           zIndex: 2,
@@ -306,7 +501,7 @@ function GaleriVideo({onBack}) {
           margin: '0 auto 40px',
           borderRadius: '2px'
         }}></div>
-      
+
         <p style={{
           fontSize: '18px',
           color: '#666',
@@ -316,7 +511,6 @@ function GaleriVideo({onBack}) {
           Kumpulan video tutorial programming, web development, dan teknologi informasi terbaru
         </p>
 
-        {/* Play Button */}
         <div
           style={{
             display: 'inline-flex',
@@ -398,14 +592,12 @@ function GaleriVideo({onBack}) {
                 e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.1)';
               }}
             >
-              {/* Video Thumbnail Container */}
               <div style={{
                 position: 'relative',
                 width: '100%',
                 height: '250px',
                 overflow: 'hidden'
               }}>
-                {/* Category Tag */}
                 <div style={{
                   position: 'absolute',
                   top: '15px',
@@ -423,10 +615,8 @@ function GaleriVideo({onBack}) {
                   {video.category}
                 </div>
 
-                {/* Thumbnail */}
                 {renderThumbnail(video)}
 
-                {/* Play Button Overlay */}
                 <div style={{
                   position: 'absolute',
                   top: '50%',
@@ -445,21 +635,20 @@ function GaleriVideo({onBack}) {
                   transition: 'all 0.3s ease',
                   zIndex: 3
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1.1)';
-                  e.currentTarget.style.backgroundColor = '#FF0303FF';
-                  e.currentTarget.style.color = 'white';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)';
-                  e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.95)';
-                  e.currentTarget.style.color = '#FF0303FF';
-                }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1.1)';
+                    e.currentTarget.style.backgroundColor = '#FF0303FF';
+                    e.currentTarget.style.color = 'white';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)';
+                    e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.95)';
+                    e.currentTarget.style.color = '#FF0303FF';
+                  }}
                 >
                   ▶
                 </div>
 
-                {/* Hover Effect Overlay */}
                 <div style={{
                   position: 'absolute',
                   top: 0,
@@ -469,16 +658,15 @@ function GaleriVideo({onBack}) {
                   background: 'transparent',
                   transition: 'all 0.3s ease'
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(0,0,0,0.2)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(0,0,0,0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                  }}
                 ></div>
               </div>
 
-              {/* Video Info Card */}
               <div style={{
                 padding: '24px'
               }}>
@@ -496,7 +684,7 @@ function GaleriVideo({onBack}) {
                 }}>
                   {video.title}
                 </h3>
-                
+
                 <p style={{
                   fontSize: '14px',
                   color: '#666',
@@ -523,10 +711,10 @@ function GaleriVideo({onBack}) {
                   <span style={{ color: '#FF8303', fontWeight: '600' }}>
                     {video.date}
                   </span>
-                  <div style={{ 
-                    display: 'flex', 
+                  <div style={{
+                    display: 'flex',
                     alignItems: 'center',
-                    gap: '12px' 
+                    gap: '12px'
                   }}>
                     <span style={{
                       display: 'flex',
@@ -571,7 +759,6 @@ function GaleriVideo({onBack}) {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
             <button
               onClick={closeModal}
               style={{
@@ -604,10 +791,9 @@ function GaleriVideo({onBack}) {
               ×
             </button>
 
-            {/* YouTube Player */}
-            <div style={{ 
-              width: '100%', 
-              height: '500px', 
+            <div style={{
+              width: '100%',
+              height: '500px',
               backgroundColor: '#000',
               position: 'relative'
             }}>
@@ -626,7 +812,6 @@ function GaleriVideo({onBack}) {
               ></iframe>
             </div>
 
-            {/* Video Info */}
             <div style={{ padding: '24px' }}>
               <div style={{
                 display: 'flex',
@@ -634,10 +819,10 @@ function GaleriVideo({onBack}) {
                 alignItems: 'flex-start',
                 marginBottom: '16px'
               }}>
-                <h2 style={{ 
-                  fontSize: '24px', 
-                  fontWeight: '700', 
-                  margin: '0', 
+                <h2 style={{
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  margin: '0',
                   color: '#333',
                   flex: 1,
                   paddingRight: '20px'
@@ -656,34 +841,34 @@ function GaleriVideo({onBack}) {
                   {selectedVideo.category}
                 </div>
               </div>
-              
-              <p style={{ 
-                fontSize: '16px', 
-                color: '#666', 
-                margin: '0 0 20px 0', 
-                lineHeight: '1.6' 
+
+              <p style={{
+                fontSize: '16px',
+                color: '#666',
+                margin: '0 0 20px 0',
+                lineHeight: '1.6'
               }}>
                 {selectedVideo.description}
               </p>
-              
-              <div style={{ 
-                display: 'flex', 
+
+              <div style={{
+                display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                paddingTop: '20px', 
-                borderTop: '2px solid #f0f0f0', 
-                fontSize: '14px' 
+                paddingTop: '20px',
+                borderTop: '2px solid #f0f0f0',
+                fontSize: '14px'
               }}>
-                <div style={{ 
-                  color: '#FF8303', 
+                <div style={{
+                  color: '#FF8303',
                   fontWeight: '600',
                   fontSize: '16px'
                 }}>
                   📅 {selectedVideo.date}
                 </div>
-                <div style={{ 
-                  display: 'flex', 
-                  gap: '20px', 
+                <div style={{
+                  display: 'flex',
+                  gap: '20px',
                   color: '#666',
                   alignItems: 'center'
                 }}>
@@ -711,236 +896,175 @@ function GaleriVideo({onBack}) {
       )}
 
       {/* Footer */}
-      
-<footer style={{
-  background: 'linear-gradient(135deg, #f97316 0%, #f97316 40%, #2C94FF 40%, #2C94FF 100%)',
-  padding: '40px 60px',
-  color: 'white',
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  minHeight: '200px',
-  position: 'relative',
-  overflow: 'hidden'
-}}>
-  {/* Left Side - MyLSP Section */}
-  <div style={{
-    flex: '0 0 300px',
-    paddingRight: '40px'
-  }}>
-    <h2 style={{
-      fontSize: '32px',
-      fontWeight: 'bold',
-      marginBottom: '15px',
-      color: 'white'
-    }}>
-      MyLSP
-    </h2>
-    <p style={{
-      fontSize: '14px',
-      lineHeight: '1.6',
-      color: 'white',
-      opacity: '0.95',
-      marginBottom: '25px'
-    }}>
-      Membantu industri menyediakan ikon bahwa produk/jasa nya telah dibuat oleh tenaga-tenaga yang kompeten.
-    </p>
-    
-    {/* Social Media Icons */}
-    <div style={{
-      display: 'flex',
-      gap: '15px'
-    }}>
-      <a 
-        href="#" 
-        style={{
-          color: 'white',
-          fontSize: '24px',
-          transition: 'opacity 0.3s ease',
-          textDecoration: 'none'
-        }}
-        onMouseOver={(e) => e.target.style.opacity = '0.7'}
-        onMouseOut={(e) => e.target.style.opacity = '1'}
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-        </svg>
-      </a>
-      <a 
-        href="#" 
-        style={{
-          color: 'white',
-          fontSize: '24px',
-          transition: 'opacity 0.3s ease',
-          textDecoration: 'none'
-        }}
-        onMouseOver={(e) => e.target.style.opacity = '0.7'}
-        onMouseOut={(e) => e.target.style.opacity = '1'}
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-        </svg>
-      </a>
-      <a 
-        href="#" 
-        style={{
-          color: 'white',
-          fontSize: '24px',
-          transition: 'opacity 0.3s ease',
-          textDecoration: 'none'
-        }}
-        onMouseOver={(e) => e.target.style.opacity = '0.7'}
-        onMouseOut={(e) => e.target.style.opacity = '1'}
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
-        </svg>
-      </a>
-    </div>
-  </div>
+      <footer style={footerStyles.footer}>
+        <div style={footerStyles.leftSection}>
+          <h2 style={footerStyles.title}>MyLSP</h2>
+          <p style={footerStyles.description}>
+            Membantu industri menyediakan ikon bahwa produk/jasa nya telah dibuat oleh tenaga-tenaga yang kompeten.
+          </p>
 
-  {/* Right Side - Links and Contact */}
-  <div style={{
-    flex: '1',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    maxWidth: '600px'
-  }}>
-    {/* Know More About Section */}
-    <div style={{
-      flex: '1',
-      paddingRight: '40px'
-    }}>
-      <h3 style={{
-        fontSize: '18px',
-        fontWeight: 'bold',
-        marginBottom: '20px',
-        color: 'white'
-      }}>
-        Know More About:
-      </h3>
-      <ul style={{
-        listStyle: 'none',
-        padding: 0,
-        margin: 0
-      }}>
-        {[
-          { text: 'Tentang Kami', path: '/#profile' },
-          { text: 'Visi dan Misi', path: '/visi-misi' },
-          { text: 'Skema Sertifikasi', path: '/detail-sertifikasi' }
-        ].map((item, index) => (
-          <li key={index} style={{ marginBottom: '8px' }}>
-            <Link 
-              to={item.path}
+          <div style={{
+            display: 'flex',
+            gap: screenSize === 'mobile' ? '20px' : '15px',
+            justifyContent: screenSize === 'desktop' ? 'flex-start' : 'center',
+          }}>
+            <a
+              href="#"
               style={{
                 color: 'white',
-                textDecoration: 'none',
-                fontSize: '14px',
-                opacity: '0.9',
+                fontSize: '24px',
                 transition: 'opacity 0.3s ease',
-                display: 'flex',
-                alignItems: 'center'
+                textDecoration: 'none'
               }}
-              onMouseOver={(e) => e.target.style.opacity = '1'}
-              onMouseOut={(e) => e.target.style.opacity = '0.9'}
+              onMouseOver={(e) => e.target.style.opacity = '0.7'}
+              onMouseOut={(e) => e.target.style.opacity = '1'}
             >
-              <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
-              {item.text}
-            </Link>
-          </li>
-        ))}
-      </ul>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+              </svg>
+            </a>
+            <a
+              href="#"
+              style={{
+                color: 'white',
+                fontSize: '24px',
+                transition: 'opacity 0.3s ease',
+                textDecoration: 'none'
+              }}
+              onMouseOver={(e) => e.target.style.opacity = '0.7'}
+              onMouseOut={(e) => e.target.style.opacity = '1'}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
+            </a>
+            <a
+              href="#"
+              style={{
+                color: 'white',
+                fontSize: '24px',
+                transition: 'opacity 0.3s ease',
+                textDecoration: 'none'
+              }}
+              onMouseOver={(e) => e.target.style.opacity = '0.7'}
+              onMouseOut={(e) => e.target.style.opacity = '1'}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+              </svg>
+            </a>
+          </div>
+        </div>
 
-      {/* Additional Links */}
-      <div style={{ marginTop: '25px' }}>
-        <ul style={{
-          listStyle: 'none',
-          padding: 0,
-          margin: 0
-        }}>
-          {[
-            { text: 'Jadwal Asesmen', path: '/jadwal-asesmen' },
-            { text: 'Berita', path: '/berita' },
-            { text: 'Lihat Foto dan Video', path: '/galeri-foto' }
-          ].map((item, index) => (
-            <li key={index} style={{ marginBottom: '8px' }}>
-              <Link 
-                to={item.path}
+        <div style={footerStyles.rightSection}>
+          <div style={footerStyles.knowMoreSection}>
+            <h3 style={footerStyles.sectionTitle}>Know More About:</h3>
+            <ul
+              style={{
+                listStyle: 'none',
+                padding: 0,
+                margin: 0,
+                textAlign: screenSize === 'mobile' ? 'center' : 'left',
+              }}
+            >
+              {knowMoreLinks.map((item, index) => (
+                <li key={index} style={{ marginBottom: '8px' }}>
+                  <Link
+                    to={item.path}
+                    style={{
+                      color: 'white',
+                      textDecoration: 'none',
+                      fontSize: '14px',
+                      opacity: '0.9',
+                      transition: 'opacity 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: screenSize === 'mobile' ? 'center' : 'flex-start',
+                      cursor: 'pointer',
+                    }}
+                    onMouseOver={(e) => e.target.style.opacity = '1'}
+                    onMouseOut={(e) => e.target.style.opacity = '0.9'}
+                  >
+                    <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
+                    {item.text}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div style={{ marginTop: screenSize === 'mobile' ? '20px' : '25px' }}>
+              <ul
                 style={{
-                  color: 'white',
-                  textDecoration: 'none',
-                  fontSize: '14px',
-                  opacity: '0.9',
-                  transition: 'opacity 0.3s ease',
-                  display: 'flex',
-                  alignItems: 'center'
+                  listStyle: 'none',
+                  padding: 0,
+                  margin: 0,
+                  textAlign: screenSize === 'mobile' ? 'center' : 'left',
                 }}
-                onMouseOver={(e) => e.target.style.opacity = '1'}
-                onMouseOut={(e) => e.target.style.opacity = '0.9'}
               >
-                <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
-                {item.text}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+                {additionalLinks.map((item, index) => (
+                  <li key={index} style={{ marginBottom: '8px' }}>
+                    <Link
+                      to={item.path}
+                      style={{
+                        color: 'white',
+                        textDecoration: 'none',
+                        fontSize: '14px',
+                        opacity: '0.9',
+                        transition: 'opacity 0.3s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: screenSize === 'mobile' ? 'center' : 'flex-start',
+                        cursor: 'pointer',
+                      }}
+                      onMouseOver={(e) => e.target.style.opacity = '1'}
+                      onMouseOut={(e) => e.target.style.opacity = '0.9'}
+                    >
+                      <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
+                      {item.text}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
 
-    {/* Contact Us Section */}
-    <div style={{
-      flex: '0 0 180px',
-      textAlign: 'center'
-    }}>
-      <h3 style={{
-        fontSize: '18px',
-        fontWeight: 'bold',
-        marginBottom: '20px',
-        color: 'white'
-      }}>
-        Contact Us:
-      </h3>
-      <Link 
-        to="/kontak"
-        style={{
-          backgroundColor: '#6B7280',
-          color: 'white',
-          border: '2px solid #6B7280',
-          borderRadius: '25px',
-          padding: '12px 24px',
-          fontSize: '14px',
-          fontWeight: '600',
-          cursor: 'pointer',
-          textDecoration: 'none',
-          display: 'inline-block',
-          transition: 'all 0.3s ease'
-        }}
-        onMouseOver={(e) => {
-          e.target.style.backgroundColor = '#4B5563';
-          e.target.style.borderColor = '#4B5563';
-        }}
-        onMouseOut={(e) => {
-          e.target.style.backgroundColor = '#6B7280';
-          e.target.style.borderColor = '#6B7280';
-        }}
-      >
-        Contact Us
-      </Link>
-    </div>
-  </div>
-</footer>
+          <div style={footerStyles.contactSection}>
+            <h3 style={footerStyles.sectionTitle}>Contact Us:</h3>
+            <Link
+              to="/kontak"
+              style={{
+                backgroundColor: '#6B7280',
+                color: 'white',
+                border: '2px solid #6B7280',
+                borderRadius: '25px',
+                padding: screenSize === 'mobile' ? '14px 28px' : '12px 24px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                textDecoration: 'none',
+                display: 'inline-block',
+              }}
+              onMouseOver={(e) => {
+                e.target.style.backgroundColor = '#4B5563';
+                e.target.style.borderColor = '#4B5563';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.backgroundColor = '#6B7280';
+                e.target.style.borderColor = '#6B7280';
+              }}
+            >
+              Contact Us
+            </Link>
+          </div>
+        </div>
+      </footer>
 
-      {/* Add floating animation keyframes */}
       <style>
         {`
           @keyframes float {
-            0%, 100% {
-              transform: translateY(0px);
-            }
-            50% {
-              transform: translateY(-20px);
-            }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
           }
         `}
       </style>
