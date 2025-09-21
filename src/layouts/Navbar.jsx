@@ -105,6 +105,24 @@ function Navbar({ onNavClick, onLoginClick }) {
     }
   };
 
+  // Close dropdowns when clicking outside (only for desktop)
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        !isMobile &&
+        !event.target.closest(".dropdown-container") &&
+        !event.target.closest(".mobile-menu")
+      ) {
+        setIsSertifikasiOpen(false);
+        setIsGaleriOpen(false);
+        setIsProfilOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [isMobile]);
+
   return (
     <>
       {/* Enhanced Loading Overlay */}
@@ -235,8 +253,13 @@ function Navbar({ onNavClick, onLoginClick }) {
           padding: isMobile ? "8px 16px" : "8px 24px",
           boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
           height: "60px",
+          width: "100%",
+          maxWidth: "100vw",
+          boxSizing: "border-box",
+          overflow: "visible", // Changed from "hidden" to "visible" for dropdowns
         }}
       >
+        {/* Background Image - Fixed positioning */}
         <img
           src="src/img/Rectangle 11.png"
           alt="blue background"
@@ -245,12 +268,24 @@ function Navbar({ onNavClick, onLoginClick }) {
             top: 0,
             right: 0,
             height: "100%",
+            width: "auto",
+            maxWidth: "50%",
             zIndex: -1,
+            objectFit: "cover",
+            objectPosition: "right center",
           }}
         />
 
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            flexShrink: 0,
+            minWidth: "fit-content",
+          }}
+        >
           <img
             src="src/img/image 12.png"
             alt="Logo LSP"
@@ -258,10 +293,15 @@ function Navbar({ onNavClick, onLoginClick }) {
               width: isMobile ? "35px" : "40px",
               height: isMobile ? "35px" : "40px",
               objectFit: "contain",
+              flexShrink: 0,
             }}
           />
           <span
-            style={{ fontSize: isMobile ? "18px" : "20px", fontWeight: "700" }}
+            style={{
+              fontSize: isMobile ? "18px" : "20px",
+              fontWeight: "700",
+              whiteSpace: "nowrap",
+            }}
           >
             <span style={{ color: "#FE9C54" }}>My</span>
             <span style={{ color: "#FF8303" }}>LSP</span>
@@ -273,9 +313,10 @@ function Navbar({ onNavClick, onLoginClick }) {
           <div
             style={{
               display: "flex",
-              gap: "24px",
+              gap: "24px", // Changed from "32px" to "24px" to match the second version
               alignItems: "center",
               position: "relative",
+              flexShrink: 1,
             }}
           >
             {[
@@ -556,6 +597,7 @@ function Navbar({ onNavClick, onLoginClick }) {
             display: "flex",
             alignItems: "center",
             gap: isMobile ? "12px" : "16px",
+            flexShrink: 0,
           }}
         >
           {/* Login Button - Only show on Desktop */}
@@ -573,6 +615,8 @@ function Navbar({ onNavClick, onLoginClick }) {
                 cursor: "pointer",
                 boxShadow: "0 6px 10px rgba(0, 0, 0, 0.2)",
                 transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
               }}
               onMouseOver={(e) => {
                 e.target.style.transform = "translateY(-1px)";
@@ -605,6 +649,7 @@ function Navbar({ onNavClick, onLoginClick }) {
                 height: "40px",
                 position: "relative",
                 zIndex: 1002,
+                flexShrink: 0,
               }}
             >
               <div
@@ -941,6 +986,16 @@ function Navbar({ onNavClick, onLoginClick }) {
       {/* Enhanced CSS Animations */}
       <style>
         {`
+        /* Prevent horizontal scroll globally */
+        * {
+          box-sizing: border-box;
+        }
+        
+        html, body {
+          overflow-x: hidden;
+          max-width: 100vw;
+        }
+
         @keyframes smoothFadeIn {
           0% { 
             opacity: 0; 
@@ -971,6 +1026,17 @@ function Navbar({ onNavClick, onLoginClick }) {
           100% { 
             opacity: 1;
             transform: translateY(0);
+          }
+        }
+
+        @keyframes dropdownSlideDown {
+          0% {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-10px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
           }
         }
         
@@ -1039,16 +1105,26 @@ function Navbar({ onNavClick, onLoginClick }) {
             width: 100% !important;
             right: ${isMobileMenuOpen ? "0" : "-100%"} !important;
           }
+          
+          nav {
+            padding: 8px 12px !important;
+          }
         }
 
         @media (max-width: 480px) {
           nav {
-            padding: 8px 12px !important;
+            padding: 8px 8px !important;
           }
           
           .mobile-menu {
             padding: 16px 0 !important;
           }
+        }
+
+        /* Ensure navbar never causes horizontal scroll */
+        nav {
+          max-width: 100vw !important;
+          width: 100% !important;
         }
 
         /* Touch-friendly hover states for mobile */
@@ -1063,9 +1139,25 @@ function Navbar({ onNavClick, onLoginClick }) {
           scroll-behavior: smooth;
         }
 
-        /* Prevent horizontal scroll */
-        body {
-          overflow-x: hidden;
+        /* Enhanced dropdown styles */
+        .dropdown-item {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .dropdown-item::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 131, 3, 0.1), transparent);
+          transition: left 0.3s ease;
+        }
+
+        .dropdown-item:hover::before {
+          left: 100%;
         }
       `}
       </style>
