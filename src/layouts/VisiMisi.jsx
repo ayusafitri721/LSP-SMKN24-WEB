@@ -1,8 +1,28 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 function VisiMisi({ onBack }) {
   const contentRef = useRef(null);
+  
+  // Check screen size for responsive footer
+  const [screenSize, setScreenSize] = useState("desktop");
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const width = window.innerWidth;
+      if (width < 768) {
+        setScreenSize("mobile");
+      } else if (width < 1024) {
+        setScreenSize("tablet");
+      } else {
+        setScreenSize("desktop");
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -28,6 +48,199 @@ function VisiMisi({ onBack }) {
       }
     };
   }, []);
+
+  const scrollToProfile = () => {
+    const element = document.getElementById("profile");
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  // Responsive styles based on screen size for footer
+  const getResponsiveFooterStyles = () => {
+    switch (screenSize) {
+      case "mobile":
+        return {
+          footer: {
+            background:
+              "linear-gradient(135deg, #f97316 0%, #f97316 40%, #2C94FF 40%, #2C94FF 100%)",
+            padding: "30px 20px",
+            color: "white",
+            display: "flex",
+            flexDirection: "column",
+            gap: "30px",
+            minHeight: "auto",
+            position: "relative",
+            overflow: "hidden",
+          },
+          leftSection: {
+            flex: "none",
+            paddingRight: "0",
+            textAlign: "center",
+          },
+          rightSection: {
+            flex: "none",
+            display: "flex",
+            flexDirection: "column",
+            gap: "25px",
+            maxWidth: "none",
+          },
+          knowMoreSection: {
+            flex: "none",
+            paddingRight: "0",
+            textAlign: "center",
+          },
+          contactSection: {
+            flex: "none",
+            textAlign: "center",
+          },
+          title: {
+            fontSize: "28px",
+            fontWeight: "bold",
+            marginBottom: "12px",
+            color: "white",
+          },
+          description: {
+            fontSize: "13px",
+            lineHeight: "1.5",
+            color: "white",
+            opacity: "0.95",
+            marginBottom: "20px",
+          },
+          sectionTitle: {
+            fontSize: "16px",
+            fontWeight: "bold",
+            marginBottom: "15px",
+            color: "white",
+          },
+        };
+      case "tablet":
+        return {
+          footer: {
+            background:
+              "linear-gradient(135deg, #f97316 0%, #f97316 40%, #2C94FF 40%, #2C94FF 100%)",
+            padding: "35px 40px",
+            color: "white",
+            display: "flex",
+            flexDirection: "column",
+            gap: "30px",
+            minHeight: "180px",
+            position: "relative",
+            overflow: "hidden",
+          },
+          leftSection: {
+            flex: "none",
+            paddingRight: "0",
+            textAlign: "center",
+            marginBottom: "20px",
+          },
+          rightSection: {
+            flex: "none",
+            display: "flex",
+            justifyContent: "space-around",
+            alignItems: "flex-start",
+            maxWidth: "none",
+          },
+          knowMoreSection: {
+            flex: "1",
+            paddingRight: "20px",
+          },
+          contactSection: {
+            flex: "0 0 200px",
+            textAlign: "center",
+          },
+          title: {
+            fontSize: "30px",
+            fontWeight: "bold",
+            marginBottom: "13px",
+            color: "white",
+          },
+          description: {
+            fontSize: "13px",
+            lineHeight: "1.5",
+            color: "white",
+            opacity: "0.95",
+            marginBottom: "22px",
+          },
+          sectionTitle: {
+            fontSize: "17px",
+            fontWeight: "bold",
+            marginBottom: "18px",
+            color: "white",
+          },
+        };
+      default: // desktop
+        return {
+          footer: {
+            background:
+              "linear-gradient(135deg, #f97316 0%, #f97316 40%, #2C94FF 40%, #2C94FF 100%)",
+            padding: "40px 60px",
+            color: "white",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            minHeight: "200px",
+            position: "relative",
+            overflow: "hidden",
+          },
+          leftSection: {
+            flex: "0 0 300px",
+            paddingRight: "40px",
+          },
+          rightSection: {
+            flex: "1",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            maxWidth: "600px",
+          },
+          knowMoreSection: {
+            flex: "1",
+            paddingRight: "40px",
+          },
+          contactSection: {
+            flex: "0 0 180px",
+            textAlign: "center",
+          },
+          title: {
+            fontSize: "32px",
+            fontWeight: "bold",
+            marginBottom: "15px",
+            color: "white",
+          },
+          description: {
+            fontSize: "14px",
+            lineHeight: "1.6",
+            color: "white",
+            opacity: "0.95",
+            marginBottom: "25px",
+          },
+          sectionTitle: {
+            fontSize: "18px",
+            fontWeight: "bold",
+            marginBottom: "20px",
+            color: "white",
+          },
+        };
+    }
+  };
+
+  const footerStyles = getResponsiveFooterStyles();
+
+  const knowMoreLinks = [
+    { text: "Tentang Kami", path: "/#profile", onClick: scrollToProfile },
+    { text: "Visi dan Misi", path: "/visi-misi" },
+    { text: "Skema Sertifikasi", path: "/detail-sertifikasi" },
+  ];
+
+  const additionalLinks = [
+    { text: "Jadwal Asesmen", path: "/jadwal-asesmen" },
+    { text: "Berita", path: "/berita" },
+    { text: "Lihat Foto dan Video", path: "/galeri-foto" },
+  ];
 
   return (
     <div style={{ fontFamily: "Poppins, sans-serif", backgroundColor: "#fff" }}>
@@ -169,87 +382,82 @@ function VisiMisi({ onBack }) {
         </div>
       </div>
 
-      <footer style={{
-        background: 'linear-gradient(135deg, #f97316 0%, #f97316 40%, #2C94FF 40%, #2C94FF 100%)',
-        padding: '40px 60px',
-        color: 'white',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        minHeight: '200px',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
+      {/* Responsive Footer */}
+      <footer style={footerStyles.footer}>
         {/* Left Side - MyLSP Section */}
-        <div style={{
-          flex: '0 0 300px',
-          paddingRight: '40px'
-        }}>
-          <h2 style={{
-            fontSize: '32px',
-            fontWeight: 'bold',
-            marginBottom: '15px',
-            color: 'white'
-          }}>
-            MyLSP
-          </h2>
-          <p style={{
-            fontSize: '14px',
-            lineHeight: '1.6',
-            color: 'white',
-            opacity: '0.95',
-            marginBottom: '25px'
-          }}>
-            Membantu industri menyediakan ikon bahwa produk/jasa nya telah dibuat oleh tenaga-tenaga yang kompeten.
+        <div style={footerStyles.leftSection}>
+          <h2 style={footerStyles.title}>MyLSP</h2>
+          <p style={footerStyles.description}>
+            Membantu industri menyediakan ikon bahwa produk/jasa nya telah
+            dibuat oleh tenaga-tenaga yang kompeten.
           </p>
-          
+
           {/* Social Media Icons */}
-          <div style={{
-            display: 'flex',
-            gap: '15px'
-          }}>
-            <a 
-              href="#" 
+          <div
+            style={{
+              display: "flex",
+              gap: screenSize === "mobile" ? "20px" : "15px",
+              justifyContent:
+                screenSize === "desktop" ? "flex-start" : "center",
+            }}
+          >
+            <a
+              href="#"
               style={{
-                color: 'white',
-                fontSize: '24px',
-                transition: 'opacity 0.3s ease',
-                textDecoration: 'none'
+                color: "white",
+                fontSize: "24px",
+                transition: "opacity 0.3s ease",
+                textDecoration: "none",
               }}
-              onMouseOver={(e) => e.target.style.opacity = '0.7'}
-              onMouseOut={(e) => e.target.style.opacity = '1'}
+              onMouseOver={(e) => (e.target.style.opacity = "0.7")}
+              onMouseOut={(e) => (e.target.style.opacity = "1")}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
               </svg>
             </a>
-            <a 
-              href="#" 
+            <a
+              href="#"
               style={{
-                color: 'white',
-                fontSize: '24px',
-                transition: 'opacity 0.3s ease',
-                textDecoration: 'none'
+                color: "white",
+                fontSize: "24px",
+                transition: "opacity 0.3s ease",
+                textDecoration: "none",
               }}
-              onMouseOver={(e) => e.target.style.opacity = '0.7'}
-              onMouseOut={(e) => e.target.style.opacity = '1'}
+              onMouseOver={(e) => (e.target.style.opacity = "0.7")}
+              onMouseOut={(e) => (e.target.style.opacity = "1")}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
             </a>
-            <a 
-              href="#" 
+            <a
+              href="#"
               style={{
-                color: 'white',
-                fontSize: '24px',
-                transition: 'opacity 0.3s ease',
-                textDecoration: 'none'
+                color: "white",
+                fontSize: "24px",
+                transition: "opacity 0.3s ease",
+                textDecoration: "none",
               }}
-              onMouseOver={(e) => e.target.style.opacity = '0.7'}
-              onMouseOut={(e) => e.target.style.opacity = '1'}
+              onMouseOver={(e) => (e.target.style.opacity = "0.7")}
+              onMouseOut={(e) => (e.target.style.opacity = "1")}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
                 <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
               </svg>
             </a>
@@ -257,88 +465,92 @@ function VisiMisi({ onBack }) {
         </div>
 
         {/* Right Side - Links and Contact */}
-        <div style={{
-          flex: '1',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          maxWidth: '600px'
-        }}>
+        <div style={footerStyles.rightSection}>
           {/* Know More About Section */}
-          <div style={{
-            flex: '1',
-            paddingRight: '40px'
-          }}>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: 'bold',
-              marginBottom: '20px',
-              color: 'white'
-            }}>
-              Know More About:
-            </h3>
-            <ul style={{
-              listStyle: 'none',
-              padding: 0,
-              margin: 0
-            }}>
-              {[
-                { text: 'Tentang Kami', path: '/#profile' },
-                { text: 'Visi dan Misi', path: '/visi-misi' },
-                { text: 'Skema Sertifikasi', path: '/detail-sertifikasi' }
-              ].map((item, index) => (
-                <li key={index} style={{ marginBottom: '8px' }}>
-                  <Link 
-                    to={item.path}
-                    style={{
-                      color: 'white',
-                      textDecoration: 'none',
-                      fontSize: '14px',
-                      opacity: '0.9',
-                      transition: 'opacity 0.3s ease',
-                      display: 'flex',
-                      alignItems: 'center'
+          <div style={footerStyles.knowMoreSection}>
+            <h3 style={footerStyles.sectionTitle}>Know More About:</h3>
+            <ul
+              style={{
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: screenSize === "mobile" ? "center" : "flex-start",
+              }}
+            >
+              {knowMoreLinks.map((item, index) => (
+                <li key={index} style={{ marginBottom: "8px" }}>
+                  <a
+                    href={item.path}
+                    onClick={(e) => {
+                      if (item.onClick) {
+                        e.preventDefault();
+                        item.onClick();
+                      }
                     }}
-                    onMouseOver={(e) => e.target.style.opacity = '1'}
-                    onMouseOut={(e) => e.target.style.opacity = '0.9'}
+                    style={{
+                      color: "white",
+                      textDecoration: "none",
+                      fontSize: "14px",
+                      opacity: "0.9",
+                      transition: "opacity 0.3s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent:
+                        screenSize === "mobile" ? "center" : "flex-start",
+                      cursor: "pointer",
+                    }}
+                    onMouseOver={(e) => (e.target.style.opacity = "1")}
+                    onMouseOut={(e) => (e.target.style.opacity = "0.9")}
                   >
-                    <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
+                    <span style={{ marginRight: "8px", fontSize: "12px" }}>
+                      ▶
+                    </span>
                     {item.text}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
 
             {/* Additional Links */}
-            <div style={{ marginTop: '25px' }}>
-              <ul style={{
-                listStyle: 'none',
-                padding: 0,
-                margin: 0
-              }}>
-                {[
-                  { text: 'Jadwal Asesmen', path: '/jadwal-asesmen' },
-                  { text: 'Berita', path: '/berita' },
-                  { text: 'Lihat Foto dan Video', path: '/galeri-foto' }
-                ].map((item, index) => (
-                  <li key={index} style={{ marginBottom: '8px' }}>
-                    <Link 
-                      to={item.path}
+            <div
+              style={{ marginTop: screenSize === "mobile" ? "20px" : "25px" }}
+            >
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  margin: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: screenSize === "mobile" ? "center" : "flex-start",
+                }}
+              >
+                {additionalLinks.map((item, index) => (
+                  <li key={index} style={{ marginBottom: "8px" }}>
+                    <a
+                      href={item.path}
                       style={{
-                        color: 'white',
-                        textDecoration: 'none',
-                        fontSize: '14px',
-                        opacity: '0.9',
-                        transition: 'opacity 0.3s ease',
-                        display: 'flex',
-                        alignItems: 'center'
+                        color: "white",
+                        textDecoration: "none",
+                        fontSize: "14px",
+                        opacity: "0.9",
+                        transition: "opacity 0.3s ease",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent:
+                          screenSize === "mobile" ? "center" : "flex-start",
+                        cursor: "pointer",
                       }}
-                      onMouseOver={(e) => e.target.style.opacity = '1'}
-                      onMouseOut={(e) => e.target.style.opacity = '0.9'}
+                      onMouseOver={(e) => (e.target.style.opacity = "1")}
+                      onMouseOut={(e) => (e.target.style.opacity = "0.9")}
                     >
-                      <span style={{ marginRight: '8px', fontSize: '12px' }}>▶</span>
+                      <span style={{ marginRight: "8px", fontSize: "12px" }}>
+                        ▶
+                      </span>
                       {item.text}
-                    </Link>
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -346,40 +558,30 @@ function VisiMisi({ onBack }) {
           </div>
 
           {/* Contact Us Section */}
-          <div style={{
-            flex: '0 0 180px',
-            textAlign: 'center'
-          }}>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: 'bold',
-              marginBottom: '20px',
-              color: 'white'
-            }}>
-              Contact Us:
-            </h3>
+          <div style={footerStyles.contactSection}>
+            <h3 style={footerStyles.sectionTitle}>Contact Us:</h3>
             <Link 
               to="/kontak"
               style={{
-                backgroundColor: '#6B7280',
-                color: 'white',
-                border: '2px solid #6B7280',
-                borderRadius: '25px',
-                padding: '12px 24px',
-                fontSize: '14px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                textDecoration: 'none',
-                display: 'inline-block',
-                transition: 'all 0.3s ease'
+                backgroundColor: "#6B7280",
+                color: "white",
+                border: "2px solid #6B7280",
+                borderRadius: "25px",
+                padding: screenSize === "mobile" ? "14px 28px" : "12px 24px",
+                fontSize: "14px",
+                fontWeight: "600",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                textDecoration: "none",
+                display: "inline-block",
               }}
               onMouseOver={(e) => {
-                e.target.style.backgroundColor = '#4B5563';
-                e.target.style.borderColor = '#4B5563';
+                e.target.style.backgroundColor = "#4B5563";
+                e.target.style.borderColor = "#4B5563";
               }}
               onMouseOut={(e) => {
-                e.target.style.backgroundColor = '#6B7280';
-                e.target.style.borderColor = '#6B7280';
+                e.target.style.backgroundColor = "#6B7280";
+                e.target.style.borderColor = "#6B7280";
               }}
             >
               Contact Us
