@@ -96,7 +96,7 @@ const Rekomendasi = () => {
         </div>
         <div style={{ flex: 1, textAlign: "center" }}>
           <div style={{ fontSize: "16px", fontWeight: "bold", margin: "0 0 5px 0", color: "#333" }}>REKOMENDASI</div>
-          <div style={{ fontSize: "16px", fontWeight: "bold", margin: "0", color: "#333" }}>{asesi.name}</div>
+          
         </div>
       </div>
      
