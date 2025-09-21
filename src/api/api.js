@@ -15,6 +15,10 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
+// General Asesi Endpoint
+export const getCurrentAsesi = () => api.get("/asesi");
+export const showapl01 = () => api.get("/formApl01");
+
 // Endpoint
 export const getUsers = () => api.get("/users");
 export const login = (data) => api.post("/auth/login", data);

@@ -24,13 +24,12 @@ export const AsesorProvider = ({ children }) => {
   const [isFetched, setIsFetched] = useState(false);
 
   const fetchAsesors = useCallback(async () => {
-    if (!user || isFetched) return;
+    if (!user || user.role !== "admin" || isFetched) return; // Cek role user
     setLoading(true);
     setError(null);
     try {
       const res = await getAsesors(1, 100);
       setAsesors(res.data?.data.data || []);
-
       setIsFetched(true);
     } catch (err) {
       setError(err.response?.data?.message || "Gagal fetch data asesor");
@@ -81,8 +80,10 @@ export const AsesorProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    fetchAsesors();
-  }, [fetchAsesors]);
+    if (user?.role === "admin") {
+      fetchAsesors();
+    }
+  }, [fetchAsesors, user]);
 
   const value = useMemo(
     () => ({

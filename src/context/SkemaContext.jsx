@@ -19,13 +19,13 @@ export function SkemaProvider({ children }) {
   const [isFetched, setIsFetched] = useState(false); // Caching flag
 
   const fetchSkemas = useCallback(async () => {
-    if (!user || isFetched) return; // Skip if not logged in or already fetched
+    if (!user || user.role !== "admin" || isFetched) return; // Cek role user
     setLoading(true);
     setError(null);
     try {
       const res = await getSkemas();
       setSkemaList(res.data.data || []);
-      setIsFetched(true); // Mark as fetched
+      setIsFetched(true); // Tandai sudah di-fetch
     } catch (err) {
       setError(err.response?.data?.message || "Gagal mengambil data skema!");
     } finally {
@@ -46,8 +46,10 @@ export function SkemaProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    fetchSkemas();
-  }, [fetchSkemas]);
+    if (user?.role === "admin") {
+      fetchSkemas();
+    }
+  }, [fetchSkemas, user]);
 
   const value = useMemo(
     () => ({

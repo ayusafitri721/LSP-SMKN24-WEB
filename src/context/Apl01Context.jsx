@@ -19,7 +19,7 @@ export const Apl01Provider = ({ children }) => {
   const [isFetched, setIsFetched] = useState(false);
 
   const fetchApl01s = useCallback(async () => {
-    if (!user || isFetched) return;
+    if (!user || user.role !== "admin" || isFetched) return; // Cek role user
     setLoading(true);
     setError(null);
     try {
@@ -51,7 +51,9 @@ export const Apl01Provider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    fetchApl01s();
+    if (user?.role === "admin") {
+      fetchApl01s();
+    }
   }, [fetchApl01s]);
 
   const value = useMemo(

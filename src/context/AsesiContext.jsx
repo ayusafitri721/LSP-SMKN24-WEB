@@ -19,7 +19,7 @@ export const AsesiProvider = ({ children }) => {
   const [isFetched, setIsFetched] = useState(false);
 
   const fetchAsesis = useCallback(async () => {
-    if (!user || isFetched) return;
+    if (!user || user.role !== "admin" || isFetched) return; // Cek role user
     setLoading(true);
     setError(null);
     try {
@@ -31,7 +31,7 @@ export const AsesiProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [user , isFetched]);
+  }, [user, isFetched]);
 
   const addAsesi = useCallback(async (data) => {
     setLoading(true);
@@ -75,7 +75,9 @@ export const AsesiProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    fetchAsesis();
+    if (user?.role === "admin") {
+      fetchAsesis();
+    }
   }, [fetchAsesis]);
 
   const value = useMemo(

@@ -1,7 +1,24 @@
 import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useJurusan } from "../context/JurusanContext";
+import { useDashboardAsesi } from "../context/DashboardAsesiContext";
+import { useAssesment } from "../context/AssesmentContext";
 
 // Menerima prop 'onNavigate' dari komponen induk
 function DashboardAsesi({ onNavigate }) {
+  const { assesments } = useAssesment();
+  const { currentAssesi, apl01data } = useDashboardAsesi();
+  const { user } = useAuth();
+  const { jurusanList } = useJurusan();
+  
+  console.log(jurusanList);
+  console.log("Current Assesi:", currentAssesi);
+  console.log("APL01 Data:", apl01data);
+
+  // Fix: Handle case when jurusanList or user might be null/undefined
+  const jurusan = jurusanList?.find((j) => j.id === user?.jurusan_id);
+  const namaJurusan = jurusan?.kode_jurusan || "Jurusan tidak ditemukan";
+
   const [profileImage, setProfileImage] = useState(null);
 
   const handleImageUpload = (e) => {
@@ -14,6 +31,10 @@ function DashboardAsesi({ onNavigate }) {
       reader.readAsDataURL(file);
     }
   };
+
+  // Fix: Check if APL01 data exists properly
+  const hasApl01Data = apl01data && (Array.isArray(apl01data) ? apl01data.length > 0 : Object.keys(apl01data).length > 0);
+  const hasAssesments = assesments && assesments.length > 0;
 
   return (
     <div
@@ -116,7 +137,7 @@ function DashboardAsesi({ onNavigate }) {
             color: "#333",
           }}
         >
-          XII RPL - SMKN 24
+          {namaJurusan} - SMKN 24
         </div>
 
         <div
@@ -147,7 +168,11 @@ function DashboardAsesi({ onNavigate }) {
             color: "#333",
           }}
         >
-          19 JUN 2025
+          {new Date().toLocaleDateString('id-ID', { 
+            day: '2-digit', 
+            month: 'short', 
+            year: 'numeric' 
+          }).toUpperCase()}
         </div>
       </div>
 
@@ -168,97 +193,40 @@ function DashboardAsesi({ onNavigate }) {
             gap: "15px",
           }}
         >
-          {/* Photo Upload Card - Separated */}
+          {/* User Info Separated */}
           <div
             style={{
               backgroundColor: "white",
               borderRadius: "15px",
-              padding: "25px",
-              boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+              padding: "20px",
+              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
+              gap: "10px",
             }}
           >
-            <div
-              style={{
-                width: "120px",
-                height: "120px",
-                backgroundColor: "#e8e8e8",
-                borderRadius: "8px",
-                marginBottom: "15px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                position: "relative",
-                overflow: "hidden",
-                border: "1px solid #d0d0d0",
-              }}
-              onClick={() => document.getElementById("fileInput").click()}
-            >
-              <input
-                id="fileInput"
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handleImageUpload}
-              />
-              {profileImage ? (
-                <img
-                  src={profileImage}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    borderRadius: "6px",
-                  }}
-                  alt="Profile"
-                />
-              ) : (
-                <svg
-                  width="50"
-                  height="50"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  style={{ opacity: "0.4" }}
-                >
-                  <path
-                    d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <circle
-                    cx="12"
-                    cy="13"
-                    r="4"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              )}
-            </div>
-
-            <p
-              style={{
-                fontSize: "12px",
-                color: "#666",
-                textAlign: "center",
-                margin: "0",
-                lineHeight: "1.3",
-                fontWeight: "500",
-              }}
-            >
-              Afdzal Ezhar Razona Pangestu
-            </p>
+            {[
+              { label: "Username", value: user?.username || "Tidak tersedia" },
+              { label: "Jurusan", value: namaJurusan },
+              { label: "Role", value: user?.role || "Tidak tersedia" },
+            ].map((item, index) => (
+              <p
+                key={index}
+                style={{
+                  fontSize: "12px",
+                  color: "#666",
+                  margin: "0",
+                  lineHeight: "1.5",
+                  fontWeight: "500",
+                  textAlign: "left",
+                }}
+              >
+                {item.label}: {item.value}
+              </p>
+            ))}
           </div>
 
-          {/* Address and Gender Info Card - Separated */}
+          {/* Address and Gender Info */}
           <div
             style={{
               backgroundColor: "white",
@@ -270,140 +238,84 @@ function DashboardAsesi({ onNavigate }) {
               gap: "12px",
             }}
           >
-            {/* Address section */}
-            <div
-              style={{
-                backgroundColor: "#f8f9fa",
-                borderRadius: "8px",
-                padding: "12px",
-                fontSize: "11px",
-                color: "#666",
-                display: "flex",
-                alignItems: "flex-start",
-                gap: "8px",
-              }}
-            >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                style={{ marginTop: "1px", opacity: "0.6", flexShrink: 0 }}
-              >
-                <path
-                  d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <polyline
-                  points="9,22 9,12 15,12 15,22"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span style={{ lineHeight: "1.4", fontSize: "10px" }}>
-                Jalan TPI Berondong Kg PEC Jakarta Timur, DKI Jakarta
-              </span>
-            </div>
-
-            {/* Gender section */}
-            <div
-              style={{
-                backgroundColor: "#f8f9fa",
-                borderRadius: "8px",
-                padding: "12px",
-                fontSize: "11px",
-                color: "#666",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                style={{ opacity: "0.6" }}
-              >
-                <circle
-                  cx="10"
-                  cy="14"
-                  r="6"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <line
-                  x1="21"
-                  y1="3"
-                  x2="16"
-                  y2="8"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <line
-                  x1="18"
-                  y1="3"
-                  x2="21"
-                  y2="3"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <line
-                  x1="21"
-                  y1="3"
-                  x2="21"
-                  y2="6"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span style={{ fontSize: "10px" }}>Laki-laki</span>
-            </div>
-
-            {/* Action button */}
-            <button
-              style={{
-                backgroundColor: "#4CAF50",
-                color: "white",
-                border: "none",
-                borderRadius: "15px",
-                padding: "12px 20px",
-                fontSize: "11px",
-                cursor: "pointer",
-                fontWeight: "600",
-                marginTop: "8px",
-                transition: "all 0.2s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = "#45a049";
-                e.target.style.transform = "translateY(-1px)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = "#4CAF50";
-                e.target.style.transform = "translateY(0)";
-              }}
-            >
-              Valid
-            </button>
+            {currentAssesi ? (
+              <>
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: "#666",
+                    margin: "0",
+                    lineHeight: "1.5",
+                    fontWeight: "500",
+                  }}
+                >
+                  Alamat: {currentAssesi.alamat || "Alamat tidak tersedia"}
+                </p>
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: "#666",
+                    margin: "0",
+                    lineHeight: "1.5",
+                    fontWeight: "500",
+                  }}
+                >
+                  Jenis Kelamin:{" "}
+                  {currentAssesi.jenis_kelamin || "Tidak diketahui"}
+                </p>
+                <button
+                  style={{
+                    backgroundColor: "#4CAF50",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "15px",
+                    padding: "12px 20px",
+                    fontSize: "11px",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    marginTop: "8px",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  Valid
+                </button>
+              </>
+            ) : (
+              <div>
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: "#666",
+                    margin: "0",
+                    lineHeight: "1.5",
+                    fontWeight: "500",
+                  }}
+                >
+                  Data belum tersedia, silahkan isi form APL 01 dulu
+                </p>
+                <button
+                  onClick={() => onNavigate && onNavigate("APL.01")}
+                  style={{
+                    backgroundColor: "#FF5722",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "15px",
+                    padding: "12px 20px",
+                    fontSize: "11px",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    marginTop: "8px",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  Tidak Valid
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Right Panel - Assessment Card */}
+        {/* Right Panel - Assessment Preview Card */}
         <div
           style={{
             flex: 1,
@@ -412,7 +324,7 @@ function DashboardAsesi({ onNavigate }) {
             padding: "25px",
             boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
             height: "fit-content",
-            minHeight: "400px",
+            minHeight: "200px",
           }}
         >
           <h3
@@ -423,58 +335,257 @@ function DashboardAsesi({ onNavigate }) {
               color: "#333",
             }}
           >
+            Status Assessment
+          </h3>
+
+          {/* Show status based on APL01 and assessment data */}
+          {!hasApl01Data ? (
+            <div
+              style={{
+                backgroundColor: "#fff3cd",
+                padding: "20px",
+                borderRadius: "12px",
+                border: "1px solid #ffeeba",
+                textAlign: "center",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "14px",
+                  color: "#856404",
+                  margin: "0 0 15px 0",
+                  fontWeight: "500",
+                }}
+              >
+                Anda belum mengisi form APL01
+              </p>
+              <button
+                onClick={() => onNavigate && onNavigate("APL.01")}
+                style={{
+                  backgroundColor: "#FF5722",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "25px",
+                  padding: "12px 25px",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                }}
+              >
+                Isi Form APL01
+              </button>
+            </div>
+          ) : !hasAssesments ? (
+            <div
+              style={{
+                backgroundColor: "#d1ecf1",
+                padding: "20px",
+                borderRadius: "12px",
+                border: "1px solid #bee5eb",
+                textAlign: "center",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "14px",
+                  color: "#0c5460",
+                  margin: "0",
+                  fontWeight: "500",
+                }}
+              >
+                Form APL01 sudah diisi. Menunggu jadwal assessment dari admin.
+              </p>
+            </div>
+          ) : (
+            <div
+              style={{
+                backgroundColor: "#2C94FF",
+                borderRadius: "12px",
+                padding: "18px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                boxShadow: "0 4px 12px rgba(44, 148, 255, 0.3)",
+              }}
+            >
+              <span
+                style={{
+                  color: "white",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  flex: 1,
+                }}
+              >
+                Assessment tersedia - Siap untuk dimulai
+              </span>
+              <button
+                onClick={() => onNavigate && onNavigate("assessment")}
+                style={{
+                  backgroundColor: "#D9D9D9",
+                  color: "black",
+                  border: "none",
+                  borderRadius: "25px",
+                  padding: "10px 25px",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  marginLeft: "15px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  transition: "transform 0.2s ease",
+                }}
+                onMouseEnter={(e) =>
+                  (e.target.style.transform = "translateY(-1px)")
+                }
+                onMouseLeave={(e) => (e.target.style.transform = "translateY(0)")}
+              >
+                Lihat Detail
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Assessment Terjadwal Component - Fix: Remove duplicate content */}
+      {hasApl01Data && (
+        <div
+          style={{
+            backgroundColor: "white",
+            padding: "25px",
+            borderRadius: "15px",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+            marginTop: "20px",
+          }}
+        >
+          <h3
+            style={{
+              fontSize: "18px",
+              fontWeight: "600",
+              marginBottom: "20px",
+              color: "#333",
+            }}
+          >
             Assessment Terjadwal
           </h3>
 
-          {/* Assessment Card */}
-          <div
-            style={{
-              backgroundColor: "#2C94FF",
-              borderRadius: "12px",
-              padding: "18px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              boxShadow: "0 4px 12px rgba(44, 148, 255, 0.3)",
-              marginBottom: "15px",
-            }}
-          >
-            <span
+          {hasAssesments ? (
+            <div
               style={{
-                color: "white",
-                fontSize: "14px",
-                fontWeight: "500",
-                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                gap: "15px",
               }}
             >
-              Assessment Sertifikasi kompetensi RPL - pemrograman junior
-            </span>
-
-            <button
-              onClick={() => onNavigate && onNavigate("APL.01")}
+              {assesments.map((assessment) => (
+                <div
+                  key={assessment.id}
+                  style={{
+                    backgroundColor: "#2C94FF",
+                    borderRadius: "12px",
+                    padding: "18px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    boxShadow: "0 4px 12px rgba(44, 148, 255, 0.3)",
+                  }}
+                >
+                  <div
+                    style={{
+                      color: "white",
+                      flex: 1,
+                    }}
+                  >
+                    <h4
+                      style={{
+                        margin: "0 0 5px 0",
+                        fontSize: "15px",
+                        fontWeight: "600",
+                      }}
+                    >
+                      {assessment.nama_jadwal || "Assessment Kompetensi"}
+                    </h4>
+                    <p
+                      style={{
+                        margin: "0",
+                        fontSize: "13px",
+                        opacity: "0.9",
+                      }}
+                    >
+                      TUK: {assessment.tuk || "Tidak tersedia"}
+                    </p>
+                    {assessment.tanggal && (
+                      <p
+                        style={{
+                          margin: "5px 0 0 0",
+                          fontSize: "12px",
+                          opacity: "0.8",
+                        }}
+                      >
+                        Tanggal: {new Date(assessment.tanggal).toLocaleDateString('id-ID')}
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => onNavigate && onNavigate("assessment", { assessmentId: assessment.id })}
+                    style={{
+                      backgroundColor: "#D9D9D9",
+                      color: "black",
+                      border: "none",
+                      borderRadius: "25px",
+                      padding: "10px 25px",
+                      fontSize: "13px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      marginLeft: "15px",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                      transition: "transform 0.2s ease",
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.target.style.transform = "translateY(-1px)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.target.style.transform = "translateY(0)")
+                    }
+                  >
+                    Mulai
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div
               style={{
-                backgroundColor: "##D9D9D9",
-                color: "black",
-                border: "none",
-                borderRadius: "25px",
-                padding: "10px 25px",
-                fontSize: "13px",
-                fontWeight: "600",
-                cursor: "pointer",
-                marginLeft: "15px",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                transition: "transform 0.2s ease",
+                backgroundColor: "#f8f9fa",
+                padding: "30px",
+                borderRadius: "12px",
+                textAlign: "center",
+                border: "2px dashed #dee2e6",
               }}
-              onMouseEnter={(e) =>
-                (e.target.style.transform = "translateY(-1px)")
-              }
-              onMouseLeave={(e) => (e.target.style.transform = "translateY(0)")}
             >
-              Mulai
-            </button>
-          </div>
+              <p
+                style={{
+                  fontSize: "14px",
+                  color: "#6c757d",
+                  margin: "0",
+                  fontWeight: "500",
+                }}
+              >
+                Tidak ada assessment terjadwal saat ini
+              </p>
+              <p
+                style={{
+                  fontSize: "13px",
+                  color: "#6c757d",
+                  margin: "5px 0 0 0",
+                  opacity: "0.8",
+                }}
+              >
+                Silakan hubungi admin untuk informasi lebih lanjut
+              </p>
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 }

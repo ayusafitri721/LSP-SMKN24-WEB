@@ -1,6 +1,7 @@
 // context/AuthContext.jsx
 import { createContext, useContext, useState, useMemo, useEffect } from "react";
 import api from "../Api/api"; // axios instance misalnya
+import { data } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -12,6 +13,20 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const register = async (data) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api.post("/auth/register", data);
+      return res.data;
+    } catch (err) {
+      setError(err.response?.data || "Gagal registrasi!");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const login = async (credentials) => {
     setLoading(true);
     setError(null);
@@ -22,6 +37,7 @@ export function AuthProvider({ children }) {
         username: res.data.user.username,
         role: res.data.user.role,
         token: res.data.token,
+        jurusan_id: res.data.user.jurusan_id,
       };
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData));
@@ -48,7 +64,7 @@ export function AuthProvider({ children }) {
   }, [user]);
 
   const value = useMemo(
-    () => ({ user, login, logout, loading, error }),
+    () => ({ user, login, register, logout, loading, error }),
     [user, loading, error]
   );
 
