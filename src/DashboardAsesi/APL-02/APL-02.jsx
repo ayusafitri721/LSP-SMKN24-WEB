@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
+import { submitFormApl02, fetchCsrfCookie, getMyBuktiDokumenSelf, getApl02ById } from '../../api/api';
+import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
 
 const pageContainerStyle = {
   backgroundColor: 'white',
@@ -161,21 +163,35 @@ const warningNotificationStyle = {
 };
 
 const APL02 = () => {
-  const [assessorData, setAssessorData] = useState([
-    { name: 'Ahmad Fahmi Rizwan Pangestu', date: '14/02/2023', status: 'Approve' },
-    { name: 'Prof. Arya Mauludi Suripto M.Kom.', date: '14/02/2023', status: 'Menunggu' }
-  ]);
+  const { currentAssesi, apl01Data, userAssessments } = useDashboardAsesi();
+  // Hapus data dummy asesor; akan diisi dari API jika tersedia
+  const [assessorData, setAssessorData] = useState([]);
   
   const [showPopup, setShowPopup] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [checkAllState, setCheckAllState] = useState({ K: false, BK: false });
-  const [asesiApproval, setAsesiApproval] = useState('Approve');
-  const [asesorApproval, setAsesorApproval] = useState('Menunggu');
+  // Hilangkan nilai default; biarkan kosong sampai ada data API
+  const [asesiApproval, setAsesiApproval] = useState('');
+  const [asesorApproval, setAsesorApproval] = useState('');
   const [individualChecks, setIndividualChecks] = useState({
     elemen1K: false,
     elemen1BK: false
   });
+
+  // Backend-required fields/state
+  const [skemaId, setSkemaId] = useState('');
+  const [assesmentAsesiId, setAssesmentAsesiId] = useState('');
+  const [unitKe, setUnitKe] = useState('1');
+  const [kodeUnit, setKodeUnit] = useState('');
+  const [elemenId, setElemenId] = useState('');
+  const [kompetensinitas, setKompetensinitas] = useState('k'); // 'k' | 'bk'
+  const [buktiList, setBuktiList] = useState(['']);
+  const [buktiOptions, setBuktiOptions] = useState([]);
+  const [asesiName, setAsesiName] = useState('');
+  const [schemaDetail, setSchemaDetail] = useState(null);
+  // selections keyed by elementId: { kompetensinitas: 'k'|'bk'|'', bukti: '' }
+  const [elementSelections, setElementSelections] = useState({});
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -220,11 +236,150 @@ const APL02 = () => {
     };
   }, [isFormSubmitted]);
 
-  // Handle submit - langsung show popup tanpa validasi field
-  const handleSubmit = (e) => {
+  // Prefill from context: schema_id from APL-01, assesment_asesi_id from user assessments, asesi name from current asesi
+  useEffect(() => {
+    // asesi full name preference order
+    const pickFullName = (obj) => {
+      if (!obj) return '';
+      return (
+        obj.fullname || obj.full_name || obj.nama_lengkap || obj.namaLengkap || obj.name || obj.username || ''
+      );
+    };
+    let name = pickFullName(currentAssesi) || pickFullName(currentAssesi?.user);
+    if (!name) {
+      const a = Array.isArray(apl01Data) ? apl01Data[0] : apl01Data;
+      name = pickFullName(a) || pickFullName(a?.user);
+    }
+    if (name && !asesiName) setAsesiName(name);
+
+    // schema id from apl01
+    const extractSchemaId = (data) => {
+      if (!data) return undefined;
+      if (Array.isArray(data) && data.length > 0) {
+        return data[0]?.schema_id || data[0]?.sertification_data?.schema_id;
+      }
+      return data.schema_id || data?.sertification_data?.schema_id;
+    };
+    const sid = extractSchemaId(apl01Data);
+    if (sid && !skemaId) setSkemaId(String(sid));
+
+    // assesment_asesi_id choose first available
+    if (!assesmentAsesiId && Array.isArray(userAssessments) && userAssessments.length > 0) {
+      setAssesmentAsesiId(String(userAssessments[0].id));
+    }
+  }, [currentAssesi, apl01Data, userAssessments, asesiName, skemaId, assesmentAsesiId]);
+
+  // Load bukti options for the logged-in asesi
+  useEffect(() => {
+    (async () => {
+      try {
+        await fetchCsrfCookie();
+        const res = await getMyBuktiDokumenSelf();
+        const items = Array.isArray(res.data?.data) ? res.data.data : [];
+        setBuktiOptions(items.map(it => ({ id: it.id, label: it.description })));
+      } catch (e) {
+        // silently ignore; user can still type manually
+      }
+    })();
+  }, []);
+
+  // Fetch full schema detail (units, elements, KUK) when skemaId resolved
+  useEffect(() => {
+    (async () => {
+      const idNum = Number(skemaId);
+      if (!idNum) return;
+      try {
+        await fetchCsrfCookie();
+        const res = await getApl02ById(idNum);
+        const data = res.data?.data || [];
+        setSchemaDetail({ units: data });
+        // Initialize selections for each element
+        const sel = {};
+        data.forEach((unit) => {
+          const elemenObj = unit.elemen || {};
+          Object.values(elemenObj).forEach((el) => {
+            if (el?.id) sel[el.id] = { kompetensinitas: '', bukti: '' };
+          });
+        });
+        setElementSelections(sel);
+      } catch (e) {
+        // ignore; UI will allow manual
+      }
+    })();
+  }, [skemaId]);
+
+  // Handle submit - call backend API
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsFormSubmitted(true);
-    setShowPopup(true);
+    // Basic validation
+    if (!skemaId || !assesmentAsesiId) {
+      alert('Mohon lengkapi skema dan jadwal asesmen.');
+      return;
+    }
+
+    // Build submissions from schemaDetail
+    const units = schemaDetail?.units || [];
+    if (!units.length) {
+      alert('Skema tidak memiliki unit/elemen.');
+      return;
+    }
+
+    // Validate each element selection
+    for (const unit of units) {
+      const elemenArr = Object.values(unit.elemen || {});
+      for (const el of elemenArr) {
+        const sel = elementSelections[el.id] || {};
+        if (!sel.kompetensinitas) {
+          alert(`Pilih K/BK untuk elemen: ${el.nama_elemen}`);
+          return;
+        }
+        if (!sel.bukti) {
+          alert(`Pilih bukti untuk elemen: ${el.nama_elemen}`);
+          return;
+        }
+      }
+    }
+
+    const submissions = units.map((unit) => {
+      const elemenArr = Object.values(unit.elemen || {});
+      return {
+        unit_ke: Number(unit.unit_ke),
+        kode_unit: unit.kode_unit,
+        elemen: elemenArr.map((el) => {
+          const sel = elementSelections[el.id];
+          return {
+            elemen_id: Number(el.id),
+            kompetensinitas: sel.kompetensinitas,
+            bukti_yang_relevan: [{ bukti_description: sel.bukti }],
+          };
+        }),
+      };
+    });
+
+    const payload = {
+      skema_id: Number(skemaId),
+      assesment_assesi_id: Number(assesmentAsesiId),
+      submissions,
+    };
+
+    try {
+      await fetchCsrfCookie();
+      await submitFormApl02(payload);
+      setIsFormSubmitted(true);
+      setShowPopup(true);
+    } catch (err) {
+      console.error('Submit APL-02 failed:', err);
+      const msg = err?.response?.data?.message || 'Gagal mengirim APL-02';
+      const errors = err?.response?.data?.errors;
+      if (errors && typeof errors === 'object') {
+        const flat = Object.entries(errors)
+          .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`)
+          .join('\n');
+        alert(`Validasi gagal:\n${flat}`);
+      } else {
+        alert(msg);
+      }
+    }
   };
 
   // Handle close popup - redirect ke AK-01
@@ -341,6 +496,75 @@ const APL02 = () => {
               </span>
             )}
           </div>
+
+        {/* Dynamic Units -> Elements -> KUK table */}
+        {schemaDetail && Array.isArray(schemaDetail.units) && schemaDetail.units.map((unit) => (
+          <div key={`unit-${unit.unit_ke}`} style={{ border: '1px solid #ddd', borderRadius: '8px', marginTop: '16px' }}>
+            <div style={{ padding: '10px 12px', background: '#f1f5ff', borderBottom: '1px solid #ddd', fontWeight: 'bold', fontSize: '13px' }}>
+              Unit {unit.unit_ke} - {unit.kode_unit} — {unit.judul_unit}
+            </div>
+            <div style={{ padding: '10px 12px' }}>
+              {Object.values(unit.elemen || {}).map((el) => (
+                <div key={`el-${el.id}`} style={{ marginBottom: '14px', paddingBottom: '12px', borderBottom: '1px dashed #ddd' }}>
+                  <div style={{ fontWeight: 'bold', fontSize: '13px', marginBottom: '6px' }}>
+                    Elemen {el.elemen_index}: {el.nama_elemen}
+                  </div>
+                  {Array.isArray(el.kuk) && el.kuk.length > 0 && (
+                    <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '12px', color: '#333' }}>
+                      {el.kuk.map((k) => (
+                        <li key={`kuk-${el.id}-${k.urutan}`}>{k.urutan}. {k.deskripsi_kuk}</li>
+                      ))}
+                    </ul>
+                  )}
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '8px' }}>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <label style={{ fontSize: '12px' }}>K/BK:</label>
+                      <label style={{ fontSize: '12px' }}>
+                        <input
+                          type="radio"
+                          name={`kompeten-${el.id}`}
+                          checked={elementSelections[el.id]?.kompetensinitas === 'k'}
+                          onChange={() => setElementSelections((prev) => ({ ...prev, [el.id]: { ...(prev[el.id]||{}), kompetensinitas: 'k' } }))}
+                        /> K
+                      </label>
+                      <label style={{ fontSize: '12px' }}>
+                        <input
+                          type="radio"
+                          name={`kompeten-${el.id}`}
+                          checked={elementSelections[el.id]?.kompetensinitas === 'bk'}
+                          onChange={() => setElementSelections((prev) => ({ ...prev, [el.id]: { ...(prev[el.id]||{}), kompetensinitas: 'bk' } }))}
+                        /> BK
+                      </label>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flex: 1 }}>
+                      <label style={{ fontSize: '12px' }}>Bukti:</label>
+                      {buktiOptions.length > 0 ? (
+                        <select
+                          value={elementSelections[el.id]?.bukti || ''}
+                          onChange={(e)=> setElementSelections((prev)=> ({ ...prev, [el.id]: { ...(prev[el.id]||{}), bukti: e.target.value } }))}
+                          style={{ flex: 1, padding: '6px 8px' }}
+                        >
+                          <option value="">Pilih deskripsi bukti…</option>
+                          {buktiOptions.map(opt => (
+                            <option key={opt.id} value={opt.label}>{opt.label}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type="text"
+                          placeholder="Deskripsi bukti"
+                          value={elementSelections[el.id]?.bukti || ''}
+                          onChange={(e)=> setElementSelections((prev)=> ({ ...prev, [el.id]: { ...(prev[el.id]||{}), bukti: e.target.value } }))}
+                          style={{ flex: 1, padding: '6px 8px' }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
         </div>
         
         {/* BK Checkbox */}
@@ -560,6 +784,62 @@ const APL02 = () => {
           </h1>
         </div>
 
+        {/* Skema Sertifikasi & Jadwal (API binding) */}
+        <div style={{
+          backgroundColor: '#fff3cd',
+          border: '1px solid #ffeeba',
+          borderRadius: '8px',
+          padding: '12px',
+          marginBottom: '15px',
+          display: 'flex',
+          gap: '12px',
+          alignItems: 'center',
+          flexWrap: 'wrap'
+        }}>
+          <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#856404' }}>Isian Wajib API:</div>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <label style={{ fontSize: '12px' }}>Skema ID:</label>
+            <input type="number" value={skemaId} onChange={(e)=>setSkemaId(e.target.value)} style={{ padding: '6px 8px', fontSize: '12px' }} />
+          </div>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <label style={{ fontSize: '12px' }}>Jadwal (assesment_asesi_id):</label>
+            <select value={assesmentAsesiId} onChange={(e)=>setAssesmentAsesiId(e.target.value)} style={{ padding: '6px 8px', fontSize: '12px' }}>
+              <option value="">Pilih...</option>
+              {Array.isArray(userAssessments) && userAssessments.map((a) => (
+                <option key={a.id} value={a.id}>{`ID ${a.id}`}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Unit & Elemen (API binding) */}
+        <div style={{
+          backgroundColor: '#e2f0ff',
+          border: '1px solid #b6e0ff',
+          borderRadius: '8px',
+          padding: '12px',
+          marginBottom: '15px',
+          display: 'flex',
+          gap: '12px',
+          alignItems: 'center',
+          flexWrap: 'wrap'
+        }}>
+          {schemaDetail ? (
+            <div style={{ fontSize: '12px', color: '#0b5ed7' }}>Struktur skema dimuat. Gunakan tabel di bawah untuk mengisi K/BK dan bukti per elemen.</div>
+          ) : (
+            <>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <label style={{ fontSize: '12px' }}>Unit Ke:</label>
+                <input type="number" min="1" value={unitKe} onChange={(e)=>setUnitKe(e.target.value)} style={{ padding: '6px 8px', fontSize: '12px', width: '90px' }} />
+              </div>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <label style={{ fontSize: '12px' }}>Elemen ID:</label>
+                <input type="number" value={elemenId} onChange={(e)=>setElemenId(e.target.value)} style={{ padding: '6px 8px', fontSize: '12px', width: '140px' }} />
+              </div>
+            </>
+          )}
+        </div>
+
         {/* Skema Sertifikasi Section - table format */}
         <div style={{
           backgroundColor: '#f8f9fa',
@@ -763,6 +1043,8 @@ const APL02 = () => {
                 }}>
                   <input 
                     type="text"
+                    value={kodeUnit}
+                    onChange={(e)=>setKodeUnit(e.target.value)}
                     style={{
                       width: '100%',
                       border: 'none',
@@ -873,7 +1155,7 @@ const APL02 = () => {
                 alignItems: 'center'
               }}>
                 <div 
-                  onClick={() => setIndividualChecks(prev => ({ ...prev, elemen1K: !prev.elemen1K }))}
+                  onClick={() => { setKompetensinitas('k'); setIndividualChecks(prev => ({ ...prev, elemen1K: true, elemen1BK: false })); }}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -892,9 +1174,9 @@ const APL02 = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    borderColor: individualChecks.elemen1K ? '#ff8c00' : '#999'
+                    borderColor: (kompetensinitas==='k') ? '#ff8c00' : '#999'
                   }}>
-                    {individualChecks.elemen1K && (
+                    {(kompetensinitas==='k') && (
                       <span style={{ color: 'black', fontSize: '12px', fontWeight: 'bold' }}>✓</span>
                     )}
                   </div>
@@ -902,7 +1184,7 @@ const APL02 = () => {
                 </div>
                 
                 <div 
-                  onClick={() => setIndividualChecks(prev => ({ ...prev, elemen1BK: !prev.elemen1BK }))}
+                  onClick={() => { setKompetensinitas('bk'); setIndividualChecks(prev => ({ ...prev, elemen1K: false, elemen1BK: true })); }}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -921,10 +1203,10 @@ const APL02 = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    borderColor: individualChecks.elemen1BK ? '#ff8c00' : '#999'
+                    borderColor: (kompetensinitas==='bk') ? '#ff8c00' : '#999'
                   }}>
-                    {individualChecks.elemen1BK && (
-                      <span style={{ color: 'white', fontSize: '12px', fontWeight: 'bold' }}>✓</span>
+                    {(kompetensinitas==='bk') && (
+                      <span style={{ color: 'black', fontSize: '12px', fontWeight: 'bold' }}>✓</span>
                     )}
                   </div>
                   BK
@@ -954,29 +1236,56 @@ const APL02 = () => {
                 gap: '6px',
                 fontSize: '12px'
               }}>
-                {['bukti I', 'bukti II', 'bukti III', 'bukti IV', 'bukti V', 'bukti VI'].map((bukti, index) => (
-                  <label key={index} style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '8px',
-                    cursor: 'pointer'
-                  }}>
-                    <input 
-                      type="checkbox" 
-                      style={{ 
-                        width: '14px', 
-                        height: '14px' 
-                      }} 
-                    />
-                    <span>{bukti}</span>
-                  </label>
+                {buktiList.map((val, idx) => (
+                  <div key={idx} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    {buktiOptions.length > 0 ? (
+                      <select
+                        value={val}
+                        onChange={(e)=>{
+                          const cp = [...buktiList]; cp[idx] = e.target.value; setBuktiList(cp);
+                        }}
+                        style={{ flex: 1, padding: '6px 8px' }}
+                      >
+                        <option value="">Pilih deskripsi bukti…</option>
+                        {buktiOptions.map(opt => (
+                          <option key={opt.id} value={opt.label}>{opt.label}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        placeholder={`Deskripsi bukti ${idx+1}`}
+                        value={val}
+                        onChange={(e)=>{
+                          const cp = [...buktiList]; cp[idx] = e.target.value; setBuktiList(cp);
+                        }}
+                        style={{ flex: 1, padding: '6px 8px' }}
+                      />
+                    )}
+                    <button
+                      type="button"
+                      onClick={()=>{
+                        const cp = [...buktiList]; cp.splice(idx,1); setBuktiList(cp.length?cp:['']);
+                      }}
+                      style={{ padding: '6px 10px', fontSize: '12px' }}
+                    >
+                      Hapus
+                    </button>
+                  </div>
                 ))}
+                <button
+                  type="button"
+                  onClick={()=>setBuktiList((prev)=>[...prev, ''])}
+                  style={{ marginTop: '8px', padding: '6px 10px', fontSize: '12px' }}
+                >
+                  + Tambah Bukti
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Assessor Sections */}
+        {/* Assessor Sections (UI only) */}
         <div style={{ marginTop: '30px' }}>
           {/* Assessor 1 */}
           <div style={{
@@ -1008,7 +1317,8 @@ const APL02 = () => {
               <span style={{ fontSize: '11px', color: '#666' }}>Nama Asesi</span>
               <input 
                 type="text" 
-                value="Afghal Ezhar Rahma Pangestu"
+                value={asesiName}
+                placeholder="Nama Asesi"
                 readOnly
                 style={{
                   padding: '8px 12px',

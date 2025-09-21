@@ -148,5 +148,7 @@ export const getFormIa01ByAssesi = (assesiId) => api.get(`/assesment/formia01/${
 
 // File attachment endpoints
 export const viewBuktiDokumen = (id) => api.get(`/bukti-dokumen/view/${id}`);
+// List bukti dokumen milik asesi saat ini
+export const getMyBuktiDokumenSelf = () => api.get(`/bukti-dokumen/self`);
 
 export default api;

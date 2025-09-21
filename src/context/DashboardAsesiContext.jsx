@@ -17,7 +17,10 @@ import {
   getFormAk05ByAssesi,
   getFormIa01ByAssesi,
   getSkemas,
+  getAssesments,
+  createAssesmentAsesi,
 } from "../api/api";
+import { fetchCsrfCookie } from "../api/api";
 import { useAuth } from "./AuthContext";
 
 const DashboardAsesiContext = createContext();
@@ -48,7 +51,18 @@ export const DashboardAsesiProvider = ({ children }) => {
       const payload = res.data?.data ?? res.data?.user ?? res.data ?? null;
       setCurrentAsesi(payload); // Simpan data asesi saat ini
     } catch (err) {
-      setError(err.response?.data?.message || "Gagal fetch current asesi");
+      // Fallback: gunakan data APL-01 sebagai profil asesi bila endpoint /asesi 404
+      if (err?.response?.status === 404) {
+        try {
+          const aplRes = await showapl01();
+          const fallback = aplRes.data?.data ?? aplRes.data?.user ?? aplRes.data ?? null;
+          if (fallback) setCurrentAsesi(fallback);
+        } catch (e) {
+          setError(e.response?.data?.message || "Gagal fetch current asesi (fallback APL01)");
+        }
+      } else {
+        setError(err.response?.data?.message || "Gagal fetch current asesi");
+      }
     } finally {
       setLoading(false);
     }
@@ -81,7 +95,12 @@ export const DashboardAsesiProvider = ({ children }) => {
       const res = await getApl02ByAssesi(uid);
       setApl02Data(res.data?.data || null);
     } catch (err) {
-      setError(err.response?.data?.message || "Gagal fetch data APL02");
+      if (err?.response?.status === 404) {
+        // belum ada APL02, aman diabaikan
+        setApl02Data(null);
+      } else {
+        setError(err.response?.data?.message || "Gagal fetch data APL02");
+      }
     } finally {
       setLoading(false);
     }
@@ -97,7 +116,11 @@ export const DashboardAsesiProvider = ({ children }) => {
       const res = await getFormAk02ByAssesi(uid);
       setAk02Data(res.data?.data || null);
     } catch (err) {
-      setError(err.response?.data?.message || "Gagal fetch data AK02");
+      if (err?.response?.status === 404) {
+        setAk02Data(null);
+      } else {
+        setError(err.response?.data?.message || "Gagal fetch data AK02");
+      }
     } finally {
       setLoading(false);
     }
@@ -113,7 +136,11 @@ export const DashboardAsesiProvider = ({ children }) => {
       const res = await getFormAk03ByAssesi(uid);
       setAk03Data(res.data?.data || null);
     } catch (err) {
-      setError(err.response?.data?.message || "Gagal fetch data AK03");
+      if (err?.response?.status === 404) {
+        setAk03Data(null);
+      } else {
+        setError(err.response?.data?.message || "Gagal fetch data AK03");
+      }
     } finally {
       setLoading(false);
     }
@@ -129,7 +156,11 @@ export const DashboardAsesiProvider = ({ children }) => {
       const res = await getFormAk05ByAssesi(uid);
       setAk05Data(res.data?.data || null);
     } catch (err) {
-      setError(err.response?.data?.message || "Gagal fetch data AK05");
+      if (err?.response?.status === 404) {
+        setAk05Data(null);
+      } else {
+        setError(err.response?.data?.message || "Gagal fetch data AK05");
+      }
     } finally {
       setLoading(false);
     }
@@ -145,7 +176,11 @@ export const DashboardAsesiProvider = ({ children }) => {
       const res = await getFormIa01ByAssesi(uid);
       setIa01Data(res.data?.data || null);
     } catch (err) {
-      setError(err.response?.data?.message || "Gagal fetch data IA01");
+      if (err?.response?.status === 404) {
+        setIa01Data(null);
+      } else {
+        setError(err.response?.data?.message || "Gagal fetch data IA01");
+      }
     } finally {
       setLoading(false);
     }
@@ -168,36 +203,98 @@ export const DashboardAsesiProvider = ({ children }) => {
 
   // Fetch user assessments
   const fetchUserAssessments = useCallback(async () => {
-    if (!user || user.role !== "assesi" || !user.id) return;
+    if (!user || user.role !== "assesi") return;
+    // Derive asesi_id (NOT user.id). Prefer currentAsesi/apl01Data
+    const deriveAsesiId = () => {
+      // common shapes: {id, nama_lengkap,...} or {user:{...}}; prefer top-level id for asesi
+      const fromCurrent = currentAsesi?.id ?? currentAsesi?.assesi_id ?? currentAsesi?.user?.assesi_id;
+      if (fromCurrent) return Number(fromCurrent);
+      const fromApl01 = Array.isArray(apl01Data) ? apl01Data[0]?.id ?? apl01Data[0]?.assesi_id : (apl01Data?.id ?? apl01Data?.assesi_id);
+      if (fromApl01) return Number(fromApl01);
+      try {
+        const lp = JSON.parse(localStorage.getItem("asesiProfile"));
+        const fromLS = lp?.id ?? lp?.assesi_id;
+        if (fromLS) return Number(fromLS);
+      } catch {}
+      return undefined;
+    };
+    const asesiId = deriveAsesiId();
+    if (!asesiId) return;
     setLoading(true);
     setError(null);
     try {
-      const res = await getAssesmentByAsesi(user.id);
+      const res = await getAssesmentByAsesi(asesiId);
       setUserAssessments(res.data?.data || []);
     } catch (err) {
-      setError(err.response?.data?.message || "Gagal fetch user assessments");
+      if (err?.response?.status === 404) {
+        setUserAssessments([]);
+      } else {
+        setError(err.response?.data?.message || "Gagal fetch user assessments");
+      }
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, currentAsesi, apl01Data]);
+
+  // Ensure user has assesment_asesi by auto-creating one (pick first active assessment)
+  const ensureUserAssesmentAsesi = useCallback(async () => {
+    if (!user || user.role !== 'assesi') return;
+    // reuse deriveAsesiId from above scope
+    const deriveAsesiId = () => {
+      const fromCurrent = currentAsesi?.id ?? currentAsesi?.assesi_id ?? currentAsesi?.user?.assesi_id;
+      if (fromCurrent) return Number(fromCurrent);
+      const fromApl01 = Array.isArray(apl01Data) ? apl01Data[0]?.id ?? apl01Data[0]?.assesi_id : (apl01Data?.id ?? apl01Data?.assesi_id);
+      if (fromApl01) return Number(fromApl01);
+      try { const lp = JSON.parse(localStorage.getItem("asesiProfile")); const fromLS = lp?.id ?? lp?.assesi_id; if (fromLS) return Number(fromLS);} catch {}
+      return undefined;
+    };
+    const asesiId = deriveAsesiId();
+    if (!asesiId) return;
+
+    // If already has, skip
+    if (Array.isArray(userAssessments) && userAssessments.length > 0) return;
+
+    try {
+      const list = await getAssesments();
+      const assessments = list.data?.data || [];
+      const active = assessments.find(a => String(a.status).toLowerCase() === 'active');
+      if (!active) return; // nothing to create
+
+      await fetchCsrfCookie();
+      await createAssesmentAsesi({ assesment_id: Number(active.id), assesi_id: Number(asesiId) });
+      // refresh user assessments
+      await fetchUserAssessments();
+    } catch (e) {
+      // ignore if backend rejects due to already joined elsewhere
+    }
+  }, [user, currentAsesi, apl01Data, userAssessments, fetchUserAssessments]);
 
   // Fetch schema list (for selection/reference)
   const fetchSkemas = useCallback(async () => {
+    // Hanya untuk role yang diizinkan (route dilindungi middleware 'approve')
+    if (user?.role !== 'assesor' && user?.role !== 'admin') return;
     setLoading(true);
     setError(null);
     try {
       const res = await getSkemas();
       setSkemaList(res.data?.data || []);
     } catch (err) {
-      setError(err.response?.data?.message || "Gagal fetch data skema");
+      if (err?.response?.status === 403) {
+        // asesi tidak diizinkan, abaikan
+        setSkemaList([]);
+      } else {
+        setError(err.response?.data?.message || "Gagal fetch data skema");
+      }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user]);
 
   // Fetch data saat komponen pertama kali dimuat
   useEffect(() => {
     if (user?.role === "assesi") {
+      // Pastikan cookie CSRF / sesi tersedia untuk route Sanctum
+      fetchCsrfCookie().finally(() => {
       fetchCurrentAsesi();
       fetchApl01();
       fetchApl02();
@@ -207,9 +304,19 @@ export const DashboardAsesiProvider = ({ children }) => {
       fetchIa01();
       fetchAssessmentStatus();
       fetchUserAssessments();
+      // try to ensure assesment_asesi if none
+      ensureUserAssesmentAsesi();
       fetchSkemas();
+      });
     }
-  }, [fetchCurrentAsesi, fetchApl01, fetchApl02, fetchAk02, fetchAk03, fetchAk05, fetchIa01, fetchAssessmentStatus, fetchUserAssessments, fetchSkemas]);
+  }, [fetchCurrentAsesi, fetchApl01, fetchApl02, fetchAk02, fetchAk03, fetchAk05, fetchIa01, fetchAssessmentStatus, fetchUserAssessments, ensureUserAssesmentAsesi, fetchSkemas]);
+
+  // Re-fetch user assessments once APL-01 data is loaded (for asesi_id derivation)
+  useEffect(() => {
+    if (user?.role === 'assesi' && (Array.isArray(apl01Data) ? apl01Data.length > 0 : !!apl01Data)) {
+      fetchUserAssessments();
+    }
+  }, [user, apl01Data, fetchUserAssessments]);
 
   const value = useMemo(
     () => ({
@@ -235,6 +342,7 @@ export const DashboardAsesiProvider = ({ children }) => {
       fetchSkemas,
       fetchAssessmentStatus,
       fetchUserAssessments,
+      ensureUserAssesmentAsesi,
     }),
     [
       currentAsesi, 
@@ -258,7 +366,8 @@ export const DashboardAsesiProvider = ({ children }) => {
       fetchIa01,
       fetchSkemas,
       fetchAssessmentStatus, 
-      fetchUserAssessments
+      fetchUserAssessments,
+      ensureUserAssesmentAsesi,
     ]
   );
 
