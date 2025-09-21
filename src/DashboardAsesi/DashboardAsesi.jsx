@@ -10,7 +10,7 @@ function DashboardAsesi({ onNavigate }) {
   const { currentAssesi, apl01data } = useDashboardAsesi();
   const { user } = useAuth();
   const { jurusanList } = useJurusan();
-  
+
   console.log(jurusanList);
   console.log("Current Assesi:", currentAssesi);
   console.log("APL01 Data:", apl01data);
@@ -32,8 +32,29 @@ function DashboardAsesi({ onNavigate }) {
     }
   };
 
+  const handleLogout = () => {
+    // Konfirmasi logout dengan notifikasi
+    const confirmLogout = window.confirm("Apakah Anda yakin ingin keluar?");
+    if (confirmLogout) {
+      // Redirect ke home page setelah konfirmasi
+      window.location.href = "/";
+    }
+  };
+
+  const handleEditAccount = () => {
+    if (onNavigate) {
+      onNavigate("EditAccount");
+    } else {
+      alert("Edit Account function not implemented");
+    }
+  };
+
   // Fix: Check if APL01 data exists properly
-  const hasApl01Data = apl01data && (Array.isArray(apl01data) ? apl01data.length > 0 : Object.keys(apl01data).length > 0);
+  const hasApl01Data =
+    apl01data &&
+    (Array.isArray(apl01data)
+      ? apl01data.length > 0
+      : Object.keys(apl01data).length > 0);
   const hasAssesments = assesments && assesments.length > 0;
 
   return (
@@ -168,11 +189,13 @@ function DashboardAsesi({ onNavigate }) {
             color: "#333",
           }}
         >
-          {new Date().toLocaleDateString('id-ID', { 
-            day: '2-digit', 
-            month: 'short', 
-            year: 'numeric' 
-          }).toUpperCase()}
+          {new Date()
+            .toLocaleDateString("id-ID", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })
+            .toUpperCase()}
         </div>
       </div>
 
@@ -279,6 +302,114 @@ function DashboardAsesi({ onNavigate }) {
                 >
                   Valid
                 </button>
+
+                {/* Edit Account Button */}
+                <button
+                  onClick={handleEditAccount}
+                  style={{
+                    backgroundColor: "transparent",
+                    color: "#FF8C00",
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "8px 12px",
+                    fontSize: "11px",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = "#fff3e0";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                  }}
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M18.5 2.50023C18.8978 2.10243 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.10243 21.5 2.50023C21.8978 2.89804 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.10243 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Edit Account
+                </button>
+
+                {/* Logout Button */}
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    backgroundColor: "transparent",
+                    color: "#dc3545",
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "8px 12px",
+                    fontSize: "11px",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = "#ffebee";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                  }}
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <polyline
+                      points="16,17 21,12 16,7"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <line
+                      x1="21"
+                      y1="12"
+                      x2="9"
+                      y2="12"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Logout
+                </button>
               </>
             ) : (
               <div>
@@ -309,6 +440,115 @@ function DashboardAsesi({ onNavigate }) {
                   }}
                 >
                   Tidak Valid
+                </button>
+
+                {/* Edit Account Button for when no data */}
+                <button
+                  onClick={handleEditAccount}
+                  style={{
+                    backgroundColor: "transparent",
+                    color: "#FF8C00",
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "8px 12px",
+                    fontSize: "11px",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    transition: "all 0.2s ease",
+                    marginTop: "8px",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = "#fff3e0";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                  }}
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M18.5 2.50023C18.8978 2.10243 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.10243 21.5 2.50023C21.8978 2.89804 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.10243 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Edit Account
+                </button>
+
+                {/* Logout Button for when no data */}
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    backgroundColor: "transparent",
+                    color: "#dc3545",
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "8px 12px",
+                    fontSize: "11px",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = "#ffebee";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                  }}
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <polyline
+                      points="16,17 21,12 16,7"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <line
+                      x1="21"
+                      y1="12"
+                      x2="9"
+                      y2="12"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Logout
                 </button>
               </div>
             )}
@@ -437,7 +677,9 @@ function DashboardAsesi({ onNavigate }) {
                 onMouseEnter={(e) =>
                   (e.target.style.transform = "translateY(-1px)")
                 }
-                onMouseLeave={(e) => (e.target.style.transform = "translateY(0)")}
+                onMouseLeave={(e) =>
+                  (e.target.style.transform = "translateY(0)")
+                }
               >
                 Lihat Detail
               </button>
@@ -521,12 +763,18 @@ function DashboardAsesi({ onNavigate }) {
                           opacity: "0.8",
                         }}
                       >
-                        Tanggal: {new Date(assessment.tanggal).toLocaleDateString('id-ID')}
+                        Tanggal:{" "}
+                        {new Date(assessment.tanggal).toLocaleDateString(
+                          "id-ID"
+                        )}
                       </p>
                     )}
                   </div>
                   <button
-                    onClick={() => onNavigate && onNavigate("assessment", { assessmentId: assessment.id })}
+                    onClick={() =>
+                      onNavigate &&
+                      onNavigate("assessment", { assessmentId: assessment.id })
+                    }
                     style={{
                       backgroundColor: "#D9D9D9",
                       color: "black",
