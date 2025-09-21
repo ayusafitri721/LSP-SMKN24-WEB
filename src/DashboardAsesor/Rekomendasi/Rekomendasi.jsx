@@ -1,6 +1,35 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+const headerSectionStyle = {
+  backgroundImage:
+    "linear-gradient(rgba(255,165,0,0.4), rgba(255,140,0,0.4)), url('/src/img/kontak.png')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  borderRadius: "0 0 40px 40px",
+  overflow: "hidden",
+  marginBottom: "0",
+  padding: "20px 0",
+};
+
+const logoContainerStyle = {
+  height: "200px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  marginTop: "20px",
+  marginBottom: "20px",
+};
+
+const logoTextStyle = {
+  color: "white",
+  fontSize: "56px",
+  fontWeight: "bold",
+  margin: 0,
+  textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
+  letterSpacing: "1px",
+};
+
 const Rekomendasi = () => {
   const { nis } = useParams();
   const navigate = useNavigate();
@@ -37,51 +66,40 @@ const Rekomendasi = () => {
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       }}
     >
-      {/* Header dengan Latar Belakang */}
+      {/* Header Section ala Wawancara.jsx */}
+      <div style={headerSectionStyle}>
+        <div style={logoContainerStyle}>
+          <h1 style={logoTextStyle}>MyLSP</h1>
+        </div>
+      </div>
+      {/* Box Judul dan Logo */}
       <div
         style={{
-          width: "100%",
-          height: "200px",
-          backgroundImage: "url('https://images.unsplash.com/photo-1549923746-c56781254884?fit=crop&w=1500')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          position: "relative",
           display: "flex",
-          justifyContent: "center",
           alignItems: "center",
-          color: "white",
-          fontSize: "48px",
-          fontWeight: "bold",
+          gap: "20px",
+          padding: "15px 20px",
+          backgroundColor: "white",
+          margin: "0 20px",
+          border: "1px solid #dee2e6",
+          borderRadius: "8px",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          borderBottom: "2px solid #FF8C00",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(255, 127, 57, 0.7)",
-          }}
-        ></div>
-        <span style={{ zIndex: 1 }}>MyLSP</span>
-        <div
-          style={{
-            position: "absolute",
-            top: "20px",
-            right: "20px",
-            width: "40px",
-            height: "40px",
-            borderRadius: "50%",
-            backgroundImage: "url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?fit=facearea&facepad=2&w=256&h=256&q=80')",
-            backgroundSize: "cover",
-          }}
-        ></div>
+        <div style={{ flexShrink: 0 }}>
+          <img
+            src="/src/img/image 12.png"
+            alt="LSP Logo"
+            style={{ width: "80px", height: "80px", borderRadius: "8px", objectFit: "contain", backgroundColor: "#f8f9fa", padding: "4px" }}
+          />
+        </div>
+        <div style={{ flex: 1, textAlign: "center" }}>
+          <div style={{ fontSize: "16px", fontWeight: "bold", margin: "0 0 5px 0", color: "#333" }}>REKOMENDASI</div>
+          <div style={{ fontSize: "16px", fontWeight: "bold", margin: "0", color: "#333" }}>{asesi.name}</div>
+        </div>
       </div>
-      {/* Nama Asesi */}
-      <div style={{ padding: "15px", backgroundColor: "#fff", boxShadow: "0 2px 4px rgba(0,0,0,0.1)", textAlign: "center", fontWeight: "bold", color: "#4b5563" }}>
-        {asesi.name}
-      </div>
+     
 
       <div style={{ display: "flex", padding: "20px", gap: "20px" }}>
         {/* Kolom Kiri */}
