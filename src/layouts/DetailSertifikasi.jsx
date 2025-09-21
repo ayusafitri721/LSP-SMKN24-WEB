@@ -642,13 +642,25 @@ const DetailSertifikasi = ({ onNavigate }) => {
           background-color: #f8f9fa;
         }
 
-        /* FOOTER STYLES */
+        /* FOOTER STYLES - Kembali ke layout diagonal original */
         .footer {
           display: flex;
-          height: 350px;
-          background: linear-gradient(135deg, #ff7a00 0%, #ff7a00 40%, #4a9eff 40%, #4a9eff 100%);
-          color: white;
+          min-height: 350px;
           position: relative;
+          overflow: hidden;
+          color: white;
+        }
+
+        /* Diagonal background effect */
+        .footer::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(135deg, #ff7a00 0%, #ff7a00 40%, #4a9eff 40%, #4a9eff 100%);
+          z-index: 1;
         }
 
         .footer-left {
@@ -657,6 +669,8 @@ const DetailSertifikasi = ({ onNavigate }) => {
           display: flex;
           flex-direction: column;
           justify-content: flex-start;
+          position: relative;
+          z-index: 2;
         }
 
         .footer-logo {
@@ -707,6 +721,8 @@ const DetailSertifikasi = ({ onNavigate }) => {
           display: flex;
           padding: 40px;
           gap: 60px;
+          position: relative;
+          z-index: 2;
         }
 
         .footer-column {
@@ -776,38 +792,107 @@ const DetailSertifikasi = ({ onNavigate }) => {
           background-color: #555;
         }
 
-        /* Responsive design */
-        @media (max-width: 768px) {
-          .skema-header {
-            flex-direction: column;
-            gap: 20px;
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 1024px) {
+          .hero-section {
+            height: 300px;
           }
           
           .main-title {
-            font-size: 32px;
+            font-size: 36px;
+          }
+          
+          .stats-card {
+            padding: 40px 60px;
+            min-width: 250px;
+          }
+          
+          .stats-number {
+            font-size: 72px;
+          }
+          
+          .skema-section, 
+          .detail-section {
+            padding: 40px 30px;
+          }
+          
+          .breadcrumb {
+            padding: 16px 30px;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .hero-section {
+            height: 250px;
+          }
+
+          .breadcrumb {
+            padding: 16px 20px;
+            font-size: 13px;
+          }
+
+          .skema-section, 
+          .detail-section {
+            padding: 30px 20px;
+          }
+
+          .skema-header {
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 40px;
+          }
+          
+          .main-title {
+            font-size: 28px;
+          }
+
+          .daftar-btn {
+            padding: 10px 24px;
+            font-size: 14px;
+            align-self: flex-start;
           }
           
           .stats-container {
             flex-direction: column;
+            align-items: center;
+          }
+
+          .stats-card {
+            width: 100%;
+            max-width: 300px;
+            padding: 30px 40px;
+            border-left: none !important;
+            border-right: none !important;
           }
           
           .stats-card-middle {
-            border-left: none;
-            border-right: none;
             border-top: 2px solid #e0e0e0;
             border-bottom: 2px solid #e0e0e0;
           }
-          
-          .footer {
-            flex-direction: column;
-            height: auto;
+
+          .stats-number {
+            font-size: 48px;
           }
-          
-          .footer-right {
-            flex-direction: column;
-            gap: 30px;
+
+          .stats-label {
+            font-size: 16px;
           }
-          
+
+          .info-row {
+            flex-direction: column;
+            gap: 5px;
+            padding: 8px 0;
+          }
+
+          .info-label {
+            width: auto;
+            font-weight: 700;
+          }
+
+          .info-colon {
+            display: none;
+          }
+
           .tabs-container {
             flex-wrap: wrap;
           }
@@ -815,6 +900,8 @@ const DetailSertifikasi = ({ onNavigate }) => {
           .tab-item {
             flex: 1 1 50%;
             min-width: 120px;
+            padding: 10px 8px;
+            font-size: 13px;
           }
           
           .unit-table {
@@ -824,6 +911,246 @@ const DetailSertifikasi = ({ onNavigate }) => {
           .unit-table th,
           .unit-table td {
             padding: 8px 4px;
+          }
+
+          /* Footer Mobile - tetap diagonal */
+          .footer {
+            flex-direction: column;
+            min-height: auto;
+          }
+
+          .footer::before {
+            background: linear-gradient(135deg, #ff7a00 0%, #ff7a00 45%, #4a9eff 45%, #4a9eff 100%);
+          }
+
+          .footer-left {
+            padding: 30px 20px;
+            text-align: center;
+          }
+
+          .footer-logo {
+            font-size: 28px;
+            text-align: center;
+          }
+
+          .footer-description {
+            max-width: none;
+            text-align: center;
+            font-size: 14px;
+          }
+
+          .social-icons {
+            justify-content: center;
+          }
+          
+          .footer-right {
+            flex-direction: column;
+            gap: 30px;
+            padding: 30px 20px;
+          }
+
+          .footer-title {
+            font-size: 18px;
+            text-align: center;
+          }
+
+          .footer-links {
+            text-align: center;
+          }
+
+          .footer-link {
+            justify-content: center;
+            font-size: 13px;
+          }
+
+          .contact-column {
+            text-align: center;
+          }
+
+          .contact-btn {
+            padding: 10px 25px;
+            font-size: 14px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .hero-section {
+            height: 200px;
+          }
+
+          .skema-section, 
+          .detail-section {
+            padding: 20px 15px;
+          }
+
+          .breadcrumb {
+            padding: 12px 15px;
+            font-size: 12px;
+          }
+
+          .main-title {
+            font-size: 24px;
+          }
+
+          .daftar-btn {
+            padding: 8px 20px;
+            font-size: 13px;
+          }
+
+          .section-label {
+            font-size: 13px;
+          }
+
+          .stats-card {
+            padding: 25px 30px;
+          }
+
+          .stats-number {
+            font-size: 36px;
+          }
+
+          .stats-label {
+            font-size: 14px;
+            margin-bottom: 20px;
+          }
+
+          .info-value {
+            font-size: 14px;
+          }
+
+          .tab-item {
+            flex: 1 1 100%;
+            font-size: 12px;
+            padding: 8px 6px;
+          }
+
+          .unit-table {
+            font-size: 11px;
+          }
+
+          .unit-table th,
+          .unit-table td {
+            padding: 6px 3px;
+          }
+
+          .footer-left {
+            padding: 25px 15px;
+          }
+
+          .footer-right {
+            padding: 25px 15px;
+            gap: 25px;
+          }
+
+          .footer-logo {
+            font-size: 24px;
+          }
+
+          .footer-description {
+            font-size: 13px;
+          }
+
+          .footer-title {
+            font-size: 16px;
+          }
+
+          .footer-link {
+            font-size: 12px;
+          }
+
+          .contact-btn {
+            padding: 8px 20px;
+            font-size: 13px;
+          }
+
+          .social-icon {
+            width: 35px;
+            height: 35px;
+          }
+
+          .social-icon svg {
+            width: 18px;
+            height: 18px;
+          }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 360px) {
+          .main-title {
+            font-size: 20px;
+          }
+
+          .stats-number {
+            font-size: 28px;
+          }
+
+          .footer-logo {
+            font-size: 20px;
+          }
+
+          .unit-table th,
+          .unit-table td {
+            padding: 4px 2px;
+            font-size: 10px;
+          }
+
+          .tab-item {
+            padding: 6px 4px;
+            font-size: 11px;
+          }
+        }
+
+        /* Table overflow scroll for mobile */
+        @media (max-width: 768px) {
+          .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+          }
+
+          .unit-table {
+            min-width: 600px;
+          }
+        }
+
+        /* Smooth transitions */
+        .hero-image,
+        .daftar-btn,
+        .tab-item,
+        .footer-link,
+        .social-icon,
+        .contact-btn {
+          transition: all 0.3s ease;
+        }
+
+        /* Focus states for accessibility */
+        .daftar-btn:focus,
+        .tab-item:focus,
+        .footer-link:focus,
+        .social-icon:focus,
+        .contact-btn:focus,
+        .breadcrumb-home:focus {
+          outline: 2px solid #4a9eff;
+          outline-offset: 2px;
+        }
+
+        /* Print styles */
+        @media print {
+          .footer,
+          .hero-section,
+          .orange-strip {
+            display: none;
+          }
+
+          .home-container {
+            background: white;
+          }
+
+          .main-title {
+            color: black;
+          }
+
+          .stats-number {
+            color: black;
           }
         }
       `}</style>
