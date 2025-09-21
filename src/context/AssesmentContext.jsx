@@ -12,7 +12,7 @@ import {
   createAssesment,
   updateAssesment,
   deleteAssesment,
-} from "../Api/api";
+} from "../api/api";
 import { useAuth } from "./AuthContext";
 
 const AssesmentContext = createContext();

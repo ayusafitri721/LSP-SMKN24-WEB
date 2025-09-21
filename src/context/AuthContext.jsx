@@ -1,6 +1,6 @@
 // context/AuthContext.jsx
 import { createContext, useContext, useState, useMemo, useEffect } from "react";
-import api from "../Api/api"; // axios instance misalnya
+import api from "../api/api"; // axios instance misalnya
 import { data } from "react-router-dom";
 
 const AuthContext = createContext();

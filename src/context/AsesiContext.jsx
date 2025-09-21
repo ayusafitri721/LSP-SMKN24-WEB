@@ -6,7 +6,7 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
-import { getAsesis, createAsesi, updateAsesi, deleteAsesi } from "../Api/api";
+import { getAsesis, createAsesi, updateAsesi, deleteAsesi } from "../api/api";
 import { useAuth } from "./AuthContext";
 
 const AsesiContext = createContext();

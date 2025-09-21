@@ -6,7 +6,7 @@ import {
   useCallback,
   useMemo,
 } from "react";
-import { getSkemas, postApl02 } from "../Api/api";
+import { getSkemas, postApl02 } from "../api/api";
 import { useAuth } from "./AuthContext";
 
 const SkemaContext = createContext();

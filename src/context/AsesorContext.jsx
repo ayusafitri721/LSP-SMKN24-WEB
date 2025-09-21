@@ -11,7 +11,7 @@ import {
   createAsesor,
   updateAsesor,
   deleteAsesor,
-} from "../Api/api";
+} from "../api/api";
 import { useAuth } from "./AuthContext";
 
 const AsesorContext = createContext();

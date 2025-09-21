@@ -11,7 +11,7 @@ import {
   putJurusan,
   deleteJurusan,
   createJurusan,
-} from "../Api/api";
+} from "../api/api";
 
 const JurusanContext = createContext();
 
