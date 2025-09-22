@@ -163,7 +163,7 @@ const warningNotificationStyle = {
 };
 
 const APL02 = () => {
-  const { currentAssesi, apl01Data, userAssessments } = useDashboardAsesi();
+  const { currentAssesi, apl01Data, userAssessments, ensureUserAssesmentAsesi, fetchUserAssessments } = useDashboardAsesi();
   // Hapus data dummy asesor; akan diisi dari API jika tersedia
   const [assessorData, setAssessorData] = useState([]);
   
@@ -252,13 +252,23 @@ const APL02 = () => {
     }
     if (name && !asesiName) setAsesiName(name);
 
-    // schema id from apl01
+    // schema id from apl01 (robust paths)
     const extractSchemaId = (data) => {
       if (!data) return undefined;
+      const pickFromObj = (obj) => (
+        obj?.schema_id ||
+        obj?.schemaId ||
+        obj?.sertification_data?.schema_id ||
+        obj?.sertificationData?.schema_id ||
+        obj?.sertificationData?.schema?.id ||
+        obj?.sertification_data?.schema?.id ||
+        obj?.schema?.id
+      );
       if (Array.isArray(data) && data.length > 0) {
-        return data[0]?.schema_id || data[0]?.sertification_data?.schema_id;
+        const first = data[0];
+        return pickFromObj(first) || pickFromObj(first?.user) || pickFromObj(first?.sertificationData);
       }
-      return data.schema_id || data?.sertification_data?.schema_id;
+      return pickFromObj(data) || pickFromObj(data?.user) || pickFromObj(data?.sertificationData);
     };
     const sid = extractSchemaId(apl01Data);
     if (sid && !skemaId) setSkemaId(String(sid));
@@ -282,6 +292,21 @@ const APL02 = () => {
       }
     })();
   }, []);
+
+  // Ensure assesment_asesi exists when entering APL-02, then pick default
+  useEffect(() => {
+    (async () => {
+      await ensureUserAssesmentAsesi?.();
+      await fetchUserAssessments?.();
+    })();
+  }, []);
+
+  // Select default assesmentAsesiId when list becomes available
+  useEffect(() => {
+    if (!assesmentAsesiId && Array.isArray(userAssessments) && userAssessments.length > 0) {
+      setAssesmentAsesiId(String(userAssessments[0].id));
+    }
+  }, [userAssessments, assesmentAsesiId]);
 
   // Fetch full schema detail (units, elements, KUK) when skemaId resolved
   useEffect(() => {
@@ -839,6 +864,21 @@ const APL02 = () => {
             </>
           )}
         </div>
+
+        {/* Info banner when bukti options empty */}
+        {Array.isArray(buktiOptions) && buktiOptions.length === 0 && (
+          <div style={{
+            backgroundColor: '#fff3cd',
+            border: '1px solid #ffeeba',
+            color: '#856404',
+            padding: '10px 12px',
+            borderRadius: '8px',
+            marginBottom: '12px',
+            fontSize: '12px'
+          }}>
+            Belum ada Bukti Dokumen untuk akun Anda. Isi/approve APL-01 atau minta admin menambahkan bukti agar dropdown terisi. Anda juga bisa mengetik manual, namun harus persis sama dengan deskripsi bukti yang tersimpan.
+          </div>
+        )}
 
         {/* Skema Sertifikasi Section - table format */}
         <div style={{
