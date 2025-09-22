@@ -16,7 +16,7 @@ const LoginRoutes = () => {
     } else if (user && user.role === "assesi") {
       window.location.href = "/dashboard-asesi";
     } else if (user && user.role === "asesor") {
-      window.location.href = "/asesor";
+      window.location.href = "/dashboard-asesor";
     } else {
       window.location.href = "/auth/login";
     }

@@ -57,7 +57,7 @@ export const Apl01Provider = ({ children }) => {
   }, [fetchApl01s]);
 
   const value = useMemo(
-    () => ({ apl01s, loading, error, fetchApl01s, approveApl01 }),
+    () => ({ apl01s, loading, error, fetchApl01s, approveApl01, setApl01s }),
     [apl01s, loading, error, fetchApl01s, approveApl01]
   );
 

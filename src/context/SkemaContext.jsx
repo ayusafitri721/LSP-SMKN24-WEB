@@ -19,7 +19,7 @@ export function SkemaProvider({ children }) {
   const [isFetched, setIsFetched] = useState(false); // Caching flag
 
   const fetchSkemas = useCallback(async () => {
-    if (!user || user.role !== "admin" || isFetched) return; // Cek role user
+    if (!user || (user.role !== "admin" && user.role !== "asesor") || isFetched) return; // Cek role user
     setLoading(true);
     setError(null);
     try {
@@ -46,7 +46,7 @@ export function SkemaProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (user?.role === "admin") {
+    if (user?.role === "admin" || user?.role === "asesor") {
       fetchSkemas();
     }
   }, [fetchSkemas, user]);

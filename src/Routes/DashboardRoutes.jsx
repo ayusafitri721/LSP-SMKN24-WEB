@@ -572,7 +572,7 @@ const DashboardRoutes = () => {
         element={
           <DashboardLayout>
             <LihatApprovement
-              onBack={() => navigate("/dashboard/approvement/detail")}
+              onBack={() => navigate("/dashboard/approvement/apl-02/detail")}
               onNavigate={handleNavigate}
             />
           </DashboardLayout>
