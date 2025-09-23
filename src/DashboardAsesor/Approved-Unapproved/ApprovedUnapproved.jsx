@@ -1,7 +1,12 @@
 import React, { useState, useEffect, use } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAssesment } from "../../context/AssesmentContext";
-import { api, getApl02ByAssesi, getFormIa01ByAssesi } from "../../api/api";
+import {
+  api,
+  getApl02ByAssesi,
+  getFormAk05ByAssesi,
+  getFormIa01ByAssesi,
+} from "../../api/api";
 
 // Komponen Utama
 const ApprovedUnapproved = () => {
@@ -12,6 +17,7 @@ const ApprovedUnapproved = () => {
   const selectedAsesi = assesmentAsesis.find((a) => a?.asesi.id == nis);
   const [formIa01Data, setFormIa01Data] = useState(null);
   const [formAk01Data, setFormAk01Data] = useState(null);
+  const [formAk05Data, setFormAk05Data] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
   const [akisDisabled, setAkisDisabled] = useState(false);
   useEffect(() => {
@@ -69,6 +75,17 @@ const ApprovedUnapproved = () => {
       }
     };
     fetchAk01();
+    
+    const fetchAk05 = async () => {
+      if (!nis) return;
+      try {
+        const res = await getFormAk05ByAssesi(nis);
+        setFormAk05Data(res);
+      } catch (error) {
+        console.error("Failed fetch AK05:", error);
+      }
+    };
+    fetchAk05();
   }, [bukti]);
   // State untuk status persetujuan setiap formulir
   const [formulirStatus, setFormulirStatus] = useState([
@@ -130,12 +147,19 @@ const ApprovedUnapproved = () => {
         )
       );
     }
-    if(formAk01Data){
-      setFormulirStatus((prev) => 
-        prev.map((form) => 
-          form.code === "FR.AK.01" ? { ...form, status: "approved"} : form
+    if (formAk01Data) {
+      setFormulirStatus((prev) =>
+        prev.map((form) =>
+          form.code === "FR.AK.01" ? { ...form, status: "approved" } : form
         )
-      )
+      );
+    }
+    if (formAk05Data) {
+      setFormulirStatus((prev) =>
+        prev.map((form) =>
+          form.code === "FR.AK.05" ? { ...form, status: "approved" } : form
+        )
+      );
     }
   }, [bukti, formIa01Data]);
 
@@ -368,8 +392,7 @@ const ApprovedUnapproved = () => {
                     e.stopPropagation();
                     handleApproveUnapprove(index, "approved");
                   }}
-                  disabled={true
-                  } // Disable jika FR.IA.01.CL dan isDisabled true
+                  disabled={true} // Disable jika FR.IA.01.CL dan isDisabled true
                 >
                   Approve
                 </button>
