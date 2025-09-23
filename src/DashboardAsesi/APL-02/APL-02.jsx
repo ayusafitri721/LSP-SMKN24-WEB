@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
-import { submitFormApl02, fetchCsrfCookie, getMyBuktiDokumenSelf, getApl02ById, getAssesmentById } from '../../api/api';
+import { submitFormApl02, fetchCsrfCookie, getMyBuktiDokumenSelf, getApl02ById, getAssesmentById, getSkemas } from '../../api/api';
 import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
 
 const pageContainerStyle = {
@@ -190,6 +190,7 @@ const APL02 = () => {
   const [buktiOptions, setBuktiOptions] = useState([]);
   const [asesiName, setAsesiName] = useState('');
   const [schemaDetail, setSchemaDetail] = useState(null);
+  const [schemaAutoSelected, setSchemaAutoSelected] = useState(false);
   const [namaAsesor, setNamaAsesor] = useState('');
   const [tanggalAsesmen, setTanggalAsesmen] = useState('');
   // selections keyed by elementId: { kompetensinitas: 'k'|'bk'|'', bukti: '' }
@@ -315,6 +316,9 @@ const APL02 = () => {
       const tFmt = tRaw ? String(tRaw).slice(0,10) : '';
       if (nm) setNamaAsesor(nm);
       if (tFmt) setTanggalAsesmen(tFmt);
+      // Resolve skemaId from active assessment if not set yet
+      const sid = assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
+      if (sid && !skemaId) setSkemaId(String(sid));
     })();
   }, [JSON.stringify(userAssessments)]);
 
@@ -343,16 +347,46 @@ const APL02 = () => {
         await fetchCsrfCookie();
         const res = await getApl02ById(idNum);
         const data = res.data?.data || [];
-        setSchemaDetail({ units: data });
-        // Initialize selections for each element
-        const sel = {};
-        data.forEach((unit) => {
-          const elemenObj = unit.elemen || {};
-          Object.values(elemenObj).forEach((el) => {
-            if (el?.id) sel[el.id] = { kompetensinitas: '', bukti: '' };
+        if (Array.isArray(data) && data.length > 0) {
+          setSchemaDetail({ units: data });
+          const sel = {};
+          data.forEach((unit) => {
+            const elemenObj = unit.elemen || {};
+            Object.values(elemenObj).forEach((el) => {
+              if (el?.id) sel[el.id] = { kompetensinitas: '', bukti: '' };
+            });
           });
-        });
-        setElementSelections(sel);
+          setElementSelections(sel);
+          setSchemaAutoSelected(false);
+        } else {
+          // Fallback: auto-pick first schema that has units
+          try {
+            const list = await getSkemas();
+            const schemas = Array.isArray(list.data?.data) ? list.data.data : [];
+            for (const s of schemas) {
+              const tryId = s.id || s.schema_id || s.skema_id;
+              if (!tryId) continue;
+              try {
+                const r2 = await getApl02ById(Number(tryId));
+                const d2 = r2.data?.data || [];
+                if (Array.isArray(d2) && d2.length > 0) {
+                  setSkemaId(String(tryId));
+                  setSchemaDetail({ units: d2 });
+                  const ssel = {};
+                  d2.forEach((unit) => {
+                    const elemenObj = unit.elemen || {};
+                    Object.values(elemenObj).forEach((el) => {
+                      if (el?.id) ssel[el.id] = { kompetensinitas: '', bukti: '' };
+                    });
+                  });
+                  setElementSelections(ssel);
+                  setSchemaAutoSelected(true);
+                  break;
+                }
+              } catch {}
+            }
+          } catch {}
+        }
       } catch (e) {
         // ignore; UI will allow manual
       }

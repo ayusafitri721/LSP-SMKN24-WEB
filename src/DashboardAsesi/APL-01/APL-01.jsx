@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
-import { showapl01, fetchCsrfCookie, submitFormApl01 } from '../../api/api';
+import { showapl01, fetchCsrfCookie, submitFormApl01, getMyProfile } from '../../api/api';
 import { useAuth } from '../../context/AuthContext';
 
 const pageContainerStyle = {
@@ -392,8 +392,21 @@ const APL01 = () => {
       setApl01Error(null);
       try {
         await fetchCsrfCookie();
-        const res = await showapl01();
-        const payload = res.data?.data ?? res.data?.user ?? res.data ?? null;
+        let payload = null;
+        try {
+          const res = await showapl01();
+          payload = res.data?.data ?? res.data?.user ?? res.data ?? null;
+        } catch (err) {
+          // If APL-01 not found (404), fallback to profile/self to prefill
+          if (err?.response?.status === 404) {
+            try {
+              const pr = await getMyProfile();
+              payload = pr.data?.data ?? pr.data ?? null;
+            } catch {}
+          } else {
+            throw err;
+          }
+        }
         setApl01Data(payload);
       } catch (err) {
         setApl01Error(err?.response?.status === 404 ? 'Belum ada data APL-01' : (err?.response?.data?.message || 'Gagal mengambil status APL-01'));
@@ -442,6 +455,54 @@ const APL01 = () => {
     };
   }, [isFormSubmitted]);
 
+  // Auto-fill form from existing APL-01/profile payload
+  useEffect(() => {
+    if (!apl01Data) return;
+
+    const pick = (...keys) => {
+      for (const k of keys) {
+        if (k == null) continue;
+        const parts = Array.isArray(k) ? k : [k];
+        // support nested paths like 'user.email'
+        const val = parts.reduce((acc, seg) => {
+          if (typeof seg === 'string' && seg.includes('.')) {
+            return seg.split('.').reduce((a, s) => (a && a[s] !== undefined ? a[s] : undefined), acc);
+          }
+          return acc && acc[seg] !== undefined ? acc[seg] : undefined;
+        }, apl01Data);
+        if (val !== undefined && val !== null && String(val).trim() !== '') return val;
+      }
+      return '';
+    };
+
+    // Support both APL-01 row shape and profile shape
+    const next = {
+      tujuan_asesmen: pick('tujuan_asesmen', 'sertificationData.tujuan_asesmen', 'sertification_data.tujuan_asesmen'),
+      schema_id: String(pick('schema_id', 'schema.id', 'sertificationData.schema_id', 'sertification_data.schema_id') || form.schema_id || ''),
+      nama_lengkap: pick('nama_lengkap', 'fullname', 'full_name', 'name', 'user.fullname', 'user.full_name', 'user.name', 'username'),
+      no_ktp: pick('no_ktp', 'ktp', 'nomor_ktp', 'user.no_ktp'),
+      tanggal_lahir: pick('tanggal_lahir', 'tgl_lahir', 'birth_date', 'user.tanggal_lahir', 'user.birth_date')?.slice?.(0,10) || '',
+      tempat_lahir: pick('tempat_lahir', 'birth_place', 'user.tempat_lahir'),
+      jenis_kelamin: pick('jenis_kelamin', 'gender', 'user.jenis_kelamin'),
+      kebangsaan: pick('kebangsaan', 'nationality') || form.kebangsaan,
+      alamat_rumah: pick('alamat_rumah', 'alamat', 'alamat_rumah_lengkap', 'user.alamat'),
+      kode_pos: pick('kode_pos', 'postal_code', 'user.kode_pos'),
+      no_telepon_rumah: pick('no_telepon_rumah', 'telepon_rumah', 'user.no_telepon_rumah'),
+      no_telepon_kantor: pick('no_telepon_kantor', 'telepon_kantor', 'user.no_telepon_kantor'),
+      no_telepon: pick('no_telepon', 'phone', 'user.phone'),
+      email: pick('email', 'user.email'),
+      kualifikasi_pendidikan: pick('kualifikasi_pendidikan', 'user.kualifikasi_pendidikan') || form.kualifikasi_pendidikan,
+      nama_institusi: pick('nama_institusi', 'user.nama_institusi') || form.nama_institusi,
+      jabatan: pick('jabatan', 'user.jabatan') || form.jabatan,
+      alamat_kantor: pick('alamat_kantor', 'user.alamat_kantor') || form.alamat_kantor,
+      kode_pos_kantor: pick('kode_pos_kantor', 'user.kode_pos_kantor') || form.kode_pos_kantor,
+      fax_kantor: pick('fax_kantor', 'user.fax_kantor') || form.fax_kantor,
+      email_kantor: pick('email_kantor', 'user.email_kantor') || form.email_kantor,
+    };
+
+    setForm((prev) => ({ ...prev, ...next }));
+  }, [apl01Data]);
+
   const handleFileUpload = (fileType, event) => {
     const file = event.target.files[0];
     if (file) {
@@ -484,12 +545,13 @@ const APL01 = () => {
 
     // At least one attachment (PDFs accepted; images also allowed by UI but backend requires PDF)
     const attachments = [];
+    // Description mapping per field as requested (auto-filled on submit)
     const fileMap = [
-      ['ktp','KTP/Kartu Pelajar'],
-      ['foto','Foto 3x4'],
-      ['sertifikat','Sertifikat'],
-      ['suratTH','Surat Keterangan TH'],
-      ['suratUNIK','Surat Keterangan UNIK']
+      ['ktp','foto ktp'],
+      ['foto','foto 3x4'],
+      ['sertifikat','sertifikat'],
+      ['suratTH','surat keterangan th'],
+      ['suratUNIK','surat keterangan unik']
     ];
     fileMap.forEach(([key, desc]) => {
       const f = uploadedFiles[key];
@@ -929,7 +991,7 @@ const APL01 = () => {
             </div>
             
             <div style={inputGroupStyle} className="input-group">
-              <label style={labelStyle} className="label">KTP/Kartu Pelajar</label>
+              <label style={labelStyle} className="label">KTP/Kartu Pelajar (deskripsi: "foto ktp")</label>
               <div style={fileUploadStyle} className="file-upload">
                 <input 
                   type="file" 
@@ -947,7 +1009,7 @@ const APL01 = () => {
             </div>
             
             <div style={inputGroupStyle} className="input-group">
-              <label style={labelStyle} className="label">Foto 3x4</label>
+              <label style={labelStyle} className="label">Foto 3x4 (deskripsi: "foto 3x4")</label>
               <div style={fileUploadStyle} className="file-upload">
                 <input 
                   type="file" 
@@ -965,7 +1027,7 @@ const APL01 = () => {
             </div>
             
             <div style={inputGroupStyle} className="input-group">
-              <label style={labelStyle} className="label">Sertifikat</label>
+              <label style={labelStyle} className="label">Sertifikat (deskripsi: "sertifikat")</label>
               <div style={fileUploadStyle} className="file-upload">
                 <input 
                   type="file" 

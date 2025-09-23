@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useAuth } from "../context/AuthContext";
 import { useJurusan } from "../context/JurusanContext";
@@ -10,14 +10,13 @@ import { logout } from "../api/api";
 function DashboardAsesi() {
   // Inisialisasi hook useNavigate
   const navigate = useNavigate();
-
+  const { currentAsesi: currentAsesiData, apl01Data, fetchCurrentAsesi, fetchApl01 } = useDashboardAsesi();
   const { assesments } = useAssesment();
-  const { currentAssesi, apl01Data } = useDashboardAsesi();
   const { user } = useAuth();
   const { jurusanList } = useJurusan();
 
   console.log(jurusanList);
-  console.log("Current Assesi:", currentAssesi);
+  console.log("Current Assesi:", currentAsesiData);
   console.log("APL01 Data:", apl01Data);
 
   // Fix: Handle case when jurusanList or user might be null/undefined
@@ -54,12 +53,18 @@ function DashboardAsesi() {
     navigate("profile-asesi");
   };
 
-  // Fix: Check if APL01 data exists properly
-  const hasApl01Data =
-    apl01Data &&
-    (Array.isArray(apl01Data)
-      ? apl01Data.length > 0
-      : Object.keys(apl01Data).length > 0);
+  // Ensure data is fetched when entering dashboard
+  useEffect(() => {
+    if (!currentAsesiData) fetchCurrentAsesi?.();
+    if (!apl01Data || (Array.isArray(apl01Data) && apl01Data.length === 0)) fetchApl01?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Fix: Check if APL01 data exists properly, or fallback to currentAsesi presence
+  const hasApl01Payload = apl01Data && (Array.isArray(apl01Data) ? apl01Data.length > 0 : Object.keys(apl01Data).length > 0);
+  const hasCurrentAsesi = currentAsesiData && Object.keys(currentAsesiData).length > 0;
+  const hasApl01Data = hasApl01Payload || hasCurrentAsesi;
+
   const hasAssesments = assesments && assesments.length > 0;
 
   return (
@@ -268,7 +273,7 @@ function DashboardAsesi() {
               gap: "12px",
             }}
           >
-            {currentAssesi ? (
+            {currentAsesiData ? (
               <>
                 <p
                   style={{
@@ -279,7 +284,7 @@ function DashboardAsesi() {
                     fontWeight: "500",
                   }}
                 >
-                  Alamat: {currentAssesi.alamat || "Alamat tidak tersedia"}
+                  Alamat: {currentAsesiData.alamat || "Alamat tidak tersedia"}
                 </p>
                 <p
                   style={{
@@ -291,7 +296,7 @@ function DashboardAsesi() {
                   }}
                 >
                   Jenis Kelamin:{" "}
-                  {currentAssesi.jenis_kelamin || "Tidak diketahui"}
+                  {currentAsesiData.jenis_kelamin || "Tidak diketahui"}
                 </p>
                 <button
                   style={{

@@ -57,29 +57,42 @@ export const DashboardAsesiProvider = ({ children }) => {
     return undefined;
   }, [currentAsesi, apl01Data]);
 
-  // Fetch current asesi
+  // Fetch current asesi (robust): prefer /profile/self, then APL-01, then /asesi
   const fetchCurrentAsesi = useCallback(async () => {
     if (!user) return;
     setLoading(true);
     setError(null);
     try {
-      const res = await getCurrentAsesi();
-      // Backend may return {data: {...}} or {user: {...}} or raw object
-      const payload = res.data?.data ?? res.data?.user ?? res.data ?? null;
-      setCurrentAsesi(payload); // Simpan data asesi saat ini
-    } catch (err) {
-      // Fallback: gunakan data APL-01 sebagai profil asesi bila endpoint /asesi 404
-      if (err?.response?.status === 404) {
+      let payload = null;
+      // 1) Prefer profile/self
+      try {
+        const p = await getMyProfile();
+        payload = p.data?.data ?? p.data ?? null;
+      } catch {}
+
+      // 2) Fallback to APL-01 proxy data
+      if (!payload) {
         try {
           const aplRes = await showapl01();
-          const fallback = aplRes.data?.data ?? aplRes.data?.user ?? aplRes.data ?? null;
-          if (fallback) setCurrentAsesi(fallback);
-        } catch (e) {
-          setError(e.response?.data?.message || "Gagal fetch current asesi (fallback APL01)");
-        }
-      } else {
-        setError(err.response?.data?.message || "Gagal fetch current asesi");
+          payload = aplRes.data?.data ?? aplRes.data?.user ?? aplRes.data ?? null;
+        } catch {}
       }
+
+      // 3) Fallback to legacy /asesi endpoint
+      if (!payload) {
+        try {
+          const res = await getCurrentAsesi();
+          payload = res.data?.data ?? res.data?.user ?? res.data ?? null;
+        } catch {}
+      }
+
+      if (payload) {
+        setCurrentAsesi(payload);
+      } else {
+        setCurrentAsesi(null);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Gagal fetch current asesi");
     } finally {
       setLoading(false);
     }
@@ -347,9 +360,9 @@ export const DashboardAsesiProvider = ({ children }) => {
     }
   }, [user]);
 
-  // Fetch data saat komponen pertama kali dimuat (ESSENTIALS ONLY)
+  // Fetch data saat user siap (ESSENTIALS ONLY)
   useEffect(() => {
-    if (user?.role !== "assesi") return;
+    if (!user || user?.role !== "assesi") return;
     let cancelled = false;
     const boot = async () => {
       await fetchCsrfCookie();
@@ -364,7 +377,7 @@ export const DashboardAsesiProvider = ({ children }) => {
     };
     boot();
     return () => { cancelled = true; };
-  }, []);
+  }, [user]);
 
   // Re-fetch user assessments once APL-01 data is loaded (for asesi_id derivation)
   useEffect(() => {
