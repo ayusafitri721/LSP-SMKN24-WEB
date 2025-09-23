@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAssesment } from "../../context/AssesmentContext";
 import {
@@ -19,12 +19,9 @@ const ApprovedUnapproved = () => {
   const [formAk01Data, setFormAk01Data] = useState(null);
   const [formAk05Data, setFormAk05Data] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
-  const [akisDisabled, setAkisDisabled] = useState(false);
   useEffect(() => {
-    if (!selectedAsesi) return;
+    if (!selectedAsesi?.asesi?.id) return;
     const fetchBukti = async () => {
-      if (!selectedAsesi) return;
-
       try {
         const res = await getApl02ByAssesi(selectedAsesi.asesi.id);
         setBukti(res.data.data?.[0]?.ttd_assesor);
@@ -32,25 +29,12 @@ const ApprovedUnapproved = () => {
         console.log(error);
       }
     };
-
     fetchBukti();
-  }, [selectedAsesi]);
+  }, [selectedAsesi?.asesi?.id]);
 
   useEffect(() => {
-    const fetchAk01 = async () => {
-      if (!nis) return;
-      try {
-        const res = await api.get(`/assesment/formak01/${nis}`);
-        setFormAk01Data(res.data.data[0]);
-        setAkisDisabled(!!res.data.data[0]);
-        console.log(formAk01Data);
-      } catch (err) {
-        console.error("Failed fetch AK01:", err);
-      }
-    };
-    fetchAk01();
+    if (!selectedAsesi?.asesi?.id) return;
     const fetchIa01 = async () => {
-      if (!selectedAsesi) return;
       try {
         const res = await getFormIa01ByAssesi(selectedAsesi.asesi.id);
         setFormIa01Data(res.data.data?.[0] || null);
@@ -60,7 +44,7 @@ const ApprovedUnapproved = () => {
       }
     };
     fetchIa01();
-  }, [bukti]);
+  }, [selectedAsesi?.asesi?.id]);
 
   useEffect(() => {
     if (!nis) return;
@@ -68,16 +52,13 @@ const ApprovedUnapproved = () => {
       try {
         const res = await api.get(`/assesment/formak01/${nis}`);
         setFormAk01Data(res.data.data[0]);
-        setAkisDisabled(!!res.data.data[0]);
-        console.log(formAk01Data);
       } catch (err) {
         console.error("Failed fetch AK01:", err);
       }
     };
     fetchAk01();
-    
+
     const fetchAk05 = async () => {
-      if (!nis) return;
       try {
         const res = await getFormAk05ByAssesi(nis);
         setFormAk05Data(res);
@@ -86,7 +67,7 @@ const ApprovedUnapproved = () => {
       }
     };
     fetchAk05();
-  }, [bukti]);
+  }, [nis]);
   // State untuk status persetujuan setiap formulir
   const [formulirStatus, setFormulirStatus] = useState([
     {
@@ -161,7 +142,7 @@ const ApprovedUnapproved = () => {
         )
       );
     }
-  }, [bukti, formIa01Data]);
+  }, [bukti, formIa01Data, formAk01Data, formAk05Data]);
 
   // Handler untuk klik tombol Approve/Unapprove
   const handleApproveUnapprove = (index, status) => {
@@ -392,7 +373,7 @@ const ApprovedUnapproved = () => {
                     e.stopPropagation();
                     handleApproveUnapprove(index, "approved");
                   }}
-                  disabled={true} // Disable jika FR.IA.01.CL dan isDisabled true
+                  disabled={formulir.code === "FR.IA.01.CL" ? isDisabled : false}
                 >
                   Approve
                 </button>
@@ -410,9 +391,6 @@ const ApprovedUnapproved = () => {
                     e.stopPropagation();
                     handleApproveUnapprove(index, "unapproved");
                   }}
-                  disabled={
-                    formulir.code === "FR.IA.01.CL" ? isDisabled : false
-                  } // Disable jika FR.IA.01.CL dan isDisabled true
                 >
                   Unapprove
                 </button>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Check, User, Upload, X, FileText } from 'lucide-react';
-import { api } from '../../api/api';
+import { Check } from 'lucide-react';
+import { api, getFormAk01ByAssesi } from '../../api/api';
 import { useAssesment } from '../../context/AssesmentContext';
 import { useParams } from 'react-router-dom';
 
@@ -42,7 +42,7 @@ const PersetujuanAsesmen = ({ assesiId = 1, skemaId = "SKM001" }) => {
     tanggal: '',
     waktu: '',
     tukPelaksanaan: '',
-    attachments: [{ file: null, description: '', fileName: '' }]
+    // attachments removed; descriptions will be derived from checkedItems
   });
 
   // Check if mobile
@@ -63,24 +63,21 @@ const PersetujuanAsesmen = ({ assesiId = 1, skemaId = "SKM001" }) => {
     const fetchAk01 = async () => {
       try {
         setLoading(true);
-        const res = await api.get(`/assesment/formak01/${id}`);
+        const res = await getFormAk01ByAssesi(id);
         if (res.data?.data?.length) {
           setAk01Data(res.data.data[0]);
-          console.log(ak01Data);
-          
+        } else {
+          setAk01Data(null);
         }
-        
-        // Simulated response for demo
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
       } catch (err) {
         console.error("Failed fetch AK01:", err);
+        setAk01Data(null);
+      } finally {
         setLoading(false);
       }
     };
     fetchAk01();
-  }, [assesiId]);
+  }, [id]);
 
   useEffect(()=>{
 
@@ -293,30 +290,7 @@ const PersetujuanAsesmen = ({ assesiId = 1, skemaId = "SKM001" }) => {
     }));
   };
 
-  const handleAttachmentChange = (index, field, value) => {
-    const updated = [...formData.attachments];
-    updated[index][field] = value;
-    
-    if (field === 'file' && value) {
-      updated[index]['fileName'] = value.name;
-    }
-    
-    setFormData(prev => ({ ...prev, attachments: updated }));
-  };
-
-  const addAttachmentField = () => {
-    setFormData(prev => ({
-      ...prev,
-      attachments: [...prev.attachments, { file: null, description: '', fileName: '' }]
-    }));
-  };
-
-  const removeAttachmentField = (index) => {
-    if (formData.attachments.length > 1) {
-      const updated = formData.attachments.filter((_, i) => i !== index);
-      setFormData(prev => ({ ...prev, attachments: updated }));
-    }
-  };
+  // Attachment-related handlers removed. Descriptions will be generated from checkedItems.
 
   const handleSubmit = async (formType) => {
     if (!formData.assesment_asesi_id || !formData.skema_id) {
@@ -339,11 +313,26 @@ const PersetujuanAsesmen = ({ assesiId = 1, skemaId = "SKM001" }) => {
       data.append("checkedItems", JSON.stringify(formData.checkedItems));
       data.append("status", formType); // 'approved' or 'rejected'
 
-      formData.attachments.forEach((att, i) => {
-        if (att.file) {
-          data.append(`attachments[${i}][file]`, att.file);
-          data.append(`attachments[${i}][description]`, att.description);
-        }
+      // Build attachments descriptions from checkedItems labels (no files)
+      const buktiList = [
+        { key: 'portfolio', label: 'Hasil verifikasi Portofolio' },
+        { key: 'reviewProduk', label: 'Hasil review produk' },
+        { key: 'observasi', label: 'Hasil Observasi Langsung' },
+        { key: 'kegiatanTerstruktur', label: 'Hasil kegiatan Terstruktur' },
+        { key: 'pertanyaan', label: 'Hasil Pertanyaan Lisan' },
+        { key: 'pertanyaanTertulis', label: 'Hasil Pertanyaan Tertulis' },
+        { key: 'wawancara', label: 'Hasil Pertanyaan wawancara' },
+      ];
+      const selectedDescriptions = buktiList
+        .filter(item => formData.checkedItems[item.key])
+        .map(item => item.label);
+      if (selectedDescriptions.length === 0) {
+        alert('Pilih minimal satu item pada "Bukti yang akan dikumpulkan".');
+        setLoading(false);
+        return;
+      }
+      selectedDescriptions.forEach((desc, i) => {
+        data.append(`attachments[${i}][description]`, desc);
       });
 
       
@@ -434,6 +423,23 @@ const PersetujuanAsesmen = ({ assesiId = 1, skemaId = "SKM001" }) => {
           <div style={headerContentStyle}>
             <div style={titleStyle}>FR.AK.01</div>
             <div style={subtitleStyle}>PERSETUJUAN ASESMEN DAN KERAHASIAAN</div>
+            {ak01Data && (
+              <div
+                style={{
+                  marginTop: '8px',
+                  textAlign: 'center',
+                  padding: '10px',
+                  backgroundColor: '#d4edda',
+                  border: '1px solid #c3e6cb',
+                  borderRadius: '8px',
+                  color: '#155724',
+                  fontSize: isMobile ? '11px' : '12px',
+                  fontWeight: 'bold',
+                }}
+              >
+                AK-01 telah disetujui.
+              </div>
+            )}
           </div>
         </div>
 
@@ -724,186 +730,26 @@ const PersetujuanAsesmen = ({ assesiId = 1, skemaId = "SKM001" }) => {
           </div>
         </div>
 
-        {/* Attachments Section */}
-        <div style={{
-          ...transparentBoxStyle,
-          marginTop: '20px',
-          padding: isMobile ? '15px' : '20px'
-        }}>
-          <div style={{
-            fontSize: isMobile ? '12px' : '14px',
-            fontWeight: 'bold',
-            marginBottom: '15px',
-            color: '#333',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
-            <Upload size={16} color="#FF8C00" />
-            Lampiran Dokumen (Attachments)
-          </div>
-
-          {formData.attachments.map((attachment, index) => (
-            <div key={index} style={{
-              border: '1px solid #ddd',
-              borderRadius: '8px',
-              padding: isMobile ? '12px' : '15px',
-              marginBottom: '12px',
-              backgroundColor: 'white'
-            }}>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                marginBottom: '12px'
-              }}>
-                <div style={{
-                  fontSize: isMobile ? '11px' : '12px',
-                  fontWeight: 'bold',
-                  color: '#333'
-                }}>
-                  Lampiran {index + 1}
-                </div>
-                {formData.attachments.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeAttachmentField(index)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: '#ff4444',
-                      padding: '2px'
-                    }}
-                  >
-                    <X size={16} />
-                  </button>
-                )}
-              </div>
-
-              <div style={{
-                display: 'flex',
-                flexDirection: isMobile ? 'column' : 'row',
-                gap: isMobile ? '10px' : '12px',
-                alignItems: isMobile ? 'flex-start' : 'center'
-              }}>
-                <div style={{
-                  flex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px'
-                }}>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}>
-                    <label
-                      htmlFor={`file-${index}`}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        padding: '8px 12px',
-                        backgroundColor: '#f8f9fa',
-                        border: '1px solid #ddd',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        fontSize: isMobile ? '10px' : '11px',
-                        color: '#333',
-                        transition: 'background-color 0.2s'
-                      }}
-                      onMouseOver={(e) => e.target.style.backgroundColor = '#e9ecef'}
-                      onMouseOut={(e) => e.target.style.backgroundColor = '#f8f9fa'}
-                    >
-                      <FileText size={14} />
-                      Pilih File PDF
-                    </label>
-                    <input
-                      id={`file-${index}`}
-                      type="file"
-                      accept="application/pdf"
-                      onChange={(e) => handleAttachmentChange(index, 'file', e.target.files[0])}
-                      style={{ display: 'none' }}
-                    />
-                    {attachment.fileName && (
-                      <span style={{
-                        fontSize: isMobile ? '9px' : '10px',
-                        color: '#666',
-                        fontStyle: 'italic'
-                      }}>
-                        {attachment.fileName}
-                      </span>
-                    )}
-                  </div>
-
-                  <input
-                    type="text"
-                    placeholder="Deskripsi file (contoh: Sertifikat Kompetensi, CV, dll)"
-                    value={attachment.description}
-                    onChange={(e) => handleAttachmentChange(index, 'description', e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '8px 10px',
-                      border: '1px solid #ddd',
-                      borderRadius: '4px',
-                      fontSize: isMobile ? '10px' : '11px',
-                      fontFamily: 'Arial, sans-serif'
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-
-          <button
-            type="button"
-            onClick={addAttachmentField}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '10px 15px',
-              backgroundColor: 'white',
-              color: '#FF8C00',
-              border: '1px dashed #FF8C00',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: isMobile ? '11px' : '12px',
-              fontWeight: '500',
-              transition: 'all 0.2s ease',
-              width: isMobile ? '100%' : 'auto'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#FFF8F0';
-              e.target.style.borderStyle = 'solid';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = 'white';
-              e.target.style.borderStyle = 'dashed';
-            }}
-          >
-            <Upload size={14} />
-            Tambah Lampiran
-          </button>
-        </div>
+        {/* Attachments Section removed: descriptions derived from checklist above */}
 
         {/* Action Buttons */}
-        <div style={buttonContainerStyle}>
-          <button
-            style={{
-              ...buttonStyle,
-              opacity: loading ? 0.7 : 1,
-              cursor: loading ? 'not-allowed' : 'pointer'
-            }}
-            onClick={handleApprove}
-            disabled={loading}
-            onMouseOver={(e) => !loading && (e.target.style.backgroundColor = '#f8f9fa')}
-            onMouseOut={(e) => !loading && (e.target.style.backgroundColor = 'white')}
-          >
-            {loading ? 'Processing...' : 'APPROVE'}
-          </button>
-        </div>
+        {!ak01Data && (
+          <div style={buttonContainerStyle}>
+            <button
+              style={{
+                ...buttonStyle,
+                opacity: loading ? 0.7 : 1,
+                cursor: loading ? 'not-allowed' : 'pointer'
+              }}
+              onClick={handleApprove}
+              disabled={loading}
+              onMouseOver={(e) => !loading && (e.target.style.backgroundColor = '#f8f9fa')}
+              onMouseOut={(e) => !loading && (e.target.style.backgroundColor = 'white')}
+            >
+              {loading ? 'Processing...' : 'APPROVE'}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Modal Notifikasi Approve */}
