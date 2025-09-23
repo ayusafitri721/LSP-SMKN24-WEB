@@ -4,11 +4,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
+import { submitFormAk05, fetchCsrfCookie, getAssesmentById } from '../../api/api';
+import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
 
 const AK05 = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const { currentAsesi, apl01Data, userAssessments } = useDashboardAsesi();
 
   const [formData, setFormData] = useState({
     skemaSertifikasi: '',
@@ -39,6 +41,24 @@ const AK05 = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
+
+  // Prefill Nama Asesi
+  useEffect(() => {
+    const pickFullName = (obj) => {
+      if (!obj) return '';
+      return (
+        obj.fullname || obj.full_name || obj.nama_lengkap || obj.namaLengkap || obj.name || obj.username || ''
+      );
+    };
+    if (!formData.namaAsesi) {
+      let name = pickFullName(currentAsesi) || pickFullName(currentAsesi?.user);
+      if (!name) {
+        const a = Array.isArray(apl01Data) ? apl01Data[0] : apl01Data;
+        name = pickFullName(a) || pickFullName(a?.user);
+      }
+      if (name) setFormData(prev => ({ ...prev, namaAsesi: name }));
+    }
+  }, [currentAsesi, apl01Data, formData.namaAsesi]);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -91,12 +111,76 @@ const AK05 = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form FR.AK.05 submitted:', formData);
-    localStorage.setItem('ak05FormData', JSON.stringify(formData));
-    setIsFormSubmitted(true);
-    setShowModal(true);
+
+    // Derive assesment_asesi_id & skema_id
+    const ua = Array.isArray(userAssessments) ? userAssessments : [];
+    const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+    const assesmentAsesiId = chosen?.id;
+    let skemaId = chosen?.assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
+    if (!skemaId && chosen?.assesment_id) {
+      try {
+        const res = await getAssesmentById(chosen.assesment_id);
+        skemaId = res.data?.data?.skema_id ?? skemaId;
+      } catch {}
+    }
+    if (!assesmentAsesiId || !skemaId) {
+      alert('Tidak menemukan assesment aktif untuk dikaitkan (assesment_asesi_id/skema_id). Silakan pilih jadwal terlebih dahulu di dashboard atau muat ulang halaman.');
+      return;
+    }
+
+    try {
+      await fetchCsrfCookie();
+      const payload = {
+        assesment_asesi_id: Number(assesmentAsesiId),
+        skema_id: Number(skemaId),
+        // map fields (snake_case) + original form for compatibility
+        tuk: formData.tuk,
+        nama_asesor: formData.namaAsesor,
+        nama_asesi: formData.namaAsesi,
+        tanggal: formData.tanggal,
+        judul_unit: formData.judulUnit,
+        kode_unit: formData.kodeUnit,
+        laporan: {
+          rows: [1,2,3].map((row) => ({
+            nama_asesi: formData[`namaAsesi${row}`] || '',
+            rekomendasi: formData[`rekomendasi${row}`] || '',
+            keterangan: formData[`keterangan${row}`] || '',
+          })),
+          aspek_negatif: formData.aspekNegatif,
+          pencatatan_penolakan: formData.pencatatanPenolakan,
+          saran_perbaikan: formData.saranPerbaikan,
+          nama_asesor_akhir: formData.namaAsesorAkhir,
+          no_reg_asesor: formData.noRegAsesor,
+          catatan_akhir: formData.catatanAkhir,
+          approved: !!isApproved,
+        },
+        form: formData,
+      };
+      console.debug('AK-05 submit payload:', payload);
+      await submitFormAk05(payload);
+      setIsFormSubmitted(true);
+      setShowModal(true);
+    } catch (err) {
+      const status = err?.response?.status;
+      const message = err?.response?.data?.message || err?.message;
+      const errors = err?.response?.data?.errors;
+      console.error('Gagal submit FR.AK.05 ke server:', { status, message, errors, err });
+      try {
+        localStorage.setItem('ak05FormData', JSON.stringify({ assesment_asesi_id: assesmentAsesiId, skema_id: skemaId, form: formData }));
+      } catch {}
+      let alertMsg = 'Gagal mengirim ke server. Data disimpan sementara di perangkat Anda. Coba lagi nanti.';
+      if (status) alertMsg += `\nStatus: ${status}`;
+      if (message) alertMsg += `\nPesan: ${message}`;
+      if (errors && typeof errors === 'object') {
+        const detail = Object.entries(errors)
+          .map(([k, v]) => `- ${k}: ${Array.isArray(v) ? v.join(', ') : String(v)}`)
+          .join('\n');
+        if (detail) alertMsg += `\nDetail:\n${detail}`;
+      }
+      alert(alertMsg);
+    }
   };
 
   const handleCloseModal = () => {

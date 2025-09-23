@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import DashboardAsesi from "../DashboardAsesi/DashboardAsesi";
-import ProfileSection from "../DashboardAsesi/Profile/ProfileAsesi";
+import ProfileSection from "../layouts/ProfileSection";
 
 // Import semua komponen formulir yang relevan dengan Asesi
 import APL01 from "../DashboardAsesi/APL-01/APL-01";
@@ -49,7 +49,7 @@ const DashboardAsesiRoutes = () => {
       "IA-06A": "ia-06",
       "IA-06.C": "ia-06c",
       "IA-09": "ia-09",
-      "Profile": "profile",
+      "Profile": "profile-asesi",
     };
 
     if (pageMap[menuName] !== undefined) {

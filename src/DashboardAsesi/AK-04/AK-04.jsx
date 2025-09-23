@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
+import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
+import { getAssesmentById, getFormAk04ByAssesi, submitFormAk04, fetchCsrfCookie } from '../../api/api';
 
 // Custom hook to detect screen size
 const useMediaQuery = (query) => {
@@ -22,6 +24,7 @@ const useMediaQuery = (query) => {
 const AK04 = () => {
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const { userAssessments, currentAsesi, apl01Data } = useDashboardAsesi();
 
   const [showPopup, setShowPopup] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -41,6 +44,22 @@ const AK04 = () => {
     alasanBanding: '',
     tanggalApprove: ''
   });
+
+  // Derive asesi_id helper
+  const deriveAsesiId = () => {
+    const fromCurrent = currentAsesi?.id ?? currentAsesi?.assesi_id ?? currentAsesi?.user?.assesi_id;
+    if (fromCurrent) return Number(fromCurrent);
+    const fromApl01 = Array.isArray(apl01Data)
+      ? (apl01Data[0]?.id ?? apl01Data[0]?.assesi_id)
+      : (apl01Data?.id ?? apl01Data?.assesi_id);
+    if (fromApl01) return Number(fromApl01);
+    try {
+      const lp = JSON.parse(localStorage.getItem('asesiProfile'));
+      const fromLS = lp?.id ?? lp?.assesi_id;
+      if (fromLS) return Number(fromLS);
+    } catch {}
+    return undefined;
+  };
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -97,8 +116,49 @@ const AK04 = () => {
     }));
   };
 
-  const handleKirimClick = () => {
-    setShowPopup(true);
+  const handleKirimClick = async () => {
+    // Derive assesment_asesi_id from current userAssessments
+    const ua = Array.isArray(userAssessments) ? userAssessments : [];
+    const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+    const assesmentAsesiId = chosen?.id;
+    if (!assesmentAsesiId) {
+      alert('Tidak menemukan assesment aktif (assesment_asesi_id). Silakan pilih jadwal terlebih dahulu.');
+      return;
+    }
+
+    // Minimal validation of key fields
+    if (!formData.namaAsesor || !formData.namaAsesi || !formData.tanggalAsesmen) {
+      alert('Lengkapi Nama Asesor, Nama Asesi, dan Tanggal Asesmen terlebih dahulu.');
+      return;
+    }
+
+    const payload = {
+      assesment_asesi_id: Number(assesmentAsesiId),
+      nama_asesor: formData.namaAsesor || null,
+      nama_asesi: formData.namaAsesi || null,
+      tanggal_asesmen: formData.tanggalAsesmen || null,
+      skema_sertifikasi: formData.skemaSertifikasi || null,
+      no_skema_sertifikasi: formData.noSkemaSertifikasi || null,
+      alasan_banding: formData.alasanBanding || null,
+      tanggal_approve: formData.tanggalApprove || null,
+      answers: {
+        question1: answers.question1,
+        question2: answers.question2,
+        question3: answers.question3,
+      },
+    };
+
+    try {
+      await fetchCsrfCookie();
+      await submitFormAk04(payload);
+      setShowPopup(true);
+      setIsFormSubmitted(true);
+    } catch (err) {
+      console.error('Gagal submit AK-04:', err);
+      const status = err?.response?.status;
+      const message = err?.response?.data?.message || err?.message;
+      alert(`Gagal mengirim AK-04.${status ? `\nStatus: ${status}` : ''}${message ? `\nPesan: ${message}` : ''}`);
+    }
   };
 
   const handleClosePopup = () => {
@@ -108,6 +168,89 @@ const AK04 = () => {
       navigate('/dashboard-asesi/ia-01');
     }, 300);
   };
+
+  // Auto-populate fields from current assessment context
+  useEffect(() => {
+    (async () => {
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+      if (!chosen) return;
+      let assesmentDetail = chosen?.assesment || null;
+      if (!assesmentDetail && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          assesmentDetail = res.data?.data ?? null;
+        } catch {}
+      }
+      const namaAsesor = assesmentDetail?.assesor?.nama_lengkap || assesmentDetail?.assesor?.name || '';
+      const tanggalRaw = assesmentDetail?.tanggal_mulai || assesmentDetail?.tanggal_assesment || '';
+      const tanggalAsesmen = tanggalRaw ? String(tanggalRaw).substring(0,10) : '';
+      const skema = assesmentDetail?.skema || assesmentDetail?.schema || null;
+      const skemaSertifikasi = skema?.nama || skema?.name || skema?.judul || '';
+      const noSkemaSertifikasi = skema?.kode || skema?.code || '';
+
+      // Derive nama asesi
+      const pickFullName = (obj) => {
+        if (!obj) return '';
+        return (
+          obj.fullname || obj.full_name || obj.nama_lengkap || obj.namaLengkap || obj.name || obj.username || ''
+        );
+      };
+      let namaAsesi = pickFullName(currentAsesi) || pickFullName(currentAsesi?.user);
+      if (!namaAsesi) {
+        const a = Array.isArray(apl01Data) ? apl01Data[0] : apl01Data;
+        namaAsesi = pickFullName(a) || pickFullName(a?.user);
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        namaAsesor: prev.namaAsesor || namaAsesor,
+        namaAsesi: prev.namaAsesi || namaAsesi,
+        tanggalAsesmen: prev.tanggalAsesmen || tanggalAsesmen,
+        skemaSertifikasi: prev.skemaSertifikasi || skemaSertifikasi,
+        noSkemaSertifikasi: prev.noSkemaSertifikasi || noSkemaSertifikasi,
+      }));
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(userAssessments), JSON.stringify(currentAsesi), JSON.stringify(apl01Data)]);
+
+  // Fetch existing AK-04 for this asesi (if any) and prefill
+  useEffect(() => {
+    (async () => {
+      const asesiId = deriveAsesiId();
+      if (!asesiId) return;
+      try {
+        await fetchCsrfCookie();
+        const res = await getFormAk04ByAssesi(asesiId);
+        const payload = res.data?.data ?? res.data ?? null;
+        if (payload) {
+          // Attempt to map payload to local fields if keys match
+          setFormData(prev => ({
+            ...prev,
+            namaAsesor: payload.namaAsesor ?? payload.nama_asesor ?? prev.namaAsesor,
+            namaAsesi: payload.namaAsesi ?? payload.nama_asesi ?? prev.namaAsesi,
+            tanggalAsesmen: payload.tanggalAsesmen ?? payload.tanggal_asesmen ?? prev.tanggalAsesmen,
+            skemaSertifikasi: payload.skemaSertifikasi ?? payload.skema_sertifikasi ?? prev.skemaSertifikasi,
+            noSkemaSertifikasi: payload.noSkemaSertifikasi ?? payload.no_skema_sertifikasi ?? prev.noSkemaSertifikasi,
+            alasanBanding: payload.alasanBanding ?? payload.alasan_banding ?? prev.alasanBanding,
+            tanggalApprove: payload.tanggalApprove ?? payload.tanggal_approve ?? prev.tanggalApprove,
+          }));
+          // Map answers if the API returns them
+          if (payload.answers) {
+            setAnswers(prev => ({
+              ...prev,
+              question1: payload.answers.question1 || prev.question1,
+              question2: payload.answers.question2 || prev.question2,
+              question3: payload.answers.question3 || prev.question3,
+            }));
+          }
+        }
+      } catch (e) {
+        // 404: no existing AK-04 yet; ignore
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentAsesi, apl01Data]);
 
   const handleCheckboxChange = (question, value, isYes) => {
     setAnswers((prev) => ({

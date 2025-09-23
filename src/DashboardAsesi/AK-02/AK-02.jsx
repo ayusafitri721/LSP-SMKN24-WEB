@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import NavAsesi from "../../components/NavAsesi";
-import { submitFormAk02 } from "../../api/api";
+import { submitFormAk02, fetchCsrfCookie, getAssesmentById, getApl02ById, getFormAk02ByAssesi } from "../../api/api";
+
+import { useDashboardAsesi } from "../../context/DashboardAsesiContext";
 
 const pageContainerStyle = {
   backgroundColor: "white",
@@ -70,6 +72,7 @@ const AK02 = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const navigate = useNavigate();
+  const { currentAsesi, apl01Data, userAssessments, ensureUserAssesmentAsesi, fetchUserAssessments } = useDashboardAsesi();
 
   const [formData, setFormData] = useState({
     skemaSertifikasi: "",
@@ -80,55 +83,6 @@ const AK02 = () => {
     namaAsesi: "",
     tanggal: "",
     waktu: "",
-    // Unit Kompetensi data
-    unitKompetensi: [
-      {
-        id: 1,
-        title: "Memberikan layanan secara prima kepada pelanggan.",
-        kompeten: false,
-        portfolioSesuai: false,
-        penguatanEvidenceSesuai: false,
-        hasilPenguatanEvidenceSesuai: false,
-        rekomendasiBelumKompeten: false,
-      },
-      {
-        id: 2,
-        title: "Melakukan pelacakan dalam lingkungan sosial yang beragam",
-        kompeten: false,
-        portfolioSesuai: false,
-        penguatanEvidenceSesuai: false,
-        hasilPenguatanEvidenceSesuai: false,
-        rekomendasiBelumKompeten: false,
-      },
-      {
-        id: 3,
-        title:
-          "Mengkuti prosedur keselamatan, kesehatan dan keamanan dalam bekerja",
-        kompeten: false,
-        portfolioSesuai: false,
-        penguatanEvidenceSesuai: false,
-        hasilPenguatanEvidenceSesuai: false,
-        rekomendasiBelumKompeten: false,
-      },
-      {
-        id: 4,
-        title: "Memelihara Alat Jahit",
-        kompeten: false,
-        portfolioSesuai: false,
-        penguatanEvidenceSesuai: false,
-        hasilPenguatanEvidenceSesuai: false,
-        rekomendasiBelumKompeten: false,
-      },
-      {
-        id: 5,
-        title: "Memelihara Alat Jahit",
-        kompeten: false,
-        portfolioSesuai: false,
-        penguatanEvidenceSesuai: false,
-        hasilPenguatanEvidenceSesuai: false,
-        rekomendasiBelumKompeten: false,
-      },
-    ],
     rekomendasiHasilAssessment: "",
     alasanKompeten: false,
     selesaiKompeten: false,
@@ -137,6 +91,11 @@ const AK02 = () => {
     komentar: "",
     tanggapanAsesi: "",
   });
+
+  // Dynamic units fetched from schema and selections per unit
+  const [schemaUnits, setSchemaUnits] = useState([]); // from getApl02ById(skemaId)
+  const [unitSelections, setUnitSelections] = useState({}); // key: kode_unit -> {kompeten, portfolio_sesuai, penguatan_evidence_sesuai, hasil_penguatan_evidence_sesuai, rekomendasi_belum_kompeten}
+  const [resolvedSkemaId, setResolvedSkemaId] = useState(null);
 
   // Block navigation jika form belum di-submit
   useEffect(() => {
@@ -190,6 +149,155 @@ const AK02 = () => {
     }));
   }, []);
 
+  // Ensure we have a user assessment linked, and refresh list on page enter
+  useEffect(() => {
+    (async () => {
+      try {
+        await ensureUserAssesmentAsesi?.();
+      } catch {}
+      try {
+        await fetchUserAssessments?.();
+      } catch {}
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Prefill Nama Asesi dari context (mirip AK-01)
+  useEffect(() => {
+    const pickFullName = (obj) => {
+      if (!obj) return "";
+      return (
+        obj.fullname || obj.full_name || obj.nama_lengkap || obj.namaLengkap || obj.name || obj.username || ""
+      );
+    };
+    if (!formData.namaAsesi) {
+      let name = pickFullName(currentAsesi) || pickFullName(currentAsesi?.user);
+      if (!name) {
+        const a = Array.isArray(apl01Data) ? apl01Data[0] : apl01Data;
+        name = pickFullName(a) || pickFullName(a?.user);
+      }
+      if (name) setFormData((prev) => ({ ...prev, namaAsesi: name }));
+    }
+  }, [currentAsesi, apl01Data, formData.namaAsesi]);
+
+  // Helper derive asesi_id
+  const deriveAsesiId = () => {
+    const fromCurrent = currentAsesi?.id ?? currentAsesi?.assesi_id ?? currentAsesi?.user?.assesi_id;
+    if (fromCurrent) return Number(fromCurrent);
+    const fromApl01 = Array.isArray(apl01Data)
+      ? (apl01Data[0]?.id ?? apl01Data[0]?.assesi_id)
+      : (apl01Data?.id ?? apl01Data?.assesi_id);
+    if (fromApl01) return Number(fromApl01);
+    try {
+      const lp = JSON.parse(localStorage.getItem("asesiProfile"));
+      const fromLS = lp?.id ?? lp?.assesi_id;
+      if (fromLS) return Number(fromLS);
+    } catch {}
+    return undefined;
+  };
+
+  // Existing AK-02 fetched lazily
+  const [existingAk02, setExistingAk02] = useState(null);
+  useEffect(() => {
+    (async () => {
+      const asesiId = deriveAsesiId();
+      if (!asesiId) return;
+      try {
+        await fetchCsrfCookie();
+        const res = await getFormAk02ByAssesi(asesiId);
+        const payload = res.data?.data ?? res.data ?? null;
+        if (payload) setExistingAk02(payload);
+      } catch (e) {
+        // 404 if none; ignore
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentAsesi, apl01Data]);
+
+  // Auto-populate top fields from active assessment
+  useEffect(() => {
+    (async () => {
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === "active" || a?.status === "scheduled") || ua[0];
+      if (!chosen) return;
+      let assesmentDetail = chosen?.assesment || null;
+      if (!assesmentDetail && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          assesmentDetail = res.data?.data ?? null;
+        } catch {}
+      }
+      if (!assesmentDetail) return;
+      const units = assesmentDetail?.units || assesmentDetail?.unit_kompetensi || assesmentDetail?.unitKompetensi || [];
+      const firstUnit = Array.isArray(units) ? units[0] : (units || {});
+      const judulUnit = firstUnit?.judul || firstUnit?.nama || firstUnit?.name || '';
+      const kodeUnit = firstUnit?.kode || firstUnit?.code || '';
+      const tuk = assesmentDetail?.tuk || assesmentDetail?.lokasi || '';
+      const namaAsesor = assesmentDetail?.assesor?.nama_lengkap || assesmentDetail?.assesor?.name || '';
+      const tanggalRaw = assesmentDetail?.tanggal_mulai || assesmentDetail?.tanggal_assesment || '';
+      const tanggal = tanggalRaw ? String(tanggalRaw).substring(0,10) : '';
+      setFormData(prev => ({
+        ...prev,
+        judulUnit: prev.judulUnit || judulUnit,
+        kodeUnit: prev.kodeUnit || kodeUnit,
+        tuk: prev.tuk || tuk,
+        namaAsesor: prev.namaAsesor || namaAsesor,
+        tanggal: prev.tanggal || tanggal,
+      }));
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(userAssessments)]);
+
+  // Resolve skemaId from userAssessments and fetch schema units
+  useEffect(() => {
+    const ua = Array.isArray(userAssessments) ? userAssessments : [];
+    const chosen = ua.find((a) => a?.status === "active" || a?.status === "scheduled") || ua[0];
+    const skemaId = chosen?.assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
+    let sid = chosen?.assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
+    (async () => {
+      if (!sid && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          sid = res.data?.data?.skema_id ?? sid;
+        } catch {}
+      }
+      if (sid && sid !== resolvedSkemaId) {
+        setResolvedSkemaId(Number(sid));
+      }
+    })();
+  }, [userAssessments, resolvedSkemaId]);
+
+  useEffect(() => {
+    if (!resolvedSkemaId) return;
+    (async () => {
+      try {
+        await fetchCsrfCookie();
+        const res = await getApl02ById(Number(resolvedSkemaId));
+        const units = Array.isArray(res.data?.data) ? res.data.data : [];
+        setSchemaUnits(units);
+        // Initialize selections if empty
+        setUnitSelections((prev) => {
+          const next = { ...prev };
+          units.forEach((u) => {
+            const key = u.kode_unit || String(u.unit_ke);
+            if (!next[key]) {
+              next[key] = {
+                kompeten: false,
+                portfolio_sesuai: false,
+                penguatan_evidence_sesuai: false,
+                hasil_penguatan_evidence_sesuai: false,
+                rekomendasi_belum_kompeten: false,
+              };
+            }
+          });
+          return next;
+        });
+      } catch (e) {
+        // ignore; user can still submit non-unit content but API may require units
+      }
+    })();
+  }, [resolvedSkemaId]);
+
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -197,12 +305,13 @@ const AK02 = () => {
     }));
   };
 
-  const handleUnitChange = (unitId, field, value) => {
-    setFormData((prev) => ({
+  const handleUnitChange = (kodeUnit, field, value) => {
+    setUnitSelections((prev) => ({
       ...prev,
-      unitKompetensi: prev.unitKompetensi.map((unit) =>
-        unit.id === unitId ? { ...unit, [field]: value } : unit
-      ),
+      [kodeUnit]: {
+        ...(prev[kodeUnit] || {}),
+        [field]: value,
+      },
     }));
   };
 
@@ -260,15 +369,18 @@ const AK02 = () => {
       return;
     }
 
-    // Cek apakah minimal satu unit kompetensi ada yang dicentang
-    const hasAnyUnitChecked = formData.unitKompetensi.some(
-      (unit) =>
-        unit.kompeten ||
-        unit.portfolioSesuai ||
-        unit.penguatanEvidenceSesuai ||
-        unit.hasilPenguatanEvidenceSesuai ||
-        unit.rekomendasiBelumKompeten
-    );
+    // Cek apakah minimal satu unit kompetensi ada yang dicentang (dari schemaUnits)
+    const hasAnyUnitChecked = schemaUnits.some((u) => {
+      const key = u.kode_unit || String(u.unit_ke);
+      const sel = unitSelections[key] || {};
+      return (
+        sel.kompeten ||
+        sel.portfolio_sesuai ||
+        sel.penguatan_evidence_sesuai ||
+        sel.hasil_penguatan_evidence_sesuai ||
+        sel.rekomendasi_belum_kompeten
+      );
+    });
 
     if (!hasAnyUnitChecked) {
       alert("Harap centang minimal satu opsi pada Unit Kompetensi");
@@ -283,16 +395,103 @@ const AK02 = () => {
       return;
     }
 
+    // Derive assesment_asesi_id dan skema_id dari userAssessments
+    const ua = Array.isArray(userAssessments) ? userAssessments : [];
+    const chosen = ua.find((a) => a?.status === "active" || a?.status === "scheduled") || ua[0];
+    const assesmentAsesiId = chosen?.id;
+    let skemaId = chosen?.assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
+
+    // Jika perlu, ambil skema_id dari assesment detail
+    if (!skemaId && chosen?.assesment_id) {
+      try {
+        const res = await getAssesmentById(chosen.assesment_id);
+        skemaId = res.data?.data?.skema_id ?? skemaId;
+      } catch {}
+    }
+
+    if (!assesmentAsesiId || !skemaId) {
+      alert(
+        "Tidak menemukan assesment aktif untuk dikaitkan (assesment_asesi_id/skema_id). Silakan pilih jadwal terlebih dahulu di dashboard atau muat ulang halaman."
+      );
+      return;
+    }
+
+    // Cegah submit ganda jika sudah ada AK-02
+    if (existingAk02) {
+      const confirmProceed = window.confirm(
+        "Data AK-02 sudah ada untuk akun ini. Kirim ulang untuk mengganti/menambah?"
+      );
+      if (!confirmProceed) return;
+    }
+
     try {
-      await submitFormAk02(formData);
+      await fetchCsrfCookie();
+      // Build unit_kompetensi array required by API
+      const unit_kompetensi = Array.isArray(schemaUnits)
+        ? schemaUnits.map((u) => {
+            const key = u.kode_unit || String(u.unit_ke);
+            const sel = unitSelections[key] || {};
+            return {
+              unit_ke: Number(u.unit_ke),
+              kode_unit: u.kode_unit,
+              judul_unit: u.judul_unit,
+              kompeten: !!sel.kompeten,
+              portfolio_sesuai: !!sel.portfolio_sesuai,
+              penguatan_evidence_sesuai: !!sel.penguatan_evidence_sesuai,
+              hasil_penguatan_evidence_sesuai: !!sel.hasil_penguatan_evidence_sesuai,
+              rekomendasi_belum_kompeten: !!sel.rekomendasi_belum_kompeten,
+            };
+          })
+        : [];
+      const rekomendasi = formData.alasanKompeten
+        ? "kompeten"
+        : formData.selesaiKompeten
+        ? "belum_kompeten"
+        : undefined;
+      const payload = {
+        assesment_asesi_id: Number(assesmentAsesiId),
+        skema_id: Number(skemaId),
+        // flat keys (snake_case) that many Laravel validators expect
+        judul_unit: formData.judulUnit,
+        kode_unit: formData.kodeUnit,
+        tuk: formData.tuk,
+        nama_asesor: formData.namaAsesor,
+        nama_asesi: formData.namaAsesi,
+        tanggal: formData.tanggal,
+        waktu: formData.waktu,
+        unit_kompetensi,
+        rekomendasi,
+        komentar: formData.komentar,
+        tanggapan_asesi: formData.tanggapanAsesi,
+        // keep original form for backward compatibility on server
+        form: formData,
+      };
+      // Log payload for debugging (no files included)
+      console.debug("AK-02 submit payload:", payload);
+      await submitFormAk02(payload);
       setIsFormSubmitted(true);
       setShowPopup(true);
     } catch (err) {
-      console.error("Gagal submit FR.AK.02 ke server:", err);
+      const status = err?.response?.status;
+      const message = err?.response?.data?.message || err?.message;
+      const errors = err?.response?.data?.errors;
+      console.error("Gagal submit FR.AK.02 ke server:", { status, message, errors, err });
       try {
-        localStorage.setItem("ak02FormData", JSON.stringify(formData));
+        localStorage.setItem(
+          "ak02FormData",
+          JSON.stringify({ assesment_asesi_id: assesmentAsesiId, skema_id: skemaId, form: formData })
+        );
       } catch {}
-      alert("Gagal mengirim ke server. Data disimpan sementara di perangkat Anda. Coba lagi nanti.");
+      let alertMsg = "Gagal mengirim ke server. Data disimpan sementara di perangkat Anda. Coba lagi nanti.";
+      if (status) alertMsg += `\nStatus: ${status}`;
+      if (message) alertMsg += `\nPesan: ${message}`;
+      if (errors && typeof errors === "object") {
+        const detail = Object.entries(errors)
+          .map(([k, v]) => `- ${k}: ${Array.isArray(v) ? v.join(", ") : String(v)}`)
+          .join("\n");
+        if (detail) alertMsg += `\nDetail:\n${detail}`;
+      }
+      alert(alertMsg);
     }
   };
 
@@ -1007,9 +1206,9 @@ const AK02 = () => {
               </h3>
             </div>
 
-            {formData.unitKompetensi.map((unit, index) => (
+            {(Array.isArray(schemaUnits) ? schemaUnits : []).map((unit, index) => (
               <div
-                key={unit.id}
+                key={unit.kode_unit || unit.unit_ke || index}
                 style={{
                   border: "1px solid #ddd",
                   borderRadius: "8px",
@@ -1023,7 +1222,7 @@ const AK02 = () => {
                     style={{ fontSize: "12px", fontWeight: "500" }}
                     className="unit-title"
                   >
-                    {unit.title}
+                    {unit.judul_unit || unit.title || `Unit ${unit.unit_ke}`}
                   </label>
                 </div>
 
@@ -1045,20 +1244,26 @@ const AK02 = () => {
                   >
                     <input
                       type="checkbox"
-                      checked={unit.kompeten}
-                      onChange={(e) =>
-                        handleUnitChange(unit.id, "kompeten", e.target.checked)
-                      }
-                      style={{ margin: "0" }}
+                      checked={!!(unitSelections[unit.kode_unit || String(unit.unit_ke)]?.kompeten)}
+                      onChange={(e) => handleUnitChange(unit.kode_unit || String(unit.unit_ke), "kompeten", e.target.checked)}
                     />
-                    <span
-                      style={{ fontSize: "11px" }}
-                      className="checkbox-label"
-                    >
-                      Observasi Demonstrasi
-                    </span>
+                    <span style={{ fontSize: "12px" }}>Kompeten</span>
                   </div>
-
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                      minWidth: "200px",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={!!(unitSelections[unit.kode_unit || String(unit.unit_ke)]?.portfolio_sesuai)}
+                      onChange={(e) => handleUnitChange(unit.kode_unit || String(unit.unit_ke), "portfolio_sesuai", e.target.checked)}
+                    />
+                    <span style={{ fontSize: "12px" }}>Portofolio sesuai</span>
+                  </div>
                   <div
                     style={{
                       display: "flex",
@@ -1068,24 +1273,11 @@ const AK02 = () => {
                   >
                     <input
                       type="checkbox"
-                      checked={unit.portfolioSesuai}
-                      onChange={(e) =>
-                        handleUnitChange(
-                          unit.id,
-                          "portfolioSesuai",
-                          e.target.checked
-                        )
-                      }
-                      style={{ margin: "0" }}
+                      checked={!!(unitSelections[unit.kode_unit || String(unit.unit_ke)]?.penguatan_evidence_sesuai)}
+                      onChange={(e) => handleUnitChange(unit.kode_unit || String(unit.unit_ke), "penguatan_evidence_sesuai", e.target.checked)}
                     />
-                    <span
-                      style={{ fontSize: "11px" }}
-                      className="checkbox-label"
-                    >
-                      Portofolio
-                    </span>
+                    <span style={{ fontSize: "12px" }}>Penguatan Evidence sesuai</span>
                   </div>
-
                   <div
                     style={{
                       display: "flex",
@@ -1095,24 +1287,11 @@ const AK02 = () => {
                   >
                     <input
                       type="checkbox"
-                      checked={unit.penguatanEvidenceSesuai}
-                      onChange={(e) =>
-                        handleUnitChange(
-                          unit.id,
-                          "penguatanEvidenceSesuai",
-                          e.target.checked
-                        )
-                      }
-                      style={{ margin: "0" }}
+                      checked={!!(unitSelections[unit.kode_unit || String(unit.unit_ke)]?.hasil_penguatan_evidence_sesuai)}
+                      onChange={(e) => handleUnitChange(unit.kode_unit || String(unit.unit_ke), "hasil_penguatan_evidence_sesuai", e.target.checked)}
                     />
-                    <span
-                      style={{ fontSize: "11px" }}
-                      className="checkbox-label"
-                    >
-                      Pernyataan Pihak Ketiga Pertanyaan Wawancara
-                    </span>
+                    <span style={{ fontSize: "12px" }}>Hasil Penguatan Evidence sesuai</span>
                   </div>
-
                   <div
                     style={{
                       display: "flex",
@@ -1122,49 +1301,10 @@ const AK02 = () => {
                   >
                     <input
                       type="checkbox"
-                      checked={unit.hasilPenguatanEvidenceSesuai}
-                      onChange={(e) =>
-                        handleUnitChange(
-                          unit.id,
-                          "hasilPenguatanEvidenceSesuai",
-                          e.target.checked
-                        )
-                      }
-                      style={{ margin: "0" }}
+                      checked={!!(unitSelections[unit.kode_unit || String(unit.unit_ke)]?.rekomendasi_belum_kompeten)}
+                      onChange={(e) => handleUnitChange(unit.kode_unit || String(unit.unit_ke), "rekomendasi_belum_kompeten", e.target.checked)}
                     />
-                    <span
-                      style={{ fontSize: "11px" }}
-                      className="checkbox-label"
-                    >
-                      Pernyataan Pihak Ketiga Pertanyaan Wawancara
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "5px",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={unit.rekomendasiBelumKompeten}
-                      onChange={(e) =>
-                        handleUnitChange(
-                          unit.id,
-                          "rekomendasiBelumKompeten",
-                          e.target.checked
-                        )
-                      }
-                      style={{ margin: "0" }}
-                    />
-                    <span
-                      style={{ fontSize: "11px" }}
-                      className="checkbox-label"
-                    >
-                      Per Ter
-                    </span>
+                    <span style={{ fontSize: "12px" }}>Rekomendasi Belum Kompeten</span>
                   </div>
                 </div>
               </div>

@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useJurusan } from "../context/JurusanContext";
 import { useDashboardAsesi } from "../context/DashboardAsesiContext";
 import { useAssesment } from "../context/AssesmentContext";
+import { logout } from "../api/api";
 
 // Hapus prop 'onNavigate'
 function DashboardAsesi() {
@@ -36,10 +37,15 @@ function DashboardAsesi() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     const confirmLogout = window.confirm("Apakah Anda yakin ingin keluar?");
-    if (confirmLogout) {
-      window.location.href = "/";
+    if (!confirmLogout) return;
+    try {
+      await logout();
+    } catch (e) {
+      // ignore error, still navigate out
+    } finally {
+      navigate("/");
     }
   };
 

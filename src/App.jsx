@@ -105,12 +105,12 @@ function App() {
               <div>
                 <Skema />
               </div>
-              <SertifikasiCTA
+            {/* <SertifikasiCTA
                 goToRegister={() => handleNavigate("/auth/register")}
                 goToDashboard={goToDashboard}
                 goToDashboardAsesor={goToDashboardAsesor}
                 goToDashboardAsesi={goToDashboardAsesi} 
-              />
+              /> */}
               <div ref={galeriRef}>
                 <CariSkema goToLandingPage={goToLandingPage} />
               </div>

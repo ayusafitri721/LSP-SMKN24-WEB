@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
+import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
+import { getAssesmentById, submitFormIa02, getFormIa02ByAssesi } from '../../api/api';
 
 const pageContainerStyle = {
   backgroundColor: 'white',
@@ -311,6 +313,9 @@ const IA02 = () => {
     namaAsesi: '',
     tanggalAsesmen: '',
   });
+  const { userAssessments, currentAsesi, apl01Data } = useDashboardAsesi();
+  const [assessmentUnits, setAssessmentUnits] = useState([]);
+  const [existingIa02, setExistingIa02] = useState(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -355,14 +360,121 @@ const IA02 = () => {
     };
   }, [isFormSubmitted]);
 
+  // Prefill from assessment and profile (top-level hook)
+  useEffect(() => {
+    (async () => {
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+      if (!chosen) return;
+      let assesmentDetail = chosen?.assesment || null;
+      if (!assesmentDetail && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          assesmentDetail = res.data?.data ?? null;
+        } catch {}
+      }
+      if (!assesmentDetail) return;
+      const skema = assesmentDetail?.skema || assesmentDetail?.schema || null;
+      const skemaSertifikasi = skema?.nama || skema?.name || skema?.judul || '';
+      const units = assesmentDetail?.units || assesmentDetail?.unit_kompetensi || assesmentDetail?.unitKompetensi || [];
+      const u = Array.isArray(units) ? units : [];
+      setAssessmentUnits(u);
+      const firstUnit = Array.isArray(u) ? u[0] : {};
+      const judulUnit = firstUnit?.judul || firstUnit?.nama || firstUnit?.name || '';
+      const kodeUnit = firstUnit?.kode || firstUnit?.code || '';
+      const tuk = assesmentDetail?.tuk || assesmentDetail?.lokasi || '';
+      const namaAssesor = assesmentDetail?.assesor?.nama_lengkap || assesmentDetail?.assesor?.name || '';
+      const tanggalRaw = assesmentDetail?.tanggal_mulai || assesmentDetail?.tanggal_assesment || '';
+      const tanggalAsesmen = tanggalRaw ? String(tanggalRaw).substring(0,10) : '';
+
+      const pickFullName = (obj) => obj ? (obj.fullname || obj.full_name || obj.nama_lengkap || obj.namaLengkap || obj.name || obj.username || '') : '';
+      let namaAsesi = pickFullName(currentAsesi) || pickFullName(currentAsesi?.user);
+      if (!namaAsesi) {
+        const a = Array.isArray(apl01Data) ? apl01Data[0] : apl01Data;
+        namaAsesi = pickFullName(a) || pickFullName(a?.user);
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        skemaSertifikasi: prev.skemaSertifikasi || skemaSertifikasi,
+        judulUnit: prev.judulUnit || judulUnit,
+        kodeUnit: prev.kodeUnit || kodeUnit,
+        tuk: prev.tuk || tuk,
+        namaAssesor: prev.namaAssesor || namaAssesor,
+        namaAsesi: prev.namaAsesi || namaAsesi,
+        tanggalAsesmen: prev.tanggalAsesmen || tanggalAsesmen,
+      }));
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(userAssessments), JSON.stringify(currentAsesi), JSON.stringify(apl01Data)]);
+
+  // Fetch existing IA-02 for current asesi to prefill (optional)
+  useEffect(() => {
+    (async () => {
+      try {
+        const assesiId = currentAsesi?.id || currentAsesi?.assesi_id || currentAsesi?.user_id;
+        if (!assesiId) return;
+        const res = await getFormIa02ByAssesi(assesiId);
+        const first = res?.data?.data?.[0];
+        if (first) {
+          setExistingIa02(first);
+          setFormData(prev => ({
+            ...prev,
+            skemaSertifikasi: first.skema_sertifikasi || prev.skemaSertifikasi,
+            judulUnit: first.judul_unit || prev.judulUnit,
+            kodeUnit: first.kode_unit || prev.kodeUnit,
+            tuk: first.tuk || prev.tuk,
+            namaAssesor: first.nama_asesor || prev.namaAssesor,
+            namaAsesi: first.nama_asesi || prev.namaAsesi,
+            tanggalAsesmen: first.tanggal_asesmen ? String(first.tanggal_asesmen).substring(0,10) : prev.tanggalAsesmen,
+          }));
+        }
+      } catch (e) {
+        // 404 means no previous submission; ignore
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(currentAsesi)]);
+
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = () => {
-    setIsFormSubmitted(true);
-    setShowSuccess(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleSubmit = async () => {
+    try {
+      // derive assesment_asesi_id & skema_id from active assessment
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+      const assesment_asesi_id = chosen?.id;
+      const assesmentDetail = chosen?.assesment;
+      const skema_id = assesmentDetail?.skema_id || assesmentDetail?.skema?.id || assesmentDetail?.schema?.id;
+
+      if (!assesment_asesi_id) {
+        alert('Tidak dapat menemukan assesment_asesi_id. Pastikan Anda memiliki asesmen aktif.');
+        return;
+      }
+
+      const payload = {
+        assesment_asesi_id,
+        skema_id,
+        skema_sertifikasi: formData.skemaSertifikasi || null,
+        judul_unit: formData.judulUnit || null,
+        kode_unit: formData.kodeUnit || null,
+        tuk: formData.tuk || null,
+        nama_asesor: formData.namaAssesor || null,
+        nama_asesi: formData.namaAsesi || null,
+        tanggal_asesmen: formData.tanggalAsesmen || null,
+        extra: {},
+      };
+
+      await submitFormIa02(payload);
+      setIsFormSubmitted(true);
+      setShowSuccess(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e) {
+      console.error('Submit IA-02 error', e);
+      alert('Gagal mengirim IA-02. Mohon coba lagi.');
+    }
   };
 
   const handleOkay = () => {
@@ -763,7 +875,7 @@ const IA02 = () => {
                       border: '1px solid #d1d5db',
                       width: '80px'
                     }}>
-
+                      No
                     </th>
                     <th style={{
                       padding: '10px 15px',
@@ -791,130 +903,27 @@ const IA02 = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td style={{
-                      padding: '8px 15px',
-                      textAlign: 'center',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      1.
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white',
-                      fontFamily: 'monospace'
-                    }}>
-                      GAR.CM01.001.01
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      Memberikan Layanan Secara Prima Kepada Pelanggan
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{
-                      padding: '8px 15px',
-                      textAlign: 'center',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      2.
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white',
-                      fontFamily: 'monospace'
-                    }}>
-                      GAR.CM01.002.01
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      Melakukan Pekerjaan dalam Lingkungan Sosial yang Beragam
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{
-                      padding: '8px 15px',
-                      textAlign: 'center',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      3.
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white',
-                      fontFamily: 'monospace'
-                    }}>
-                      GAR.CM01.003.01
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      Mengikuti Prosedur Kesehatan, Keselamatan dan Keamanan dalam Bekerja
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{
-                      padding: '8px 15px',
-                      textAlign: 'center',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      4.
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white',
-                      fontFamily: 'monospace'
-                    }}>
-                      GAR.CM01.004.01
-                    </td>
-                    <td style={{
-                      padding: '8px 15px',
-                      fontSize: '14px',
-                      color: '#374151',
-                      border: '1px solid #d1d5db',
-                      backgroundColor: 'white'
-                    }}>
-                      Memelihara Alat Jahit
-                    </td>
-                  </tr>
+                  {Array.isArray(assessmentUnits) && assessmentUnits.length > 0 ? (
+                    assessmentUnits.map((u, idx) => (
+                      <tr key={idx}>
+                        <td style={{
+                          padding: '8px 15px', textAlign: 'center', fontSize: '14px', color: '#374151', border: '1px solid #d1d5db', backgroundColor: 'white'
+                        }}>{idx + 1}.</td>
+                        <td style={{
+                          padding: '8px 15px', fontSize: '14px', color: '#374151', border: '1px solid #d1d5db', backgroundColor: 'white', fontFamily: 'monospace'
+                        }}>{u.kode || u.code || ''}</td>
+                        <td style={{
+                          padding: '8px 15px', fontSize: '14px', color: '#374151', border: '1px solid #d1d5db', backgroundColor: 'white'
+                        }}>{u.judul || u.nama || u.name || ''}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3} style={{ padding: '10px', textAlign: 'center', color: '#6b7280' }}>
+                        Unit kompetensi tidak tersedia pada asesmen aktif.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

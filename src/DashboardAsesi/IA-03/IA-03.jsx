@@ -2,15 +2,19 @@ import React, { useEffect, useState } from "react";
 import Image12 from "../../img/image 12.png";
 import { useNavigate } from "react-router-dom";
 import NavAsesi from "../../components/NavAsesi";
+import { useDashboardAsesi } from "../../context/DashboardAsesiContext";
+import { getAssesmentById, getQuestionsBySkema, submitFormIa03 } from "../../api/api";
 
 const IA03 = () => {
   const navigate = useNavigate();
+  const { userAssessments } = useDashboardAsesi();
   const [formData, setFormData] = useState({
     judulUnit: "",
     kodeUnit: "",
     checkedAnswers: {},
     responses: {},
   });
+  const [questions, setQuestions] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -97,20 +101,69 @@ const IA03 = () => {
     navigate(path);
   };
 
+  // Auto-populate judulUnit/kodeUnit from active assessment
+  useEffect(() => {
+    (async () => {
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === "active" || a?.status === "scheduled") || ua[0];
+      if (!chosen) return;
+      let assesmentDetail = chosen?.assesment || null;
+      if (!assesmentDetail && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          assesmentDetail = res.data?.data ?? null;
+        } catch {}
+      }
+      if (!assesmentDetail) return;
+      const units = assesmentDetail?.units || assesmentDetail?.unit_kompetensi || assesmentDetail?.unitKompetensi || [];
+      const firstUnit = Array.isArray(units) ? units[0] : (units || {});
+      const judulUnit = firstUnit?.judul || firstUnit?.nama || firstUnit?.name || "";
+      const kodeUnit = firstUnit?.kode || firstUnit?.code || "";
+      setFormData((prev) => ({
+        ...prev,
+        judulUnit: prev.judulUnit || judulUnit,
+        kodeUnit: prev.kodeUnit || kodeUnit,
+      }));
+
+      // Fetch questions by skema for IA-03 from API, replacing dummy
+      const skemaId = assesmentDetail?.skema_id || assesmentDetail?.skema?.id || assesmentDetail?.schema?.id;
+      if (skemaId) {
+        try {
+          const qres = await getQuestionsBySkema(skemaId);
+          const list = qres?.data?.data || [];
+          setQuestions(Array.isArray(list) ? list : []);
+        } catch (e) {
+          // 404 when no questions -> keep empty, UI will show no data
+          setQuestions([]);
+        }
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(userAssessments)]);
+
   const isFormValid = () => {
+    // required top fields
     const requiredFields = ["judulUnit", "kodeUnit"];
     const hasRequiredFields = requiredFields.every(
       (f) => (formData[f] || "").trim() !== ""
     );
-    const hasResponseQ1 = (formData.responses?.question1 || "").trim() !== "";
-    const hasAnswerQ1 = !!(
-      formData.checkedAnswers?.question1?.ya ||
-      formData.checkedAnswers?.question1?.tidak
-    );
-    return hasRequiredFields && hasResponseQ1 && hasAnswerQ1;
+
+    // if there are questions, require each to have a choice (ya/tidak) and a response
+    if (Array.isArray(questions) && questions.length > 0) {
+      for (let i = 0; i < questions.length; i++) {
+        const q = questions[i];
+        const key = `q_${q.id ?? i}`;
+        const ans = formData.checkedAnswers?.[key] || {};
+        const hasAnswer = !!(ans.ya || ans.tidak);
+        const resp = (formData.responses?.[key] || "").trim();
+        if (!hasAnswer || !resp) return false;
+      }
+    }
+
+    return hasRequiredFields;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
     if (!isFormValid()) {
       alert(
@@ -119,10 +172,45 @@ const IA03 = () => {
       return;
     }
     try {
-      localStorage.setItem("ia03FormData", JSON.stringify(formData));
-    } catch (_) {}
-    setIsFormSubmitted(true);
-    setShowModal(true);
+      // derive assesment_asesi_id & skema_id from active assessment
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === "active" || a?.status === "scheduled") || ua[0];
+      const assesment_asesi_id = chosen?.id;
+      const assesmentDetail = chosen?.assesment;
+      const skema_id = assesmentDetail?.skema_id || assesmentDetail?.skema?.id || assesmentDetail?.schema?.id;
+
+      if (!assesment_asesi_id) {
+        alert("Tidak dapat menemukan assesment_asesi_id. Pastikan Anda memiliki asesmen aktif.");
+        return;
+      }
+
+      // build questions payload from current selections
+      const qPayload = (questions || []).map((q, idx) => {
+        const key = `q_${q.id ?? idx}`;
+        const ans = formData.checkedAnswers?.[key] || {};
+        const selected_option = ans.ya ? 'ya' : (ans.tidak ? 'tidak' : null);
+        return {
+          question_id: q.id,
+          selected_option,
+          response_text: formData.responses?.[key] || "",
+        };
+      }).filter(x => x.question_id && x.selected_option && (x.response_text || '').trim() !== '');
+
+      await submitFormIa03({
+        assesment_asesi_id,
+        skema_id,
+        questions: qPayload,
+      });
+
+      // Also keep a local copy (optional)
+      try { localStorage.setItem("ia03FormData", JSON.stringify(formData)); } catch(_) {}
+
+      setIsFormSubmitted(true);
+      setShowModal(true);
+    } catch (err) {
+      console.error('Submit IA-03 error', err);
+      alert('Gagal mengirim IA-03. Mohon coba lagi.');
+    }
   };
 
   const handleCloseModal = () => {
@@ -266,16 +354,7 @@ const IA03 = () => {
         </div>
       </div>
 
-      {/* Job Group Section */}
-      <div style={styles.jobGroupSection}>
-        <h4 style={styles.jobGroupTitle}>Kelompok Pekerjaan 1</h4>
-        <ol style={styles.jobList}>
-          <li>GAB.CM01.003.01 Mengikuti Prosedur Kesehatan</li>
-          <li>dst</li>
-          <li>dst</li>
-          <li>dst</li>
-        </ol>
-      </div>
+      {/* Job Group Section removed (dummy content) */}
 
       {/* Questions Table */}
       <table style={styles.questionTable}>
@@ -287,52 +366,54 @@ const IA03 = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td style={styles.questionCell}>
-              <div style={styles.questionText}>
-                Anda seorang operator yunior busana, sebelum memulai kegiatan
-                menjahit blus, anda perlu memperhatikan SOP kesehatan dan
-                keselamatan kerja, apa yang akan anda lakukan supaya tidak
-                terjadi kecelakaan kerja pada waktu menjahit blus? (JRES)
-              </div>
-              <div style={styles.responseBox}>
-                <div style={styles.responseLabel}>isi TanggapanMu disini:</div>
-                <textarea
-                  value={formData.responses.question1 || ""}
-                  onChange={(e) =>
-                    handleResponseChange("question1", e.target.value)
-                  }
-                  placeholder="Tulis tanggapan asesi di sini..."
-                  style={{
-                    width: "100%",
-                    minHeight: "60px",
-                    border: "none",
-                    outline: "none",
-                    backgroundColor: "transparent",
-                    resize: "vertical",
-                    fontSize: "12px",
-                    color: "#333",
-                  }}
-                />
-              </div>
-            </td>
-            <td style={styles.checkboxCell}>
-              <input
-                type="checkbox"
-                checked={formData.checkedAnswers.question1?.ya || false}
-                onChange={() => handleCheckboxChange("question1", "ya")}
-                style={styles.checkbox}
-              />
-            </td>
-            <td style={styles.checkboxCell}>
-              <input
-                type="checkbox"
-                checked={formData.checkedAnswers.question1?.tidak || false}
-                onChange={() => handleCheckboxChange("question1", "tidak")}
-                style={styles.checkbox}
-              />
-            </td>
-          </tr>
+          {Array.isArray(questions) && questions.length > 0 ? (
+            questions.map((q, idx) => {
+              const key = `q_${q.id ?? idx}`;
+              const ya = formData.checkedAnswers?.[key]?.ya || false;
+              const tidak = formData.checkedAnswers?.[key]?.tidak || false;
+              const resp = formData.responses?.[key] || "";
+              return (
+                <tr key={key}>
+                  <td style={styles.questionCell}>
+                    <div style={styles.questionText}>
+                      {q.question_text || q.text || q.soal || `Pertanyaan ${idx + 1}`}
+                    </div>
+                    <div style={styles.responseBox}>
+                      <div style={styles.responseLabel}>Isi Tanggapanmu di sini:</div>
+                      <textarea
+                        value={resp}
+                        onChange={(e) => handleResponseChange(key, e.target.value)}
+                        placeholder="Tulis tanggapan asesi di sini..."
+                        style={styles.textArea}
+                      />
+                    </div>
+                  </td>
+                  <td style={styles.checkboxCell}>
+                    <input
+                      type="checkbox"
+                      checked={ya}
+                      onChange={() => handleCheckboxChange(key, "ya")}
+                      style={styles.checkbox}
+                    />
+                  </td>
+                  <td style={styles.checkboxCell}>
+                    <input
+                      type="checkbox"
+                      checked={tidak}
+                      onChange={() => handleCheckboxChange(key, "tidak")}
+                      style={styles.checkbox}
+                    />
+                  </td>
+                </tr>
+              );
+            })
+          ) : (
+            <tr>
+              <td colSpan={3} style={{ textAlign: "center", padding: "12px", color: "#6b7280" }}>
+                Tidak ada pertanyaan untuk skema ini.
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
 

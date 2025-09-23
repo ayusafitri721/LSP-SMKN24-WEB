@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
-import { submitFormApl02, fetchCsrfCookie, getMyBuktiDokumenSelf, getApl02ById } from '../../api/api';
+import { submitFormApl02, fetchCsrfCookie, getMyBuktiDokumenSelf, getApl02ById, getAssesmentById } from '../../api/api';
 import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
 
 const pageContainerStyle = {
@@ -163,7 +163,7 @@ const warningNotificationStyle = {
 };
 
 const APL02 = () => {
-  const { currentAssesi, apl01Data, userAssessments, ensureUserAssesmentAsesi, fetchUserAssessments } = useDashboardAsesi();
+  const { currentAsesi, apl01Data, userAssessments, ensureUserAssesmentAsesi, fetchUserAssessments } = useDashboardAsesi();
   // Hapus data dummy asesor; akan diisi dari API jika tersedia
   const [assessorData, setAssessorData] = useState([]);
   
@@ -190,6 +190,8 @@ const APL02 = () => {
   const [buktiOptions, setBuktiOptions] = useState([]);
   const [asesiName, setAsesiName] = useState('');
   const [schemaDetail, setSchemaDetail] = useState(null);
+  const [namaAsesor, setNamaAsesor] = useState('');
+  const [tanggalAsesmen, setTanggalAsesmen] = useState('');
   // selections keyed by elementId: { kompetensinitas: 'k'|'bk'|'', bukti: '' }
   const [elementSelections, setElementSelections] = useState({});
   
@@ -245,7 +247,7 @@ const APL02 = () => {
         obj.fullname || obj.full_name || obj.nama_lengkap || obj.namaLengkap || obj.name || obj.username || ''
       );
     };
-    let name = pickFullName(currentAssesi) || pickFullName(currentAssesi?.user);
+    let name = pickFullName(currentAsesi) || pickFullName(currentAsesi?.user);
     if (!name) {
       const a = Array.isArray(apl01Data) ? apl01Data[0] : apl01Data;
       name = pickFullName(a) || pickFullName(a?.user);
@@ -275,9 +277,10 @@ const APL02 = () => {
 
     // assesment_asesi_id choose first available
     if (!assesmentAsesiId && Array.isArray(userAssessments) && userAssessments.length > 0) {
-      setAssesmentAsesiId(String(userAssessments[0].id));
+      const chosen = userAssessments.find(a => a?.status === 'active' || a?.status === 'scheduled') || userAssessments[0];
+      if (chosen?.id) setAssesmentAsesiId(String(chosen.id));
     }
-  }, [currentAssesi, apl01Data, userAssessments, asesiName, skemaId, assesmentAsesiId]);
+  }, [currentAsesi, apl01Data, userAssessments, asesiName, skemaId, assesmentAsesiId]);
 
   // Load bukti options for the logged-in asesi
   useEffect(() => {
@@ -293,6 +296,28 @@ const APL02 = () => {
     })();
   }, []);
 
+  // Resolve Nama Asesi (already handled above), Nama Asesor, and Tanggal from active assessment
+  useEffect(() => {
+    (async () => {
+      const list = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = list.find(a => a?.status === 'active' || a?.status === 'scheduled') || list[0];
+      if (!chosen) return;
+      let assesment = chosen?.assesment || null;
+      if (!assesment && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          assesment = res.data?.data ?? null;
+        } catch {}
+      }
+      if (!assesment) return;
+      const nm = assesment?.assesor?.nama_lengkap || assesment?.assesor?.name || '';
+      const tRaw = assesment?.tanggal_mulai || assesment?.tanggal_assesment || '';
+      const tFmt = tRaw ? String(tRaw).slice(0,10) : '';
+      if (nm) setNamaAsesor(nm);
+      if (tFmt) setTanggalAsesmen(tFmt);
+    })();
+  }, [JSON.stringify(userAssessments)]);
+
   // Ensure assesment_asesi exists when entering APL-02, then pick default
   useEffect(() => {
     (async () => {
@@ -304,7 +329,8 @@ const APL02 = () => {
   // Select default assesmentAsesiId when list becomes available
   useEffect(() => {
     if (!assesmentAsesiId && Array.isArray(userAssessments) && userAssessments.length > 0) {
-      setAssesmentAsesiId(String(userAssessments[0].id));
+      const chosen = userAssessments.find(a => a?.status === 'active' || a?.status === 'scheduled') || userAssessments[0];
+      if (chosen?.id) setAssesmentAsesiId(String(chosen.id));
     }
   }, [userAssessments, assesmentAsesiId]);
 
@@ -383,7 +409,7 @@ const APL02 = () => {
 
     const payload = {
       skema_id: Number(skemaId),
-      assesment_assesi_id: Number(assesmentAsesiId),
+      assesment_asesi_id: Number(assesmentAsesiId),
       submissions,
     };
 
@@ -1372,109 +1398,12 @@ const APL02 = () => {
             </div>
             
             <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '5px',
               minWidth: '80px'
             }} className="assessor-input-group">
               <span style={{ fontSize: '11px', color: '#666' }}>Tanggal</span>
               <input 
-                type="text" 
-                value="14/02/2027"
-                readOnly
-                style={{
-                  padding: '8px 12px',
-                  border: '1px solid #ddd',
-                  fontSize: '12px',
-                  backgroundColor: 'white',
-                  borderRadius: '4px',
-                  width: '100px'
-                }}
-              />
-            </div>
-            
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '5px',
-              alignItems: 'flex-end',
-              flex: 1,
-              paddingRight: '50px'
-            }} className="assessor-approval">
-              <span style={{ fontSize: '11px', color: '#666' }}>Persetujuan Asesi</span>
-              <button 
-                onClick={() => setAsesiApproval(asesiApproval === 'Approve' ? 'Menunggu' : 'Approve')}
-                style={{
-                  padding: '8px 20px',
-                  backgroundColor: asesiApproval === 'Approve' ? '#28a745' : '#6c757d',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '20px',
-                  fontSize: '12px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                className="approval-button"
-              >
-                {asesiApproval}
-              </button>
-            </div>
-          </div>
-
-          {/* Assessor 2 */}
-          <div style={{
-            textAlign: 'center',
-            fontWeight: 'bold',
-            fontSize: '14px',
-            marginBottom: '15px',
-            borderTop: '2px solid #FF8C00',
-            borderBottom: '2px solid #FF8C00',
-            paddingTop: '10px',
-            paddingBottom: '10px'
-          }}>
-            Ditinjau oleh Asesor:
-          </div>
-          
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '15px',
-            marginBottom: '30px',
-            fontSize: '12px'
-          }} className="assessor-section assessor-row">
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '5px',
-              minWidth: '100px'
-            }} className="assessor-input-group">
-              <span style={{ fontSize: '11px', color: '#666' }}>Nama Asesor</span>
-              <input 
-                type="text" 
-                value="Prof. Arul Maulido Singo M.Kom."
-                readOnly
-                style={{
-                  padding: '8px 12px',
-                  border: '1px solid #ddd',
-                  fontSize: '12px',
-                  backgroundColor: 'white',
-                  borderRadius: '4px',
-                  width: '250px'
-                }}
-              />
-            </div>
-            
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '5px',
-              minWidth: '80px'
-            }} className="assessor-input-group">
-              <span style={{ fontSize: '11px', color: '#666' }}>Tanggal</span>
-              <input 
-                type="text" 
-                value="14/02/2027"
+                type="date" 
+                value={tanggalAsesmen}
                 readOnly
                 style={{
                   padding: '8px 12px',

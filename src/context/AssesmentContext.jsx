@@ -8,7 +8,8 @@ import React, {
 } from "react";
 import {
   getAssesments,
-  getAssesmentAsesis,
+  getAssesmentByAssesor,
+  getAssesmentAsesiByUser,
   createAssesment,
   updateAssesment,
   deleteAssesment,
@@ -46,13 +47,17 @@ export const AssesmentProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await getAssesmentAsesis();
+      let res = { data: { data: [] } };
+      if (user.role === "asesor") {
+        res = await getAssesmentByAssesor(user.id);
+      } else if (user.role === "admin") {
+        // Backend no longer exposes a global index; try user-scoped as a fallback
+        res = await getAssesmentAsesiByUser(user.id);
+      }
       setAssesmentAsesis(res.data?.data || []);
       setAssesmentAsesisFetched(true);
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Gagal fetch data assesment asesi"
-      );
+      setError(err.response?.data?.message || "Gagal fetch data assesment asesi");
     } finally {
       setLoading(false);
     }

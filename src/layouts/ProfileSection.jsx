@@ -1,10 +1,63 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getMyProfile, updateMyProfile } from '../api/api';
 
 function ProfileSection() {
+  const [loading, setLoading] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [ktpImage, setKtpImage] = useState(null);
   const [bukuTabunganImage, setBukuTabunganImage] = useState(null);
   const [sertifikatImage, setSertifikatImage] = useState(null);
+
+  // Profile form state aligned with backend fields
+  const [form, setForm] = useState({
+    nama_lengkap: '',
+    tempat_lahir: '',
+    tanggal_lahir: '',
+    alamat: '',
+    no_telepon: '',
+    no_ktp: '',
+    jenis_kelamin: '',
+    kode_pos: '',
+    kualifikasi_pendidikan: '',
+    email: '', // display only
+    jurusan: '', // display only
+  });
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setLoading(true);
+        const res = await getMyProfile();
+        const data = res?.data?.data || {};
+        const user = data.user || {};
+        const asesi = data.assesi || {};
+        setForm((prev) => ({
+          ...prev,
+          nama_lengkap: asesi.nama_lengkap || '',
+          tempat_lahir: asesi.tempat_lahir || '',
+          tanggal_lahir: asesi.tanggal_lahir || '',
+          alamat: asesi.alamat || '',
+          no_telepon: asesi.no_telepon || '',
+          no_ktp: asesi.no_ktp || '',
+          jenis_kelamin: asesi.jenis_kelamin || '',
+          kode_pos: asesi.kode_pos || '',
+          kualifikasi_pendidikan: asesi.kualifikasi_pendidikan || '',
+          email: user.email || '',
+          jurusan: asesi.jurusan?.nama || '',
+        }));
+      } catch (e) {
+        console.error('Failed to load profile', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  const handleChange = (field) => (e) => {
+    const value = e.target.value;
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
 
   const cardStyle = {
     backgroundColor: '#fff',
@@ -27,6 +80,31 @@ function ProfileSection() {
     marginBottom: '8px',
     fontWeight: '500',
     color: '#333'
+  };
+
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      // Only send fields accepted by backend updateSelf
+      const payload = {
+        nama_lengkap: form.nama_lengkap,
+        tempat_lahir: form.tempat_lahir,
+        tanggal_lahir: form.tanggal_lahir,
+        alamat: form.alamat,
+        no_telepon: form.no_telepon,
+        no_ktp: form.no_ktp,
+        jenis_kelamin: form.jenis_kelamin,
+        kode_pos: form.kode_pos,
+        kualifikasi_pendidikan: form.kualifikasi_pendidikan,
+      };
+      await updateMyProfile(payload);
+      alert('Data profil berhasil disimpan!');
+    } catch (e) {
+      console.error('Gagal menyimpan profil', e);
+      alert('Gagal menyimpan profil. Coba lagi.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Function to handle image upload
@@ -131,7 +209,7 @@ function ProfileSection() {
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: '600' }}>PROFIL ANDA</h1>
-        <p style={{ color: '#666' }}>Lengkapi informasi profil anda</p>
+        <p style={{ color: '#666' }}>{loading ? 'Memuat data...' : 'Lengkapi informasi profil anda'}</p>
       </div>
 
       {/* Foto Profil */}
@@ -241,33 +319,33 @@ function ProfileSection() {
 
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Nama Lengkap</label>
-          <input type="text" style={inputStyle} />
+          <input type="text" style={inputStyle} value={form.nama_lengkap} onChange={handleChange('nama_lengkap')} />
         </div>
 
         <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
           <div style={{ flex: 1 }}>
             <label style={labelStyle}>Tempat Lahir</label>
-            <input type="text" style={inputStyle} />
+            <input type="text" style={inputStyle} value={form.tempat_lahir} onChange={handleChange('tempat_lahir')} />
           </div>
           <div style={{ flex: 1 }}>
             <label style={labelStyle}>Tanggal Lahir</label>
-            <input type="date" style={inputStyle} />
+            <input type="date" style={inputStyle} value={form.tanggal_lahir?.slice(0,10) || ''} onChange={handleChange('tanggal_lahir')} />
           </div>
         </div>
 
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Alamat</label>
-          <textarea style={{ ...inputStyle, minHeight: '100px' }} />
+          <textarea style={{ ...inputStyle, minHeight: '100px' }} value={form.alamat} onChange={handleChange('alamat')} />
         </div>
 
         <div style={{ display: 'flex', gap: '20px' }}>
           <div style={{ flex: 1 }}>
             <label style={labelStyle}>Nomor HP</label>
-            <input type="tel" style={inputStyle} />
+            <input type="tel" style={inputStyle} value={form.no_telepon} onChange={handleChange('no_telepon')} />
           </div>
           <div style={{ flex: 1 }}>
             <label style={labelStyle}>Email</label>
-            <input type="email" style={inputStyle} />
+            <input type="email" style={inputStyle} value={form.email} disabled />
           </div>
         </div>
       </div>
@@ -279,7 +357,7 @@ function ProfileSection() {
         <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
           <div style={{ flex: 1 }}>
             <label style={labelStyle}>Nomor KTP</label>
-            <input type="text" style={inputStyle} />
+            <input type="text" style={inputStyle} value={form.no_ktp} onChange={handleChange('no_ktp')} />
           </div>
           <div style={{ flex: 1 }}>
             <label style={labelStyle}>NPWP</label>
@@ -323,20 +401,10 @@ function ProfileSection() {
         }}
         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e05a2b'}
         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ff6b35'}
-        onClick={() => {
-          // Simulasi penyimpanan data
-          console.log('Data yang akan disimpan:', {
-            profileImage,
-            ktpImage,
-            bukuTabunganImage,
-            sertifikatImage
-          });
-          
-          // Tampilkan pesan sukses
-          alert('Data profil berhasil disimpan!');
-        }}
+        disabled={loading}
+        onClick={handleSave}
       >
-        Simpan Perubahan
+        {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
       </button>
     </div>
   );
