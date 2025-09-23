@@ -2,17 +2,14 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://127.0.0.1:8000/api",
-  withCredentials: true, // use Sanctum cookies
+  withCredentials: true, 
   xsrfCookieName: "XSRF-TOKEN",
   xsrfHeaderName: "X-XSRF-TOKEN",
 });
 
 api.interceptors.request.use(
   (config) => {
-    // Ensure cookies are sent
     config.withCredentials = true;
-
-    // Optional bearer token (if your backend also returns token)
     let token = null;
     try {
       const raw = localStorage.getItem("user");
@@ -158,10 +155,30 @@ export const submitFormAk05 = (data) => api.post("/assesment/formak05", data);
 export const getFormAk05ByAssesi = (assesiId) =>
   api.get(`/assesment/formak05/${assesiId}`);
 
+// AK04 (if backend provides; pages will handle 404 gracefully)
+export const submitFormAk04 = (data) => api.post("/assesment/formak04", data);
+export const getFormAk04ByAssesi = (assesiId) =>
+  api.get(`/assesment/formak04/${assesiId}`);
+
 // IA01
 export const submitFormIa01 = (data) => api.post("/assesment/formia01", data);
 export const getFormIa01ByAssesi = (assesiId) =>
   api.get(`/assesment/formia01/${assesiId}`);
+
+// IA02
+export const submitFormIa02 = (data) => api.post("/assesment/formia02", data);
+export const getFormIa02ByAssesi = (assesiId) =>
+  api.get(`/assesment/formia02/${assesiId}`);
+
+// IA03
+export const submitFormIa03 = (data) => api.post("/assesment/formia03", data);
+export const getFormIa03ByAssesi = (assesiId) =>
+  api.get(`/assesment/formia03/${assesiId}`);
+
+// IA06A
+export const submitFormIa06a = (data) => api.post("/assesment/formia06a", data);
+export const getFormIa06aByAssesi = (assesiId) =>
+  api.get(`/assesment/formia06a/${assesiId}`);
 
 // Bukti dokumen generic
 // User approval endpoints
@@ -170,5 +187,28 @@ export const getFormIa01ByAssesi = (assesiId) =>
 export const viewBuktiDokumen = (id) => api.get(`/bukti-dokumen/view/${id}`);
 // List bukti dokumen milik asesi saat ini
 export const getMyBuktiDokumenSelf = () => api.get(`/bukti-dokumen/self`);
+
+// IA Docs download
+export const downloadIaDoc = async (form, skemaId) => {
+  // returns Blob response for download
+  const res = await api.get(`/ia/docs/${encodeURIComponent(form)}/${skemaId}` , {
+    responseType: 'blob'
+  });
+  return res;
+};
+
+// IA Docs list for a given skema
+export const listIaDocs = (skemaId) => api.get(`/ia/docs/list/${skemaId}`);
+
+// Questions (for IA-03 demo)
+export const getQuestionsBySkema = (skemaId) => api.get(`/questions/skema/${skemaId}`);
+export const submitQuestionAnswers = (data) => api.post(`/questions/answer`, data);
+
+// Auth
+export const logout = () => api.post(`/auth/logout`);
+
+// Profile (Assesi self)
+export const getProfileSelf = () => api.get(`/profile/self`);
+export const updateProfileSelf = (data) => api.put(`/profile/self`, data);
 
 export default api;

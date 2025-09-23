@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
+import { submitFormIa01, fetchCsrfCookie, getAssesmentById, getFormIa01ByAssesi } from '../../api/api';
+import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
 
 // Modal styles - Updated to match AK-01 design and responsive
 const modalOverlayStyle = {
@@ -434,26 +436,86 @@ const IA01 = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const { userAssessments, apl01Data, currentAsesi } = useDashboardAsesi();
   const [formData, setFormData] = useState({
     judulUnit: '',
     nomorUnit: '',
     kodeUnit: '',
     judulUnitKompetensi: '',
   });
+  const [existingIa01, setExistingIa01] = useState(null);
   
   const [checkedItems, setCheckedItems] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Helper derive asesi_id
+  const deriveAsesiId = () => {
+    const fromCurrent = currentAsesi?.id ?? currentAsesi?.assesi_id ?? currentAsesi?.user?.assesi_id;
+    if (fromCurrent) return Number(fromCurrent);
+    const fromApl01 = Array.isArray(apl01Data)
+      ? (apl01Data[0]?.id ?? apl01Data[0]?.assesi_id)
+      : (apl01Data?.id ?? apl01Data?.assesi_id);
+    if (fromApl01) return Number(fromApl01);
+    try {
+      const lp = JSON.parse(localStorage.getItem('asesiProfile'));
+      const fromLS = lp?.id ?? lp?.assesi_id;
+      if (fromLS) return Number(fromLS);
+    } catch {}
+    return undefined;
+  };
+
+  // Auto-populate top unit fields from active assessment
+  useEffect(() => {
+    (async () => {
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+      if (!chosen) return;
+      let assesmentDetail = chosen?.assesment || null;
+      if (!assesmentDetail && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          assesmentDetail = res.data?.data ?? null;
+        } catch {}
+      }
+      if (!assesmentDetail) return;
+      const units = assesmentDetail?.units || assesmentDetail?.unit_kompetensi || assesmentDetail?.unitKompetensi || [];
+      const firstUnit = Array.isArray(units) ? units[0] : (units || {});
+      const judulUnit = firstUnit?.judul || firstUnit?.nama || firstUnit?.name || '';
+      const kodeUnit = firstUnit?.kode || firstUnit?.code || '';
+      setFormData(prev => ({
+        ...prev,
+        judulUnit: prev.judulUnit || judulUnit,
+        kodeUnit: prev.kodeUnit || kodeUnit,
+      }));
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(userAssessments)]);
+
+  // Fetch existing IA-01 submissions for this asesi (if any)
+  useEffect(() => {
+    (async () => {
+      const asesiId = deriveAsesiId();
+      if (!asesiId) return;
+      try {
+        await fetchCsrfCookie();
+        const res = await getFormIa01ByAssesi(asesiId);
+        const payload = res.data?.data ?? res.data ?? null;
+        if (payload) setExistingIa01(payload);
+      } catch (e) {
+        // 404 if none; ignore
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentAsesi, apl01Data]);
 
   // Check if device is mobile
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -530,13 +592,61 @@ const IA01 = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form FR.IA.01.CL submitted:', formData);
-    localStorage.setItem('ia01FormData', JSON.stringify(formData));
-    setIsFormSubmitted(true);
-    setShowModal(true);
+
+    // Derive assesment_asesi_id & skema_id from context
+    const ua = Array.isArray(userAssessments) ? userAssessments : [];
+    const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+    const assesmentAsesiId = chosen?.id;
+    let skemaId = chosen?.assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
+    if (!skemaId && chosen?.assesment_id) {
+      try {
+        const res = await getAssesmentById(chosen.assesment_id);
+        skemaId = res.data?.data?.skema_id ?? skemaId;
+      } catch {}
+    }
+    if (!assesmentAsesiId || !skemaId) {
+      alert('Tidak menemukan assesment aktif untuk dikaitkan (assesment_asesi_id/skema_id). Silakan pilih jadwal terlebih dahulu di dashboard atau muat ulang halaman.');
+      return;
+    }
+
+    try {
+      await fetchCsrfCookie();
+      const payload = {
+        assesment_asesi_id: Number(assesmentAsesiId),
+        skema_id: Number(skemaId),
+        // map important fields in snake_case
+        judul_unit: formData.judulUnit,
+        nomor_unit: formData.nomorUnit,
+        kode_unit: formData.kodeUnit,
+        judul_unit_kompetensi: formData.judulUnitKompetensi,
+        // include checked items (criteria selections)
+        checked_items: checkedItems,
+        // keep original form structure
+        form: formData,
+      };
+      await submitFormIa01(payload);
+      setIsFormSubmitted(true);
+      setShowModal(true);
+    } catch (err) {
+      const status = err?.response?.status;
+      const message = err?.response?.data?.message || err?.message;
+      const errors = err?.response?.data?.errors;
+      console.error('Gagal submit FR.IA.01.CL:', { status, message, errors, err });
+      let alertMsg = 'Gagal mengirim ke server. Coba lagi nanti.';
+      if (status) alertMsg += `\nStatus: ${status}`;
+      if (message) alertMsg += `\nPesan: ${message}`;
+      if (errors && typeof errors === 'object') {
+        const detail = Object.entries(errors)
+          .map(([k, v]) => `- ${k}: ${Array.isArray(v) ? v.join(', ') : String(v)}`)
+          .join('\n');
+        if (detail) alertMsg += `\nDetail:\n${detail}`;
+      }
+      alert(alertMsg);
+    }
   };
+
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -656,117 +766,6 @@ const IA01 = () => {
             
             .data-table td {
               padding: 8px !important;
-            }
-            
-            .input-field {
-              font-size: 11px !important;
-              padding: 3px 6px !important;
-              min-width: 0 !important;
-            }
-            
-            .warning-notification {
-              right: 10px !important;
-              left: 10px !important;
-              max-width: none !important;
-              font-size: 12px !important;
-            }
-            
-            .modal-container {
-              min-width: 90% !important;
-              max-width: 90% !important;
-              padding: 20px 30px !important;
-              margin: 10px !important;
-            }
-            
-            .modal-title {
-              font-size: 16px !important;
-              margin-bottom: 20px !important;
-              padding-bottom: 20px !important;
-            }
-            
-            .modal-button {
-              position: relative !important;
-              bottom: auto !important;
-              right: auto !important;
-              width: 100% !important;
-              margin-top: 20px !important;
-            }
-
-            .table-input-row {
-              flex-wrap: wrap !important;
-              gap: 5px !important;
-            }
-            
-            .table-input-row span {
-              min-width: auto !important;
-            }
-            
-            .table-input-row input {
-              min-width: 150px !important;
-              flex: 1 !important;
-            }
-
-            .responsive-table {
-              display: block !important;
-              overflow-x: auto !important;
-              white-space: nowrap !important;
-            }
-            
-            .responsive-table tbody,
-            .responsive-table tr,
-            .responsive-table td {
-              display: block !important;
-              width: 100% !important;
-            }
-            
-            .responsive-table tr {
-              border: 1px solid #ddd !important;
-              margin-bottom: 10px !important;
-              border-radius: 4px !important;
-            }
-            
-            .responsive-table td {
-              border: none !important;
-              padding: 10px !important;
-              text-align: left !important;
-            }
-            
-            .responsive-form-row {
-              flex-direction: column !important;
-              align-items: flex-start !important;
-              gap: 5px !important;
-            }
-            
-            .responsive-form-row span {
-              min-width: auto !important;
-            }
-          }
-          
-          @media (max-width: 480px) {
-            .logo-text {
-              font-size: 24px !important;
-            }
-            
-            .nav-container {
-              max-width: 90% !important;
-              padding: 5px 10px !important;
-            }
-            
-            .content-card {
-              padding: 15px !important;
-            }
-            
-            .submit-button {
-              font-size: 12px !important;
-              padding: 10px 20px !important;
-            }
-            
-            .data-table {
-              font-size: 10px !important;
-            }
-            
-            .data-table td {
-              padding: 6px !important;
             }
 
             .table-input-row input {

@@ -1,11 +1,9 @@
-// src/DashboardAsesi/AK-01/AK-01.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
-import { submitFormAk01, fetchCsrfCookie } from '../../api/api';
+import { submitFormAk01, fetchCsrfCookie, getFormAk01ByAssesi, getAssesmentById } from '../../api/api';
 import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
 
-// Modal styles - Updated to match APL-01 design
 const modalOverlayStyle = {
   position: 'fixed',
   top: 0,
@@ -294,7 +292,7 @@ const editableTextStyle = {
 const AK01 = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userAssessments } = useDashboardAsesi();
+  const { userAssessments, currentAsesi, apl01Data } = useDashboardAsesi();
 
   const [formData, setFormData] = useState({
     skemaSertifikasi: '',
@@ -322,6 +320,7 @@ const AK01 = () => {
   const [showWarning, setShowWarning] = useState(false);
   const [files, setFiles] = useState([]); // PDF files
   const [fileDescription, setFileDescription] = useState('Persetujuan asesmen');
+  const [existingAk01, setExistingAk01] = useState(null);
 
   // Block navigation jika form belum di-submit
   useEffect(() => {
@@ -362,6 +361,100 @@ const AK01 = () => {
     };
   }, [isFormSubmitted]);
 
+  // Prefill Nama Asesi from context (similar strategy as APL-02)
+  useEffect(() => {
+    const pickFullName = (obj) => {
+      if (!obj) return '';
+      return (
+        obj.fullname || obj.full_name || obj.nama_lengkap || obj.namaLengkap || obj.name || obj.username || ''
+      );
+    };
+    if (!formData.namaAsesi) {
+      let name = pickFullName(currentAsesi) || pickFullName(currentAsesi?.user);
+      if (!name) {
+        const a = Array.isArray(apl01Data) ? apl01Data[0] : apl01Data;
+        name = pickFullName(a) || pickFullName(a?.user);
+      }
+      if (name) setFormData(prev => ({ ...prev, namaAsesi: name }));
+    }
+  }, [currentAsesi, apl01Data, formData.namaAsesi]);
+
+  // Auto-populate from active assessment: unit info, TUK, assessor name, date
+  useEffect(() => {
+    (async () => {
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+      if (!chosen) return;
+      let assesmentDetail = chosen?.assesment || null;
+      if (!assesmentDetail && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          assesmentDetail = res.data?.data ?? null;
+        } catch {}
+      }
+      if (!assesmentDetail) return;
+
+      // Derive unit info
+      const units = assesmentDetail?.units || assesmentDetail?.unit_kompetensi || assesmentDetail?.unitKompetensi || [];
+      const firstUnit = Array.isArray(units) ? units[0] : (units || {});
+      const judulUnit = firstUnit?.judul || firstUnit?.nama || firstUnit?.name || '';
+      const nomorUnit = firstUnit?.kode || firstUnit?.code || '';
+
+      // Other info
+      const tukPelaksanaan = assesmentDetail?.tuk || assesmentDetail?.lokasi || formData.tukPelaksanaan;
+      const namaAsesor = assesmentDetail?.assesor?.nama_lengkap || assesmentDetail?.assesor?.name || formData.namaAsesor;
+      const tanggalRaw = assesmentDetail?.tanggal_mulai || assesmentDetail?.tanggal_assesment || '';
+      const tanggal = formData.tanggal || (tanggalRaw ? String(tanggalRaw).substring(0,10) : '');
+
+      setFormData((prev) => ({
+        ...prev,
+        judulUnit: prev.judulUnit || judulUnit,
+        nomorUnit: prev.nomorUnit || nomorUnit,
+        tukPelaksanaan,
+        namaAsesor,
+        tanggal,
+      }));
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(userAssessments)]);
+
+  // Helper to derive asesi_id from context/localStorage
+  const deriveAsesiId = () => {
+    const fromCurrent = currentAsesi?.id ?? currentAsesi?.assesi_id ?? currentAsesi?.user?.assesi_id;
+    if (fromCurrent) return Number(fromCurrent);
+    const fromApl01 = Array.isArray(apl01Data)
+      ? (apl01Data[0]?.id ?? apl01Data[0]?.assesi_id)
+      : (apl01Data?.id ?? apl01Data?.assesi_id);
+    if (fromApl01) return Number(fromApl01);
+    try {
+      const lp = JSON.parse(localStorage.getItem('asesiProfile'));
+      const fromLS = lp?.id ?? lp?.assesi_id;
+      if (fromLS) return Number(fromLS);
+    } catch {}
+    return undefined;
+  };
+
+  // Fetch existing AK-01 submission for this asesi (align with API)
+  useEffect(() => {
+    (async () => {
+      const asesiId = deriveAsesiId();
+      if (!asesiId) return;
+      try {
+        await fetchCsrfCookie();
+        const res = await getFormAk01ByAssesi(asesiId);
+        // Backend may return array or object with data
+        const payload = res.data?.data ?? res.data ?? null;
+        if (payload && (Array.isArray(payload) ? payload.length > 0 : true)) {
+          setExistingAk01(payload);
+        }
+      } catch (e) {
+        // 404 means none exists yet; ignore silently
+      }
+    })();
+    // only run once after mount + when context becomes available
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentAsesi, apl01Data]);
+
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -401,12 +494,21 @@ const AK01 = () => {
       return;
     }
     // Derive assesment_asesi_id and skema_id from userAssessments
-    const activeAss = (userAssessments || []).find((a) => a?.status === 'active') || (userAssessments || [])[0];
-    const assesmentAsesiId = activeAss?.id;
-    const skemaId = activeAss?.assesment?.skema_id || activeAss?.skema_id || activeAss?.schema_id;
+    const ua = Array.isArray(userAssessments) ? userAssessments : [];
+    const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+    const assesmentAsesiId = chosen?.id;
+    let skemaId = chosen?.assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
+
+    // If skemaId is still missing but we have assesment_id, fetch it from the backend
+    if (!skemaId && chosen?.assesment_id) {
+      try {
+        const res = await getAssesmentById(chosen.assesment_id);
+        skemaId = res.data?.data?.skema_id ?? skemaId;
+      } catch {}
+    }
 
     if (!assesmentAsesiId || !skemaId) {
-      alert('Tidak menemukan assesment aktif untuk dikaitkan (assesment_asesi_id/skema_id). Hubungi admin atau muat ulang halaman.');
+      alert('Tidak menemukan assesment aktif untuk dikaitkan (assesment_asesi_id/skema_id). Silakan pilih jadwal terlebih dahulu di dashboard atau muat ulang halaman.');
       return;
     }
 

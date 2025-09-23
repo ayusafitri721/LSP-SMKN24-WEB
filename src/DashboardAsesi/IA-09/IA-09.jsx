@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
+import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
+import { getAssesmentById } from '../../api/api';
 
 const pageContainerStyle = {
   backgroundColor: 'white',
@@ -414,14 +416,16 @@ const IA09 = () => {
     bukti1: '',
     bukti2: '',
     bukti3: '',
-    namaAsesiSignature: 'YUSMAYATI',
-    namaAsesorSignature: 'ROSMANI'
+    namaAsesiSignature: '',
+    namaAsesorSignature: ''
   });
   
   const [showPopup, setShowPopup] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { userAssessments, currentAsesi, apl01Data } = useDashboardAsesi();
+  const [unitKompetensi, setUnitKompetensi] = useState(null);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -458,6 +462,47 @@ const IA09 = () => {
       window.history.replaceState = originalReplaceState;
     };
   }, []);
+
+  // Auto-populate from active assessment and current profile
+  useEffect(() => {
+    (async () => {
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+      if (!chosen) return;
+      let assesmentDetail = chosen?.assesment || null;
+      if (!assesmentDetail && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          assesmentDetail = res.data?.data ?? null;
+        } catch {}
+      }
+      if (!assesmentDetail) return;
+      const units = assesmentDetail?.units || assesmentDetail?.unit_kompetensi || assesmentDetail?.unitKompetensi || [];
+      const firstUnit = Array.isArray(units) ? units[0] : (units || {});
+      const judulUnit = firstUnit?.judul || firstUnit?.nama || firstUnit?.name || '';
+      const nomorUnit = firstUnit?.kode || firstUnit?.code || '';
+      setUnitKompetensi(firstUnit);
+      const tuk = assesmentDetail?.tuk || assesmentDetail?.lokasi || '';
+      const namaAsesor = assesmentDetail?.assesor?.nama_lengkap || assesmentDetail?.assesor?.name || '';
+      const tanggalRaw = assesmentDetail?.tanggal_mulai || assesmentDetail?.tanggal_assesment || '';
+      const tanggal = tanggalRaw ? String(tanggalRaw).substring(0,10) : '';
+      const pickFullName = (obj) => obj ? (obj.fullname || obj.full_name || obj.nama_lengkap || obj.namaLengkap || obj.name || obj.username || '') : '';
+      let namaAsesi = pickFullName(currentAsesi) || pickFullName(currentAsesi?.user);
+      if (!namaAsesi) {
+        const a = Array.isArray(apl01Data) ? apl01Data[0] : apl01Data;
+        namaAsesi = pickFullName(a) || pickFullName(a?.user);
+      }
+      setFormData(prev => ({
+        ...prev,
+        judulUnit: prev.judulUnit || judulUnit,
+        nomorUnit: prev.nomorUnit || nomorUnit,
+        namaAsesor: prev.namaAsesor || namaAsesor,
+        namaAsesi: prev.namaAsesi || namaAsesi,
+        tanggal: prev.tanggal || tanggal,
+      }));
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(userAssessments), JSON.stringify(currentAsesi), JSON.stringify(apl01Data)]);
 
   const handleCheckboxChange = (name) => {
     setCheckboxes(prev => ({
@@ -966,12 +1011,12 @@ const IA09 = () => {
               <div style={fieldRowStyle} className="field-row">
                 <span style={labelStyle} className="field-row-label">Kode Unit</span>
                 <span style={colonStyle} className="field-row-colon">:</span>
-                <span style={valueStyle} className="field-row-value">J.555HHR000.001.2</span>
+                <span style={valueStyle} className="field-row-value">{unitKompetensi?.kode || unitKompetensi?.code || ''}</span>
               </div>
               <div style={fieldRowStyle} className="field-row">
                 <span style={labelStyle} className="field-row-label">Judul Unit</span>
                 <span style={colonStyle} className="field-row-colon">:</span>
-                <span style={valueStyle} className="field-row-value">Memproses Reservasi</span>
+                <span style={valueStyle} className="field-row-value">{unitKompetensi?.judul || unitKompetensi?.nama || unitKompetensi?.name || ''}</span>
               </div>
             </div>
 

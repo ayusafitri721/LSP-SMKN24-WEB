@@ -42,7 +42,8 @@ export const AssesmentProvider = ({ children }) => {
   }, [user]);
 
   const fetchAssesmentAsesis = useCallback(async () => {
-    if (!user || user.role !== "assesi" ) return;
+    // This endpoint (`GET /assesment-asesi`) is ADMIN-only per backend routes
+    if (!user || user.role !== "admin") return;
     setLoading(true);
     setError(null);
     try {
@@ -110,7 +111,8 @@ export const AssesmentProvider = ({ children }) => {
     if (!isFetched) {
       fetchAssesments();
     }
-    if (!assesmentAsesisisFetched) {
+    // Only admins should try to fetch the global assesment-asesi list
+    if (!assesmentAsesisisFetched && user?.role === 'admin') {
       fetchAssesmentAsesis();
     }
   }, [
@@ -118,6 +120,7 @@ export const AssesmentProvider = ({ children }) => {
     fetchAssesmentAsesis,
     isFetched,
     assesmentAsesisisFetched,
+    user?.role,
   ]);
 
   const value = useMemo(

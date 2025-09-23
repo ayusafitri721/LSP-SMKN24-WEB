@@ -1,8 +1,11 @@
 // src/DashboardAsesi/IA-06A-DPT/IA-06A-DPT.jsx
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
+import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
+import { fetchCsrfCookie, getAssesmentById, downloadIaDoc, listIaDocs, submitFormIa06a } from '../../api/api';
+import { useAuth } from '../../context/AuthContext';
 
 const pageContainerStyle = {
   backgroundColor: 'white',
@@ -126,179 +129,23 @@ const tableTopCellStyle = {
   fontWeight: 'bold',
 };
 
-const uploadButtonStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '10px',
-  padding: '12px 20px',
-  backgroundColor: 'white',
-  border: '2px solid #ddd',
-  borderRadius: '8px',
-  cursor: 'pointer',
-  fontSize: '14px',
-  color: '#333',
-  marginTop: '20px',
-  transition: 'all 0.3s ease',
-  width: 'fit-content',
-};
-
-const pdfIconStyle = {
-  width: '32px',
-  height: '32px',
-  backgroundColor: '#131111ff',
-  borderRadius: '4px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: 'white',
-  fontSize: '12px',
-  fontWeight: 'bold',
-};
-
-const uploadTextStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '2px',
-};
-
-const uploadTitleStyle = {
-  fontSize: '14px',
-  fontWeight: '500',
-  color: '#333',
-  margin: 0,
-};
-
-const uploadSubtitleStyle = {
-  fontSize: '12px',
-  color: '#666',
-  margin: 0,
-};
-
-const submitButtonStyle = {
-  backgroundColor: '#FF8C00',
-  color: 'white',
-  border: 'none',
-  padding: '12px 30px',
-  borderRadius: '8px',
-  fontSize: '16px',
-  fontWeight: 'bold',
-  cursor: 'pointer',
-  marginTop: '30px',
-  transition: 'all 0.3s ease',
-  width: 'fit-content',
-  alignSelf: 'flex-end',
-};
-
-const popupOverlayStyle = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  width: '100%',
-  height: '100%',
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  zIndex: 1000,
-};
-
-const popupContainerStyle = {
-  backgroundColor: 'white',
-  borderRadius: '15px',
-  padding: '40px',
-  textAlign: 'center',
-  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-  maxWidth: '400px',
-  width: '90%',
-  position: 'relative',
-  transform: 'scale(1)',
-  transition: 'transform 0.3s ease',
-};
-
-const iconContainerStyle = {
-  display: 'flex',
-  justifyContent: 'center',
-  marginBottom: '20px',
-};
-
-const successIconStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '15px',
-};
-
-const checkCircleStyle = {
-  width: '80px',
-  height: '80px',
-  borderRadius: '50%',
-  backgroundColor: '#FF8C00',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  animation: 'checkAnimation 0.6s ease',
-};
-
-const checkMarkStyle = {
-  color: 'white',
-  fontSize: '40px',
-  fontWeight: 'bold',
-};
-
-const listLinesStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '8px',
-  alignItems: 'center',
-};
-
-const popupTitleStyle = {
-  fontSize: '20px',
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: '30px',
-  lineHeight: '1.4',
-};
-
-const okayButtonStyle = {
-  backgroundColor: '#007bff',
-  color: 'white',
-  border: 'none',
-  padding: '12px 40px',
-  borderRadius: '8px',
-  fontSize: '16px',
-  fontWeight: 'bold',
-  cursor: 'pointer',
-  transition: 'background-color 0.3s ease',
-};
-
-const warningNotificationStyle = {
-  position: 'fixed',
-  top: '20px',
-  right: '20px',
-  backgroundColor: '#ff6b6b',
-  color: 'white',
-  padding: '15px 20px',
-  borderRadius: '10px',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-  zIndex: 1001,
-  fontSize: '14px',
-  fontWeight: 'bold',
-  animation: 'slideIn 0.3s ease-out',
-};
-
 const IA06A = () => {
   const [formData, setFormData] = useState({
     namaAssesor: '',
     namaAsesi: '',
-    tanggalAsesment: ''
+    tanggalAsesment: '',
+    catatan: '',
+    ttdAsesi: 'belum',
+    ttdAsesor: 'belum',
   });
 
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-  const fileInputRef = useRef(null);
   const navigate = useNavigate();
+  const { userAssessments, currentAsesi } = useDashboardAsesi();
+  const { user } = useAuth();
+  const [docAvailable, setDocAvailable] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
@@ -307,55 +154,112 @@ const IA06A = () => {
     }));
   };
 
-  const handleFileUpload = () => {
-    fileInputRef.current?.click();
-  };
+  // Auto-populate from current assessment
+  useEffect(() => {
+    const populate = async () => {
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+      if (!chosen) return;
+      let assesmentDetail = chosen?.assesment || null;
+      if (!assesmentDetail && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          assesmentDetail = res.data?.data ?? null;
+        } catch {}
+      }
+      const namaAssesorVar = assesmentDetail?.assesor?.nama_lengkap || assesmentDetail?.assesor?.name || assesmentDetail?.assesor_name || '';
+      const namaAsesi =
+        currentAsesi?.nama_lengkap ||
+        currentAsesi?.nama ||
+        currentAsesi?.user?.nama_lengkap ||
+        currentAsesi?.user?.name ||
+        currentAsesi?.user?.username ||
+        user?.name ||
+        user?.username || '';
+      const tanggalRaw = assesmentDetail?.tanggal_mulai || assesmentDetail?.tanggal_assesment || '';
+      const tanggalAsesment = tanggalRaw ? String(tanggalRaw).substring(0,10) : '';
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setUploadedFile(file);
-      console.log('File uploaded:', file.name);
+      setFormData((prev) => ({
+        ...prev,
+        namaAssesor: namaAssesorVar,
+        namaAsesi,
+        tanggalAsesment,
+      }));
+    };
+    populate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(userAssessments), JSON.stringify(currentAsesi), user?.name, user?.username]);
+
+  const handleDownloadSoal = async () => {
+    // Derive skemaId from dashboard context or fallback by fetching assesment detail
+    const ua = Array.isArray(userAssessments) ? userAssessments : [];
+    const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+    let skemaId = chosen?.assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
+    if (!skemaId && chosen?.assesment_id) {
+      try {
+        const res = await getAssesmentById(chosen.assesment_id);
+        skemaId = res.data?.data?.skema_id ?? skemaId;
+      } catch {}
     }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    // Validate form fields
-    const requiredFields = [
-      { field: formData.namaAssesor, name: 'Nama Assesor' },
-      { field: formData.namaAsesi, name: 'Nama Asesi' },
-      { field: formData.tanggalAsesment, name: 'Tanggal Assessment' }
-    ];
-    
-    const emptyFields = requiredFields.filter(item => !item.field.trim());
-    
-    if (emptyFields.length > 0 || !uploadedFile) {
-      let warningMessage = '';
-      if (emptyFields.length > 0) {
-        const fieldNames = emptyFields.map(item => item.name).join(', ');
-        warningMessage = `Mohon lengkapi: ${fieldNames}`;
-      }
-      if (!uploadedFile) {
-        warningMessage += emptyFields.length > 0 ? ' dan File Soal' : 'Mohon upload File Soal';
-      }
-      
+    if (!skemaId) {
       setShowWarning(true);
-      setTimeout(() => setShowWarning(false), 4000);
+      setTimeout(() => setShowWarning(false), 3000);
       return;
     }
-    
-    console.log('Form submitted:', formData);
-    console.log('Uploaded file:', uploadedFile);
-    setShowPopup(true);
+    try {
+      await fetchCsrfCookie();
+      // Optional pre-check to avoid 404
+      try {
+        const list = await listIaDocs(Number(skemaId));
+        const items = list.data?.data || list.data || [];
+        const exists = Array.isArray(items) && items.some(d => String(d.form || d.name).toUpperCase() === 'IA-06A-DPT');
+        if (!exists) {
+          alert('Dokumen IA-06A-DPT belum tersedia untuk skema ini. Hubungi admin.');
+          return;
+        }
+      } catch {}
+      const res = await downloadIaDoc('IA-06A-DPT', Number(skemaId));
+      const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `IA-06A-DPT-SKEMA-${Number(skemaId)}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      const status = err?.response?.status;
+      const message = err?.response?.data?.message || err?.message;
+      alert(`Gagal mengunduh dokumen.${status ? `\nStatus: ${status}` : ''}${message ? `\nPesan: ${message}` : ''}`);
+      console.error('Download IA-06A-DPT failed:', err);
+    }
   };
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    // Navigate to IA-06-C after closing popup
-    navigate('/dashboard-asesi/ia-06c');
-  };
+  // Check IA-06A-DPT doc availability for current skema
+  useEffect(() => {
+    const checkDoc = async () => {
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+      if (!chosen) { setDocAvailable(false); return; }
+      let skemaId = chosen?.assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
+      if (!skemaId && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          skemaId = res.data?.data?.skema_id ?? skemaId;
+        } catch {}
+      }
+      if (!skemaId) { setDocAvailable(false); return; }
+      try {
+        const list = await listIaDocs(Number(skemaId));
+        const items = list.data?.data || list.data || [];
+        const exists = Array.isArray(items) && items.some(d => String(d.form || d.name).toUpperCase() === 'IA-06A-DPT');
+        setDocAvailable(!!exists);
+      } catch { setDocAvailable(false); }
+    };
+    checkDoc();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(userAssessments)]);
 
   return (
     <div style={pageContainerStyle} className="page-container">
@@ -373,10 +277,6 @@ const IA06A = () => {
           }
           .nav-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #555;
-          }
-          .upload-button:hover {
-            border-color: #ff8c00;
-            background-color: #fffbf5;
           }
           @keyframes checkAnimation {
             0% { transform: scale(0); }
@@ -463,32 +363,6 @@ const IA06A = () => {
               font-size: 12px !important;
             }
 
-            .upload-button {
-              padding: 10px 15px !important;
-              font-size: 12px !important;
-              width: 100% !important;
-            }
-
-            .pdf-icon {
-              width: 28px !important;
-              height: 28px !important;
-              font-size: 10px !important;
-            }
-
-            .upload-title {
-              font-size: 12px !important;
-            }
-
-            .upload-subtitle {
-              font-size: 10px !important;
-            }
-
-            .submit-button {
-              width: 100% !important;
-              padding: 12px 20px !important;
-              font-size: 14px !important;
-            }
-
             .warning-notification {
               top: 10px !important;
               right: 10px !important;
@@ -556,7 +430,20 @@ const IA06A = () => {
 
       {/* Warning Notification */}
       {showWarning && (
-        <div style={warningNotificationStyle} className="warning-notification">
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          backgroundColor: '#ff6b6b',
+          color: 'white',
+          padding: '15px 20px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+          zIndex: 1001,
+          fontSize: '14px',
+          fontWeight: 'bold',
+          animation: 'slideIn 0.3s ease-out',
+        }} className="warning-notification">
           Mohon lengkapi semua field yang diperlukan!
         </div>
       )}
@@ -580,165 +467,171 @@ const IA06A = () => {
             <h2 style={formTitleLargeStyle} className="form-title-large">FR.IA.06.A</h2>
             <h3 style={formTitleSmallStyle} className="form-title-small">DAFTAR PERTANYAAN TERTULIS ESAI</h3>
           </div>
+          <button
+            type="button"
+            onClick={handleDownloadSoal}
+            style={{
+              position: 'absolute',
+              right: 20,
+              top: 10,
+              backgroundColor: '#1a73e8',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '8px 12px',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              cursor: docAvailable === false ? 'not-allowed' : 'pointer',
+              opacity: docAvailable === false ? 0.6 : 1
+            }}
+            disabled={docAvailable === false}
+          >
+            Download Soal (.docx)
+          </button>
+          <button
+            type="button"
+            onClick={async () => {
+              try {
+                setSubmitting(true);
+                // derive assesment_asesi_id & skema_id
+                const ua = Array.isArray(userAssessments) ? userAssessments : [];
+                const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+                const assesment_asesi_id = chosen?.id;
+                let skema_id = chosen?.assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
+                if (!skema_id && chosen?.assesment_id) {
+                  try {
+                    const res = await getAssesmentById(chosen.assesment_id);
+                    skema_id = res.data?.data?.skema_id ?? skema_id;
+                  } catch {}
+                }
+                if (!assesment_asesi_id) {
+                  alert('Tidak dapat menemukan assesment_asesi_id. Pastikan Anda memiliki asesmen aktif.');
+                  return;
+                }
+                const payload = {
+                  assesment_asesi_id,
+                  skema_id: skema_id || null,
+                  catatan: formData.catatan || null,
+                  ttd_asesi: formData.ttdAsesi || 'belum',
+                  ttd_asesor: formData.ttdAsesor || 'belum',
+                  extra: {},
+                };
+                await submitFormIa06a(payload);
+                setShowSuccess(true);
+                setTimeout(() => setShowSuccess(false), 2500);
+              } catch (e) {
+                console.error('Submit IA-06.A error', e);
+                alert('Gagal mengirim IA-06.A. Mohon coba lagi.');
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+            style={{
+              position: 'absolute',
+              right: 20,
+              top: 50,
+              backgroundColor: submitting ? '#9ca3af' : '#10b981',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '8px 12px',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              cursor: submitting ? 'not-allowed' : 'pointer',
+              opacity: submitting ? 0.8 : 1,
+              marginLeft: '10px'
+            }}
+            disabled={submitting}
+          >
+            {submitting ? 'Mengirim...' : 'Kirim'}
+          </button>
         </div>
-
-        <form onSubmit={handleSubmit}>
-          <div style={formBodyStyle} className="form-body">
-            <table style={tableStyle}>
-              <tbody>
-                <tr>
-                  <td style={{ ...tableCellStyle, width: '25%' }} className="table-cell">Nama Assesor</td>
-                  <td style={{ ...tableCellStyle, width: '1%' }} className="table-cell">:</td>
-                  <td style={{ ...tableCellStyle, width: '74%' }} className="table-cell">
-                    <input
-                      type="text"
-                      style={{ width: '100%', border: 'none', outline: 'none' }}
-                      value={formData.namaAssesor}
-                      onChange={(e) => handleInputChange('namaAssesor', e.target.value)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ ...tableCellStyle, width: '25%' }} className="table-cell">Nama Asesi</td>
-                  <td style={{ ...tableCellStyle, width: '1%' }} className="table-cell">:</td>
-                  <td style={{ ...tableCellStyle, width: '74%' }} className="table-cell">
-                    <input
-                      type="text"
-                      style={{ width: '100%', border: 'none', outline: 'none' }}
-                      value={formData.namaAsesi}
-                      onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ ...tableCellStyle, width: '25%' }} className="table-cell">Tanggal Asesment</td>
-                  <td style={{ ...tableCellStyle, width: '1%' }} className="table-cell">:</td>
-                  <td style={{ ...tableCellStyle, width: '74%' }} className="table-cell">
-                    <input
-                      type="text"
-                      style={{ width: '100%', border: 'none', outline: 'none' }}
-                      value={formData.tanggalAsesment}
-                      onChange={(e) => handleInputChange('tanggalAsesment', e.target.value)}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              style={{ display: 'none' }}
-              accept=".pdf,.doc,.docx"
-            />
-
-            <div 
-              style={uploadButtonStyle}
-              className="upload-button"
-              onClick={handleFileUpload}
-            >
-              <div style={pdfIconStyle} className="pdf-icon">PDF</div>
-              <div style={uploadTextStyle}>
-                <div style={uploadTitleStyle} className="upload-title">
-                  {uploadedFile ? uploadedFile.name : 'Download soal'}
-                </div>
-                <div style={uploadSubtitleStyle} className="upload-subtitle">
-                  {uploadedFile 
-                    ? `File berhasil dipilih`
-                    : 'Silahkan klik tombol ini untuk mendownload soal'
-                  }
-                </div>
-              </div>
+        <div style={formBodyStyle} className="form-body">
+          <table style={tableStyle}>
+            <tbody>
+              <tr>
+                <td style={{ ...tableCellStyle, width: '25%' }} className="table-cell">Nama Assesor</td>
+                <td style={{ ...tableCellStyle, width: '1%' }} className="table-cell">:</td>
+                <td style={{ ...tableCellStyle, width: '74%' }} className="table-cell">
+                  <input
+                    type="text"
+                    style={{ width: '100%', border: 'none', outline: 'none' }}
+                    value={formData.namaAssesor}
+                    onChange={(e) => handleInputChange('namaAssesor', e.target.value)}
+                    readOnly
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td style={{ ...tableCellStyle, width: '25%' }} className="table-cell">Nama Asesi</td>
+                <td style={{ ...tableCellStyle, width: '1%' }} className="table-cell">:</td>
+                <td style={{ ...tableCellStyle, width: '74%' }} className="table-cell">
+                  <input
+                    type="text"
+                    style={{ width: '100%', border: 'none', outline: 'none' }}
+                    value={formData.namaAsesi}
+                    onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
+                    readOnly
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td style={{ ...tableCellStyle, width: '25%' }} className="table-cell">Tanggal Asesment</td>
+                <td style={{ ...tableCellStyle, width: '1%' }} className="table-cell">:</td>
+                <td style={{ ...tableCellStyle, width: '74%' }} className="table-cell">
+                  <input
+                    type="date"
+                    style={{ width: '100%', border: 'none', outline: 'none' }}
+                    value={formData.tanggalAsesment}
+                    onChange={(e) => handleInputChange('tanggalAsesment', e.target.value)}
+                    readOnly
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td style={{ ...tableCellStyle, width: '25%' }} className="table-cell">Catatan</td>
+                <td style={{ ...tableCellStyle, width: '1%' }} className="table-cell">:</td>
+                <td style={{ ...tableCellStyle, width: '74%' }} className="table-cell">
+                  <textarea
+                    style={{ width: '100%', border: '1px solid #ddd', outline: 'none', minHeight: 80, padding: 8 }}
+                    value={formData.catatan}
+                    onChange={(e) => handleInputChange('catatan', e.target.value)}
+                    placeholder="Tulis catatan asesmen (opsional)"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td style={{ ...tableCellStyle, width: '25%' }} className="table-cell">Tanda Tangan</td>
+                <td style={{ ...tableCellStyle, width: '1%' }} className="table-cell">:</td>
+                <td style={{ ...tableCellStyle, width: '74%', display: 'flex', gap: 16, alignItems: 'center' }} className="table-cell">
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <input type="checkbox" checked={formData.ttdAsesi === 'sudah'} onChange={(e) => handleInputChange('ttdAsesi', e.target.checked ? 'sudah' : 'belum')} />
+                    Asesi sudah tanda tangan
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <input type="checkbox" checked={formData.ttdAsesor === 'sudah'} onChange={(e) => handleInputChange('ttdAsesor', e.target.checked ? 'sudah' : 'belum')} />
+                    Asesor sudah tanda tangan
+                  </label>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          {showSuccess && (
+            <div style={{
+              marginTop: 10,
+              padding: '10px 12px',
+              borderRadius: 8,
+              backgroundColor: '#ecfdf5',
+              color: '#065f46',
+              border: '1px solid #a7f3d0',
+              fontSize: 12,
+              fontWeight: 600,
+            }}>
+              IA-06.A berhasil dikirim.
             </div>
-
-            {uploadedFile && (
-              <div style={{ 
-                marginTop: '10px', 
-                padding: '10px', 
-                backgroundColor: '#e8f5e8', 
-                borderRadius: '4px',
-                fontSize: '12px',
-                color: '#2e7d32'
-              }}>
-                File terpilih: {uploadedFile.name} ({(uploadedFile.size / 1024).toFixed(1)} KB)
-              </div>
-            )}
-
-             <div
-              style={{ textAlign: "right", marginTop: "20px" }}
-              className="submit-button"
-            >
-              <button
-                type="submit"
-                style={{
-                  backgroundColor: "#007bff",
-                  color: "white",
-                  padding: "12px 40px",
-                  border: "none",
-                  borderRadius: "5px",
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  cursor: "pointer",
-                }}
-              >
-                
-                Kirim
-              </button>
-            </div>
-          </div>
-        </form>
+          )}
+        </div>
       </div>
-
-      {/* Success Popup */}
-      {showPopup && (
-        <div style={popupOverlayStyle} onClick={handleClosePopup}>
-          <div style={popupContainerStyle} className="popup-container" onClick={(e) => e.stopPropagation()}>
-            <div style={iconContainerStyle}>
-              <div style={successIconStyle} className="success-icon">
-                {/* Check mark circle - di atas */}
-                <div style={checkCircleStyle} className="check-circle">
-                  <div style={checkMarkStyle} className="check-mark">✓</div>
-                </div>
-                
-                {/* List lines (3 horizontal lines) - di bawah */}
-                <div style={listLinesStyle} className="list-lines">
-                  <div style={{
-                    width: '80px',
-                    height: '10px',
-                    backgroundColor: '#FF8C00',
-                    borderRadius: '5px'
-                  }}></div>
-                  <div style={{
-                    width: '120px',
-                    height: '10px',
-                    backgroundColor: '#FF8C00',
-                    borderRadius: '5px'
-                  }}></div>
-                  <div style={{
-                    width: '140px',
-                    height: '10px',
-                    backgroundColor: '#FF8C00',
-                    borderRadius: '5px'
-                  }}></div>
-                </div>
-              </div>
-            </div>
-            
-            <div style={popupTitleStyle} className="popup-title">Jawaban anda telah direkam!</div>
-            
-            <button 
-              style={okayButtonStyle} 
-              className="okay-button"
-              onClick={handleClosePopup}
-              onMouseEnter={(e) => e.target.style.backgroundColor = '#FF8C00'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = '#FF8C00'}
-            >
-              Okay
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

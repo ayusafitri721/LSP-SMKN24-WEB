@@ -4,6 +4,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
+import { submitFormAk03, fetchCsrfCookie, getAssesmentById, getFormAk03ByAssesi } from '../../api/api';
+import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
 
 // Custom hook to detect screen size
 const useMediaQuery = (query) => {
@@ -26,6 +28,7 @@ const AK03 = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const { currentAsesi, apl01Data, userAssessments } = useDashboardAsesi();
 
   const [formData, setFormData] = useState({
     skemaSertifikasi: '',
@@ -53,6 +56,92 @@ const AK03 = () => {
   const [showModal, setShowModal] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
+  const [existingAk03, setExistingAk03] = useState(null);
+
+  // Prefill Nama Asesi berdasarkan context
+  useEffect(() => {
+    const pickFullName = (obj) => {
+      if (!obj) return '';
+      return (
+        obj.fullname || obj.full_name || obj.nama_lengkap || obj.namaLengkap || obj.name || obj.username || ''
+      );
+    };
+
+  // Helper derive asesi_id
+  const deriveAsesiId = () => {
+    const fromCurrent = currentAsesi?.id ?? currentAsesi?.assesi_id ?? currentAsesi?.user?.assesi_id;
+    if (fromCurrent) return Number(fromCurrent);
+    const fromApl01 = Array.isArray(apl01Data)
+      ? (apl01Data[0]?.id ?? apl01Data[0]?.assesi_id)
+      : (apl01Data?.id ?? apl01Data?.assesi_id);
+    if (fromApl01) return Number(fromApl01);
+    try {
+      const lp = JSON.parse(localStorage.getItem('asesiProfile'));
+      const fromLS = lp?.id ?? lp?.assesi_id;
+      if (fromLS) return Number(fromLS);
+    } catch {}
+    return undefined;
+  };
+
+  // Auto-populate fields from current assessment
+  useEffect(() => {
+    (async () => {
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+      if (!chosen) return;
+      let assesmentDetail = chosen?.assesment || null;
+      if (!assesmentDetail && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          assesmentDetail = res.data?.data ?? null;
+        } catch {}
+      }
+      if (!assesmentDetail) return;
+      const tuk = assesmentDetail?.tuk || assesmentDetail?.lokasi || '';
+      const namaAsesor = assesmentDetail?.assesor?.nama_lengkap || assesmentDetail?.assesor?.name || '';
+      const tanggalRaw = assesmentDetail?.tanggal_mulai || assesmentDetail?.tanggal_assesment || '';
+      const tanggal = tanggalRaw ? String(tanggalRaw).substring(0,10) : '';
+      const units = assesmentDetail?.units || assesmentDetail?.unit_kompetensi || assesmentDetail?.unitKompetensi || [];
+      const firstUnit = Array.isArray(units) ? units[0] : (units || {});
+      const judulUnit = firstUnit?.judul || firstUnit?.nama || firstUnit?.name || '';
+      const kodeUnit = firstUnit?.kode || firstUnit?.code || '';
+      setFormData(prev => ({
+        ...prev,
+        tuk: prev.tuk || tuk,
+        namaAsesor: prev.namaAsesor || namaAsesor,
+        tanggal: prev.tanggal || tanggal,
+        judulUnit: prev.judulUnit || judulUnit,
+        kodeUnit: prev.kodeUnit || kodeUnit,
+      }));
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(userAssessments)]);
+
+  // Fetch existing AK-03 for this asesi (if exists)
+  useEffect(() => {
+    (async () => {
+      const asesiId = deriveAsesiId();
+      if (!asesiId) return;
+      try {
+        await fetchCsrfCookie();
+        const res = await getFormAk03ByAssesi(asesiId);
+        const payload = res.data?.data ?? res.data ?? null;
+        if (payload) setExistingAk03(payload);
+      } catch (e) {
+        // ignore 404
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentAsesi, apl01Data]);
+    if (!formData.namaAsesi) {
+      let name = pickFullName(currentAsesi) || pickFullName(currentAsesi?.user);
+      if (!name) {
+        const a = Array.isArray(apl01Data) ? apl01Data[0] : apl01Data;
+        name = pickFullName(a) || pickFullName(a?.user);
+      }
+      if (name) setFormData(prev => ({ ...prev, namaAsesi: name }));
+    }
+  }, [currentAsesi, apl01Data, formData.namaAsesi]);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -111,12 +200,66 @@ const AK03 = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form FR.AK.03 submitted:', formData);
-    localStorage.setItem('ak03FormData', JSON.stringify(formData));
-    setIsFormSubmitted(true);
-    setShowModal(true);
+
+    // Derive assesment_asesi_id dan skema_id dari userAssessments
+    const ua = Array.isArray(userAssessments) ? userAssessments : [];
+    const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+    const assesmentAsesiId = chosen?.id;
+    let skemaId = chosen?.assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
+
+    if (!skemaId && chosen?.assesment_id) {
+      try {
+        const res = await getAssesmentById(chosen.assesment_id);
+        skemaId = res.data?.data?.skema_id ?? skemaId;
+      } catch {}
+    }
+
+    if (!assesmentAsesiId || !skemaId) {
+      alert('Tidak menemukan assesment aktif untuk dikaitkan (assesment_asesi_id/skema_id). Silakan pilih jadwal terlebih dahulu di dashboard atau muat ulang halaman.');
+      return;
+    }
+
+    try {
+      await fetchCsrfCookie();
+      const payload = {
+        assesment_asesi_id: Number(assesmentAsesiId),
+        skema_id: Number(skemaId),
+        // snake_case + original form for compatibility
+        tuk: formData.tuk,
+        nama_asesor: formData.namaAsesor,
+        nama_asesi: formData.namaAsesi,
+        tanggal: formData.tanggal,
+        judul_unit: formData.judulUnit,
+        kode_unit: formData.kodeUnit,
+        is_answered: formData.isAnswered,
+        catatan: formData.catatan,
+        form: formData,
+      };
+      console.debug('AK-03 submit payload:', payload);
+      await submitFormAk03(payload);
+      setIsFormSubmitted(true);
+      setShowModal(true);
+    } catch (err) {
+      const status = err?.response?.status;
+      const message = err?.response?.data?.message || err?.message;
+      const errors = err?.response?.data?.errors;
+      console.error('Gagal submit FR.AK.03 ke server:', { status, message, errors, err });
+      try {
+        localStorage.setItem('ak03FormData', JSON.stringify({ assesment_asesi_id: assesmentAsesiId, skema_id: skemaId, form: formData }));
+      } catch {}
+      let alertMsg = 'Gagal mengirim ke server. Data disimpan sementara di perangkat Anda. Coba lagi nanti.';
+      if (status) alertMsg += `\nStatus: ${status}`;
+      if (message) alertMsg += `\nPesan: ${message}`;
+      if (errors && typeof errors === 'object') {
+        const detail = Object.entries(errors)
+          .map(([k, v]) => `- ${k}: ${Array.isArray(v) ? v.join(', ') : String(v)}`)
+          .join('\n');
+        if (detail) alertMsg += `\nDetail:\n${detail}`;
+      }
+      alert(alertMsg);
+    }
   };
 
   const handleCloseModal = () => {

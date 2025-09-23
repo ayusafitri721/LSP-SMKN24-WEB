@@ -1,8 +1,10 @@
 /* eslint-disable no-irregular-whitespace */
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
-import { FaUpload } from 'react-icons/fa'; // Import the upload icon
+import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
+import { fetchCsrfCookie, getAssesmentById, downloadIaDoc, listIaDocs } from '../../api/api';
+import { useAuth } from '../../context/AuthContext';
 
 // Styles as JavaScript objects
 const pageContainerStyle = {
@@ -134,141 +136,11 @@ const separatorStyle = {
   textAlign: 'center',
 };
 
-const uploadBoxStyle = {
-  border: '2px dashed #007bff',
-  borderRadius: '10px',
-  padding: '30px',
-  textAlign: 'center',
-  cursor: 'pointer',
-  backgroundColor: '#f8f8f8',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: '10px',
-  marginTop: '20px',
-  transition: 'background-color 0.3s ease',
-};
+// removed upload UI styles
 
-const uploadIconStyle = {
-  fontSize: '48px',
-  color: '#007bff',
-};
+// removed popup styles
 
-const uploadTextStyle = {
-  fontSize: '16px',
-  color: '#555',
-  margin: '0',
-};
-
-const popupOverlayStyle = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  zIndex: 1000,
-};
-
-const popupContainerStyle = {
-  backgroundColor: 'white',
-  borderRadius: '30px',
-  padding: '70px',
-  textAlign: 'center',
-  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-  minWidth: '800px',
-  maxWidth: '200px',
-};
-
-const iconContainerStyle = {
-  marginBottom: '20px',
-};
-
-const successIconStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  margin: '0 auto 20px',
-  position: 'relative',
-  gap: '15px',
-};
-
-const listLinesStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '6px',
-};
-
-const checkCircleStyle = {
-  width: '60px',
-  height: '60px',
-  borderRadius: '50%',
-  backgroundColor: '#FF8C00',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginTop: '6px',
-};
-
-const checkMarkStyle = {
-  color: 'white',
-  fontSize: '24px',
-  fontWeight: 'bold',
-};
-
-const popupTitleStyle = {
-  fontSize: '20px',
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: '8px',
-  lineHeight: '1.3',
-};
-
-const popupSubtitleStyle = {
-  fontSize: '20px',
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: '30px',
-  lineHeight: '1.3',
-};
-
-const dividerStyle = {
-  height: '2px',
-  backgroundColor: '#ddd',
-  margin: '25px 0',
-  borderRadius: '1px',
-};
-
-const okayButtonStyle = {
-  backgroundColor: 'transparent',
-  border: 'none',
-  fontSize: '18px',
-  fontWeight: 'bold',
-  color: '#666',
-  cursor: 'pointer',
-  padding: '10px 20px',
-};
-
-const footerStyle = {
-  display: 'flex',
-  justifyContent: 'flex-end',
-  padding: '15px 0',
-};
-
-const submitButtonStyle = {
-  backgroundColor: '#007bff',
-  color: 'white',
-  padding: '10px 20px',
-  borderRadius: '5px',
-  border: 'none',
-  cursor: 'pointer',
-  fontSize: '16px',
-  fontWeight: 'bold',
-};
+// removed submit styles
 
 
 const IA06C = () => {
@@ -281,10 +153,11 @@ const IA06C = () => {
     namaAsesi: '',
     tanggal: '',
   });
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
+  const [docAvailable, setDocAvailable] = useState(null); // null=unknown, true/false=known
   const navigate = useNavigate();
-  const fileInputRef = useRef(null);
+  const { userAssessments } = useDashboardAsesi();
+  const { currentAsesi } = useDashboardAsesi();
+  const { user } = useAuth();
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
@@ -293,27 +166,128 @@ const IA06C = () => {
     }));
   };
 
-  const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
-  };
+  // Auto-populate fields from current assessment
+  useEffect(() => {
+    const populate = async () => {
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+      if (!chosen) return;
+      let assesmentDetail = chosen?.assesment || null;
+      if (!assesmentDetail && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          assesmentDetail = res.data?.data ?? null;
+        } catch {}
+      }
+      const tuk = assesmentDetail?.tuk || assesmentDetail?.lokasi || '';
+      const tanggalRaw = assesmentDetail?.tanggal_mulai || assesmentDetail?.tanggal_assesment || '';
+      const tanggal = tanggalRaw ? String(tanggalRaw).substring(0, 10) : '';
+      const namaAsesor = assesmentDetail?.assesor?.nama_lengkap || assesmentDetail?.assesor?.name || assesmentDetail?.assesor_name || '';
+      const namaAsesi =
+        currentAsesi?.nama_lengkap ||
+        currentAsesi?.nama ||
+        currentAsesi?.user?.nama_lengkap ||
+        currentAsesi?.user?.name ||
+        currentAsesi?.user?.username ||
+        user?.name ||
+        user?.username ||
+        '';
 
-  const handleUploadBoxClick = () => {
-    fileInputRef.current.click();
-  };
+      // Try to derive skema/title and unit info if present on the assessment payload
+      const skemaObj = assesmentDetail?.skema || assesmentDetail?.schema || assesmentDetail?.scheme || null;
+      const units = assesmentDetail?.units || assesmentDetail?.unit_kompetensi || assesmentDetail?.unitKompetensi || [];
+      const firstUnit = Array.isArray(units) ? units[0] : (units || {});
+      const skemaSertifikasi = skemaObj?.nama || skemaObj?.name || skemaObj?.judul || '';
+      const judulUnit = firstUnit?.judul || firstUnit?.nama || firstUnit?.name || '';
+      const kodeUnit = firstUnit?.kode || firstUnit?.code || '';
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (selectedFile) {
-      console.log('Form submitted with file:', selectedFile.name);
-      setShowPopup(true);
-    } else {
-      alert('Please select a file to upload first.');
+      setFormData((prev) => ({
+        ...prev,
+        skemaSertifikasi,
+        judulUnit,
+        kodeUnit,
+        tuk,
+        namaAsesor,
+        namaAsesi,
+        tanggal,
+      }));
+    };
+    populate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(userAssessments), JSON.stringify(currentAsesi), user?.name, user?.username]);
+
+  // Check IA-06-C document availability for current skema
+  useEffect(() => {
+    const checkDoc = async () => {
+      const ua = Array.isArray(userAssessments) ? userAssessments : [];
+      const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+      if (!chosen) { setDocAvailable(false); return; }
+      let skemaId = chosen?.assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
+      if (!skemaId && chosen?.assesment_id) {
+        try {
+          const res = await getAssesmentById(chosen.assesment_id);
+          skemaId = res.data?.data?.skema_id ?? skemaId;
+        } catch {}
+      }
+      if (!skemaId) { setDocAvailable(false); return; }
+      try {
+        const list = await listIaDocs(Number(skemaId));
+        const items = list.data?.data || list.data || [];
+        const exists = Array.isArray(items) && items.some(d => String(d.form || d.name).toUpperCase() === 'IA-06-C');
+        setDocAvailable(!!exists);
+      } catch {
+        setDocAvailable(false);
+      }
+    };
+    checkDoc();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(userAssessments)]);
+
+  // removed upload handlers and popup
+
+  const handleDownloadSoal = async () => {
+    // Derive skemaId
+    const ua = Array.isArray(userAssessments) ? userAssessments : [];
+    const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+    let skemaId = chosen?.assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
+    if (!skemaId && chosen?.assesment_id) {
+      try {
+        const res = await getAssesmentById(chosen.assesment_id);
+        skemaId = res.data?.data?.skema_id ?? skemaId;
+      } catch {}
     }
-  };
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    navigate('/dashboard-asesi/ak-02');
+    if (!skemaId) {
+      alert('Skema belum ditemukan. Pastikan Anda memiliki jadwal asesmen aktif.');
+      return;
+    }
+    try {
+      await fetchCsrfCookie();
+      // Optional pre-check to avoid 404
+      try {
+        const list = await listIaDocs(Number(skemaId));
+        const items = list.data?.data || list.data || [];
+        const exists = Array.isArray(items) && items.some(d => String(d.form || d.name).toUpperCase() === 'IA-06-C');
+        if (!exists) {
+          alert('Dokumen IA-06-C belum tersedia untuk skema ini. Hubungi admin.');
+          return;
+        }
+      } catch {}
+      const res = await downloadIaDoc('IA-06-C', Number(skemaId));
+      const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `IA-06-C-SKEMA-${Number(skemaId)}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      const status = err?.response?.status;
+      const message = err?.response?.data?.message || err?.message;
+      alert(`Gagal mengunduh dokumen.${status ? `\nStatus: ${status}` : ''}${message ? `\nPesan: ${message}` : ''}`);
+      console.error('Download IA-06-C failed:', err);
+    }
   };
 
   return (
@@ -354,6 +328,27 @@ const IA06C = () => {
             <h2 style={formTitleLargeStyle}>FR.IA.06C</h2>
             <h3 style={formTitleSmallStyle}>LEMBAR JAWABAN PERTANYAAN TERTULIS ESAI</h3>
           </div>
+          <button
+            type="button"
+            onClick={handleDownloadSoal}
+            style={{
+              position: 'absolute',
+              right: 20,
+              top: 10,
+              backgroundColor: '#1a73e8',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '8px 12px',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              cursor: docAvailable === false ? 'not-allowed' : 'pointer',
+              opacity: docAvailable === false ? 0.6 : 1
+            }}
+            disabled={docAvailable === false}
+          >
+            Download Soal (.docx)
+          </button>
         </div>
 
         <div style={formBodyStyle}>
@@ -372,6 +367,7 @@ const IA06C = () => {
                     style={{ width: '100%', border: 'none', outline: 'none' }}
                     value={formData.judulUnit}
                     onChange={(e) => handleInputChange('judulUnit', e.target.value)}
+                    readOnly
                   />
                 </td>
               </tr>
@@ -384,6 +380,7 @@ const IA06C = () => {
                     style={{ width: '100%', border: 'none', outline: 'none' }}
                     value={formData.kodeUnit}
                     onChange={(e) => handleInputChange('kodeUnit', e.target.value)}
+                    readOnly
                   />
                 </td>
               </tr>
@@ -396,6 +393,7 @@ const IA06C = () => {
                     style={{ width: '100%', border: 'none', outline: 'none' }}
                     value={formData.tuk}
                     onChange={(e) => handleInputChange('tuk', e.target.value)}
+                    readOnly
                   />
                 </td>
               </tr>
@@ -408,6 +406,7 @@ const IA06C = () => {
                     style={{ width: '100%', border: 'none', outline: 'none' }}
                     value={formData.namaAsesor}
                     onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
+                    readOnly
                   />
                 </td>
               </tr>
@@ -420,6 +419,7 @@ const IA06C = () => {
                     style={{ width: '100%', border: 'none', outline: 'none' }}
                     value={formData.namaAsesi}
                     onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
+                    readOnly
                   />
                 </td>
               </tr>
@@ -432,76 +432,17 @@ const IA06C = () => {
                     style={{ width: '100%', border: 'none', outline: 'none' }}
                     value={formData.tanggal}
                     onChange={(e) => handleInputChange('tanggal', e.target.value)}
+                    readOnly
                   />
                 </td>
               </tr>
             </tbody>
           </table>
 
-          <form onSubmit={handleSubmit}>
-            <div style={uploadBoxStyle} onClick={handleUploadBoxClick} className="upload-box">
-              <FaUpload style={uploadIconStyle} />
-              <h4 style={uploadTextStyle}>
-                {selectedFile ? `File Terpilih: ${selectedFile.name}` : "Pilih File Jawaban"}
-              </h4>
-              <p style={{ fontSize: '12px', color: '#888' }}>
-                Klik area ini untuk memilih file.
-              </p>
-            </div>
-            {/* The actual file input, hidden from view */}
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              style={{ display: 'none' }}
-            />
-
-            <div style={footerStyle}>
-              <button type="submit" style={submitButtonStyle}>Kirim Jawaban</button>
-            </div>
-          </form>
+          {/* Download-only view; upload removed */}
         </div>
       </div>
-
-      {showPopup && (
-        <div style={popupOverlayStyle} onClick={handleClosePopup}>
-          <div style={popupContainerStyle} onClick={(e) => e.stopPropagation()}>
-            <div style={iconContainerStyle}>
-              <div style={successIconStyle}>
-                <div style={listLinesStyle}>
-                  <div style={{
-                    width: '60px',
-                    height: '12px',
-                    backgroundColor: '#FF8C00',
-                    borderRadius: '6px'
-                  }}></div>
-                  <div style={{
-                    width: '80px',
-                    height: '12px',
-                    backgroundColor: '#FF8C00',
-                    borderRadius: '6px'
-                  }}></div>
-                  <div style={{
-                    width: '100px',
-                    height: '12px',
-                    backgroundColor: '#FF8C00',
-                    borderRadius: '6px'
-                  }}></div>
-                </div>
-                <div style={checkCircleStyle}>
-                  <div style={checkMarkStyle}>✓</div>
-                </div>
-              </div>
-            </div>
-            <div style={popupTitleStyle}>Jawaban Anda</div>
-            <div style={popupSubtitleStyle}>Berhasil Direkam!</div>
-            <div style={dividerStyle}></div>
-            <button style={okayButtonStyle} onClick={handleClosePopup}>
-              Okay
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Upload popup removed; download only */}
     </div>
   );
 };
