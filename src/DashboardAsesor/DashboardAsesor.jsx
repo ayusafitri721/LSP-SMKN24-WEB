@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAsesi } from "../context/AsesiContext";
 import { useSkema } from "../context/SkemaContext";
 import { useDashboardAsesor } from "../context/DashboardAsesorContext";
+import { useAssesment } from "../context/AssesmentContext";
 
 const DashboardAsesor = () => {
   const { skemaList } = useSkema();
@@ -15,13 +16,18 @@ const DashboardAsesor = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-
+  const { assesments } = useAssesment();
+  
+  console.log("Current Asesor:", currentAsesor);
+  
+  const assesmentList = assesments.filter(a => a.assesor_id === currentAsesor?.user?.assesor?.id);
+  console.log("assesmen",assesmentList);
   
 
   const handleCardClick = (index) => {
     if (!isDragging) {
       // Navigate to DashboardRpl for any "On Going" card
-      navigate("/dashboard-asesor/dashboard-rpl");
+      navigate(`/dashboard-asesor/dashboard-rpl/${index.id}`);
     }
   };
 
@@ -208,7 +214,7 @@ const DashboardAsesor = () => {
             lineHeight: "1.2",
           }}
         >
-          Selamat datang di MyLsp, Asesor {currentAsesor && currentAsesor?.user.nama_lengkap}!
+          Selamat datang di MyLsp, Asesor {currentAsesor && currentAsesor?.user?.assesor?.nama_lengkap}!
         </h2>
         <p
           style={{
@@ -245,74 +251,14 @@ const DashboardAsesor = () => {
             scrollBehavior: "smooth",
             WebkitOverflowScrolling: "touch",
           }}
+          onClick={() => handleCardClick(hoveredCard)}
           onMouseDown={handleMouseDown}
           onMouseLeave={handleMouseLeave}
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
           className="scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
         >
-          {[
-            {
-              title: "USK RPL - PEMROGRAMAN WEB",
-              location: "SMKN 24 Jakarta",
-              status: "On Going",
-              isActive: true,
-            },
-            {
-              title: "USK RPL - PEMROGRAMAN WEB",
-              location: "SMKN 24 Jakarta",
-              status: "On Going",
-              isActive: false,
-            },
-            {
-              title: "USK RPL - PEMROGRAMAN WEB",
-              location: "SMKN 24 Jakarta",
-              status: "On Going",
-              isActive: false,
-            },
-            {
-              title: "USK RPL - PEMROGRAMAN WEB",
-              location: "SMKN 24 Jakarta",
-              status: "On Going",
-              isActive: false,
-            },
-            {
-              title: "USK TKJ - JARINGAN KOMPUTER",
-              location: "SMKN 10 Jakarta",
-              status: "On Going",
-              isActive: false,
-            },
-            {
-              title: "USK MM - MULTIMEDIA",
-              location: "SMKN 5 Jakarta",
-              status: "On Going",
-              isActive: false,
-            },
-            {
-              title: "USK RPL - MOBILE DEVELOPMENT",
-              location: "SMKN 15 Jakarta",
-              status: "On Going",
-              isActive: false,
-            },
-            {
-              title: "USK TKJ - SISTEM KEAMANAN",
-              location: "SMKN 8 Jakarta",
-              status: "On Going",
-              isActive: false,
-            },
-            {
-              title: "USK RPL - DATABASE MANAGEMENT",
-              location: "SMKN 12 Jakarta",
-              status: "On Going",
-              isActive: false,
-            },
-            {
-              title: "USK MM - DESAIN GRAFIS",
-              location: "SMKN 3 Jakarta",
-              status: "On Going",
-              isActive: false,
-            },
-          ].map((item, index) => {
+          {Array.isArray(assesmentList) && assesmentList.map((item, index) => {
             const isHovered = hoveredCard === index;
             return (
               <div
@@ -332,8 +278,7 @@ const DashboardAsesor = () => {
                   transform: isHovered ? "translateY(-2px)" : "translateY(0)",
                   position: "relative",
                 }}
-                onClick={() => handleCardClick(index)}
-                onMouseEnter={() => !isDragging && setHoveredCard(index)}
+                onMouseEnter={() => !isDragging && setHoveredCard(item)}
                 onMouseLeave={() => setHoveredCard(null)}
               >
                 <h3
@@ -345,7 +290,7 @@ const DashboardAsesor = () => {
                     lineHeight: "1.2",
                   }}
                 >
-                  {item.title}
+                  {item.schema.judul_skema}
                 </h3>
                 <p
                   style={{
@@ -355,7 +300,7 @@ const DashboardAsesor = () => {
                     fontStyle: "italic",
                   }}
                 >
-                  {item.location}
+                  {item.tuk}
                 </p>
                 <span
                   style={{

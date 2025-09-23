@@ -35,12 +35,12 @@ const DashboardAsesorRoutes = () => {
       {/* Route untuk Dashboard Asesor utama */}
       <Route path="/" element={<DashboardAsesor />} />
       {/* Route untuk Dashboard RPL */}
-      <Route path="/dashboard-rpl" element={<DashboardRpl />} />
+      <Route path="/dashboard-rpl/:id" element={<DashboardRpl />} />
       {/* Route untuk Jadwal - Tambahkan ini */}
       <Route path="/jadwal" element={<Jadwal />} />
       {/* Rute dinamis untuk halaman approved/unapproved */}
       <Route
-        path="/approved-unapproved/:nis"
+        path="/approved-unapproved/:id"
         element={<ApprovedUnapproved />}
       />
       {/* Rute dinamis untuk halaman Rekomendasi */}
@@ -48,17 +48,17 @@ const DashboardAsesorRoutes = () => {
 
       {/* Rute untuk setiap formulir yang dapat diklik dari card */}
       <Route
-        path="/asesmen-mandiri/:nis"
+        path="/asesmen-mandiri/:id"
         element={<AsesmenMandiri title="ASESMEN MANDIRI" />}
       />
       <Route
-        path="/persetujuan-asesmen/:nis"
+        path="/persetujuan-asesmen/:id"
         element={
           <PersetujuanAsesmen title="PERSETUJUAN ASESMEN DAN KERAHASIAAN" />
         }
       />
       <Route
-        path="/ceklis-observasi/:nis"
+        path="/ceklis-observasi/:id"
         element={
           <CeklisObservasi title="CEKLIS OBSERVASI AKTIVITAS DI TEMPAT KERJA/SIMULASI" />
         }

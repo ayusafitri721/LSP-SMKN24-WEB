@@ -1,12 +1,30 @@
-
 import React, { useState, useEffect } from 'react';
-import { Check, User } from 'lucide-react';
+import { Check, User, Upload, X, FileText } from 'lucide-react';
+import { api } from '../../api/api';
+import { useAssesment } from '../../context/AssesmentContext';
+import { useParams } from 'react-router-dom';
 
-const PersetujuanAsesmen = () => {
+const PersetujuanAsesmen = ({ assesiId = 1, skemaId = "SKM001" }) => {
+  const id = useParams().id;
+  const {assesmentAsesis, assesments} = useAssesment();
   const [showModal, setShowModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [ak01Data, setAk01Data] = useState(null);
+  const selectedAssesmenAsesi = assesmentAsesis.find((a)=>a.assesi_id == id);
+  const selectedAssesment = assesments.find(
+    (a) => a.id == selectedAssesmenAsesi?.assesment_id
+  );
+  console.log("selected assesi", selectedAssesmenAsesi);
+  
+  console.log("selected assesment", selectedAssesment);
+  
+  
+  
   const [formData, setFormData] = useState({
+    assesment_asesi_id: assesiId || "",
+    skema_id: skemaId || "",
     skemaSerifikasi: '',
     judulUnit: '',
     nomorUnit: '',
@@ -23,7 +41,8 @@ const PersetujuanAsesmen = () => {
     },
     tanggal: '',
     waktu: '',
-    tukPelaksanaan: ''
+    tukPelaksanaan: '',
+    attachments: [{ file: null, description: '', fileName: '' }]
   });
 
   // Check if mobile
@@ -37,6 +56,35 @@ const PersetujuanAsesmen = () => {
     
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
+
+  // Fetch existing AK01 data
+  useEffect(() => {
+    if (!id) return;
+    const fetchAk01 = async () => {
+      try {
+        setLoading(true);
+        const res = await api.get(`/assesment/formak01/${id}`);
+        if (res.data?.data?.length) {
+          setAk01Data(res.data.data[0]);
+          console.log(ak01Data);
+          
+        }
+        
+        // Simulated response for demo
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      } catch (err) {
+        console.error("Failed fetch AK01:", err);
+        setLoading(false);
+      }
+    };
+    fetchAk01();
+  }, [assesiId]);
+
+  useEffect(()=>{
+
+  }, [])
 
   // Prevent navigation
   useEffect(() => {
@@ -245,8 +293,85 @@ const PersetujuanAsesmen = () => {
     }));
   };
 
+  const handleAttachmentChange = (index, field, value) => {
+    const updated = [...formData.attachments];
+    updated[index][field] = value;
+    
+    if (field === 'file' && value) {
+      updated[index]['fileName'] = value.name;
+    }
+    
+    setFormData(prev => ({ ...prev, attachments: updated }));
+  };
+
+  const addAttachmentField = () => {
+    setFormData(prev => ({
+      ...prev,
+      attachments: [...prev.attachments, { file: null, description: '', fileName: '' }]
+    }));
+  };
+
+  const removeAttachmentField = (index) => {
+    if (formData.attachments.length > 1) {
+      const updated = formData.attachments.filter((_, i) => i !== index);
+      setFormData(prev => ({ ...prev, attachments: updated }));
+    }
+  };
+
+  const handleSubmit = async (formType) => {
+    if (!formData.assesment_asesi_id || !formData.skema_id) {
+      alert("Assesi ID & Skema ID wajib ada");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const data = new FormData();
+      data.append("assesment_asesi_id", selectedAssesmenAsesi?.id);
+      data.append("skema_id", selectedAssesment?.schema.id);
+      data.append("judulUnit", formData.judulUnit);
+      data.append("nomorUnit", formData.nomorUnit);
+      data.append("namaAsesor", formData.namaAsesor);
+      data.append("assesi_id", id);
+      data.append("tanggal", formData.tanggal);
+      data.append("waktu", formData.waktu);
+      data.append("tukPelaksanaan", formData.tukPelaksanaan);
+      data.append("checkedItems", JSON.stringify(formData.checkedItems));
+      data.append("status", formType); // 'approved' or 'rejected'
+
+      formData.attachments.forEach((att, i) => {
+        if (att.file) {
+          data.append(`attachments[${i}][file]`, att.file);
+          data.append(`attachments[${i}][description]`, att.description);
+        }
+      });
+
+      
+      const res = await api.post("/assesment/formak01", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log("result: ",res);
+      
+
+      // Simulated success response
+      setTimeout(() => {
+        if (formType === 'approved') {
+      console.log("form submitted", formData);
+        } else {
+          setShowRejectModal(true);
+        }
+        setLoading(false);
+      }, 1500);
+
+    } catch (err) {
+      console.error("Submit AK01 gagal:", err);
+      alert("Submit gagal, cek console");
+      setLoading(false);
+    }
+  };
+
   const handleApprove = () => {
-    setShowModal(true);
+    handleSubmit('approved');
   };
 
   const handleModalOke = () => {
@@ -257,7 +382,7 @@ const PersetujuanAsesmen = () => {
   };
 
   const handleReject = () => {
-    setShowRejectModal(true);
+    handleSubmit('rejected');
   };
 
   const handleRejectModalOke = () => {
@@ -266,6 +391,17 @@ const PersetujuanAsesmen = () => {
       window.location.href = '/dashboard-asesor/approved-unapproved/0893923923';
     }, 100);
   };
+
+  if (loading) {
+    return (
+      <div style={{...pageContainerStyle, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <div style={{textAlign: 'center'}}>
+          <div style={{fontSize: '18px', marginBottom: '10px'}}>Loading...</div>
+          <div style={{color: '#666'}}>Memproses data...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={pageContainerStyle}>
@@ -324,7 +460,7 @@ const PersetujuanAsesmen = () => {
                 }}>
                   <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
                     <div style={{display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? '4px' : '0'}}>
-                      <span style={{minWidth: isMobile ? 'auto' : '80px', fontSize: isMobile ? '10px' : '12px', fontWeight: 'bold'}}>Judul Unit</span>
+                      <span style={{minWidth: isMobile ? 'auto' : '80px', fontSize: isMobile ? '10px' : '12px', fontWeight: 'bold'}}>Judul Skema</span>
                       {!isMobile && <span style={{margin: '0 8px'}}>:</span>}
                       <input
                         type="text"
@@ -336,13 +472,13 @@ const PersetujuanAsesmen = () => {
                           borderRadius: '4px',
                           fontSize: isMobile ? '10px' : '12px'
                         }}
-                        value={formData.judulUnit}
+                        value={selectedAssesment?.schema.judul_skema}
                         onChange={(e) => handleInputChange('judulUnit', e.target.value)}
                         placeholder="Masukkan judul unit"
                       />
                     </div>
                     <div style={{display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? '4px' : '0'}}>
-                      <span style={{minWidth: isMobile ? 'auto' : '80px', fontSize: isMobile ? '10px' : '12px', fontWeight: 'bold'}}>Nomor Unit</span>
+                      <span style={{minWidth: isMobile ? 'auto' : '80px', fontSize: isMobile ? '10px' : '12px', fontWeight: 'bold'}}>Nomor Skema</span>
                       {!isMobile && <span style={{margin: '0 8px'}}>:</span>}
                       <input
                         type="text"
@@ -354,9 +490,8 @@ const PersetujuanAsesmen = () => {
                           borderRadius: '4px',
                           fontSize: isMobile ? '10px' : '12px'
                         }}
-                        value={formData.nomorUnit}
+                        value={selectedAssesment?.schema.nomor_skema}
                         onChange={(e) => handleInputChange('nomorUnit', e.target.value)}
-                        placeholder="Masukkan nomor unit"
                       />
                     </div>
                   </div>
@@ -409,7 +544,7 @@ const PersetujuanAsesmen = () => {
                     border: '1px solid #ddd', 
                     borderRadius: '3px' 
                   }}
-                  value={formData.namaAsesor}
+                  value={selectedAssesment?.assesor.nama_lengkap}
                   onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
                 />
               </div>
@@ -426,7 +561,7 @@ const PersetujuanAsesmen = () => {
                     border: '1px solid #ddd', 
                     borderRadius: '3px' 
                   }}
-                  value={formData.namaAsesi}
+                  value={selectedAssesmenAsesi.asesi.nama_lengkap}
                   onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
                 />
               </div>
@@ -470,7 +605,7 @@ const PersetujuanAsesmen = () => {
             {/* Box 3 Kiri - Pelaksanaan Asesmen */}
             <div style={{
               ...transparentBoxStyle, 
-              height: isMobile ? 'auto' : '130px', 
+              height: isMobile ? 'auto' : '150px', 
               minHeight: isMobile ? '160px' : '130px',
               display: 'flex', 
               flexDirection: 'column', 
@@ -493,7 +628,7 @@ const PersetujuanAsesmen = () => {
                       border: '1px solid #ddd', 
                       borderRadius: '3px'
                     }}
-                    value={formData.tanggal}
+                    value={selectedAssesment.tanggal_assesment}
                     onChange={(e) => handleInputChange('tanggal', e.target.value)}
                   />
                 </div>
@@ -510,7 +645,7 @@ const PersetujuanAsesmen = () => {
                       border: '1px solid #ddd', 
                       borderRadius: '3px'
                     }}
-                    value={formData.waktu}
+                    value={selectedAssesment.tanggal_mulai.slice(11,16)}
                     onChange={(e) => handleInputChange('waktu', e.target.value)}
                   />
                 </div>
@@ -527,7 +662,7 @@ const PersetujuanAsesmen = () => {
                       border: '1px solid #ddd', 
                       borderRadius: '3px'
                     }}
-                    value={formData.tukPelaksanaan}
+                    value={selectedAssesment.tuk}
                     onChange={(e) => handleInputChange('tukPelaksanaan', e.target.value)}
                   />
                 </div>
@@ -589,23 +724,184 @@ const PersetujuanAsesmen = () => {
           </div>
         </div>
 
+        {/* Attachments Section */}
+        <div style={{
+          ...transparentBoxStyle,
+          marginTop: '20px',
+          padding: isMobile ? '15px' : '20px'
+        }}>
+          <div style={{
+            fontSize: isMobile ? '12px' : '14px',
+            fontWeight: 'bold',
+            marginBottom: '15px',
+            color: '#333',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <Upload size={16} color="#FF8C00" />
+            Lampiran Dokumen (Attachments)
+          </div>
+
+          {formData.attachments.map((attachment, index) => (
+            <div key={index} style={{
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              padding: isMobile ? '12px' : '15px',
+              marginBottom: '12px',
+              backgroundColor: 'white'
+            }}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: '12px'
+              }}>
+                <div style={{
+                  fontSize: isMobile ? '11px' : '12px',
+                  fontWeight: 'bold',
+                  color: '#333'
+                }}>
+                  Lampiran {index + 1}
+                </div>
+                {formData.attachments.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeAttachmentField(index)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      color: '#ff4444',
+                      padding: '2px'
+                    }}
+                  >
+                    <X size={16} />
+                  </button>
+                )}
+              </div>
+
+              <div style={{
+                display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
+                gap: isMobile ? '10px' : '12px',
+                alignItems: isMobile ? 'flex-start' : 'center'
+              }}>
+                <div style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <label
+                      htmlFor={`file-${index}`}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '8px 12px',
+                        backgroundColor: '#f8f9fa',
+                        border: '1px solid #ddd',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: isMobile ? '10px' : '11px',
+                        color: '#333',
+                        transition: 'background-color 0.2s'
+                      }}
+                      onMouseOver={(e) => e.target.style.backgroundColor = '#e9ecef'}
+                      onMouseOut={(e) => e.target.style.backgroundColor = '#f8f9fa'}
+                    >
+                      <FileText size={14} />
+                      Pilih File PDF
+                    </label>
+                    <input
+                      id={`file-${index}`}
+                      type="file"
+                      accept="application/pdf"
+                      onChange={(e) => handleAttachmentChange(index, 'file', e.target.files[0])}
+                      style={{ display: 'none' }}
+                    />
+                    {attachment.fileName && (
+                      <span style={{
+                        fontSize: isMobile ? '9px' : '10px',
+                        color: '#666',
+                        fontStyle: 'italic'
+                      }}>
+                        {attachment.fileName}
+                      </span>
+                    )}
+                  </div>
+
+                  <input
+                    type="text"
+                    placeholder="Deskripsi file (contoh: Sertifikat Kompetensi, CV, dll)"
+                    value={attachment.description}
+                    onChange={(e) => handleAttachmentChange(index, 'description', e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '8px 10px',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      fontSize: isMobile ? '10px' : '11px',
+                      fontFamily: 'Arial, sans-serif'
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <button
+            type="button"
+            onClick={addAttachmentField}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '10px 15px',
+              backgroundColor: 'white',
+              color: '#FF8C00',
+              border: '1px dashed #FF8C00',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: isMobile ? '11px' : '12px',
+              fontWeight: '500',
+              transition: 'all 0.2s ease',
+              width: isMobile ? '100%' : 'auto'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = '#FFF8F0';
+              e.target.style.borderStyle = 'solid';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = 'white';
+              e.target.style.borderStyle = 'dashed';
+            }}
+          >
+            <Upload size={14} />
+            Tambah Lampiran
+          </button>
+        </div>
+
         {/* Action Buttons */}
         <div style={buttonContainerStyle}>
           <button
-            style={buttonStyle}
+            style={{
+              ...buttonStyle,
+              opacity: loading ? 0.7 : 1,
+              cursor: loading ? 'not-allowed' : 'pointer'
+            }}
             onClick={handleApprove}
-            onMouseOver={(e) => e.target.style.backgroundColor = '#f8f9fa'}
-            onMouseOut={(e) => e.target.style.backgroundColor = 'white'}
+            disabled={loading}
+            onMouseOver={(e) => !loading && (e.target.style.backgroundColor = '#f8f9fa')}
+            onMouseOut={(e) => !loading && (e.target.style.backgroundColor = 'white')}
           >
-            APPROVE
-          </button>
-          <button
-            style={buttonStyle}
-            onClick={handleReject}
-            onMouseOver={(e) => e.target.style.backgroundColor = '#f8f9fa'}
-            onMouseOut={(e) => e.target.style.backgroundColor = 'white'}
-          >
-            REJECT
+            {loading ? 'Processing...' : 'APPROVE'}
           </button>
         </div>
       </div>
