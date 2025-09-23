@@ -18,6 +18,7 @@ const AsesmenMandiri = () => {
   const selectedAssesmentAsesi = assesmentAsesis.find((a) => a.asesi.id == id);
   const [apl02, setApl02] = useState(null);
   const [bukti, setBukti] = useState(null);
+  const [apl02Status, setApl02Status] = useState("pending"); // 'approved' | 'rejected' | 'pending' | 'not_filled'
   const selectedAssesment = assesments.find(
     (a) => a.id == selectedAssesmentAsesi?.assesment_id
   );
@@ -65,8 +66,18 @@ const AsesmenMandiri = () => {
         const assesiId = id;
         const res = await getApl02ByAssesi(assesiId);
         setBukti(res.data);
+        const status = res?.data?.data?.[0]?.ttd_assesor;
+        if (status === "approved" || status === "rejected" || status === "pending") {
+          setApl02Status(status);
+        } else {
+          // No recognizable status in data
+          setApl02Status("not_filled");
+        }
       } catch (error) {
         console.log(error);
+        // On error (e.g., 404 or empty), treat as not filled
+        setBukti(null);
+        setApl02Status("not_filled");
       }
     };
     fetchBukti();
@@ -240,7 +251,7 @@ const AsesmenMandiri = () => {
       });
 
       if (res) {
-        setShowModal(true);
+        navigate(`/dashboard-asesor/approved-unapproved/${id}`);
       }
     } catch (error) {
       console.log(error);
@@ -263,7 +274,7 @@ const AsesmenMandiri = () => {
         ttd_assesor: "rejected",
       });
       if (res) {
-        setShowRejectModal(true);
+        navigate(`/dashboard-asesor/approved-unapproved/${id}`);
       }
     } catch (error) {
       console.log(error);
@@ -307,7 +318,7 @@ const AsesmenMandiri = () => {
                 color: "#333",
               }}
             >
-              FR.IA.01 ASESMEN MANDIRI
+              FR.APL.02 ASESMEN MANDIRI
             </div>
           </div>
         </div>
@@ -528,18 +539,20 @@ const AsesmenMandiri = () => {
                             Kriteria Unjuk Kerja:
                           </div>
 
-                          {element.kriteria_untuk_kerja?.map((kuk, kukIndex) => (
-                            <div
-                              key={kuk.id}
-                              style={{
-                                fontSize: "12px",
-                                lineHeight: "1.4",
-                                marginBottom: "8px",
-                              }}
-                            >
-                              {kuk.urutan} {kuk.deskripsi_kuk}
-                            </div>
-                          ))}
+                          {element.kriteria_untuk_kerja?.map(
+                            (kuk, kukIndex) => (
+                              <div
+                                key={kuk.id}
+                                style={{
+                                  fontSize: "12px",
+                                  lineHeight: "1.4",
+                                  marginBottom: "8px",
+                                }}
+                              >
+                                {kuk.urutan} {kuk.deskripsi_kuk}
+                              </div>
+                            )
+                          )}
                         </div>
 
                         {/* Checkbox K / BK */}
@@ -560,9 +573,7 @@ const AsesmenMandiri = () => {
                             <input
                               type="checkbox"
                               style={{ transform: "scale(1.1)" }}
-                              checked={
-                                detailForElemen?.kompetensinitas === "k"
-                              }
+                              checked={detailForElemen?.kompetensinitas === "k"}
                               readOnly
                             />
                             <span
@@ -635,11 +646,15 @@ const AsesmenMandiri = () => {
                                     readOnly
                                     style={{ transform: "scale(0.8)" }}
                                   />
-                                  <span>{att.bukti?.nama_dokumen || "Bukti"}</span>
+                                  <span>
+                                    {att.bukti?.nama_dokumen || "Bukti"}
+                                  </span>
                                 </div>
                               ))
                             ) : (
-                              <div style={{ color: "#666", fontStyle: "italic" }}>
+                              <div
+                                style={{ color: "#666", fontStyle: "italic" }}
+                              >
                                 Tidak ada bukti yang diunggah
                               </div>
                             )}
@@ -809,13 +824,14 @@ const AsesmenMandiri = () => {
                 <button
                   style={{
                     padding: "6px 20px",
-                    backgroundColor: bukti
-                      ? bukti?.data?.[0]?.ttd_assesor === "approved"
+                    backgroundColor:
+                      apl02Status === "approved"
                         ? "#4CAF50"
-                        : bukti?.data?.[0]?.ttd_assesor === "rejected"
+                        : apl02Status === "rejected"
                         ? "#FF8C00"
-                        : "#666"
-                      : "#666",
+                        : apl02Status === "pending"
+                        ? "#666"
+                        : "#6c757d",
                     color: "white",
                     border: "none",
                     borderRadius: "15px",
@@ -823,13 +839,13 @@ const AsesmenMandiri = () => {
                     fontWeight: "500",
                   }}
                 >
-                  {bukti
-                    ? bukti?.data?.[0]?.ttd_assesor === "approved"
-                      ? "Approved"
-                      : bukti?.data?.[0]?.ttd_assesor === "rejected"
-                      ? "Rejected"
-                      : "Pending"
-                    : "Pending"}
+                  {apl02Status === "approved"
+                    ? "Approved"
+                    : apl02Status === "rejected"
+                    ? "Rejected"
+                    : apl02Status === "pending"
+                    ? "Pending"
+                    : "APL-02 belum diisi"}
                 </button>
               </div>
             </div>
@@ -837,7 +853,7 @@ const AsesmenMandiri = () => {
         </div>
 
         {/* Tombol Approve/Reject hanya jika status masih pending */}
-        {bukti?.data?.[0]?.ttd_assesor === "pending" && (
+        {apl02Status === "pending" && (
           <div
             style={{
               display: "flex",
@@ -883,34 +899,43 @@ const AsesmenMandiri = () => {
         )}
 
         {/* Status Notification */}
-        {bukti?.data?.[0]?.ttd_assesor !== "pending" && (
+        {apl02Status !== "pending" && (
           <div
             style={{
               textAlign: "center",
               padding: "20px",
               marginTop: "20px",
               backgroundColor:
-                bukti?.data?.[0]?.ttd_assesor === "approved"
+                apl02Status === "approved"
                   ? "#d4edda"
-                  : "#f8d7da",
+                  : apl02Status === "rejected"
+                  ? "#f8d7da"
+                  : "#fff3cd",
               border: `1px solid ${
-                bukti?.data?.[0]?.ttd_assesor === "approved"
+                apl02Status === "approved"
                   ? "#c3e6cb"
-                  : "#f5c6cb"
+                  : apl02Status === "rejected"
+                  ? "#f5c6cb"
+                  : "#ffeeba"
               }`,
               borderRadius: "8px",
               color:
-                bukti?.data?.[0]?.ttd_assesor === "approved"
+                apl02Status === "approved"
                   ? "#155724"
-                  : "#721c24",
+                  : apl02Status === "rejected"
+                  ? "#721c24"
+                  : "#856404",
             }}
           >
-            <p style={{ margin: 0, fontWeight: "bold" }}>
-              Dokumen ini telah{" "}
-              {bukti?.data?.[0]?.ttd_assesor === "approved"
-                ? "disetujui"
-                : "ditolak"}
-            </p>
+            {apl02Status === "not_filled" ? (
+              <p style={{ margin: 0, fontWeight: "bold" }}>
+                APL-02 belum diisi oleh Asesi.
+              </p>
+            ) : (
+              <p style={{ margin: 0, fontWeight: "bold" }}>
+                Dokumen ini telah {apl02Status === "approved" ? "disetujui" : "ditolak"}
+              </p>
+            )}
           </div>
         )}
       </div>
@@ -1089,7 +1114,7 @@ const AsesmenMandiri = () => {
 
       {/* Modal Notifikasi Reject */}
       {showRejectModal && (
-        <div style={modalOverlayStyle}>
+        <div>
           <div
             style={{
               backgroundColor: "white",

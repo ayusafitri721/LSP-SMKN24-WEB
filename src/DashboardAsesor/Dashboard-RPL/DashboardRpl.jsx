@@ -59,10 +59,12 @@ const DashboardRpl = () => {
   const selectedAssesment = assesments.find((a) => a.id.toString() === id);
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width: 768px)");
+  console.log("selectedAssesment", selectedAssesment);
+  
   const selectedAsesi = assesmentAsesis.filter(
-    (aa) => aa.asesi && aa.assesment_id === selectedAssesment.id
-  ); // Ganti 1 dengan ID asesi yang sesuai
-
+    (aa) => aa.assesment_id === selectedAssesment.id
+  ); 
+  console.log("selectedAsesi", selectedAsesi);
 
   const handleCardClick = (nis) => {
     navigate(`/dashboard-asesor/approved-unapproved/${nis}`);

@@ -17,12 +17,15 @@ const DashboardAsesor = () => {
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const { assesments } = useAssesment();
-  
-  console.log("Current Asesor:", currentAsesor);
-  
-  const assesmentList = assesments.filter(a => a.assesor_id === currentAsesor?.user?.assesor?.id);
-  console.log("assesmen",assesmentList);
-  
+
+
+  const assesmentList = assesments.filter(
+    (a) => a.assesor_id === currentAsesor?.user?.assesor?.id
+  );
+
+  if (!assesmentList || !currentAsesor) {
+    return <div>Loading...</div>;
+  }
 
   const handleCardClick = (index) => {
     if (!isDragging) {
@@ -43,6 +46,13 @@ const DashboardAsesor = () => {
 
   const handleMouseUp = () => {
     setIsDragging(false);
+  };
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Apakah Anda yakin ingin keluar?");
+    if (confirmLogout) {
+      window.location.href = "/";
+    }
   };
 
   const handleMouseMove = (e) => {
@@ -214,7 +224,8 @@ const DashboardAsesor = () => {
             lineHeight: "1.2",
           }}
         >
-          Selamat datang di MyLsp, Asesor {currentAsesor && currentAsesor?.user?.assesor?.nama_lengkap}!
+          Selamat datang di MyLsp, Asesor{" "}
+          {currentAsesor && currentAsesor?.user?.assesor?.nama_lengkap}!
         </h2>
         <p
           style={{
@@ -228,6 +239,64 @@ const DashboardAsesor = () => {
         >
           Semangat menjadi Asesor hari ini
         </p>
+        {/* Logout Button for when no data */}
+        <button
+                  onClick={handleLogout}
+                  style={{
+                    backgroundColor: "transparent",
+                    color: "#dc3545",
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "8px 12px",
+                    fontSize: "11px",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = "#ffebee";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                  }}
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <polyline
+                      points="16,17 21,12 16,7"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <line
+                      x1="21"
+                      y1="12"
+                      x2="9"
+                      y2="12"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Logout
+                </button>
       </div>
 
       {/* Assessment Cards - Horizontal Scroll */}
@@ -258,70 +327,71 @@ const DashboardAsesor = () => {
           onMouseMove={handleMouseMove}
           className="scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
         >
-          {Array.isArray(assesmentList) && assesmentList.map((item, index) => {
-            const isHovered = hoveredCard === index;
-            return (
-              <div
-                key={index}
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: "8px",
-                  padding: "15px",
-                  boxShadow: isHovered
-                    ? "0 4px 8px rgba(0,0,0,0.15)"
-                    : "0 2px 4px rgba(0,0,0,0.1)",
-                  border: "1px solid #e5e7eb",
-                  minWidth: "220px",
-                  flexShrink: 0,
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  transform: isHovered ? "translateY(-2px)" : "translateY(0)",
-                  position: "relative",
-                }}
-                onMouseEnter={() => !isDragging && setHoveredCard(item)}
-                onMouseLeave={() => setHoveredCard(null)}
-              >
-                <h3
+          {Array.isArray(assesmentList) &&
+            assesmentList.map((item, index) => {
+              const isHovered = hoveredCard === index;
+              return (
+                <div
+                  key={index}
                   style={{
-                    fontSize: "13px",
-                    fontWeight: "700",
-                    marginBottom: "4px",
-                    color: "#000000",
-                    lineHeight: "1.2",
-                  }}
-                >
-                  {item.schema.judul_skema}
-                </h3>
-                <p
-                  style={{
-                    fontSize: "11px",
-                    color: "#6b7280",
-                    marginBottom: "20px",
-                    fontStyle: "italic",
-                  }}
-                >
-                  {item.tuk}
-                </p>
-                <span
-                  style={{
-                    display: "inline-block",
-                    backgroundColor: isHovered ? "#10b981" : "#d1d5db",
-                    color: isHovered ? "white" : "#6b7280",
-                    padding: "6px 16px",
-                    borderRadius: "20px",
-                    fontSize: "10px",
-                    fontWeight: "600",
+                    backgroundColor: "white",
+                    borderRadius: "8px",
+                    padding: "15px",
+                    boxShadow: isHovered
+                      ? "0 4px 8px rgba(0,0,0,0.15)"
+                      : "0 2px 4px rgba(0,0,0,0.1)",
+                    border: "1px solid #e5e7eb",
+                    minWidth: "220px",
+                    flexShrink: 0,
+                    cursor: "pointer",
                     transition: "all 0.2s ease",
-                    position: "absolute",
-                    bottom: "15px",
-                    right: "15px",
+                    transform: isHovered ? "translateY(-2px)" : "translateY(0)",
+                    position: "relative",
                   }}
+                  onMouseEnter={() => !isDragging && setHoveredCard(item)}
+                  onMouseLeave={() => setHoveredCard(null)}
                 >
-                  {item.status}
-                </span>
-              </div>
-            );
-          })}
+                  <h3
+                    style={{
+                      fontSize: "13px",
+                      fontWeight: "700",
+                      marginBottom: "4px",
+                      color: "#000000",
+                      lineHeight: "1.2",
+                    }}
+                  >
+                    {item.schema.judul_skema}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: "11px",
+                      color: "#6b7280",
+                      marginBottom: "20px",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    {item.tuk}
+                  </p>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      backgroundColor: isHovered ? "#10b981" : "#d1d5db",
+                      color: isHovered ? "white" : "#6b7280",
+                      padding: "6px 16px",
+                      borderRadius: "20px",
+                      fontSize: "10px",
+                      fontWeight: "600",
+                      transition: "all 0.2s ease",
+                      position: "absolute",
+                      bottom: "15px",
+                      right: "15px",
+                    }}
+                  >
+                    {item.status}
+                  </span>
+                </div>
+              );
+            })}
         </div>
       </div>
 
