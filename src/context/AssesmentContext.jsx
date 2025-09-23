@@ -42,7 +42,7 @@ export const AssesmentProvider = ({ children }) => {
   }, [user]);
 
   const fetchAssesmentAsesis = useCallback(async () => {
-    if (!user || user.role !== "assesi" ) return;
+    if (!user || (user.role !== "admin" && user.role !== "asesor")) return;
     setLoading(true);
     setError(null);
     try {

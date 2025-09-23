@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: "http://127.0.0.1:8000/api",
   withCredentials: true, // use Sanctum cookies
   xsrfCookieName: "XSRF-TOKEN",
@@ -135,6 +135,8 @@ export const getApl02ByAssesi = (assesiId) =>
   api.get(`/apl02/assesi/${assesiId}`);
 export const getApl02ById = (id) => api.get(`/apl02/${id}`);
 export const postApl02 = (data) => api.post("/apl02/import", data); // admin
+export const approveApl02ByUser = (id, data) =>
+  api.post(`/approvement/assesment/formapl02/${id}`, data);
 
 // AK01
 export const submitFormAk01 = (data) => api.post("/assesment/formak01", data);

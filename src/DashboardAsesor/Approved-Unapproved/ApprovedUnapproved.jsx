@@ -1,22 +1,81 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-
-// Data dummy untuk nama asesi
-const asesiData = {
-  "08939239239": "AFDHAL EZHAR RAHMA PANGESTU",
-};
+import React, { useState, useEffect, use } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAssesment } from "../../context/AssesmentContext";
+import { api, getApl02ByAssesi, getFormIa01ByAssesi } from "../../api/api";
 
 // Komponen Utama
 const ApprovedUnapproved = () => {
-  const nis = "08939239239"; // Mock NIS for demo
+  const nis = useParams().id;
+  const { assesmentAsesis } = useAssesment();
   const navigate = useNavigate();
+  const [bukti, setBukti] = useState(null);
+  const selectedAsesi = assesmentAsesis.find((a) => a?.asesi.id == nis);
+  const [formIa01Data, setFormIa01Data] = useState(null);
+  const [formAk01Data, setFormAk01Data] = useState(null);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [akisDisabled, setAkisDisabled] = useState(false);
+  useEffect(() => {
+    if (!selectedAsesi) return;
+    const fetchBukti = async () => {
+      if (!selectedAsesi) return;
 
+      try {
+        const res = await getApl02ByAssesi(selectedAsesi.asesi.id);
+        setBukti(res.data.data?.[0]?.ttd_assesor);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchBukti();
+  }, [selectedAsesi]);
+
+  useEffect(() => {
+    const fetchAk01 = async () => {
+      if (!nis) return;
+      try {
+        const res = await api.get(`/assesment/formak01/${nis}`);
+        setFormAk01Data(res.data.data[0]);
+        setAkisDisabled(!!res.data.data[0]);
+        console.log(formAk01Data);
+      } catch (err) {
+        console.error("Failed fetch AK01:", err);
+      }
+    };
+    fetchAk01();
+    const fetchIa01 = async () => {
+      if (!selectedAsesi) return;
+      try {
+        const res = await getFormIa01ByAssesi(selectedAsesi.asesi.id);
+        setFormIa01Data(res.data.data?.[0] || null);
+        setIsDisabled(!!res.data.data?.[0]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchIa01();
+  }, [bukti]);
+
+  useEffect(() => {
+    if (!nis) return;
+    const fetchAk01 = async () => {
+      try {
+        const res = await api.get(`/assesment/formak01/${nis}`);
+        setFormAk01Data(res.data.data[0]);
+        setAkisDisabled(!!res.data.data[0]);
+        console.log(formAk01Data);
+      } catch (err) {
+        console.error("Failed fetch AK01:", err);
+      }
+    };
+    fetchAk01();
+  }, [bukti]);
   // State untuk status persetujuan setiap formulir
   const [formulirStatus, setFormulirStatus] = useState([
     {
       code: "FR.APL.02",
       title: "ASESMEN MANDIRI",
-      status: null,
+      status: bukti || null,
       route: "/asesmen-mandiri",
     },
     {
@@ -32,13 +91,6 @@ const ApprovedUnapproved = () => {
       route: "/ceklis-observasi",
     },
     {
-      code: "FR.IA.06.C",
-      title: "LEMBAR JAWABAN TERTULIS ESAI",
-      status: null,
-      route: "/lembar-jawaban",
-    },
-    { code: "FR.IA.09", title: "WAWANCARA", status: null, route: "/wawancara" },
-    {
       code: "FR.AK.02",
       title: "REKAMAN ASESMEN KOMPETENSI",
       status: null,
@@ -52,7 +104,8 @@ const ApprovedUnapproved = () => {
     },
   ]);
   const [allApproved, setAllApproved] = useState(false);
-  const asesiName = asesiData[nis] || "NAMA ASESI TIDAK DITEMUKAN";
+  const asesiName =
+    selectedAsesi?.asesi.nama_lengkap || "NAMA ASESI TIDAK DITEMUKAN";
 
   // Memperbarui status 'allApproved' ketika ada perubahan pada 'formulirStatus'
   useEffect(() => {
@@ -61,6 +114,30 @@ const ApprovedUnapproved = () => {
     );
     setAllApproved(isApproved);
   }, [formulirStatus]);
+
+  useEffect(() => {
+    if (bukti) {
+      setFormulirStatus((prev) =>
+        prev.map((form) =>
+          form.code === "FR.APL.02" ? { ...form, status: bukti } : form
+        )
+      );
+    }
+    if (formIa01Data) {
+      setFormulirStatus((prev) =>
+        prev.map((form) =>
+          form.code === "FR.IA.01.CL" ? { ...form, status: "approved" } : form
+        )
+      );
+    }
+    if(formAk01Data){
+      setFormulirStatus((prev) => 
+        prev.map((form) => 
+          form.code === "FR.AK.01" ? { ...form, status: "approved"} : form
+        )
+      )
+    }
+  }, [bukti, formIa01Data]);
 
   // Handler untuk klik tombol Approve/Unapprove
   const handleApproveUnapprove = (index, status) => {
@@ -73,6 +150,7 @@ const ApprovedUnapproved = () => {
 
   // Handler untuk navigasi ke form detail
   const handleNavigateToForm = (formulir) => {
+    if (formulir.code === "FR.IA.01.CL") return;
     navigate(`/dashboard-asesor${formulir.route}/${nis}`);
   };
 
@@ -281,13 +359,17 @@ const ApprovedUnapproved = () => {
                     ...actionButtonStyle,
                     backgroundColor:
                       formulir.status === "approved" ? "#FF8303" : "#6c757d",
-                    cursor: formulir.status ? "not-allowed" : "pointer",
+                    cursor:
+                      formulir.status === "approved"
+                        ? "not-allowed"
+                        : "pointer",
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleApproveUnapprove(index, "approved");
                   }}
-                  disabled={!!formulir.status}
+                  disabled={true
+                  } // Disable jika FR.IA.01.CL dan isDisabled true
                 >
                   Approve
                 </button>
@@ -295,14 +377,19 @@ const ApprovedUnapproved = () => {
                   style={{
                     ...actionButtonStyle,
                     backgroundColor:
-                      formulir.status === "unapproved" ? "#dc3545" : "#6c757d",
-                    cursor: formulir.status ? "not-allowed" : "pointer",
+                      formulir.status === "rejected" ? "#dc3545" : "#6c757d",
+                    cursor:
+                      formulir.status === "rejected"
+                        ? "not-allowed"
+                        : "pointer",
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleApproveUnapprove(index, "unapproved");
                   }}
-                  disabled={!!formulir.status}
+                  disabled={
+                    formulir.code === "FR.IA.01.CL" ? isDisabled : false
+                  } // Disable jika FR.IA.01.CL dan isDisabled true
                 >
                   Unapprove
                 </button>

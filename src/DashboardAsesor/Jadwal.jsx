@@ -1,8 +1,19 @@
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, Clock, MapPin, Users } from "lucide-react";
+import { useAssesment } from "../context/AssesmentContext";
+import { useDashboardAsesor } from "../context/DashboardAsesorContext";
 
 const JadwalSertifikasi = () => {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 7)); // August 2025
+  const { assesments } = useAssesment();
+  const { currentAsesor } = useDashboardAsesor();
+
+  const assesmentList = assesments.filter(
+    (a) => a.assesor_id === currentAsesor?.user?.assesor?.id
+  );
+
+  console.log("assesmen", assesmentList);
+  console.log("Current Asesor:", currentAsesor);
 
   const months = [
     "January",
@@ -22,20 +33,32 @@ const JadwalSertifikasi = () => {
   const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
 
   // Sample schedule data
-  const scheduleData = {
-    19: {
-      title: "USK RPL - PEMROGRAMAN WEB",
-      location: "SMKN 24 Jakarta",
-      time: "08:00 - 16:00",
-      participants: 25,
-    },
-    29: {
-      title: "USK TKJ - JARINGAN KOMPUTER",
-      location: "SMKN 10 Jakarta",
-      time: "09:00 - 17:00",
-      participants: 30,
-    },
-  };
+  const scheduleData = assesmentList.reduce((acc, a) => {
+    const date = new Date(a.tanggal_mulai);
+
+    // filter hanya bulan & tahun yang sama dengan currentDate
+    if (
+      date.getMonth() === currentDate.getMonth() &&
+      date.getFullYear() === currentDate.getFullYear()
+    ) {
+      const day = date.getDate();
+
+      acc[day] = {
+        title: `${a.schema?.jurusan?.kode_jurusan} - ${a.schema?.judul_skema}`,
+        location: a.tuk,
+        time: `${new Date(a.tanggal_mulai).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })} - ${new Date(a.tanggal_selesai).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`,
+        participants: 0, // bisa diganti jumlah peserta
+      };
+    }
+
+    return acc;
+  }, {});
 
   const getDaysInMonth = (date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
