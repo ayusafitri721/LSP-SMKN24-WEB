@@ -7,6 +7,7 @@ import {
   submitFormIa01,
   getFormIa01ByAssesi,
 } from "../../api/api";
+import { useAssesment } from "../../context/AssesmentContext";
 
 const pageContainerStyle = {
   backgroundColor: "white",
@@ -248,6 +249,7 @@ const modalOverlayStyle = {
 const CeklisObservasi = () => {
   const id = useParams().id;
   const navigate = useNavigate();
+  const { assesmentAsesis, assesments } = useAssesment();
   const [assesidata, setAssesidata] = useState(null);
   const [apl02, setApl02] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -268,6 +270,13 @@ const CeklisObservasi = () => {
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [showRejectionModal, setShowRejectionModal] = useState(false);
 
+  // Derive selected assessment and schema from context
+  const selectedAssesmenAsesi = assesmentAsesis.find((a) => a?.asesi?.id == id);
+  console.log("selectedAssesmenAsesi", selectedAssesmenAsesi);
+  const selectedAssesment = assesments.find(
+    (a) => a.id == selectedAssesmenAsesi?.assesment_id
+  );
+
   useEffect(() => {
     const fetchBukti = async () => {
       if (!id) return;
@@ -286,12 +295,20 @@ const CeklisObservasi = () => {
 
   useEffect(() => {
     const fetchApl02 = async () => {
-      if (!assesidata) return;
+      // Use schema id from selected assessment; assesidata may not contain skema_id
+      if (!selectedAssesment?.schema?.id) return;
 
       try {
-        const res = await getApl02ById(assesidata?.data[0]?.skema_id);
+        const res = await getApl02ById(selectedAssesment.schema.id);
         setApl02(res.data);
         console.log("APL02 Data:", res.data);
+
+        // Prefill header form fields from schema information
+        setFormData((prev) => ({
+          ...prev,
+          judulUnit: selectedAssesment?.schema?.judul_skema || "",
+          nomorUnit: selectedAssesment?.schema?.nomor_skema || "",
+        }));
       } catch (err) {
         console.error("Error fetching APL-02:", err);
         setError("Failed to fetch APL-02 data");
@@ -299,7 +316,8 @@ const CeklisObservasi = () => {
     };
 
     fetchApl02();
-  }, [assesidata]);
+  }, [selectedAssesment?.schema?.id]);
+  console.log("selected assesmen", selectedAssesment);
 
   useEffect(() => {
     const fetchFormIa01 = async () => {
@@ -307,35 +325,11 @@ const CeklisObservasi = () => {
         const res = await getFormIa01ByAssesi(id);
         console.log("Respons API Form IA01:", res.data); // Log respons API
 
+        // Jika IA ditemukan, kunci form. Tidak digunakan untuk isi elemen/KUK.
         if (res.data.success && res.data.data.length > 0) {
-          const formData = res.data.data[0];
-          console.log("Form IA01 Data:", formData); // Log data form IA01
-
-          if (formData.submissions && formData.submissions.length > 0) {
-            setFormIa01Data(formData);
-
-            const initialAssessments = {};
-            const initialTextAssessments = {};
-
-            formData.submissions.forEach((submission) => {
-              submission.elemen.forEach((elemen) => {
-                elemen.kuk.forEach((kuk) => {
-                  const key = `${submission.unit_ke}_${elemen.elemen_id}_${kuk.kuk_id}`;
-                  initialAssessments[key] = { skkni: kuk.skkni };
-                  initialTextAssessments[key] = kuk.teks_penilaian;
-                });
-              });
-            });
-
-            setAssessmentData(initialAssessments);
-            setTextAssessments(initialTextAssessments);
-
-            if (formData.status === "approved") {
-              setIsDisabled(true);
-            }
-          } else {
-            console.warn("Submissions tidak ditemukan dalam Form IA01.");
-          }
+          const found = res.data.data[0];
+          setFormIa01Data(found);
+          setIsDisabled(true);
         }
       } catch (err) {
         console.error("Error fetching Form IA01:", err);
@@ -384,10 +378,8 @@ const CeklisObservasi = () => {
 
     try {
       const assesmentAssesiId = assesidata?.data[0]?.id;
-      const skemaId = assesidata?.data[0]?.skema_id;
-
-      if (!assesmentAssesiId || !skemaId) {
-        throw new Error("Missing assesment_asesi_id or skema_id");
+      if (!assesmentAssesiId) {
+        throw new Error("Missing assesment_asesi_id");
       }
 
       // Prepare submissions data - DIUBAH untuk struktur data baru
@@ -400,7 +392,7 @@ const CeklisObservasi = () => {
 
             return {
               kuk_id: kuk.id,
-              skkni: assessmentInfo.skkni || "tidak",
+              skkni: assessmentInfo.skkni === "ya" ? "ya" : "tidak",
               teks_penilaian: textAssessment,
             };
           });
@@ -418,8 +410,33 @@ const CeklisObservasi = () => {
         };
       });
 
+      // Client-side validation to align with backend rules
+      for (const [uIdx, unit] of submissions.entries()) {
+        if (!Array.isArray(unit.elemen) || unit.elemen.length === 0) {
+          throw new Error(`Data elemen wajib diisi untuk setiap submission (unit index ${uIdx}).`);
+        }
+        for (const [eIdx, el] of unit.elemen.entries()) {
+          if (!el.elemen_id) {
+            throw new Error(`ID elemen wajib diisi untuk setiap elemen (unit ${uIdx}, elemen ${eIdx}).`);
+          }
+          if (!Array.isArray(el.kuk) || el.kuk.length === 0) {
+            throw new Error(`Data KUK wajib diisi untuk setiap elemen (unit ${uIdx}, elemen ${eIdx}).`);
+          }
+          for (const [kIdx, k] of el.kuk.entries()) {
+            if (!k.kuk_id) {
+              throw new Error(`ID KUK wajib diisi (unit ${uIdx}, elemen ${eIdx}, kuk ${kIdx}).`);
+            }
+            if (k.skkni !== "ya" && k.skkni !== "tidak") {
+              throw new Error(`SKKNI hanya boleh bernilai "ya" atau "tidak" (unit ${uIdx}, elemen ${eIdx}, kuk ${kIdx}).`);
+            }
+            if (typeof k.teks_penilaian !== "string") {
+              throw new Error(`Teks penilaian harus berupa teks (unit ${uIdx}, elemen ${eIdx}, kuk ${kIdx}).`);
+            }
+          }
+        }
+      }
+
       const requestBody = {
-        skema_id: skemaId,
         assesment_asesi_id: assesmentAssesiId,
         submissions: submissions,
       };
@@ -432,7 +449,13 @@ const CeklisObservasi = () => {
       setShowApprovalModal(true);
     } catch (error) {
       console.error("Error submitting IA01:", error);
-      setError(error.response?.data?.message || "Failed to submit form");
+      // Tampilkan pesan error dari backend jika ada, kalau tidak pakai pesan dari client-side validation
+      setError(
+        error?.response?.data?.message ||
+          error?.response?.data?.errors ||
+          error?.message ||
+          "Failed to submit form"
+      );
     } finally {
       setLoading(false);
     }

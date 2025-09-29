@@ -6,6 +6,7 @@ import {
   getApl02ByAssesi,
   getFormAk05ByAssesi,
   getFormIa01ByAssesi,
+  getFormAk02ByAssesi,
 } from "../../api/api";
 
 // Komponen Utama
@@ -19,6 +20,7 @@ const ApprovedUnapproved = () => {
   const [formAk01Data, setFormAk01Data] = useState(null);
   const [formAk05Data, setFormAk05Data] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [formAk02Status, setFormAk02Status] = useState(null);
   useEffect(() => {
     if (!selectedAsesi?.asesi?.id) return;
     const fetchBukti = async () => {
@@ -31,6 +33,27 @@ const ApprovedUnapproved = () => {
     };
     fetchBukti();
   }, [selectedAsesi?.asesi?.id]);
+
+  // AK-02 status fetch and map to approved/pending
+  useEffect(() => {
+    if (!nis) return;
+    const fetchAk02 = async () => {
+      try {
+        const res = await getFormAk02ByAssesi(nis);
+        console.log("res ak02", res);
+        
+        const submission = res?.data?.data?.[0] || null;
+        const status = submission?.ttd_asesor === 'sudah' ? 'approved' : 'pending';
+        setFormAk02Status(status);
+        console.log("status ak02", status);
+        
+      } catch (error) {
+        console.log('Failed fetch AK-02:', error);
+        setFormAk02Status(null);
+      }
+    };
+    fetchAk02();
+  }, [nis]);
 
   useEffect(() => {
     if (!selectedAsesi?.asesi?.id) return;
@@ -121,6 +144,13 @@ const ApprovedUnapproved = () => {
         )
       );
     }
+    if (formAk02Status) {
+      setFormulirStatus((prev) =>
+        prev.map((form) =>
+          form.code === "FR.AK.02" ? { ...form, status: formAk02Status } : form
+        )
+      );
+    }
     if (formIa01Data) {
       setFormulirStatus((prev) =>
         prev.map((form) =>
@@ -142,7 +172,7 @@ const ApprovedUnapproved = () => {
         )
       );
     }
-  }, [bukti, formIa01Data, formAk01Data, formAk05Data]);
+  }, [bukti, formAk02Status, formIa01Data, formAk01Data, formAk05Data]);
 
   // Handler untuk klik tombol Approve/Unapprove
   const handleApproveUnapprove = (index, status) => {
@@ -155,7 +185,8 @@ const ApprovedUnapproved = () => {
 
   // Handler untuk navigasi ke form detail
   const handleNavigateToForm = (formulir) => {
-    if (formulir.code === "FR.IA.01.CL") return;
+    // Untuk FR.IA.01.CL: hanya blok navigasi jika data sudah ada (isDisabled = true)
+    if (formulir.code === "FR.IA.01.CL" && isDisabled) return;
     navigate(`/dashboard-asesor${formulir.route}/${nis}`);
   };
 

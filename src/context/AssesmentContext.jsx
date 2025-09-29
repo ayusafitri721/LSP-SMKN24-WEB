@@ -49,7 +49,7 @@ export const AssesmentProvider = ({ children }) => {
     try {
       let res = { data: { data: [] } };
       if (user.role === "asesor") {
-        res = await getAssesmentByAssesor(user.id);
+        res = await getAssesmentByAssesor();
       } else if (user.role === "admin") {
         // Backend no longer exposes a global index; try user-scoped as a fallback
         res = await getAssesmentAsesiByUser(user.id);
