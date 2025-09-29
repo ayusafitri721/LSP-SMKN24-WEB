@@ -355,7 +355,7 @@ const AsesmenMandiri = () => {
                       minHeight: "20px",
                     }}
                   >
-                    {apl02?.judul_skema}
+                    {apl02?.data.judul_skema}
                   </div>
                 </div>
                 <div style={inputRowStyle}>
@@ -370,7 +370,8 @@ const AsesmenMandiri = () => {
                       minHeight: "20px",
                     }}
                   >
-                    {apl02?.nomor_skema}
+                    {console.log(apl02)}
+                    {apl02?.data.nomor_skema}
                   </div>
                 </div>
               </td>

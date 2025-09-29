@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
+import { useAssesment } from '../../context/AssesmentContext';
+import { useParams } from 'react-router-dom';
+import { getApl02ById, getApl02ByAssesi, submitFormAk02  } from '../../api/api';
 
 // Responsive styles
 const pageContainerStyle = {
@@ -277,6 +280,19 @@ const mediaQueries = `
 `;
 
 const RekamanAsesmen = () => {
+  const id = useParams().id;
+  const { assesments, assesmentAsesis } = useAssesment();
+  const selectedAssesmentAsesi = assesmentAsesis?.find((a) => a.assesi?.id == id);
+  const selectedAssesment = assesments.find(
+    (a) => a.id == selectedAssesmentAsesi?.assesment_id
+  );
+  console.log("asssesment asesi ",selectedAssesmentAsesi);
+  console.log("asssesment ",selectedAssesment);
+  const [apl02, setApl02] = useState(null);
+  const [bukti, setBukti] = useState(null);
+  const [apl02Status, setApl02Status] = useState('not_filled');
+  
+  // 1) Extend formData state:
   const [formData, setFormData] = useState({
     judulUnit: '',
     kodeUnit: '',
@@ -286,6 +302,9 @@ const RekamanAsesmen = () => {
     tanggal: '',
     waktu: '',
     checkboxes: {},
+    rekomendasi: '',
+    tindak_lanjut: '',
+    komentar_asesor: '',
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -320,6 +339,93 @@ const RekamanAsesmen = () => {
     };
   }, []);
 
+  useEffect(() => {
+      const fetchApl02 = async () => {
+        if (!selectedAssesment) return;
+  
+        try {
+          // ambil schema_id dari assesment pertama (atau sesuai logicmu)
+          const schemaId = selectedAssesment?.schema.id;
+  
+          const res = await getApl02ById(schemaId);
+          setApl02(res.data);
+          console.log("asdasdddddddd",res.data);
+          
+        } catch (err) {
+          console.error("Error fetching APL-02:", err);
+        }
+      };
+  
+      const fetchBukti = async () => {
+        if (!selectedAssesmentAsesi) return;
+  
+        try {
+          const assesiId = id;
+          const res = await getApl02ByAssesi(assesiId);
+          setBukti(res.data);
+          const status = res?.data?.data?.[0]?.ttd_assesor;
+          if (status === "approved" || status === "rejected" || status === "pending") {
+            setApl02Status(status);
+          } else {
+            // No recognizable status in data
+            setApl02Status("not_filled");
+          }
+        } catch (error) {
+          console.log(error);
+          // On error (e.g., 404 or empty), treat as not filled
+          setBukti(null);
+          setApl02Status("not_filled");
+        }
+      };
+      fetchBukti();
+      fetchApl02();
+    }, [selectedAssesment]);
+
+    // Map checkbox selections to bukti descriptions expected by backend
+const getSelectedBuktiDescriptions = () => {
+  const labels = {
+    observasi: 'Observasi Demonstrasi',
+    demonstrasi: 'Pertanyaan Tertulis',
+    portofolio: 'Portofolio',
+    proyek: 'Proyek Kerja',
+    pertanyaan_tertulis: 'Pernyataan Pihak Ketiga Pertanyaan Wawancara',
+    pertanyaan_lisan: 'Pertanyaan Lisan',
+    lainnya: 'Lainnya',
+  };
+
+  const picked = [];
+  Object.entries(formData.checkboxes || {}).forEach(([key, val]) => {
+    if (!val) return;
+    // key format: section{n}_{name}
+    const parts = key.split('_');
+    const name = parts.slice(1).join('_');
+    const label = labels[name];
+    if (label) picked.push(label);
+  });
+  // At least one default so backend gets a non-empty array
+  return picked.length ? picked : ['Portofolio'];
+};
+
+// 2) Update buildAk02Payload:
+const buildAk02Payload = (rekomendasi) => {
+  const assesmentAsesiId = selectedAssesmentAsesi?.id;
+  const units = apl02?.data?.units || [];
+  const buktiDescriptions = getSelectedBuktiDescriptions();
+
+  return {
+    assesment_asesi_id: assesmentAsesiId,
+    rekomendasi_hasil: rekomendasi || formData.rekomendasi || 'kompeten',
+    tindak_lanjut: formData.tindak_lanjut || '',
+    komentar_asesor: formData.komentar_asesor || '',
+    ttd_asesi: 'belum',
+    ttd_asesor: 'sudah',
+    units: units.map((u) => ({
+      unit_id: u.id,
+      bukti_yang_relevan: buktiDescriptions.map((desc) => ({ bukti_description: desc })),
+    })),
+  };
+};
+
   const handleCheckboxChange = (section, item) => {
     setFormData((prev) => ({
       ...prev,
@@ -337,12 +443,26 @@ const RekamanAsesmen = () => {
     }));
   };
 
-  const handleApprove = () => {
-    setShowModal(true);
+  const handleApprove = async () => {
+    try {
+      const payload = buildAk02Payload('kompeten');
+      await submitFormAk02(payload);
+      setShowModal(true);
+    } catch (e) {
+      console.error('Submit AK-02 (approve) error:', e);
+      alert('Gagal menyimpan AK-02: ' + (e?.response?.data?.message || e.message));
+    }
   };
-
-  const handleReject = () => {
-    setShowRejectModal(true);
+  
+  const handleReject = async () => {
+    try {
+      const payload = buildAk02Payload('tidak_kompeten');
+      await submitFormAk02(payload);
+      setShowRejectModal(true);
+    } catch (e) {
+      console.error('Submit AK-02 (reject) error:', e);
+      alert('Gagal menyimpan AK-02 (Reject): ' + (e?.response?.data?.message || e.message));
+    }
   };
 
   const handleModalOke = () => {
@@ -359,77 +479,83 @@ const RekamanAsesmen = () => {
     }, 100);
   };
 
-  const renderCheckboxSection = (sectionNum) => (
-    <div style={sectionStyle}>
-      <div style={sectionHeaderStyle}>Menggunakan Struktur Data</div>
-      <table style={checkboxTableStyle}>
-        <thead>
-          <tr>
-            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Observasi Demonstrasi</th>
-            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Pertanyaan Tertulis</th>
-            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Portofolio</th>
-            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Proyek Kerja</th>
-            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Pernyataan Pihak Ketiga Pertanyaan Wawancara</th>
-            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Pertanyaan Lisan</th>
-            <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Lainnya</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style={checkboxCellStyle}>
-              <input
-                type="checkbox"
-                checked={formData.checkboxes[`section${sectionNum}_observasi`] || false}
-                onChange={() => handleCheckboxChange(`section${sectionNum}`, 'observasi')}
-              />
-            </td>
-            <td style={checkboxCellStyle}>
-              <input
-                type="checkbox"
-                checked={formData.checkboxes[`section${sectionNum}_demonstrasi`] || false}
-                onChange={() => handleCheckboxChange(`section${sectionNum}`, 'demonstrasi')}
-              />
-            </td>
-            <td style={checkboxCellStyle}>
-              <input
-                type="checkbox"
-                checked={formData.checkboxes[`section${sectionNum}_portofolio`] || false}
-                onChange={() => handleCheckboxChange(`section${sectionNum}`, 'portofolio')}
-              />
-            </td>
-            <td style={checkboxCellStyle}>
-              <input
-                type="checkbox"
-                checked={formData.checkboxes[`section${sectionNum}_proyek`] || false}
-                onChange={() => handleCheckboxChange(`section${sectionNum}`, 'proyek')}
-              />
-            </td>
-            <td style={checkboxCellStyle}>
-              <input
-                type="checkbox"
-                checked={formData.checkboxes[`section${sectionNum}_pertanyaan_tertulis`] || false}
-                onChange={() => handleCheckboxChange(`section${sectionNum}`, 'pertanyaan_tertulis')}
-              />
-            </td>
-            <td style={checkboxCellStyle}>
-              <input
-                type="checkbox"
-                checked={formData.checkboxes[`section${sectionNum}_pertanyaan_lisan`] || false}
-                onChange={() => handleCheckboxChange(`section${sectionNum}`, 'pertanyaan_lisan')}
-              />
-            </td>
-            <td style={checkboxCellStyle}>
-              <input
-                type="checkbox"
-                checked={formData.checkboxes[`section${sectionNum}_lainnya`] || false}
-                onChange={() => handleCheckboxChange(`section${sectionNum}`, 'lainnya')}
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
+  const renderCheckboxSection = (sectionNum) => {
+    // Use judul_unit from APL-02 if available; fallback to a generic label
+    const unitTitle =
+      apl02?.data?.units?.[sectionNum - 1]?.judul_unit || `Unit ${sectionNum}`;
+  
+    return (
+      <div style={sectionStyle}>
+        <div style={sectionHeaderStyle}>{unitTitle}</div>
+        <table style={checkboxTableStyle}>
+          <thead>
+            <tr>
+              <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Observasi Demonstrasi</th>
+              <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Pertanyaan Tertulis</th>
+              <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Portofolio</th>
+              <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Proyek Kerja</th>
+              <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Pernyataan Pihak Ketiga Pertanyaan Wawancara</th>
+              <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Pertanyaan Lisan</th>
+              <th style={{ ...checkboxHeaderStyle, width: 'auto' }}>Lainnya</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={checkboxCellStyle}>
+                <input
+                  type="checkbox"
+                  checked={formData.checkboxes[`section${sectionNum}_observasi`] || false}
+                  onChange={() => handleCheckboxChange(`section${sectionNum}`, 'observasi')}
+                />
+              </td>
+              <td style={checkboxCellStyle}>
+                <input
+                  type="checkbox"
+                  checked={formData.checkboxes[`section${sectionNum}_demonstrasi`] || false}
+                  onChange={() => handleCheckboxChange(`section${sectionNum}`, 'demonstrasi')}
+                />
+              </td>
+              <td style={checkboxCellStyle}>
+                <input
+                  type="checkbox"
+                  checked={formData.checkboxes[`section${sectionNum}_portofolio`] || false}
+                  onChange={() => handleCheckboxChange(`section${sectionNum}`, 'portofolio')}
+                />
+              </td>
+              <td style={checkboxCellStyle}>
+                <input
+                  type="checkbox"
+                  checked={formData.checkboxes[`section${sectionNum}_proyek`] || false}
+                  onChange={() => handleCheckboxChange(`section${sectionNum}`, 'proyek')}
+                />
+              </td>
+              <td style={checkboxCellStyle}>
+                <input
+                  type="checkbox"
+                  checked={formData.checkboxes[`section${sectionNum}_pertanyaan_tertulis`] || false}
+                  onChange={() => handleCheckboxChange(`section${sectionNum}`, 'pertanyaan_tertulis')}
+                />
+              </td>
+              <td style={checkboxCellStyle}>
+                <input
+                  type="checkbox"
+                  checked={formData.checkboxes[`section${sectionNum}_pertanyaan_lisan`] || false}
+                  onChange={() => handleCheckboxChange(`section${sectionNum}`, 'pertanyaan_lisan')}
+                />
+              </td>
+              <td style={checkboxCellStyle}>
+                <input
+                  type="checkbox"
+                  checked={formData.checkboxes[`section${sectionNum}_lainnya`] || false}
+                  onChange={() => handleCheckboxChange(`section${sectionNum}`, 'lainnya')}
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
+  };
 
   return (
     <div style={pageContainerStyle}>
@@ -484,7 +610,7 @@ const RekamanAsesmen = () => {
                 <input
                   style={{ ...inputStyle, fontSize: '0.625rem' }}
                   type="text"
-                  value={formData.judulUnit || ''}
+                  value={selectedAssesment?.schema?.judul_skema || ''}
                   onChange={(e) => handleInputChange('judulUnit', e.target.value)}
                   placeholder="JUDUL UNIT"
                 />
@@ -497,7 +623,7 @@ const RekamanAsesmen = () => {
                 <input
                   style={{ ...inputStyle, fontSize: '0.625rem' }}
                   type="text"
-                  value={formData.kodeUnit || ''}
+                  value={selectedAssesment?.schema?.nomor_skema || ''}
                   onChange={(e) => handleInputChange('kodeUnit', e.target.value)}
                   placeholder="KODE UNIT"
                 />
@@ -511,7 +637,7 @@ const RekamanAsesmen = () => {
                 <input
                   style={{ ...inputStyle, fontSize: '0.625rem' }}
                   type="text"
-                  value={formData.tuk || ''}
+                  value={selectedAssesment?.tuk || ''}
                   onChange={(e) => handleInputChange('tuk', e.target.value)}
                 />
               </td>
@@ -524,7 +650,7 @@ const RekamanAsesmen = () => {
                 <input
                   style={{ ...inputStyle, fontSize: '0.625rem' }}
                   type="text"
-                  value={formData.namaAsesor || ''}
+                  value={selectedAssesment?.assesor?.nama_lengkap || ''}
                   onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
                 />
               </td>
@@ -537,7 +663,7 @@ const RekamanAsesmen = () => {
                 <input
                   style={{ ...inputStyle, fontSize: '0.625rem' }}
                   type="text"
-                  value={formData.namaAsesi || ''}
+                  value={selectedAssesmentAsesi?.asesi?.nama_lengkap || ''}
                   onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
                 />
               </td>
@@ -550,7 +676,7 @@ const RekamanAsesmen = () => {
                 <input
                   style={{ ...inputStyle, fontSize: '0.625rem' }}
                   type="date"
-                  value={formData.tanggal || ''}
+                  value={selectedAssesment?.tanggal_assesment || ''}
                   onChange={(e) => handleInputChange('tanggal', e.target.value)}
                 />
               </td>
@@ -563,7 +689,7 @@ const RekamanAsesmen = () => {
                 <input
                   style={{ ...inputStyle, fontSize: '0.625rem' }}
                   type="time"
-                  value={formData.waktu || ''}
+                  value={selectedAssesment?.tanggal_mulai?.split(" ")[1] || ''}
                   onChange={(e) => handleInputChange('waktu', e.target.value)}
                 />
               </td>
@@ -573,11 +699,58 @@ const RekamanAsesmen = () => {
 
         {/* Grid untuk 4 section dalam layout 2x2 */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0' }}>
-          {renderCheckboxSection(1)}
-          {renderCheckboxSection(2)}
-          {renderCheckboxSection(3)}
-          {renderCheckboxSection(4)}
-        </div>
+  {(apl02?.data?.units || []).map((_, idx) => renderCheckboxSection(idx + 1))}
+</div>
+
+<div style={sectionStyle}>
+  <div style={sectionHeaderStyle}>Rekomendasi dan Catatan Asesor</div>
+  <table style={tableStyle} className="tableStyle">
+    <tbody>
+      <tr style={tableRowStyle}>
+        <td style={{ ...tableCellStyle, width: '12rem', backgroundColor: '#f8f9fa', fontWeight: 'bold' }}>
+          Rekomendasi Hasil
+        </td>
+        <td style={{ ...inputCellStyle, backgroundColor: 'white' }}>
+          <select
+            style={{ ...inputStyle, fontSize: '0.625rem' }}
+            value={formData.rekomendasi}
+            onChange={(e) => handleInputChange('rekomendasi', e.target.value)}
+          >
+            <option value="">-- Pilih Rekomendasi --</option>
+            <option value="kompeten">Kompeten</option>
+            <option value="tidak_kompeten">Tidak Kompeten</option>
+          </select>
+        </td>
+      </tr>
+      <tr style={tableRowStyle}>
+        <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold' }}>
+          Tindak Lanjut
+        </td>
+        <td style={{ ...inputCellStyle, backgroundColor: 'white' }}>
+          <textarea
+            style={{ ...inputStyle, fontSize: '0.625rem', minHeight: '4.5rem', resize: 'vertical' }}
+            value={formData.tindak_lanjut}
+            onChange={(e) => handleInputChange('tindak_lanjut', e.target.value)}
+            placeholder="Tuliskan tindak lanjut..."
+          />
+        </td>
+      </tr>
+      <tr style={tableRowStyle}>
+        <td style={{ ...tableCellStyle, backgroundColor: '#f8f9fa', fontWeight: 'bold' }}>
+          Komentar Asesor
+        </td>
+        <td style={{ ...inputCellStyle, backgroundColor: 'white' }}>
+          <textarea
+            style={{ ...inputStyle, fontSize: '0.625rem', minHeight: '4.5rem', resize: 'vertical' }}
+            value={formData.komentar_asesor}
+            onChange={(e) => handleInputChange('komentar_asesor', e.target.value)}
+            placeholder="Tuliskan komentar asesor..."
+          />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
         {/* Button Container with More Spacing and Rounded Buttons */}
         <div style={buttonContainerStyle}>

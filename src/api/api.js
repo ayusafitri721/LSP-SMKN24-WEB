@@ -178,7 +178,7 @@ export const deleteAssesment = (id) => api.delete(`/assesment/${id}`);
 // Note: backend now scopes routes under /asesi, /assesor, and /user
 export const createAssesmentAsesi = (data) => api.post("/asesi/assesment-asesi", data);
 export const getAssesmentByAsesi = (assesiId) => cachedGet(`/asesi/assesment-asesi/${assesiId}`, { ttl: 20000 });
-export const getAssesmentByAssesor = (assesorId) => cachedGet(`/assesor/assesment-asesi/${assesorId}`, { ttl: 20000 });
+export const getAssesmentByAssesor = () => cachedGet(`/assesment-asesi/`, { ttl: 20000 });
 export const getAssesmentAsesiByUser = (userId) => cachedGet(`/user/assesment-asesi/${userId}`, { ttl: 20000 });
 
 // Status endpoints
