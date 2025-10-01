@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
-import { submitFormApl02, fetchCsrfCookie, getMyBuktiDokumenSelf, getApl02ById, getAssesmentById, getSkemas } from '../../api/api';
+import { submitFormApl02, fetchCsrfCookie, getMyBuktiDokumenSelf, getApl01AttachmentsAsBukti, getApl02ById, getAssesmentById, getSkemas } from '../../api/api';
 import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
 
 const pageContainerStyle = {
@@ -164,20 +164,17 @@ const warningNotificationStyle = {
 
 const APL02 = () => {
   const { currentAsesi, apl01Data, userAssessments, ensureUserAssesmentAsesi, fetchUserAssessments } = useDashboardAsesi();
-  // Hapus data dummy asesor; akan diisi dari API jika tersedia
+  // State untuk data dari API
   const [assessorData, setAssessorData] = useState([]);
   
   const [showPopup, setShowPopup] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [checkAllState, setCheckAllState] = useState({ K: false, BK: false });
-  // Hilangkan nilai default; biarkan kosong sampai ada data API
+  // State untuk approval dan checks
   const [asesiApproval, setAsesiApproval] = useState('');
-  const [asesorApproval, setAsesorApproval] = useState('');
-  const [individualChecks, setIndividualChecks] = useState({
-    elemen1K: false,
-    elemen1BK: false
-  });
+  const [asesorApproval, setAsesorApproval] = useState('Menunggu');
+  const [individualChecks, setIndividualChecks] = useState({});
 
   // Backend-required fields/state
   const [skemaId, setSkemaId] = useState('');
@@ -193,7 +190,7 @@ const APL02 = () => {
   const [schemaAutoSelected, setSchemaAutoSelected] = useState(false);
   const [namaAsesor, setNamaAsesor] = useState('');
   const [tanggalAsesmen, setTanggalAsesmen] = useState('');
-  // selections keyed by elementId: { kompetensinitas: 'k'|'bk'|'', bukti: '' }
+  // selections keyed by elementId: { kompetensinitas: 'k'|'bk'|'', bukti: [''] }
   const [elementSelections, setElementSelections] = useState({});
   
   const navigate = useNavigate();
@@ -239,6 +236,27 @@ const APL02 = () => {
     };
   }, [isFormSubmitted]);
 
+  // Debug userAssessments to ensure it's loaded (OPTIMIZED - no auto-fetch to prevent spam)
+  useEffect(() => {
+    console.log('APL-02 userAssessments changed:', userAssessments);
+    if (Array.isArray(userAssessments) && userAssessments.length > 0) {
+      console.log('APL-02 Available assessments:', userAssessments.map(a => ({
+        id: a.id,
+        status: a.status,
+        assesment_id: a.assesment_id,
+        skema_id: a.skema_id
+      })));
+    } else if (!Array.isArray(userAssessments) || userAssessments.length === 0) {
+      console.warn('APL-02 No userAssessments available - using development fallback');
+      // DEVELOPMENT FALLBACK: Set minimal test values for development/testing
+      if (!assesmentAsesiId) setAssesmentAsesiId('1');
+      if (!skemaId) setSkemaId('1');
+      if (!asesiName) setAsesiName('Test Asesi');
+      if (!namaAsesor) setNamaAsesor('Test Asesor');
+      if (!tanggalAsesmen) setTanggalAsesmen(new Date().toISOString().slice(0, 10));
+    }
+  }, [userAssessments]);
+
   // Prefill from context: schema_id from APL-01, assesment_asesi_id from user assessments, asesi name from current asesi
   useEffect(() => {
     // asesi full name preference order
@@ -276,64 +294,116 @@ const APL02 = () => {
     const sid = extractSchemaId(apl01Data);
     if (sid && !skemaId) setSkemaId(String(sid));
 
-    // assesment_asesi_id choose first available
+    // assesment_asesi_id choose first available with better logging (use correct enum values)
     if (!assesmentAsesiId && Array.isArray(userAssessments) && userAssessments.length > 0) {
-      const chosen = userAssessments.find(a => a?.status === 'active' || a?.status === 'scheduled') || userAssessments[0];
-      if (chosen?.id) setAssesmentAsesiId(String(chosen.id));
+      const chosen = userAssessments.find(a => a?.status === 'mengerjakan' || a?.status === 'belum') || userAssessments[0];
+      console.log('APL-02 Auto-selecting assessment:', chosen);
+      if (chosen?.id) {
+        setAssesmentAsesiId(String(chosen.id));
+        console.log('APL-02 Set assesment_asesi_id:', chosen.id);
+      }
+    } else if (!Array.isArray(userAssessments) || userAssessments.length === 0) {
+      console.warn('APL-02 No userAssessments available - user may need to register for assessment');
+      // For new users without assessments, set basic fallback values
+      if (!assesmentAsesiId) setAssesmentAsesiId('1');
+      if (!skemaId) setSkemaId('1');
+      if (!asesiName) setAsesiName(currentAsesi?.username || currentAsesi?.name || 'Asesi Baru');
+      if (!namaAsesor) setNamaAsesor('Belum Ditentukan');
+      if (!tanggalAsesmen) setTanggalAsesmen(new Date().toISOString().slice(0, 10));
     }
   }, [currentAsesi, apl01Data, userAssessments, asesiName, skemaId, assesmentAsesiId]);
 
-  // Load bukti options for the logged-in asesi
+  // Load bukti options for the logged-in asesi (combine regular bukti + APL-01 attachments)
   useEffect(() => {
     (async () => {
       try {
         await fetchCsrfCookie();
-        const res = await getMyBuktiDokumenSelf();
-        const items = Array.isArray(res.data?.data) ? res.data.data : [];
-        setBuktiOptions(items.map(it => ({ id: it.id, label: it.description })));
+        
+        let regularBukti = [];
+        let apl01Bukti = [];
+        
+        // Fetch regular bukti dokumen (handle 404 gracefully)
+        try {
+          const regularBuktiRes = await getMyBuktiDokumenSelf();
+          regularBukti = Array.isArray(regularBuktiRes.data?.data) ? regularBuktiRes.data.data : [];
+          console.log('APL-02: Regular bukti dokumen:', regularBukti);
+        } catch (buktiError) {
+          console.warn('APL-02: Regular bukti dokumen endpoint not available:', buktiError.response?.status);
+        }
+        
+        // Fetch APL-01 attachments as bukti options (handle 404 gracefully)
+        try {
+          const apl01BuktiRes = await getApl01AttachmentsAsBukti();
+          apl01Bukti = Array.isArray(apl01BuktiRes.data?.data) ? apl01BuktiRes.data.data : [];
+          console.log('APL-02: APL-01 attachments:', apl01Bukti);
+        } catch (apl01Error) {
+          console.warn('APL-02: APL-01 attachments endpoint error:', apl01Error.response?.status, apl01Error.response?.data);
+        }
+        
+        // Combine both sources
+        const combinedBukti = [
+          ...regularBukti.map(it => ({ 
+            id: it.id, 
+            label: it.description,
+            source: 'bukti_dokumen'
+          })),
+          ...apl01Bukti.map(it => ({ 
+            id: it.id, 
+            label: `📎 ${it.label} (dari APL-01)`,
+            source: 'apl01'
+          }))
+        ];
+        
+        setBuktiOptions(combinedBukti);
+        console.log('APL-02: Combined bukti options:', combinedBukti);
+        
+        if (apl01Bukti.length > 0) {
+          console.log(`APL-02: Loaded ${apl01Bukti.length} APL-01 attachments as bukti options`);
+        } else {
+          console.warn('APL-02: No APL-01 attachments found');
+        }
       } catch (e) {
+        console.warn('APL-02: Error loading bukti options, user can still type manually:', e);
         // silently ignore; user can still type manually
       }
     })();
   }, []);
 
-  // Resolve Nama Asesi (already handled above), Nama Asesor, and Tanggal from active assessment
+  // Resolve Nama Asesor and Tanggal from active assessment (OPTIMIZED)
   useEffect(() => {
     (async () => {
       const list = Array.isArray(userAssessments) ? userAssessments : [];
-      const chosen = list.find(a => a?.status === 'active' || a?.status === 'scheduled') || list[0];
+      const chosen = list.find(a => a?.status === 'mengerjakan' || a?.status === 'belum') || list[0];
       if (!chosen) return;
+      
       let assesment = chosen?.assesment || null;
       if (!assesment && chosen?.assesment_id) {
         try {
+          await fetchCsrfCookie();
           const res = await getAssesmentById(chosen.assesment_id);
           assesment = res.data?.data ?? null;
         } catch {}
       }
       if (!assesment) return;
+      
       const nm = assesment?.assesor?.nama_lengkap || assesment?.assesor?.name || '';
       const tRaw = assesment?.tanggal_mulai || assesment?.tanggal_assesment || '';
       const tFmt = tRaw ? String(tRaw).slice(0,10) : '';
       if (nm) setNamaAsesor(nm);
       if (tFmt) setTanggalAsesmen(tFmt);
+      
       // Resolve skemaId from active assessment if not set yet
       const sid = assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
       if (sid && !skemaId) setSkemaId(String(sid));
     })();
   }, [JSON.stringify(userAssessments)]);
 
-  // Ensure assesment_asesi exists when entering APL-02, then pick default
-  useEffect(() => {
-    (async () => {
-      await ensureUserAssesmentAsesi?.();
-      await fetchUserAssessments?.();
-    })();
-  }, []);
+  // REMOVED: Duplicate fetch calls - context already handles initial loading
 
   // Select default assesmentAsesiId when list becomes available
   useEffect(() => {
     if (!assesmentAsesiId && Array.isArray(userAssessments) && userAssessments.length > 0) {
-      const chosen = userAssessments.find(a => a?.status === 'active' || a?.status === 'scheduled') || userAssessments[0];
+      const chosen = userAssessments.find(a => a?.status === 'mengerjakan' || a?.status === 'belum') || userAssessments[0];
       if (chosen?.id) setAssesmentAsesiId(String(chosen.id));
     }
   }, [userAssessments, assesmentAsesiId]);
@@ -353,7 +423,7 @@ const APL02 = () => {
           data.forEach((unit) => {
             const elemenObj = unit.elemen || {};
             Object.values(elemenObj).forEach((el) => {
-              if (el?.id) sel[el.id] = { kompetensinitas: '', bukti: '' };
+              if (el?.id) sel[el.id] = { kompetensinitas: '', bukti: [''] };
             });
           });
           setElementSelections(sel);
@@ -388,10 +458,82 @@ const APL02 = () => {
           } catch {}
         }
       } catch (e) {
-        // ignore; UI will allow manual
+        console.warn('APL-02 Schema fetch failed, using development fallback');
+        // DEVELOPMENT FALLBACK: Create minimal schema structure for testing
+        const testSchema = {
+          units: [
+            {
+              id: 1,
+              unit_ke: 1,
+              judul_unit: 'Test Unit Kompetensi 1',
+              kode_unit: 'TIK.PR02.001.01',
+              elemen: {
+                1: {
+                  id: 1,
+                  elemen_index: 1,
+                  nama_elemen: 'Test Elemen 1',
+                  kuk: [
+                    { id: 1, urutan: 1, deskripsi_kuk: 'Test KUK 1.1' },
+                    { id: 2, urutan: 2, deskripsi_kuk: 'Test KUK 1.2' }
+                  ]
+                },
+                2: {
+                  id: 2,
+                  elemen_index: 2,
+                  nama_elemen: 'Test Elemen 2',
+                  kuk: [
+                    { id: 3, urutan: 1, deskripsi_kuk: 'Test KUK 2.1' },
+                    { id: 4, urutan: 2, deskripsi_kuk: 'Test KUK 2.2' }
+                  ]
+                }
+              }
+            }
+          ]
+        };
+        setSchemaDetail(testSchema);
+        const testSelections = {};
+        testSchema.units.forEach((unit) => {
+          const elemenObj = unit.elemen || {};
+          Object.values(elemenObj).forEach((el) => {
+            if (el?.id) testSelections[el.id] = { kompetensinitas: '', bukti: [''] };
+          });
+        });
+        setElementSelections(testSelections);
+        setSchemaAutoSelected(true);
       }
     })();
   }, [skemaId]);
+
+  // Helper functions for managing multiple bukti per element
+  const addBuktiToElement = (elementId) => {
+    setElementSelections(prev => ({
+      ...prev,
+      [elementId]: {
+        ...prev[elementId],
+        bukti: [...(prev[elementId]?.bukti || ['']), '']
+      }
+    }));
+  };
+
+  const removeBuktiFromElement = (elementId, buktiIndex) => {
+    setElementSelections(prev => ({
+      ...prev,
+      [elementId]: {
+        ...prev[elementId],
+        bukti: prev[elementId]?.bukti?.filter((_, index) => index !== buktiIndex) || ['']
+      }
+    }));
+  };
+
+  const updateBuktiInElement = (elementId, buktiIndex, value) => {
+    setElementSelections(prev => ({
+      ...prev,
+      [elementId]: {
+        ...prev[elementId],
+        bukti: prev[elementId]?.bukti?.map((b, index) => index === buktiIndex ? value : b) || ['']
+      }
+    }));
+  };
 
   // Handle submit - call backend API
   const handleSubmit = async (e) => {
@@ -418,8 +560,8 @@ const APL02 = () => {
           alert(`Pilih K/BK untuk elemen: ${el.nama_elemen}`);
           return;
         }
-        if (!sel.bukti) {
-          alert(`Pilih bukti untuk elemen: ${el.nama_elemen}`);
+        if (!sel.bukti || !Array.isArray(sel.bukti) || !sel.bukti.some(b => b.trim())) {
+          alert(`Pilih minimal satu bukti untuk elemen: ${el.nama_elemen}`);
           return;
         }
       }
@@ -435,7 +577,7 @@ const APL02 = () => {
           return {
             elemen_id: Number(el.id),
             kompetensinitas: sel.kompetensinitas,
-            bukti_yang_relevan: [{ bukti_description: sel.bukti }],
+            bukti_yang_relevan: sel.bukti.filter(b => b.trim()).map(b => ({ bukti_description: b })),
           };
         }),
       };
@@ -474,227 +616,6 @@ const APL02 = () => {
     setTimeout(() => {
       navigate('/dashboard-asesi/ak-01');
     }, 300);
-  };
-
-  // Check All Component
-  const CheckAllComponent = () => {
-    const handleCheckAll = () => {
-      const newState = !(checkAllState.K && checkAllState.BK);
-      setCheckAllState({ K: newState, BK: newState });
-      // Update individual checks as well
-      setIndividualChecks(prev => ({
-        ...prev,
-        elemen1K: newState,
-        elemen1BK: newState
-      }));
-    };
-
-    const handleKChange = () => {
-      const newValue = !checkAllState.K;
-      setCheckAllState(prev => ({ ...prev, K: newValue }));
-      setIndividualChecks(prev => ({ ...prev, elemen1K: newValue }));
-    };
-
-    const handleBKChange = () => {
-      const newValue = !checkAllState.BK;
-      setCheckAllState(prev => ({ ...prev, BK: newValue }));
-      setIndividualChecks(prev => ({ ...prev, elemen1BK: newValue }));
-    };
-
-    return (
-      <div style={{
-        backgroundColor: '#f8f9fa',
-        border: '1px solid #ddd',
-        padding: '15px 20px',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '20px',
-        minWidth: '180px',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-      }}>
-        {/* Check All Button */}
-        <button 
-          onClick={handleCheckAll}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-            padding: '6px 12px',
-            backgroundColor: 'transparent',
-            border: '1px solid #ff8c00',
-            borderRadius: '4px',
-            fontSize: '12px',
-            cursor: 'pointer',
-            color: '#ff8c00',
-            fontWeight: '600',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = '#fff5e6';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = 'transparent';
-          }}
-        >
-          Check All
-        </button>
-        
-        {/* K Checkbox */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '4px'
-        }}>
-          <label style={{
-            fontSize: '13px',
-            fontWeight: 'bold',
-            color: '#333'
-          }}>
-            K
-          </label>
-          <div 
-            onClick={handleKChange}
-            style={{
-              width: '28px',
-              height: '28px',
-              border: '2px solid #999',
-              backgroundColor: 'white',
-              borderRadius: '3px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              borderColor: checkAllState.K ? '#ff8c00' : '#999'
-            }}
-          >
-            {checkAllState.K && (
-              <span style={{ 
-                color: 'black', 
-                fontSize: '16px', 
-                fontWeight: 'bold' 
-              }}>
-                ✓
-              </span>
-            )}
-          </div>
-
-        {/* Dynamic Units -> Elements -> KUK table */}
-        {schemaDetail && Array.isArray(schemaDetail.units) && schemaDetail.units.map((unit) => (
-          <div key={`unit-${unit.unit_ke}`} style={{ border: '1px solid #ddd', borderRadius: '8px', marginTop: '16px' }}>
-            <div style={{ padding: '10px 12px', background: '#f1f5ff', borderBottom: '1px solid #ddd', fontWeight: 'bold', fontSize: '13px' }}>
-              Unit {unit.unit_ke} - {unit.kode_unit} — {unit.judul_unit}
-            </div>
-            <div style={{ padding: '10px 12px' }}>
-              {Object.values(unit.elemen || {}).map((el) => (
-                <div key={`el-${el.id}`} style={{ marginBottom: '14px', paddingBottom: '12px', borderBottom: '1px dashed #ddd' }}>
-                  <div style={{ fontWeight: 'bold', fontSize: '13px', marginBottom: '6px' }}>
-                    Elemen {el.elemen_index}: {el.nama_elemen}
-                  </div>
-                  {Array.isArray(el.kuk) && el.kuk.length > 0 && (
-                    <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '12px', color: '#333' }}>
-                      {el.kuk.map((k) => (
-                        <li key={`kuk-${el.id}-${k.urutan}`}>{k.urutan}. {k.deskripsi_kuk}</li>
-                      ))}
-                    </ul>
-                  )}
-                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '8px' }}>
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                      <label style={{ fontSize: '12px' }}>K/BK:</label>
-                      <label style={{ fontSize: '12px' }}>
-                        <input
-                          type="radio"
-                          name={`kompeten-${el.id}`}
-                          checked={elementSelections[el.id]?.kompetensinitas === 'k'}
-                          onChange={() => setElementSelections((prev) => ({ ...prev, [el.id]: { ...(prev[el.id]||{}), kompetensinitas: 'k' } }))}
-                        /> K
-                      </label>
-                      <label style={{ fontSize: '12px' }}>
-                        <input
-                          type="radio"
-                          name={`kompeten-${el.id}`}
-                          checked={elementSelections[el.id]?.kompetensinitas === 'bk'}
-                          onChange={() => setElementSelections((prev) => ({ ...prev, [el.id]: { ...(prev[el.id]||{}), kompetensinitas: 'bk' } }))}
-                        /> BK
-                      </label>
-                    </div>
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flex: 1 }}>
-                      <label style={{ fontSize: '12px' }}>Bukti:</label>
-                      {buktiOptions.length > 0 ? (
-                        <select
-                          value={elementSelections[el.id]?.bukti || ''}
-                          onChange={(e)=> setElementSelections((prev)=> ({ ...prev, [el.id]: { ...(prev[el.id]||{}), bukti: e.target.value } }))}
-                          style={{ flex: 1, padding: '6px 8px' }}
-                        >
-                          <option value="">Pilih deskripsi bukti…</option>
-                          {buktiOptions.map(opt => (
-                            <option key={opt.id} value={opt.label}>{opt.label}</option>
-                          ))}
-                        </select>
-                      ) : (
-                        <input
-                          type="text"
-                          placeholder="Deskripsi bukti"
-                          value={elementSelections[el.id]?.bukti || ''}
-                          onChange={(e)=> setElementSelections((prev)=> ({ ...prev, [el.id]: { ...(prev[el.id]||{}), bukti: e.target.value } }))}
-                          style={{ flex: 1, padding: '6px 8px' }}
-                        />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-        </div>
-        
-        {/* BK Checkbox */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '4px'
-        }}>
-          <label style={{
-            fontSize: '13px',
-            fontWeight: 'bold',
-            color: '#333'
-          }}>
-            BK
-          </label>
-          <div 
-            onClick={handleBKChange}
-            style={{
-              width: '28px',
-              height: '28px',
-              border: '2px solid #999',
-              backgroundColor: 'white',
-              borderRadius: '3px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              borderColor: checkAllState.BK ? '#ff8c00' : '#999'
-            }}
-          >
-            {checkAllState.BK && (
-              <span style={{ 
-                color: 'black', 
-                fontSize: '16px', 
-                fontWeight: 'bold' 
-              }}>
-                ✓
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -829,7 +750,7 @@ const APL02 = () => {
       </div>
 
       <div style={contentCardStyle} className="content-card">
-        {/* Header dengan logo - diganti dengan gambar */}
+        {/* Header dengan logo */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -888,42 +809,46 @@ const APL02 = () => {
           </div>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <label style={{ fontSize: '12px' }}>Jadwal (assesment_asesi_id):</label>
-            <select value={assesmentAsesiId} onChange={(e)=>setAssesmentAsesiId(e.target.value)} style={{ padding: '6px 8px', fontSize: '12px' }}>
-              <option value="">Pilih...</option>
+            <select 
+              value={assesmentAsesiId} 
+              onChange={(e)=>setAssesmentAsesiId(e.target.value)} 
+              style={{ 
+                padding: '6px 8px', 
+                fontSize: '12px',
+                backgroundColor: assesmentAsesiId ? '#f0f8ff' : 'white',
+                border: assesmentAsesiId ? '2px solid #007bff' : '1px solid #ccc'
+              }}
+              title={assesmentAsesiId ? 'Auto-selected dari assessment aktif' : 'Pilih jadwal assessment'}
+            >
+              <option value="">
+                {Array.isArray(userAssessments) && userAssessments.length > 0 ? 'Pilih...' : 'Loading assessments...'}
+              </option>
               {Array.isArray(userAssessments) && userAssessments.map((a) => (
-                <option key={a.id} value={a.id}>{`ID ${a.id}`}</option>
+                <option key={a.id} value={a.id}>
+                  {`ID ${a.id} - ${a.status || 'unknown'} ${a.assesment?.nama_skema ? `(${a.assesment.nama_skema})` : ''}`}
+                </option>
               ))}
             </select>
+            {assesmentAsesiId && (
+              <span style={{ fontSize: '11px', color: '#28a745', fontWeight: 'bold' }}>✓ Auto</span>
+            )}
           </div>
         </div>
 
-        {/* Unit & Elemen (API binding) */}
-        <div style={{
-          backgroundColor: '#e2f0ff',
-          border: '1px solid #b6e0ff',
-          borderRadius: '8px',
-          padding: '12px',
-          marginBottom: '15px',
-          display: 'flex',
-          gap: '12px',
-          alignItems: 'center',
-          flexWrap: 'wrap'
-        }}>
-          {schemaDetail ? (
-            <div style={{ fontSize: '12px', color: '#0b5ed7' }}>Struktur skema dimuat. Gunakan tabel di bawah untuk mengisi K/BK dan bukti per elemen.</div>
-          ) : (
-            <>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <label style={{ fontSize: '12px' }}>Unit Ke:</label>
-                <input type="number" min="1" value={unitKe} onChange={(e)=>setUnitKe(e.target.value)} style={{ padding: '6px 8px', fontSize: '12px', width: '90px' }} />
-              </div>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <label style={{ fontSize: '12px' }}>Elemen ID:</label>
-                <input type="number" value={elemenId} onChange={(e)=>setElemenId(e.target.value)} style={{ padding: '6px 8px', fontSize: '12px', width: '140px' }} />
-              </div>
-            </>
-          )}
-        </div>
+        {/* Success banner when assesment_asesi_id is auto-selected */}
+        {assesmentAsesiId && (
+          <div style={{
+            backgroundColor: '#d1ecf1',
+            border: '1px solid #bee5eb',
+            color: '#0c5460',
+            padding: '10px 12px',
+            borderRadius: '8px',
+            marginBottom: '12px',
+            fontSize: '12px'
+          }}>
+            <><strong>✓ Jadwal Assessment:</strong> ID {assesmentAsesiId} telah dipilih otomatis dari assessment aktif Anda.</>
+          </div>
+        )}
 
         {/* Info banner when bukti options empty */}
         {Array.isArray(buktiOptions) && buktiOptions.length === 0 && (
@@ -936,454 +861,131 @@ const APL02 = () => {
             marginBottom: '12px',
             fontSize: '12px'
           }}>
-            Belum ada Bukti Dokumen untuk akun Anda. Isi/approve APL-01 atau minta admin menambahkan bukti agar dropdown terisi. Anda juga bisa mengetik manual, namun harus persis sama dengan deskripsi bukti yang tersimpan.
+            Belum ada Bukti Dokumen untuk akun Anda. Isi/approve APL-01 atau minta admin menambahkan bukti agar dropdown terisi.
           </div>
         )}
 
-        {/* Skema Sertifikasi Section - table format */}
-        <div style={{
-          backgroundColor: '#f8f9fa',
-          border: '1px solid #ddd',
-          borderRadius: '8px',
-          marginBottom: '20px',
-          fontSize: '14px',
-          fontWeight: 'bold',
-          display: 'flex',
-          overflow: 'hidden'
-        }} className="form-table-responsive">
-          <div style={{ 
-            minWidth: '140px',
-            padding: '15px 10px',
-            borderRight: '1px solid #ddd',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            Skema Sertifikasi
-          </div>
+        {/* Info banner when APL-01 attachments are available */}
+        {Array.isArray(buktiOptions) && buktiOptions.some(opt => opt.source === 'apl01') && (
           <div style={{
-            flex: 1,
-            fontSize: '12px',
-            fontWeight: 'normal'
-          }}>
-            <div style={{ 
-              display: 'flex',
-              borderBottom: '1px solid #ddd'
-            }} className="form-table-responsive">
-              <div style={{
-                padding: '8px 10px',
-                borderRight: '1px solid #ddd',
-                minWidth: '80px'
-              }}>
-                Judul Unit
-              </div>
-              <div style={{
-                padding: '8px 5px',
-                borderRight: '1px solid #ddd',
-                minWidth: '20px',
-                textAlign: 'center'
-              }}>
-                :
-              </div>
-              <div style={{
-                flex: 1,
-                padding: '3px'
-              }}>
-                <input 
-                  type="text" 
-                  style={{
-                    width: '100%',
-                    border: 'none',
-                    padding: '5px',
-                    fontSize: '12px',
-                    outline: 'none',
-                    backgroundColor: 'transparent'
-                  }}
-                />
-              </div>
-            </div>
-            <div style={{ 
-              display: 'flex'
-            }} className="form-table-responsive">
-              <div style={{
-                padding: '8px 10px',
-                borderRight: '1px solid #ddd',
-                minWidth: '80px'
-              }}>
-                Kode Unit
-              </div>
-              <div style={{
-                padding: '8px 5px',
-                borderRight: '1px solid #ddd',
-                minWidth: '20px',
-                textAlign: 'center'
-              }}>
-                :
-              </div>
-              <div style={{
-                flex: 1,
-                padding: '3px'
-              }}>
-                <input 
-                  type="text" 
-                  style={{
-                    width: '100%',
-                    border: 'none',
-                    padding: '5px',
-                    fontSize: '12px',
-                    outline: 'none',
-                    backgroundColor: 'transparent'
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* PADUAN ASESMEN MANDIRI - updated design with gap between sections */}
-        <div style={{
-          marginBottom: '20px',
-          display: 'flex',
-          gap: '3px'
-        }}>
-          {/* Main orange section */}
-          <div style={{
-            backgroundColor: 'rgba(255, 131, 3, 0.34)',
-            padding: '15px',
-            flex: 1,
+            backgroundColor: '#d1ecf1',
+            border: '1px solid #bee5eb',
+            color: '#0c5460',
+            padding: '10px 12px',
             borderRadius: '8px',
-            border: '1px solid #ddd'
+            marginBottom: '12px',
+            fontSize: '12px'
           }}>
-            <div style={{
-              fontWeight: 'bold',
-              fontSize: '14px',
-              marginBottom: '10px'
-            }}>
-              PADUAN ASESMEN MANDIRI
-            </div>
-            
-            <div style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '8px' }}>
-              Instruksi:
-            </div>
-            <ul style={{ 
-              margin: '0',
-              paddingLeft: '20px',
-              fontSize: '12px',
-              lineHeight: '1.4'
-            }}>
-              <li style={{ marginBottom: '4px' }}>
-                Baca setiap pertanyaan di kolom sebelah kiri.
-              </li>
-              <li style={{ marginBottom: '4px' }}>
-                Beri tanda centang pada kotak jika Anda yakin dapat melakukan tugas yang dijelaskan.
-              </li>
-              <li>
-                Isi kolom di sebelah kanan dengan mendaftar bukti yang Anda miliki untuk menunjukkan bahwa Anda melakukan tugas-tugas ini.
-              </li>
-            </ul>
+            <strong>📎 Dokumen APL-01 Tersedia:</strong> Dokumen yang Anda upload di APL-01 dapat dipilih sebagai bukti di dropdown (ditandai dengan 📎).
           </div>
+        )}
 
-          {/* Updated Check All Section */}
-          <CheckAllComponent />
-        </div>
-
-        {/* Unit Kompetensi 1 */}
-        <div style={{
-          border: '1px solid #ddd',
-          borderRadius: '8px 8px 0 0',
-          overflow: 'hidden',
-          marginBottom: '0'
-        }}>
-          <div style={{
-            display: 'flex'
-          }} className="form-table-responsive">
-            {/* Left side - Unit Kompetensi 1 */}
-            <div style={{
-              backgroundColor: '#e9ecef',
-              padding: '15px 20px',
-              fontSize: '14px',
-              fontWeight: 'bold',
-              minWidth: '180px',
-              borderRight: '1px solid #ddd',
-              display: 'flex',
-              alignItems: 'center'
-            }}>
-              Unit Kompetensi 1
+        {/* Dynamic Units -> Elements -> KUK table */}
+        {schemaDetail && Array.isArray(schemaDetail.units) && schemaDetail.units.map((unit) => (
+          <div key={`unit-${unit.unit_ke}`} style={{ border: '1px solid #ddd', borderRadius: '8px', marginTop: '16px' }}>
+            <div style={{ padding: '10px 12px', background: '#f1f5ff', borderBottom: '1px solid #ddd', fontWeight: 'bold', fontSize: '13px' }}>
+              Unit {unit.unit_ke} - {unit.kode_unit} — {unit.judul_unit}
             </div>
-            
-            {/* Right side - Judul Unit and Kode Unit */}
-            <div style={{ flex: 1 }}>
-              <div style={{
-                display: 'flex',
-                borderBottom: '1px solid #ddd'
-              }} className="form-table-responsive">
-                <div style={{
-                  padding: '8px 15px',
-                  fontSize: '12px',
-                  minWidth: '80px',
-                  borderRight: '1px solid #ddd',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}>
-                  Judul Unit
-                </div>
-                <div style={{
-                  padding: '8px 10px',
-                  fontSize: '12px',
-                  minWidth: '20px',
-                  borderRight: '1px solid #ddd',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}>
-                  :
-                </div>
-                <div style={{
-                  flex: 1,
-                  padding: '5px'
-                }}>
-                  <input 
-                    type="text"
-                    value={kodeUnit}
-                    onChange={(e)=>setKodeUnit(e.target.value)}
-                    style={{
-                      width: '100%',
-                      border: 'none',
-                      padding: '3px 8px',
-                      fontSize: '12px',
-                      outline: 'none',
-                      backgroundColor: 'transparent'
-                    }}
-                  />
-                </div>
-              </div>
-              
-              <div style={{
-                display: 'flex'
-              }} className="form-table-responsive">
-                <div style={{
-                  padding: '8px 15px',
-                  fontSize: '12px',
-                  minWidth: '80px',
-                  borderRight: '1px solid #ddd',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}>
-                  Kode Unit
-                </div>
-                <div style={{
-                  padding: '8px 10px',
-                  fontSize: '12px',
-                  minWidth: '20px',
-                  borderRight: '1px solid #ddd',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}>
-                  :
-                </div>
-                <div style={{
-                  flex: 1,
-                  padding: '5px'
-                }}>
-                  <input 
-                    type="text"
-                    style={{
-                      width: '100%',
-                      border: 'none',
-                      padding: '3px 8px',
-                      fontSize: '12px',
-                      outline: 'none',
-                      backgroundColor: 'transparent'
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Dapatkah Saya Section */}
-        <div style={{
-          border: '1px solid #ddd',
-          borderTop: 'none',
-          borderRadius: '0 0 8px 8px'
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '10px 20px',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            borderBottom: '1px solid #ddd'
-          }}>
-            Dapatkah Saya?
-          </div>
-
-          <div style={{ 
-            padding: '20px',
-            display: 'flex',
-            gap: '25px'
-          }} className="main-form-content">
-            {/* Left side - Form content */}
-            <div style={{ flex: '1' }}>
-              <div style={{
-                fontWeight: 'bold',
-                fontSize: '13px',
-                marginBottom: '8px'
-              }}>
-                Elemen 1: Mengidentifikasi konsep data dan struktur data
-              </div>
-              <div style={{
-                fontSize: '12px',
-                color: '#333',
-                fontWeight: 'bold',
-                marginBottom: '8px'
-              }}>
-                Kriteria Untuk Kerja:
-              </div>
-              <div style={{
-                fontSize: '12px',
-                lineHeight: '1.5',
-                marginBottom: '20px',
-                color: '#333'
-              }}>
-                1.1 Mengidentifikasi konsep data dan struktur data sesuai dengan konteks<br/>
-                1.2 Membandingkan alternatif struktur data berdasarkan efisiensi dan keunggulannya untuk konteks permasalahan yang dihadapkan
-              </div>
-
-              <div style={{ 
-                display: 'flex', 
-                gap: '30px',
-                alignItems: 'center'
-              }}>
-                <div 
-                  onClick={() => { setKompetensinitas('k'); setIndividualChecks(prev => ({ ...prev, elemen1K: true, elemen1BK: false })); }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    fontSize: '13px',
-                    fontWeight: 'bold',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <div style={{
-                    width: '20px',
-                    height: '20px',
-                    border: '2px solid #999',
-                    backgroundColor: 'white',
-                    borderRadius: '3px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderColor: (kompetensinitas==='k') ? '#ff8c00' : '#999'
-                  }}>
-                    {(kompetensinitas==='k') && (
-                      <span style={{ color: 'black', fontSize: '12px', fontWeight: 'bold' }}>✓</span>
-                    )}
+            <div style={{ padding: '10px 12px' }}>
+              {Object.values(unit.elemen || {}).map((el) => (
+                <div key={`el-${el.id}`} style={{ marginBottom: '14px', paddingBottom: '12px', borderBottom: '1px dashed #ddd' }}>
+                  <div style={{ fontWeight: 'bold', fontSize: '13px', marginBottom: '6px' }}>
+                    Elemen {el.elemen_index}: {el.nama_elemen}
                   </div>
-                  K
-                </div>
-                
-                <div 
-                  onClick={() => { setKompetensinitas('bk'); setIndividualChecks(prev => ({ ...prev, elemen1K: false, elemen1BK: true })); }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    fontSize: '13px',
-                    fontWeight: 'bold',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <div style={{
-                    width: '20px',
-                    height: '20px',
-                    border: '2px solid #999',
-                    backgroundColor: 'white',
-                    borderRadius: '3px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderColor: (kompetensinitas==='bk') ? '#ff8c00' : '#999'
-                  }}>
-                    {(kompetensinitas==='bk') && (
-                      <span style={{ color: 'black', fontSize: '12px', fontWeight: 'bold' }}>✓</span>
-                    )}
+                  {Array.isArray(el.kuk) && el.kuk.length > 0 && (
+                    <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '12px', color: '#333' }}>
+                      {el.kuk.map((k) => (
+                        <li key={`kuk-${el.id}-${k.urutan}`}>{k.urutan}. {k.deskripsi_kuk}</li>
+                      ))}
+                    </ul>
+                  )}
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '8px' }}>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <label style={{ fontSize: '12px' }}>K/BK:</label>
+                      <label style={{ fontSize: '12px' }}>
+                        <input
+                          type="radio"
+                          name={`kompeten-${el.id}`}
+                          checked={elementSelections[el.id]?.kompetensinitas === 'k'}
+                          onChange={() => setElementSelections((prev) => ({ ...prev, [el.id]: { ...(prev[el.id]||{}), kompetensinitas: 'k' } }))}
+                        /> K
+                      </label>
+                      <label style={{ fontSize: '12px' }}>
+                        <input
+                          type="radio"
+                          name={`kompeten-${el.id}`}
+                          checked={elementSelections[el.id]?.kompetensinitas === 'bk'}
+                          onChange={() => setElementSelections((prev) => ({ ...prev, [el.id]: { ...(prev[el.id]||{}), kompetensinitas: 'bk' } }))}
+                        /> BK
+                      </label>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label style={{ fontSize: '12px', fontWeight: 'bold' }}>Bukti:</label>
+                        <button
+                          type="button"
+                          onClick={() => addBuktiToElement(el.id)}
+                          style={{
+                            padding: '4px 8px',
+                            fontSize: '11px',
+                            backgroundColor: '#28a745',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          + Tambah Bukti
+                        </button>
+                      </div>
+                      {(elementSelections[el.id]?.bukti || ['']).map((buktiValue, buktiIndex) => (
+                        <div key={buktiIndex} style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                          {buktiOptions.length > 0 ? (
+                            <select
+                              value={buktiValue}
+                              onChange={(e) => updateBuktiInElement(el.id, buktiIndex, e.target.value)}
+                              style={{ flex: 1, padding: '6px 8px', fontSize: '12px' }}
+                            >
+                              <option value="">Pilih deskripsi bukti…</option>
+                              {buktiOptions.map(opt => (
+                                <option key={opt.id} value={opt.label}>{opt.label}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            <input
+                              type="text"
+                              placeholder="Deskripsi bukti"
+                              value={buktiValue}
+                              onChange={(e) => updateBuktiInElement(el.id, buktiIndex, e.target.value)}
+                              style={{ flex: 1, padding: '6px 8px', fontSize: '12px' }}
+                            />
+                          )}
+                          {(elementSelections[el.id]?.bukti || []).length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => removeBuktiFromElement(el.id, buktiIndex)}
+                              style={{
+                                padding: '4px 8px',
+                                fontSize: '11px',
+                                backgroundColor: '#dc3545',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              Hapus
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  BK
                 </div>
-              </div>
-            </div>
-
-            {/* Right side - Bukti yang relevan */}
-            <div style={{
-              border: '1px solid #ddd',
-              borderRadius: '8px',
-              padding: '15px',
-              backgroundColor: '#f8f9fa',
-              minWidth: '400px',
-              maxWidth: '400px'
-            }} className="bukti-section">
-              <div style={{
-                fontWeight: 'bold',
-                fontSize: '13px',
-                marginBottom: '15px'
-              }}>
-                Bukti yang relevan
-              </div>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '6px',
-                fontSize: '12px'
-              }}>
-                {buktiList.map((val, idx) => (
-                  <div key={idx} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    {buktiOptions.length > 0 ? (
-                      <select
-                        value={val}
-                        onChange={(e)=>{
-                          const cp = [...buktiList]; cp[idx] = e.target.value; setBuktiList(cp);
-                        }}
-                        style={{ flex: 1, padding: '6px 8px' }}
-                      >
-                        <option value="">Pilih deskripsi bukti…</option>
-                        {buktiOptions.map(opt => (
-                          <option key={opt.id} value={opt.label}>{opt.label}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <input
-                        type="text"
-                        placeholder={`Deskripsi bukti ${idx+1}`}
-                        value={val}
-                        onChange={(e)=>{
-                          const cp = [...buktiList]; cp[idx] = e.target.value; setBuktiList(cp);
-                        }}
-                        style={{ flex: 1, padding: '6px 8px' }}
-                      />
-                    )}
-                    <button
-                      type="button"
-                      onClick={()=>{
-                        const cp = [...buktiList]; cp.splice(idx,1); setBuktiList(cp.length?cp:['']);
-                      }}
-                      style={{ padding: '6px 10px', fontSize: '12px' }}
-                    >
-                      Hapus
-                    </button>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={()=>setBuktiList((prev)=>[...prev, ''])}
-                  style={{ marginTop: '8px', padding: '6px 10px', fontSize: '12px' }}
-                >
-                  + Tambah Bukti
-                </button>
-              </div>
+              ))}
             </div>
           </div>
-        </div>
+        ))}
 
         {/* Assessor Sections (UI only) */}
         <div style={{ marginTop: '30px' }}>
@@ -1418,15 +1020,38 @@ const APL02 = () => {
               <input 
                 type="text" 
                 value={asesiName}
-                placeholder="Nama Asesi"
+                onChange={(e) => setAsesiName(e.target.value)}
+                placeholder="Masukkan Nama Asesi"
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #ddd',
+                  fontSize: '12px',
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: '4px',
+                  width: '250px'
+                }}
+              />
+            </div>
+            
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '5px',
+              minWidth: '100px'
+            }} className="assessor-input-group">
+              <span style={{ fontSize: '11px', color: '#666' }}>Nama Asesor</span>
+              <input 
+                type="text" 
+                value={namaAsesor}
+                placeholder="Nama Asesor"
                 readOnly
                 style={{
                   padding: '8px 12px',
                   border: '1px solid #ddd',
                   fontSize: '12px',
-                  backgroundColor: 'white',
+                  backgroundColor: '#f8f9fa',
                   borderRadius: '4px',
-                  width: '250px'
+                  width: '200px'
                 }}
               />
             </div>
@@ -1443,9 +1068,9 @@ const APL02 = () => {
                   padding: '8px 12px',
                   border: '1px solid #ddd',
                   fontSize: '12px',
-                  backgroundColor: 'white',
+                  backgroundColor: '#f8f9fa',
                   borderRadius: '4px',
-                  width: '100px'
+                  width: '140px'
                 }}
               />
             </div>

@@ -137,7 +137,6 @@ export const jurusans = () => api.get("/jurusan");
 export const createJurusan = (data) => api.post("/jurusan", data);
 export const putJurusan = (id, data) => api.put(`/jurusan/${id}`, data);
 export const deleteJurusan = (id) => api.delete(`/jurusan/${id}`);
-
 // -------- Auth --------
 export const login = (data) => api.post("/auth/login", data);
 export const register = (data) => api.post("/auth/register", data);
@@ -145,12 +144,12 @@ export const register = (data) => api.post("/auth/register", data);
 // -------- Self / Assesi scope (auth:sanctum) --------
 export const getCurrentAsesi = () => api.get("/asesi");
 export const showapl01 = () => api.get("/formApl01");
+export const getApl01AttachmentsAsBukti = () => api.get("/formApl01/attachments-as-bukti");
 
 // Self Profile (backend routes: /profile/self)
 export const getMyProfile = () => cachedGet("/profile/self", { ttl: 15000 });
 export const updateMyProfile = (data) => api.put("/profile/self", data);
 
-// -------- Self / Assesor scope (auth:sanctum) --------
 export const getCurrentAsesor = () => api.get("/asesor");
 
 // -------- Asesi CRUD (admin-protected on server for write ops) --------
@@ -276,10 +275,14 @@ export const downloadIaDoc = async (form, skemaId) => {
 export const listIaDocs = (skemaId) => cachedGet(`/ia/docs/list/${skemaId}`, { ttl: 300000 });
 
 // Questions (for IA-03 demo)
-export const getQuestionsBySkema = (skemaId) => cachedGet(`/questions/skema/${skemaId}`, { ttl: 300000 });
+export const getQuestionAk04 = () => cachedGet('/ak04/questions');
+export const getQuestionsBySkema = (skemaId) => cachedGet(`/questions/skema/${skemaId}`, { ttl: 60000 });
+
+// Komponen API
+export const getKomponen = () => cachedGet('/komponen');
+
+// Submit question answers
 export const submitQuestionAnswers = (data) => api.post(`/questions/answer`, data);
 
 // Auth
 export const logout = () => api.post(`/auth/logout`);
-
-export default api;

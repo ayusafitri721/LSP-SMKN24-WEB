@@ -275,29 +275,6 @@ function DashboardAsesi() {
           >
             {currentAsesiData ? (
               <>
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: "#666",
-                    margin: "0",
-                    lineHeight: "1.5",
-                    fontWeight: "500",
-                  }}
-                >
-                  Alamat: {currentAsesiData.alamat || "Alamat tidak tersedia"}
-                </p>
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: "#666",
-                    margin: "0",
-                    lineHeight: "1.5",
-                    fontWeight: "500",
-                  }}
-                >
-                  Jenis Kelamin:{" "}
-                  {currentAsesiData.jenis_kelamin || "Tidak diketahui"}
-                </p>
                 <button
                   style={{
                     backgroundColor: "#4CAF50",

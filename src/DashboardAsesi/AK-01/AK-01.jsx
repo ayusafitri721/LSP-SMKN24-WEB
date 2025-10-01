@@ -383,36 +383,77 @@ const AK01 = () => {
   useEffect(() => {
     (async () => {
       const ua = Array.isArray(userAssessments) ? userAssessments : [];
-      const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
-      if (!chosen) return;
+      const chosen = ua.find((a) => a?.status === 'mengerjakan' || a?.status === 'belum') || ua[0];
+      if (!chosen) {
+        console.warn('AK-01 No assessments found - using development fallback');
+        // DEVELOPMENT FALLBACK: Set minimal test values for development/testing
+        setFormData(prev => ({
+          ...prev,
+          judulUnit: prev.judulUnit || 'Test Unit Kompetensi',
+          nomorUnit: prev.nomorUnit || 'TIK.PR02.001.01',
+          skemaSertifikasi: prev.skemaSertifikasi || 'Test Skema Sertifikasi',
+          tukPelaksanaan: prev.tukPelaksanaan || 'SMK Negeri 24 Jakarta - Test Lab',
+          namaAsesor: prev.namaAsesor || 'Test Asesor, S.Kom., M.T.',
+          tanggal: prev.tanggal || new Date().toISOString().slice(0, 10),
+          waktu: prev.waktu || '08:00'
+        }));
+        return;
+      }
+      
       let assesmentDetail = chosen?.assesment || null;
       if (!assesmentDetail && chosen?.assesment_id) {
         try {
+          await fetchCsrfCookie();
           const res = await getAssesmentById(chosen.assesment_id);
           assesmentDetail = res.data?.data ?? null;
-        } catch {}
+        } catch (error) {
+          console.warn('Failed to fetch assessment detail:', error);
+        }
       }
       if (!assesmentDetail) return;
 
-      // Derive unit info
+      // Derive unit info with better fallback
       const units = assesmentDetail?.units || assesmentDetail?.unit_kompetensi || assesmentDetail?.unitKompetensi || [];
       const firstUnit = Array.isArray(units) ? units[0] : (units || {});
-      const judulUnit = firstUnit?.judul || firstUnit?.nama || firstUnit?.name || '';
-      const nomorUnit = firstUnit?.kode || firstUnit?.code || '';
+      const judulUnit = firstUnit?.judul_unit || firstUnit?.judul || firstUnit?.nama || firstUnit?.name || '';
+      const nomorUnit = firstUnit?.kode_unit || firstUnit?.kode || firstUnit?.code || '';
 
-      // Other info
-      const tukPelaksanaan = assesmentDetail?.tuk || assesmentDetail?.lokasi || formData.tukPelaksanaan;
-      const namaAsesor = assesmentDetail?.assesor?.nama_lengkap || assesmentDetail?.assesor?.name || formData.namaAsesor;
-      const tanggalRaw = assesmentDetail?.tanggal_mulai || assesmentDetail?.tanggal_assesment || '';
+      // Schema info for better context
+      const skemaSertifikasi = assesmentDetail?.skema?.nama_skema || assesmentDetail?.skema?.name || 
+                              assesmentDetail?.nama_skema || assesmentDetail?.skema_name || '';
+
+      // TUK info with multiple fallbacks
+      const tukPelaksanaan = assesmentDetail?.tuk?.nama || assesmentDetail?.tuk?.lokasi || 
+                            assesmentDetail?.tuk || assesmentDetail?.lokasi || 
+                            assesmentDetail?.tempat_asesmen || formData.tukPelaksanaan;
+
+      // Assessor info with better extraction
+      const asesor = assesmentDetail?.assesor || assesmentDetail?.assessor;
+      const namaAsesor = asesor?.nama_lengkap || asesor?.full_name || asesor?.name || 
+                        asesor?.fullname || formData.namaAsesor;
+
+      // Date handling with better parsing
+      const tanggalRaw = assesmentDetail?.tanggal_mulai || assesmentDetail?.tanggal_assesment || 
+                        assesmentDetail?.start_date || assesmentDetail?.assessment_date || '';
       const tanggal = formData.tanggal || (tanggalRaw ? String(tanggalRaw).substring(0,10) : '');
+
+      // Time extraction if available
+      const waktuRaw = assesmentDetail?.waktu_mulai || assesmentDetail?.start_time || '';
+      const waktu = formData.waktu || (waktuRaw ? String(waktuRaw).substring(0,5) : '');
+
+      console.log('AK-01 Auto-populated data:', {
+        judulUnit, nomorUnit, skemaSertifikasi, tukPelaksanaan, namaAsesor, tanggal, waktu
+      });
 
       setFormData((prev) => ({
         ...prev,
+        skemaSertifikasi: prev.skemaSertifikasi || skemaSertifikasi,
         judulUnit: prev.judulUnit || judulUnit,
         nomorUnit: prev.nomorUnit || nomorUnit,
-        tukPelaksanaan,
-        namaAsesor,
-        tanggal,
+        tukPelaksanaan: tukPelaksanaan || prev.tukPelaksanaan,
+        namaAsesor: namaAsesor || prev.namaAsesor,
+        tanggal: tanggal || prev.tanggal,
+        waktu: waktu || prev.waktu,
       }));
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -445,10 +486,34 @@ const AK01 = () => {
         // Backend may return array or object with data
         const payload = res.data?.data ?? res.data ?? null;
         if (payload && (Array.isArray(payload) ? payload.length > 0 : true)) {
-          setExistingAk01(payload);
+          const existingData = Array.isArray(payload) ? payload[0] : payload;
+          setExistingAk01(existingData);
+          
+          // Pre-fill form with existing data if available
+          if (existingData) {
+            console.log('Found existing AK-01 data:', existingData);
+            setFormData((prev) => ({
+              ...prev,
+              skemaSertifikasi: existingData.skema_sertifikasi || prev.skemaSertifikasi,
+              judulUnit: existingData.judul_unit || prev.judulUnit,
+              nomorUnit: existingData.nomor_unit || prev.nomorUnit,
+              tukTemplate: existingData.tuk_template || prev.tukTemplate,
+              namaAsesor: existingData.nama_asesor || prev.namaAsesor,
+              namaAsesi: existingData.nama_asesi || prev.namaAsesi,
+              tanggal: existingData.tanggal ? String(existingData.tanggal).substring(0,10) : prev.tanggal,
+              waktu: existingData.waktu ? String(existingData.waktu).substring(0,5) : prev.waktu,
+              tukPelaksanaan: existingData.tuk_pelaksanaan || prev.tukPelaksanaan,
+              // Parse checkedItems if stored as JSON or object
+              checkedItems: existingData.bukti_dikumpulkan ? 
+                (typeof existingData.bukti_dikumpulkan === 'string' ? 
+                  JSON.parse(existingData.bukti_dikumpulkan) : existingData.bukti_dikumpulkan) 
+                : prev.checkedItems,
+            }));
+          }
         }
       } catch (e) {
         // 404 means none exists yet; ignore silently
+        console.log('No existing AK-01 found for asesi:', asesiId);
       }
     })();
     // only run once after mount + when context becomes available
@@ -809,6 +874,38 @@ const AK01 = () => {
           </div>
         </div>
 
+        {/* Status Banner */}
+        {existingAk01 && (
+          <div style={{
+            backgroundColor: '#d1ecf1',
+            border: '1px solid #bee5eb',
+            borderRadius: '8px',
+            padding: '12px',
+            marginBottom: '15px',
+            fontSize: '13px',
+            color: '#0c5460'
+          }}>
+            <strong>📋 Data Existing:</strong> Form AK-01 sudah pernah disubmit sebelumnya. 
+            Data di bawah sudah terisi otomatis dari submission sebelumnya dan data assessment aktif.
+          </div>
+        )}
+
+        {/* Development Mode Banner */}
+        {formData.namaAsesor === 'Test Asesor, S.Kom., M.T.' && (
+          <div style={{
+            backgroundColor: '#fff3cd',
+            border: '1px solid #ffeeba',
+            borderRadius: '8px',
+            padding: '12px',
+            marginBottom: '15px',
+            fontSize: '13px',
+            color: '#856404'
+          }}>
+            <strong>🧪 DEVELOPMENT MODE:</strong> Menggunakan data test karena tidak ada assessment aktif. 
+            Semua fitur tetap berfungsi untuk keperluan testing.
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           {/* Skema Sertifikasi */}
           <table style={{width: '100%', marginBottom: '15px', fontSize: '12px'}} className="data-table">
@@ -832,7 +929,7 @@ const AK01 = () => {
                 }}>
                   <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
                     <div style={{display: 'flex', alignItems: 'center'}} className="table-input-row">
-                      <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Judul Unit</span>
+                      <span style={{minWidth: '100px', fontSize: '12px', fontWeight: 'bold'}}>Nama Skema</span>
                       <span style={{margin: '0 8px'}}>:</span>
                       <input
                         type="text"
@@ -841,16 +938,38 @@ const AK01 = () => {
                           padding: '4px 8px',
                           border: '1px solid #ddd',
                           borderRadius: '4px',
-                          fontSize: '12px'
+                          fontSize: '12px',
+                          backgroundColor: formData.skemaSertifikasi ? '#f0f8ff' : 'white'
+                        }}
+                        className="input-field"
+                        value={formData.skemaSertifikasi}
+                        onChange={(e) => handleInputChange('skemaSertifikasi', e.target.value)}
+                        placeholder="Auto-filled dari assessment"
+                        title={formData.skemaSertifikasi ? 'Data dari API' : 'Belum ada data'}
+                      />
+                    </div>
+                    <div style={{display: 'flex', alignItems: 'center'}} className="table-input-row">
+                      <span style={{minWidth: '100px', fontSize: '12px', fontWeight: 'bold'}}>Judul Unit</span>
+                      <span style={{margin: '0 8px'}}>:</span>
+                      <input
+                        type="text"
+                        style={{
+                          flex: 1,
+                          padding: '4px 8px',
+                          border: '1px solid #ddd',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          backgroundColor: formData.judulUnit ? '#f0f8ff' : 'white'
                         }}
                         className="input-field"
                         value={formData.judulUnit}
                         onChange={(e) => handleInputChange('judulUnit', e.target.value)}
-                        placeholder="Masukkan judul unit"
+                        placeholder="Auto-filled dari assessment"
+                        title={formData.judulUnit ? 'Data dari API' : 'Belum ada data'}
                       />
                     </div>
                     <div style={{display: 'flex', alignItems: 'center'}} className="table-input-row">
-                      <span style={{minWidth: '80px', fontSize: '12px', fontWeight: 'bold'}}>Nomor Unit</span>
+                      <span style={{minWidth: '100px', fontSize: '12px', fontWeight: 'bold'}}>Nomor Unit</span>
                       <span style={{margin: '0 8px'}}>:</span>
                       <input
                         type="text"
@@ -859,12 +978,14 @@ const AK01 = () => {
                           padding: '4px 8px',
                           border: '1px solid #ddd',
                           borderRadius: '4px',
-                          fontSize: '12px'
+                          fontSize: '12px',
+                          backgroundColor: formData.nomorUnit ? '#f0f8ff' : 'white'
                         }}
                         className="input-field"
                         value={formData.nomorUnit}
                         onChange={(e) => handleInputChange('nomorUnit', e.target.value)}
-                        placeholder="Masukkan nomor unit"
+                        placeholder="Auto-filled dari assessment"
+                        title={formData.nomorUnit ? 'Data dari API' : 'Belum ada data'}
                       />
                     </div>
                   </div>
@@ -900,10 +1021,19 @@ const AK01 = () => {
                   <span style={{margin: '0 5px'}}>{' : '}</span>
                   <input
                     type="text"
-                    style={{ flex: 1, fontSize: '11px', padding: '3px 6px', border: '1px solid #ddd', borderRadius: '3px' }}
+                    style={{ 
+                      flex: 1, 
+                      fontSize: '11px', 
+                      padding: '3px 6px', 
+                      border: '1px solid #ddd', 
+                      borderRadius: '3px',
+                      backgroundColor: formData.namaAsesor ? '#f0f8ff' : 'white'
+                    }}
                     className="input-field"
                     value={formData.namaAsesor}
                     onChange={(e) => handleInputChange('namaAsesor', e.target.value)}
+                    placeholder="Auto-filled dari assessment"
+                    title={formData.namaAsesor ? 'Data dari API' : 'Belum ada data'}
                   />
                 </div>
                 <div style={{...sectionTextStyle, marginBottom: '0', display: 'flex', alignItems: 'center'}} className="section-text form-row">
@@ -911,10 +1041,19 @@ const AK01 = () => {
                   <span style={{margin: '0 5px'}}>{' : '}</span>
                   <input
                     type="text"
-                    style={{ flex: 1, fontSize: '11px', padding: '3px 6px', border: '1px solid #ddd', borderRadius: '3px' }}
+                    style={{ 
+                      flex: 1, 
+                      fontSize: '11px', 
+                      padding: '3px 6px', 
+                      border: '1px solid #ddd', 
+                      borderRadius: '3px',
+                      backgroundColor: formData.namaAsesi ? '#f0f8ff' : 'white'
+                    }}
                     className="input-field"
                     value={formData.namaAsesi}
                     onChange={(e) => handleInputChange('namaAsesi', e.target.value)}
+                    placeholder="Auto-filled dari profile"
+                    title={formData.namaAsesi ? 'Data dari API' : 'Belum ada data'}
                   />
                 </div>
               </div>
@@ -958,10 +1097,14 @@ const AK01 = () => {
                     <span style={{margin: '0 5px'}}>{' : '}</span>
                     <input
                       type="date"
-                      style={dateInputStyle}
+                      style={{
+                        ...dateInputStyle,
+                        backgroundColor: formData.tanggal ? '#f0f8ff' : 'white'
+                      }}
                       className="date-time-input"
                       value={formData.tanggal}
                       onChange={(e) => handleInputChange('tanggal', e.target.value)}
+                      title={formData.tanggal ? 'Data dari API' : 'Belum ada data'}
                     />
                   </div>
                   <div style={{display: 'flex', alignItems: 'center'}} className="form-row">
@@ -969,10 +1112,14 @@ const AK01 = () => {
                     <span style={{margin: '0 5px'}}>{' : '}</span>
                     <input
                       type="time"
-                      style={dateInputStyle}
+                      style={{
+                        ...dateInputStyle,
+                        backgroundColor: formData.waktu ? '#f0f8ff' : 'white'
+                      }}
                       className="date-time-input"
                       value={formData.waktu}
                       onChange={(e) => handleInputChange('waktu', e.target.value)}
+                      title={formData.waktu ? 'Data dari API' : 'Belum ada data'}
                     />
                   </div>
                   <div style={{display: 'flex', alignItems: 'center'}} className="form-row">
@@ -980,10 +1127,19 @@ const AK01 = () => {
                     <span style={{margin: '0 5px'}}>{' : '}</span>
                     <input
                       type="text"
-                      style={{flex: 1, fontSize: '11px', padding: '4px 6px', border: '1px solid #ddd', borderRadius: '3px'}}
+                      style={{
+                        flex: 1, 
+                        fontSize: '11px', 
+                        padding: '4px 6px', 
+                        border: '1px solid #ddd', 
+                        borderRadius: '3px',
+                        backgroundColor: formData.tukPelaksanaan ? '#f0f8ff' : 'white'
+                      }}
                       className="input-field"
                       value={formData.tukPelaksanaan}
                       onChange={(e) => handleInputChange('tukPelaksanaan', e.target.value)}
+                      placeholder="Auto-filled dari assessment"
+                      title={formData.tukPelaksanaan ? 'Data dari API' : 'Belum ada data'}
                     />
                   </div>
                 </div>

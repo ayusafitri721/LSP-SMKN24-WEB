@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavAsesi from '../../components/NavAsesi';
-import { submitFormAk03, fetchCsrfCookie, getAssesmentById, getFormAk03ByAssesi } from '../../api/api';
+import { submitFormAk03, fetchCsrfCookie, getAssesmentById, getFormAk03ByAssesi, getKomponen } from '../../api/api';
 import { useDashboardAsesi } from '../../context/DashboardAsesiContext';
 
 // Custom hook to detect screen size
@@ -38,18 +38,6 @@ const AK03 = () => {
     tanggal: '',
     judulUnit: '',
     kodeUnit: '',
-    isAnswered: {
-      q1: null,
-      q2: null,
-      q3: null,
-      q4: null,
-      q5: null,
-      q6: null,
-      q7: null,
-      q8: null,
-      q9: null,
-      q10: null,
-    },
     catatan: '',
   });
 
@@ -57,15 +45,8 @@ const AK03 = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [existingAk03, setExistingAk03] = useState(null);
-
-  // Prefill Nama Asesi berdasarkan context
-  useEffect(() => {
-    const pickFullName = (obj) => {
-      if (!obj) return '';
-      return (
-        obj.fullname || obj.full_name || obj.nama_lengkap || obj.namaLengkap || obj.name || obj.username || ''
-      );
-    };
+  const [komponenList, setKomponenList] = useState([]);
+  const [komponenAnswers, setKomponenAnswers] = useState({});
 
   // Helper derive asesi_id
   const deriveAsesiId = () => {
@@ -83,11 +64,61 @@ const AK03 = () => {
     return undefined;
   };
 
+  // Prefill Nama Asesi berdasarkan context
+  useEffect(() => {
+    const pickFullName = (obj) => {
+      if (!obj) return '';
+      return (
+        obj.fullname || obj.full_name || obj.nama_lengkap || obj.namaLengkap || obj.name || obj.username || ''
+      );
+    };
+
+    let namaAsesi = pickFullName(currentAsesi) || pickFullName(currentAsesi?.user);
+    if (!namaAsesi) {
+      const a = Array.isArray(apl01Data) ? apl01Data[0] : apl01Data;
+      namaAsesi = pickFullName(a) || pickFullName(a?.user);
+    }
+
+    if (namaAsesi) {
+      setFormData(prev => ({
+        ...prev,
+        namaAsesi: prev.namaAsesi || namaAsesi,
+      }));
+    }
+  }, [currentAsesi, apl01Data]);
+
+  // Fetch komponen data from API
+  useEffect(() => {
+    (async () => {
+      try {
+        await fetchCsrfCookie();
+        const res = await getKomponen();
+        const komponenData = res.data?.data ?? res.data ?? [];
+        console.log('AK-03: Fetched komponen data:', komponenData);
+        setKomponenList(komponenData);
+        
+        // Initialize answers for all komponen
+        const initialAnswers = {};
+        komponenData.forEach(komponen => {
+          initialAnswers[komponen.id] = {
+            hasil: null,
+            catatan_asesi: ''
+          };
+        });
+        setKomponenAnswers(initialAnswers);
+      } catch (error) {
+        console.error('AK-03: Error fetching komponen:', error);
+        // Fallback to empty array if API fails
+        setKomponenList([]);
+      }
+    })();
+  }, []);
+
   // Auto-populate fields from current assessment
   useEffect(() => {
     (async () => {
       const ua = Array.isArray(userAssessments) ? userAssessments : [];
-      const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+      const chosen = ua.find((a) => a?.status === 'mengerjakan' || a?.status === 'active' || a?.status === 'scheduled') || ua[0];
       if (!chosen) return;
       let assesmentDetail = chosen?.assesment || null;
       if (!assesmentDetail && chosen?.assesment_id) {
@@ -133,15 +164,6 @@ const AK03 = () => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentAsesi, apl01Data]);
-    if (!formData.namaAsesi) {
-      let name = pickFullName(currentAsesi) || pickFullName(currentAsesi?.user);
-      if (!name) {
-        const a = Array.isArray(apl01Data) ? apl01Data[0] : apl01Data;
-        name = pickFullName(a) || pickFullName(a?.user);
-      }
-      if (name) setFormData(prev => ({ ...prev, namaAsesi: name }));
-    }
-  }, [currentAsesi, apl01Data, formData.namaAsesi]);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -190,13 +212,13 @@ const AK03 = () => {
     }));
   };
 
-  const handleCheckboxChange = (question, value) => {
-    setFormData((prev) => ({
+  const handleKomponenChange = (komponenId, field, value) => {
+    setKomponenAnswers(prev => ({
       ...prev,
-      isAnswered: {
-        ...prev.isAnswered,
-        [question]: value,
-      },
+      [komponenId]: {
+        ...prev[komponenId],
+        [field]: value
+      }
     }));
   };
 
@@ -205,7 +227,7 @@ const AK03 = () => {
 
     // Derive assesment_asesi_id dan skema_id dari userAssessments
     const ua = Array.isArray(userAssessments) ? userAssessments : [];
-    const chosen = ua.find((a) => a?.status === 'active' || a?.status === 'scheduled') || ua[0];
+    const chosen = ua.find((a) => a?.status === 'mengerjakan' || a?.status === 'active' || a?.status === 'scheduled') || ua[0];
     const assesmentAsesiId = chosen?.id;
     let skemaId = chosen?.assesment?.skema_id || chosen?.skema_id || chosen?.schema_id;
 
@@ -223,20 +245,25 @@ const AK03 = () => {
 
     try {
       await fetchCsrfCookie();
+      
+      // Convert komponenAnswers to the format expected by backend
+      const komponenData = Object.entries(komponenAnswers).map(([komponenId, answer]) => ({
+        komponen_id: Number(komponenId),
+        hasil: answer.hasil, // 'ya' or 'tidak'
+        catatan_asesi: answer.catatan_asesi || null
+      })).filter(item => item.hasil !== null); // Only include answered items
+      
+      if (komponenData.length === 0) {
+        alert('Silakan jawab minimal satu komponen sebelum mengirim.');
+        return;
+      }
+      
       const payload = {
         assesment_asesi_id: Number(assesmentAsesiId),
-        skema_id: Number(skemaId),
-        // snake_case + original form for compatibility
-        tuk: formData.tuk,
-        nama_asesor: formData.namaAsesor,
-        nama_asesi: formData.namaAsesi,
-        tanggal: formData.tanggal,
-        judul_unit: formData.judulUnit,
-        kode_unit: formData.kodeUnit,
-        is_answered: formData.isAnswered,
-        catatan: formData.catatan,
-        form: formData,
+        catatan_tambahan: formData.catatan || null,
+        komponen: komponenData
       };
+      
       console.debug('AK-03 submit payload:', payload);
       await submitFormAk03(payload);
       setIsFormSubmitted(true);
@@ -265,7 +292,7 @@ const AK03 = () => {
   const handleCloseModal = () => {
     setShowModal(false);
     setTimeout(() => {
-      navigate('/dashboard-asesi/ak-05');
+      navigate('/dashboard-asesi/ak-04');
     }, 300);
   };
 
@@ -526,16 +553,16 @@ const AK03 = () => {
             <label style={{ display: 'flex', alignItems: 'center' }}>
               <input
                 type="checkbox"
-                checked={formData.isAnswered[item.id] === 'ya'}
-                onChange={() => handleCheckboxChange(item.id, 'ya')}
+                checked={komponenAnswers[item.id]?.hasil === 'ya'}
+                onChange={() => handleKomponenChange(item.id, 'hasil', 'ya')}
               />
               <span style={{ marginLeft: '8px' }}>Ya</span>
             </label>
             <label style={{ display: 'flex', alignItems: 'center' }}>
               <input
                 type="checkbox"
-                checked={formData.isAnswered[item.id] === 'tidak'}
-                onChange={() => handleCheckboxChange(item.id, 'tidak')}
+                checked={komponenAnswers[item.id]?.hasil === 'tidak'}
+                onChange={() => handleKomponenChange(item.id, 'hasil', 'tidak')}
               />
               <span style={{ marginLeft: '8px' }}>Tidak</span>
             </label>
@@ -674,18 +701,10 @@ const AK03 = () => {
           <div style={{ border: '1px solid #ccc', borderRadius: '8px', padding: '20px' }}>
             {isMobile ? (
               <MobileTable
-                data={[
-                  { id: 'q1', text: 'Saya mendapatkan penjelasan yang cukup memadai mengenai proses asesmen/uji kompetensi.' },
-                  { id: 'q2', text: 'Saya diberikan kesempatan untuk mempelajari standar kompetensi yang akan diujikan dan menilai diri sendiri terhadap pencapaiannya.' },
-                  { id: 'q3', text: 'Asesor memberikan kesempatan untuk mendiskusikan/menegosiasikan metoda, instrumen dan sumber asesmen serta jadwal asesmen.' },
-                  { id: 'q4', text: 'Asesor berusaha menggali seluruh bukti pendukung yang sesuai dengan latar belakang pelatihan dan pengalaman yang saya miliki.' },
-                  { id: 'q5', text: 'Saya sepenuhnya diberikan kesempatan untuk mendemonstrasikan kompetensi yang saya miliki selama asesmen.' },
-                  { id: 'q6', text: 'Saya mendapatkan penjelasan yang memadai mengenai keputusan asesmen.' },
-                  { id: 'q7', text: 'Asesor memberikan umpan balik yang mendukung setelah asesmen serta tidak lanjutnya.' },
-                  { id: 'q8', text: 'Asesor bersama saya mempelajari semua dokumen asesmen serta menandatanganinya.' },
-                  { id: 'q9', text: 'Saya mendapatkan jaminan kerahasiaan hasil asesmen serta penjelasan penanganan dokumen asesmen.' },
-                  { id: 'q10', text: 'Asesor menggunakan keterampilan komunikasi yang efektif selama asesmen.' },
-                ]}
+                data={komponenList.map(komponen => ({
+                  id: komponen.id,
+                  text: komponen.nama || komponen.name || komponen.deskripsi || komponen.description || `Komponen ${komponen.id}`
+                }))}
               />
             ) : (
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -697,32 +716,23 @@ const AK03 = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    { id: 'q1', text: 'Saya mendapatkan penjelasan yang cukup memadai mengenai proses asesmen/uji kompetensi.' },
-                    { id: 'q2', text: 'Saya diberikan kesempatan untuk mempelajari standar kompetensi yang akan diujikan dan menilai diri sendiri terhadap pencapaiannya.' },
-                    { id: 'q3', text: 'Asesor memberikan kesempatan untuk mendiskusikan/menegosiasikan metoda, instrumen dan sumber asesmen serta jadwal asesmen.' },
-                    { id: 'q4', text: 'Asesor berusaha menggali seluruh bukti pendukung yang sesuai dengan latar belakang pelatihan dan pengalaman yang saya miliki.' },
-                    { id: 'q5', text: 'Saya sepenuhnya diberikan kesempatan untuk mendemonstrasikan kompetensi yang saya miliki selama asesmen.' },
-                    { id: 'q6', text: 'Saya mendapatkan penjelasan yang memadai mengenai keputusan asesmen.' },
-                    { id: 'q7', text: 'Asesor memberikan umpan balik yang mendukung setelah asesmen serta tidak lanjutnya.' },
-                    { id: 'q8', text: 'Asesor bersama saya mempelajari semua dokumen asesmen serta menandatanganinya.' },
-                    { id: 'q9', text: 'Saya mendapatkan jaminan kerahasiaan hasil asesmen serta penjelasan penanganan dokumen asesmen.' },
-                    { id: 'q10', text: 'Asesor menggunakan keterampilan komunikasi yang efektif selama asesmen.' },
-                  ].map((item) => (
-                    <tr key={item.id}>
-                      <td style={tableCellStyle}>{item.text}</td>
+                  {komponenList.map((komponen) => (
+                    <tr key={komponen.id}>
+                      <td style={tableCellStyle}>
+                        {komponen.nama || komponen.name || komponen.deskripsi || komponen.description || `Komponen ${komponen.id}`}
+                      </td>
                       <td style={{ ...tableCellStyle, textAlign: 'center' }}>
                         <input
                           type="checkbox"
-                          checked={formData.isAnswered[item.id] === 'ya'}
-                          onChange={() => handleCheckboxChange(item.id, 'ya')}
+                          checked={komponenAnswers[komponen.id]?.hasil === 'ya'}
+                          onChange={() => handleKomponenChange(komponen.id, 'hasil', 'ya')}
                         />
                       </td>
                       <td style={{ ...tableCellStyle, textAlign: 'center' }}>
                         <input
                           type="checkbox"
-                          checked={formData.isAnswered[item.id] === 'tidak'}
-                          onChange={() => handleCheckboxChange(item.id, 'tidak')}
+                          checked={komponenAnswers[komponen.id]?.hasil === 'tidak'}
+                          onChange={() => handleKomponenChange(komponen.id, 'hasil', 'tidak')}
                         />
                       </td>
                     </tr>

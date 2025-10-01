@@ -271,9 +271,18 @@ export const DashboardAsesiProvider = ({ children }) => {
     }
   }, [user]);
 
-  // Fetch user assessments
+  // Fetch user assessments (OPTIMIZED with debouncing)
   const fetchUserAssessments = useCallback(async () => {
     if (!user || user.role !== "assesi") return;
+    
+    // Prevent spam calls - debounce with timestamp
+    const now = Date.now();
+    const lastFetch = fetchUserAssessments._lastFetch || 0;
+    if (now - lastFetch < 2000) { // 2 second debounce
+      console.log('fetchUserAssessments debounced - too frequent calls');
+      return;
+    }
+    fetchUserAssessments._lastFetch = now;
     // Derive asesi_id (NOT user.id). Prefer currentAsesi/apl01Data
     const deriveAsesiId = () => {
       // common shapes: {id, nama_lengkap,...} or {user:{...}}; prefer top-level id for asesi
@@ -306,9 +315,19 @@ export const DashboardAsesiProvider = ({ children }) => {
     }
   }, [user, currentAsesi, apl01Data]);
 
-  // Ensure user has assesment_asesi by auto-creating one (pick first active assessment)
+  // Ensure user has assesment_asesi record (OPTIMIZED - with debouncing and better error handling)
   const ensureUserAssesmentAsesi = useCallback(async () => {
     if (!user || user.role !== 'assesi') return;
+    
+    // Prevent spam calls - debounce with timestamp
+    const now = Date.now();
+    const lastEnsure = ensureUserAssesmentAsesi._lastEnsure || 0;
+    if (now - lastEnsure < 5000) { // 5 second debounce
+      console.log('ensureUserAssesmentAsesi debounced - too frequent calls');
+      return;
+    }
+    ensureUserAssesmentAsesi._lastEnsure = now;
+    
     // reuse deriveAsesiId from above scope
     const deriveAsesiId = () => {
       const fromCurrent = currentAsesi?.id ?? currentAsesi?.assesi_id ?? currentAsesi?.user?.assesi_id;
@@ -319,29 +338,47 @@ export const DashboardAsesiProvider = ({ children }) => {
       return undefined;
     };
     const asesiId = deriveAsesiId();
-    if (!asesiId) return;
+    if (!asesiId) {
+      console.warn('ensureUserAssesmentAsesi: No asesiId found');
+      return;
+    }
 
-    // If already has, skip
-    if (Array.isArray(userAssessments) && userAssessments.length > 0) return;
+    // If already has active assessments, skip
+    if (Array.isArray(userAssessments) && userAssessments.length > 0) {
+      const hasActive = userAssessments.some(a => a?.status === 'mengerjakan' || a?.status === 'belum');
+      if (hasActive) {
+        console.log('ensureUserAssesmentAsesi: User already has active assessments, skipping');
+        return;
+      }
+    }
 
     try {
+      console.log('ensureUserAssesmentAsesi: Attempting to create assesment_asesi for asesiId:', asesiId);
       const list = await getAssesments();
       const assessments = list.data?.data || [];
       const active = assessments.find(a => String(a.status).toLowerCase() === 'active');
-      if (!active) return; // nothing to create
+      if (!active) {
+        console.warn('ensureUserAssesmentAsesi: No active assessment found');
+        return;
+      }
 
       await fetchCsrfCookie();
-      await createAssesmentAsesi({ assesment_id: Number(active.id), assesi_id: Number(asesiId) });
+      const payload = { assesment_id: Number(active.id), assesi_id: Number(asesiId) };
+      console.log('ensureUserAssesmentAsesi: Creating with payload:', payload);
+      
+      await createAssesmentAsesi(payload);
+      console.log('ensureUserAssesmentAsesi: Successfully created, refreshing assessments...');
+      
       // refresh user assessments
       await fetchUserAssessments();
     } catch (e) {
-      // ignore if backend rejects due to already joined elsewhere
+      console.warn('ensureUserAssesmentAsesi error:', e.response?.data || e.message);
+      // ignore if backend rejects due to already joined elsewhere or validation errors
     }
   }, [user, currentAsesi, apl01Data, userAssessments, fetchUserAssessments]);
 
   // Fetch schema list (for selection/reference)
   const fetchSkemas = useCallback(async () => {
-    // Hanya untuk role yang diizinkan (route dilindungi middleware 'approve')
     if (user?.role !== 'assesor' && user?.role !== 'admin') return;
     setLoading(true);
     setError(null);
@@ -379,12 +416,15 @@ export const DashboardAsesiProvider = ({ children }) => {
     return () => { cancelled = true; };
   }, [user]);
 
-  // Re-fetch user assessments once APL-01 data is loaded (for asesi_id derivation)
+  // Re-fetch user assessments once APL-01 data is loaded (OPTIMIZED - only if not already loaded)
   useEffect(() => {
-    if (user?.role === 'assesi' && (Array.isArray(apl01Data) ? apl01Data.length > 0 : !!apl01Data)) {
+    if (user?.role === 'assesi' && 
+        (Array.isArray(apl01Data) ? apl01Data.length > 0 : !!apl01Data) &&
+        (!userAssessments || userAssessments.length === 0)) {
+      console.log('Context: Re-fetching userAssessments after APL-01 loaded');
       fetchUserAssessments();
     }
-  }, [user, apl01Data, fetchUserAssessments]);
+  }, [user, apl01Data, fetchUserAssessments, userAssessments]);
 
   // If currentAsesi just loaded but APL-01 payload still empty, retry fetching APL-01
   useEffect(() => {
