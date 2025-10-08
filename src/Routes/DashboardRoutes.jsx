@@ -24,6 +24,7 @@ import EditSkema from "../Skema/EditSkema";
 import AddListAsesmen from "../layouts/AddListAsesmen";
 import EditListAsesmen from "../layouts/EditListAsesmen";
 import LihatListAsesmen from "../ListAsesmen/LihatListAsesmen";
+import LihatApprovmentIa01 from "../Detail/IA-01/LihatApprovmentIa01";
 import ProfileSection from "../layouts/ProfileSection"; // Import ProfileSection
 import Approvement from "../DetailAsesi/APL-01/Approvement";
 import LihatApprovement from "../DetailAsesi/APL-01/LihatApprovement";
@@ -606,7 +607,7 @@ const DashboardRoutes = () => {
       />
 
       <Route
-        path="/approvement/apl-02/lihat"
+        path="/approvement/apl-02/lihat/:id"
         element={
           <DashboardLayout>
             <LihatApprovement02
@@ -618,9 +619,22 @@ const DashboardRoutes = () => {
         }
       />
 
+      <Route
+        path="/approvement/ia-01/lihat/:id"
+        element={
+          <DashboardLayout>
+            <LihatApprovmentIa01
+              onBack={() => navigate("/dashboard/approvement/ia-01")}
+              onNavigate={handleNavigate}
+              data={editData}
+            />
+          </DashboardLayout>
+        }
+      />
+
       {/* Approvement Routes - AK-01 */}
       <Route
-        path="/approvement/ak-01"
+        path="/approvement/ak-01/lihat/"
         element={
           <DashboardLayout>
             <ApprovementAK01
@@ -645,7 +659,7 @@ const DashboardRoutes = () => {
       />
 
       <Route
-        path="/approvement/ak-01/lihat"
+        path="/approvement/ak-01/lihat/:id"
         element={
           <DashboardLayout>
             <LihatApprovementAK01

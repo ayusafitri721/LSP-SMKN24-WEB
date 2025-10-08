@@ -24,8 +24,8 @@ function LihatListAsesmen({ onBack, onNavigate }) {
   }
 
 
-  const handleNavigateToApl01 = () => {
-    onNavigate("approvement/lihat");
+  const handleNavigateToApl01 = (item) => {
+    onNavigate(`approvement/lihat/${item.user_id}`);
   };
 
   return (
@@ -302,7 +302,7 @@ function LihatListAsesmen({ onBack, onNavigate }) {
                     >
                       {student.asesi.nama_lengkap && (
                         <button
-                          onClick={handleNavigateToApl01}
+                          onClick={() => handleNavigateToApl01(student.asesi)}
                           style={{
                             backgroundColor: "transparent",
                             color: "#666",

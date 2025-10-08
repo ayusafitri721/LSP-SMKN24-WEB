@@ -1,6 +1,104 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { api } from "../../api/api";
+import { useQuery } from "@tanstack/react-query";
 
 function LihatApprovement02({ onBack, data, onNavigate }) {
+  const id = useParams();
+
+  const { data: apl02, isLoading, isError, error } = useQuery({
+    queryKey: ["apl02"],
+    queryFn: () => api.get("/apl02/asesi/all").then((res) => res.data?.data ?? res.data),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: 60 * 60 * 1000,
+  });
+
+  const filteredData = apl02?.find((item) => item.assesment_asesi.assesi.user_id === parseInt(id.id));
+  const assesment = filteredData?.assesment_asesi?.assesment;
+  
+  console.log("filteredData: ", filteredData);
+  console.log("assesment: ", assesment);
+
+  const transformFilteredData = (filteredData) => {
+    if (!filteredData) return [];
+  
+    return filteredData.details.map(detail => {
+      // gabungkan nama elemen dan KUK (kriteria untuk kerja)
+      const elemen = filteredData.assesment_asesi.assesment.skema.units[0].elements.find(
+        e => e.id === detail.elemen_id
+      );
+  
+      // buat header elemen
+      const header = {
+        kriteria: elemen?.nama_elemen || "-",
+        isHeader: true
+      };
+  
+      // buat baris KUK
+      const kukRows = elemen?.kriteria_untuk_kerja.map(kuk => {
+        // cari attachment relevan untuk detail ini
+        const attachmentTexts = detail.attachments.map(att => att.bukti.nama_dokumen).join(", ");
+  
+        return {
+          kriteria: kuk.deskripsi_kuk,
+          dapatkah: false,  // default unchecked
+          bukti: false,     // default unchecked
+          attachmentText: attachmentTexts,
+          isHeader: false
+        };
+      }) || [];
+  
+      return [header, ...kukRows]; // gabungkan header + KUK
+    }).flat(); // flatten array of arrays
+  };
+
+  const transformUnitData = (filteredData, unitId) => {
+    if (!filteredData) return [];
+  
+    const unit = filteredData.assesment_asesi.assesment.skema.units.find(
+      (u) => u.id === unitId
+    );
+    if (!unit) return [];
+  
+    return unit.elements.map((elemen, index) => {
+      const kukList =
+        elemen.kriteria_untuk_kerja?.map(
+          (kuk) => `${kuk.urutan} ${kuk.deskripsi_kuk}`
+        ) || [];
+  
+      // gabung elemen + kuk ke satu teks
+      const elemenDanKUK = `
+        <strong>Elemen ke-${index + 1}: ${elemen.nama_elemen}</strong><br>
+        ${kukList.map((text) => `• ${text}`).join("<br>")}
+      `;
+  
+      // ambil detail berdasarkan elemen
+      const detail = filteredData.details.find((d) => d.elemen_id === elemen.id);
+      const attachmentTexts = detail
+        ? detail.attachments.map((att) => att.bukti.nama_dokumen).join(", ")
+        : "";
+  
+      // ambil nilai kompetensinitas
+      const kompetensi = detail ? detail.kompetensinitas : "";
+  
+      return {
+        id: elemen.id,
+        elemenHTML: elemenDanKUK,
+        attachmentText: attachmentTexts,
+        kompetensinitas: kompetensi, // "k" atau "bk"
+      };
+    });
+  };
+  
+  
+  
+  
+  
+  const unitKompetensi1 = transformFilteredData(filteredData);
+
+
+  // Define state hooks before any conditional returns to keep hook order stable
   const [formData, setFormData] = useState({
     judulUnit: "",
     kodeUnit: "",
@@ -491,14 +589,16 @@ function LihatApprovement02({ onBack, data, onNavigate }) {
     }));
   };
 
-  const handleCheckboxChange = (unitName, index, field) => {
-    const newKompetensi = [...formData[unitName]];
-    newKompetensi[index] = {
-      ...newKompetensi[index],
-      [field]: !newKompetensi[index][field],
-    };
-    setFormData((prev) => ({ ...prev, [unitName]: newKompetensi }));
+  const handleCheckboxChange = (unitName, index, value) => {
+    setFormData((prev) => {
+      const updatedUnit = [...prev[unitName]];
+      // Toggle nilai: kalau klik lagi yang sama, kosongkan
+      updatedUnit[index].kompetensinitas =
+        updatedUnit[index].kompetensinitas === value ? "" : value;
+      return { ...prev, [unitName]: updatedUnit };
+    });
   };
+  
 
   const inputStyle = {
     width: "100%",
@@ -515,6 +615,10 @@ function LihatApprovement02({ onBack, data, onNavigate }) {
     minWidth: "100px",
     display: "inline-block",
   };
+
+  
+  if (isLoading) return <p>Loading data...</p>;
+  if (isError) return <p>Error: {error.message}</p>;
 
   const renderKompetensiTable = (data, unitName, unitTitle, unitKey) => (
     <div style={{ marginBottom: "16px" }}>
@@ -610,71 +714,83 @@ function LihatApprovement02({ onBack, data, onNavigate }) {
           </thead>
           <tbody>
             {data.map((item, index) => (
-              <tr key={index}>
+              <tr key={`${unitKey}-${item.id ?? item.idElemen ?? index}`}>
+                {/* Elemen + KUK */}
                 <td
                   style={{
                     border: "1px solid #ff8c42",
                     padding: "6px",
                     fontSize: "10px",
-                    lineHeight: "1.3",
-                    fontWeight: item.isHeader ? "600" : "normal",
-                    backgroundColor: item.isHeader ? "#f8f9fa" : "white",
+                    lineHeight: "1.4",
+                    verticalAlign: "top",
                   }}
-                >
-                  {item.kriteria}
-                </td>
+                  dangerouslySetInnerHTML={{ __html: item.elemenHTML }}
+                />
+
+                {/* Kolom K + BK (dua checkbox dalam satu kolom) */}
                 <td
                   style={{
                     border: "1px solid #ff8c42",
                     padding: "6px",
                     textAlign: "center",
+                    verticalAlign: "middle",
                   }}
                 >
-                  {!item.isHeader && (
-                    <input
-                      type="checkbox"
-                      checked={item.dapatkah}
-                      onChange={() =>
-                        handleCheckboxChange(unitName, index, "dapatkah")
-                      }
-                      style={{ transform: "scale(1.0)" }}
-                    />
-                  )}
+                  <div style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                      <input
+                      disabled
+                        type="checkbox"
+                        checked={item.kompetensinitas === "k"}
+                        onChange={() => handleCheckboxChange(unitName, index, "k")}
+                        style={{ transform: "scale(1.1)" }}
+                      />
+                      <span style={{ fontSize: "10px" }}>K</span>
+                    </label>
+                  </div>
                 </td>
+
                 <td
                   style={{
                     border: "1px solid #ff8c42",
                     padding: "6px",
                     textAlign: "center",
+                    verticalAlign: "middle",
                   }}
                 >
-                  {!item.isHeader && (
-                    <input
-                      type="checkbox"
-                      checked={item.bukti}
-                      onChange={() => handleCheckboxChange(unitName, index, "bukti")}
-                      style={{ transform: "scale(1.0)" }}
-                    />
-                  )}
+                  <div style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                      <input
+                      disabled
+                        type="checkbox"
+                        checked={item.kompetensinitas === "bk"}
+                        onChange={() => handleCheckboxChange(unitName, index, "bk")}
+                        style={{ transform: "scale(1.1)" }}
+                      />
+                      <span style={{ fontSize: "10px" }}>BK</span>
+                    </label>
+                  </div>
                 </td>
+
+                {/* Kolom Bukti */}
                 <td
                   style={{
                     border: "1px solid #ff8c42",
                     padding: "6px",
+                    verticalAlign: "middle",
                   }}
                 >
-                  {!item.isHeader && (
-                    <input
-                      type="text"
-                      style={{
-                        width: "100%",
-                        border: "none",
-                        background: "transparent",
-                        fontSize: "10px",
-                        padding: "1px",
-                      }}
-                    />
-                  )}
+                  <input
+                    type="text"
+                    value={item.attachmentText || ""}
+                    readOnly
+                    style={{
+                      width: "100%",
+                      border: "none",
+                      background: "transparent",
+                      fontSize: "10px",
+                    }}
+                  />
                 </td>
               </tr>
             ))}
@@ -739,7 +855,7 @@ function LihatApprovement02({ onBack, data, onNavigate }) {
           }}
         >
           <button
-            onClick={() => onNavigate && onNavigate("approvement/lihat")}
+            onClick={() => onNavigate && onNavigate(`approvement/lihat/${id.id}`)}
             style={{
               padding: "12px 20px",
               fontSize: "14px",
@@ -772,7 +888,7 @@ function LihatApprovement02({ onBack, data, onNavigate }) {
             FR.APL.02
           </button>
           <button
-            onClick={() => onNavigate && onNavigate("approvement/ak-01/lihat")}
+            onClick={() => onNavigate && onNavigate(`approvement/ak-01/lihat/${id.id}`)}
             style={{
               padding: "12px 20px",
               fontSize: "14px",
@@ -836,10 +952,11 @@ function LihatApprovement02({ onBack, data, onNavigate }) {
                 <span style={{ margin: "0 6px" }}>:</span>
                 <input
                 type="text"
-                value={formData.judulUnit}
+                value={assesment?.skema?.judul_skema}
                 onChange={(e) =>
                   handleInputChange("judulUnit", e.target.value)
                 }
+                disabled
                 style={{ ...inputStyle, width: "180px" }}
               />
             </div>
@@ -855,10 +972,11 @@ function LihatApprovement02({ onBack, data, onNavigate }) {
               <span style={{ margin: "0 6px" }}>:</span>
               <input
                 type="text"
-                value={formData.kodeUnit}
+                value={assesment?.tuk}
                 onChange={(e) =>
                   handleInputChange("kodeUnit", e.target.value)
                 }
+                disabled
                 style={{ ...inputStyle, width: "180px" }}
               />
             </div>    
@@ -874,152 +992,103 @@ function LihatApprovement02({ onBack, data, onNavigate }) {
               <span style={{ margin: "0 6px" }}>:</span>
               <input
                 type="text"
-                value={formData.judulUnit}
+                value={assesment?.tanggal_assesment}
                 onChange={(e) =>
                   handleInputChange("judulUnit", e.target.value)
                 }
+                disabled
                 style={{ ...inputStyle, width: "180px" }}
               />
             </div>
           </div>
           
-          {/* Bagian Barcode Asesor & Asesi */}
+          {/* Bagian Status Approval Asesor & Asesi */}
           <div
             style={{
-              marginTop: "auto", // Posisikan di bagian bawah kolom kiri
+              marginTop: "auto",
               display: "flex",
-              gap: "10px",
+              gap: "12px",
               flexDirection: "column",
             }}
           >
-            {/* Barcode Asesor */}
+            {/* Status Asesor */}
             <div
               style={{
                 border: "2px dashed #ff8c42",
                 borderRadius: "12px",
                 padding: "12px",
                 textAlign: "center",
-                backgroundColor: "white",
+                backgroundColor: "#fff",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "8px",
               }}
             >
-              <p style={{ fontWeight: "600", fontSize: "12px", marginBottom: "8px" }}>
-                Barcode Asesor
-              </p>
+              <p style={{ fontWeight: 600, fontSize: "13px", margin: 0 }}>Status Asesor</p>
               <div
                 style={{
-                  height: "80px",
-                  backgroundColor: "#f5f5f5",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  border: "2px dashed rgb(0, 0, 0)",
+                  width: "100%",
+                  maxWidth: "200px",
+                  padding: "10px 0",
                   borderRadius: "8px",
-                  border: "1px solid #ddd"
+                  fontWeight: 600,
+                  color: "black"
                 }}
-              >
-                <span style={{ fontSize: "11px", color: "#666" }}>
-                  [Barcode Asesor]
-                </span>
+              >{filteredData?.ttd_assesor}
               </div>
             </div>
 
-            {/* Barcode Asesi */}
+            {/* Status Asesi */}
             <div
               style={{
                 border: "2px dashed #ff8c42",
                 borderRadius: "12px",
                 padding: "12px",
                 textAlign: "center",
-                backgroundColor: "white",
+                backgroundColor: "#fff",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "8px",
               }}
             >
-              <p style={{ fontWeight: "600", fontSize: "12px", marginBottom: "8px" }}>
-                Barcode Asesi
-              </p>
+              <p style={{ fontWeight: 600, fontSize: "13px", margin: 0 }}>Status Asesi</p>
               <div
                 style={{
-                  height: "80px",
-                  backgroundColor: "#f5f5f5",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  border: "2px dashed rgb(0, 0, 0)",
+                  width: "100%",
+                  maxWidth: "200px",
+                  padding: "10px 0",
                   borderRadius: "8px",
-                  border: "1px solid #ddd"
+                  fontWeight: 600,
+                  color: "black",
                 }}
-              >
-                <span style={{ fontSize: "11px", color: "#666" }}>
-                  [Barcode Asesi]
-                </span>
+              >{assesment? "Approved" : ""}
               </div>
             </div>
           </div>
+
         </div>
 
         {/* Kolom Kanan - Patokan Asesmen */}
         <div style={{ padding: "16px", overflowY: "auto", maxHeight: "80vh" }}>
-          {/* Unit Kompetensi 1 */}
-          {renderKompetensiTable(
-            formData.unitKompetensi, 
-            "unitKompetensi", 
-            "Unit Kompetensi 1: Menggunakan Struktur Data",
-            "unit1"
-          )}
-
-          {/* Unit Kompetensi 2 */}
-          {renderKompetensiTable(
-            formData.unitKompetensi2, 
-            "unitKompetensi2", 
-            "Unit Kompetensi 2: Menggunakan Spesifikasi Program",
-            "unit2"
-          )}
-
-          {/* Unit Kompetensi 3 */}
-          {renderKompetensiTable(
-            formData.unitKompetensi3, 
-            "unitKompetensi3", 
-            "Unit Kompetensi 3: Menulis Kode dengan Prinsip-Prinsip Guidelines dan Best Practices",
-            "unit3"
-          )}
-
-          {/* Unit Kompetensi 4 */}
-          {renderKompetensiTable(
-            formData.unitKompetensi4, 
-            "unitKompetensi4", 
-            "Unit Kompetensi 4: Menulis Kode Dengan Prinsip Sesuai Guidelines dan Best Practices",
-            "unit4"
-          )}
-
-          {/* Unit Kompetensi 5 */}
-          {renderKompetensiTable(
-            formData.unitKompetensi5, 
-            "unitKompetensi5", 
-            "Unit Kompetensi 5: Mengimplementasikan Pemrograman Terstruktur",
-            "unit5"
-          )}
-
-          
-          {/* Unit Kompetensi 6 */}
-          {renderKompetensiTable(
-            formData.unitKompetensi6, 
-            "unitKompetensi6", 
-            "Unit Kompetensi 6: Membuat Dokumen Kode Program",
-            "unit6"
-          )}
-
-           {/* Unit Kompetensi 7 */}
-          {renderKompetensiTable(
-            formData.unitKompetensi7, 
-            "unitKompetensi7", 
-            "Unit Kompetensi 7: Membuat Dokumen Kode Program",
-            "unit7"
-          )}
-
-           {/* Unit Kompetensi 8 */}
-          {renderKompetensiTable(
-            formData.unitKompetensi8, 
-            "unitKompetensi8", 
-            "Unit Kompetensi 8: Melaksanakan Pengujian Unit Program",
-            "unit8"
-          )}
+          {assesment.skema.units.map((unit, idx) => {
+            const unitData = transformUnitData(filteredData, unit.id);
+            return (
+              <React.Fragment key={unit.id}>
+                {renderKompetensiTable(
+                  unitData,
+                  `unitKompetensi${idx + 1}`,
+                  `Unit Kompetensi ${unit.unit_ke}: ${unit.judul_unit}`,
+                  `unit${idx + 1}`
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -11,6 +11,9 @@ import { SkemaProvider } from "./context/SkemaContext.jsx";
 import { Apl01Provider } from "./context/Apl01Context.jsx";
 import { DashboardAsesiProvider } from "./context/DashboardAsesiContext.jsx";
 import { DashboardAsesorProvider } from "./context/DashboardAsesorContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const AppProviders = ({ children }) => (
   <AuthProvider>
@@ -34,6 +37,8 @@ const AppProviders = ({ children }) => (
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <AppProviders>
+    <QueryClientProvider client={queryClient}>
     <App />
+    </QueryClientProvider>
   </AppProviders>
 );

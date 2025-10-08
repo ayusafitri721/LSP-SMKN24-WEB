@@ -9,6 +9,7 @@ import { useAsesor } from "../context/AsesorContext";
 import { useAsesi } from "../context/AsesiContext";
 import { useSkema } from "../context/SkemaContext";
 import { useAssesment } from "../context/AssesmentContext";
+import { useNavigate } from "react-router-dom";
 
 // KOMPONEN SIDEBAR YANG BISA DI-EXPORT (seperti Navbar)
 export function DashboardSidebar({ activeMenu, onMenuClick }) {
@@ -840,9 +841,10 @@ function Dashboard({ onBack, onNavigate }) {
   const { asesis } = useAsesi();
   const { skemaList } = useSkema();
   const { assesments } = useAssesment();
+  const navigate = useNavigate();
 
-  const handleDetailClick = () => {
-    window.location.href = "/dashboard/list-asesmen";
+  const handleActionClick = (item) => {
+    navigate(`/dashboard/list-asesmen/${item.id}`);
   };
 
   return (
@@ -1262,7 +1264,7 @@ function Dashboard({ onBack, onNavigate }) {
               </div>
 
               <button
-                onClick={handleDetailClick}
+                onClick={() => handleActionClick(assesments)}
                 style={{
                   backgroundColor: "#f8f9fa",
                   border: "1px solid #e9ecef",

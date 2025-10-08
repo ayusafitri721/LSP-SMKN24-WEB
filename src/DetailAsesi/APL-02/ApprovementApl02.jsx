@@ -1,51 +1,95 @@
 import React, { useState } from "react";
+import { useAsesi } from "../../context/AsesiContext";
+import { useApl01 } from "../../context/Apl01Context";
+import { useJurusan } from "../../context/JurusanContext";
 
 export default function ApprovementApl02({ onBack, onNavigate }) {
   const [selectedCard, setSelectedCard] = useState(null);
+  const { asesis } = useAsesi();
+  const { apl01s } = useApl01();
+  const { jurusanList } = useJurusan();
 
-  // Data untuk cards jurusan
+  // --- Buat map jurusan biar pencarian cepat (O(1))
+  const jurusanMap = Object.fromEntries(jurusanList.map(j => [j.id, j]));
+
+  // --- Gabungkan data dari APL01 & Asesi
+  const merged = [
+    ...apl01s.map((f) => ({
+      user_id: f.user_id,
+      nama_lengkap: f.nama_lengkap,
+      email: f.email,
+      status: f.status,
+      jurusan: jurusanMap[f.user.jurusan_id] || null,
+    })),
+    ...asesis.map((a) => ({
+      user_id: a.user_id,
+      nama_lengkap: a.nama_lengkap,
+      email: a.email,
+      status: "accepted",
+      jurusan: jurusanMap[a.jurusan_id] || null,
+    })),
+  ];
+
+  // --- Hilangkan duplikat user_id (prioritas accepted)
+  const uniqueMerged = Array.from(
+    merged.reduce((map, item) => {
+      if (!map.has(item.user_id) || item.status === "accepted") {
+        map.set(item.user_id, item);
+      }
+      return map;
+    }, new Map()).values()
+  );
+
+  // --- Kelompokkan berdasarkan jurusan
+  const groupedByJurusan = uniqueMerged.reduce((acc, item) => {
+    const kode = item.jurusan?.kode_jurusan || "LAINNYA";
+    if (!acc[kode]) acc[kode] = [];
+    acc[kode].push(item);
+    return acc;
+  }, {});
+
+  // --- Data jurusan card
   const jurusanData = [
     {
       id: 1,
+      kode: "RPL",
       title: "Rekayasa Perangkat Lunak",
       description:
-        "Program keahlian yang mempelajari pengembangan perangkat lunak, basis data, dan pemrograman, serta analisis sistem desktop, web, maupun mobile.",
-      siswaCount: 100,
-      buttonText: "Lihat Detail",
+        "Program keahlian yang mempelajari pengembangan perangkat lunak, basis data, dan pemrograman.",
     },
     {
       id: 2,
+      kode: "PH",
       title: "Perhotelan",
       description:
-        "Program keahlian yang mempelajari layanan hotel, tata graha, tata boga, housekeeping, dan front office hingga manajemen hotel.",
-      siswaCount: 100,
-      buttonText: "Lihat Detail",
+        "Program keahlian yang mempelajari layanan hotel, tata graha, tata boga, housekeeping, dan front office.",
     },
     {
       id: 3,
+      kode: "TBG",
       title: "Tata Boga",
       description:
         "Program keahlian yang mempelajari pengolahan makanan, minuman, nutrisi, menu planning, dan food presentation.",
-      siswaCount: 100,
-      buttonText: "Lihat Detail",
     },
     {
       id: 4,
+      kode: "TBS",
       title: "Tata Busana",
       description:
         "Program keahlian yang mempelajari desain, pembuatan, dan produksi pakaian, fashion design hingga tata busana.",
-      siswaCount: 100,
-      buttonText: "Lihat Detail",
     },
     {
       id: 5,
+      kode: "ULP",
       title: "Unit Layanan Pariwisata",
       description:
         "Program keahlian yang mempelajari pelayanan perjalanan wisata, ticketing, tour guiding, serta pengelolaan usaha pariwisata.",
-      siswaCount: 100,
-      buttonText: "Lihat Detail",
     },
-  ];
+  ].map((j) => ({
+    ...j,
+    siswaCount: groupedByJurusan[j.kode]?.length || 0,
+    buttonText: "Lihat Detail",
+  }));
 
   const handleCardClick = (jurusan) => {
   if (onNavigate) {

@@ -1,6 +1,24 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query"; // if not already in your project scope
+import { api } from "../../api/api";
 
 function LihatApprovementAk01({ onBack, data, onNavigate }) {
+  const id = useParams();
+  const { data: ak01, isLoading, isError, error } = useQuery({
+    queryKey: ["ak01"],
+    queryFn: () => api.get("/ak01/asesi/all").then((res) => res.data?.data ?? res.data),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: 60 * 60 * 1000,
+  });
+  
+  const filteredData = ak01?.find(
+    (item) => item?.assesment_asesi?.assesi?.user_id === parseInt(id.id)
+  );
+  const assesment = filteredData?.assesment_asesi?.assesment;
+  const buktiDescriptions =
+  filteredData?.attachments?.map((att) => att.description).filter(Boolean) ?? [];
   const [formData, setFormData] = useState({
     namaJadwal: "",
     tuk: "",
@@ -49,6 +67,8 @@ function LihatApprovementAk01({ onBack, data, onNavigate }) {
       }
     }));
   };
+    if (isLoading) return <p>Loading data...</p>;
+    if (isError) return <p>Error: {error.message}</p>;
 
   const inputStyle = {
     width: "100%",
@@ -121,7 +141,7 @@ function LihatApprovementAk01({ onBack, data, onNavigate }) {
           }}
         >
           <button
-            onClick={() => onNavigate && onNavigate("approvement/lihat")}
+            onClick={() => onNavigate && onNavigate(`approvement/lihat/${id.id}`)}
             style={{
               padding: "12px 20px",
               fontSize: "14px",
@@ -138,7 +158,7 @@ function LihatApprovementAk01({ onBack, data, onNavigate }) {
             FR.APL.01
           </button>
           <button
-            onClick={() => onNavigate && onNavigate("approvement/APL-02/lihat")}
+            onClick={() => onNavigate && onNavigate(`approvement/APL-02/lihat/${id.id}`)}
             style={{
               padding: "12px 20px",
               fontSize: "14px",
@@ -196,9 +216,6 @@ function LihatApprovementAk01({ onBack, data, onNavigate }) {
               backgroundColor: "#f8f9fa",
               padding: "16px",
               borderRight: "1px solid #ddd",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
             }}
           >
             {/* Data Jadwal Section */}
@@ -222,8 +239,9 @@ function LihatApprovementAk01({ onBack, data, onNavigate }) {
                 <span style={{ margin: "0 6px" }}>:</span>
                 <input
                   type="text"
-                  value={formData.namaJadwal}
+                  value={assesment?.skema?.judul_skema ?? formData.namaJadwal}
                   onChange={(e) => handleInputChange("namaJadwal", e.target.value)}
+                  disabled={!!assesment}
                   style={{ ...inputStyle, width: "180px" }}
                 />
               </div>
@@ -239,8 +257,9 @@ function LihatApprovementAk01({ onBack, data, onNavigate }) {
                 <span style={{ margin: "0 6px" }}>:</span>
                 <input
                   type="text"
-                  value={formData.tuk}
+                  value={assesment?.tuk ?? formData.tuk}
                   onChange={(e) => handleInputChange("tuk", e.target.value)}
+                  disabled={!!assesment}
                   style={{ ...inputStyle, width: "180px" }}
                 />
               </div>
@@ -256,78 +275,80 @@ function LihatApprovementAk01({ onBack, data, onNavigate }) {
                 <span style={{ margin: "0 6px" }}>:</span>
                 <input
                   type="text"
-                  value={formData.tanggalUjian}
+                  value={assesment?.tanggal_assesment ?? formData.tanggalUjian}
                   onChange={(e) => handleInputChange("tanggalUjian", e.target.value)}
+                  disabled={!!assesment}
                   style={{ ...inputStyle, width: "180px" }}
                 />
               </div>
             </div>
 
-            {/* Bagian Barcode Asesor & Asesi */}
+            {/* Bagian Status Approval Asesor & Asesi */}
             <div
               style={{
+                marginTop: "auto",
                 display: "flex",
+                gap: "12px",
                 flexDirection: "column",
-                gap: "16px",
               }}
             >
-              {/* Barcode Asesor */}
+              {/* Status Asesor */}
               <div
                 style={{
                   border: "2px dashed #ff8c42",
                   borderRadius: "12px",
                   padding: "12px",
                   textAlign: "center",
-                  backgroundColor: "white",
+                  backgroundColor: "#fff",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "8px",
                 }}
               >
-                <p style={{ fontWeight: "600", fontSize: "12px", marginBottom: "8px" }}>
-                  Barcode Asesor
-                </p>
+                <p style={{ fontWeight: 600, fontSize: "13px", margin: 0 }}>Status Asesor</p>
                 <div
                   style={{
-                    height: "80px",
-                    backgroundColor: "#f5f5f5",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    border: "2px dashed rgb(0, 0, 0)",
+                    width: "100%",
+                    maxWidth: "200px",
+                    padding: "10px 0",
                     borderRadius: "8px",
-                    border: "1px solid #ddd"
+                    fontWeight: 600,
+                    color: "black"
                   }}
-                >
-                  <span style={{ fontSize: "11px", color: "#666" }}>
-                    [Barcode Asesor]
-                  </span>
+                >{filteredData?.ttd_assesor == 1 ? "Approved" : "Pending"}
                 </div>
               </div>
 
-              {/* Barcode Asesi */}
+              {/* Status Asesi */}
               <div
                 style={{
                   border: "2px dashed #ff8c42",
                   borderRadius: "12px",
                   padding: "12px",
                   textAlign: "center",
-                  backgroundColor: "white",
+                  backgroundColor: "#fff",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "8px",
                 }}
               >
-                <p style={{ fontWeight: "600", fontSize: "12px", marginBottom: "8px" }}>
-                  Barcode Asesi
-                </p>
+                <p style={{ fontWeight: 600, fontSize: "13px", margin: 0 }}>Status Asesi</p>
                 <div
                   style={{
-                    height: "80px",
-                    backgroundColor: "#f5f5f5",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    border: "2px dashed rgb(0, 0, 0)",
+                    width: "100%",
+                    maxWidth: "200px",
+                    padding: "10px 0",
                     borderRadius: "8px",
-                    border: "1px solid #ddd"
+                    fontWeight: 600,
+                    color: "black",
                   }}
-                >
-                  <span style={{ fontSize: "11px", color: "#666" }}>
-                    [Barcode Asesi]
-                  </span>
+                >{filteredData?.ttd_asesi == 1 ? "Approved" : "Pending"}
                 </div>
               </div>
             </div>
@@ -348,92 +369,32 @@ function LihatApprovementAk01({ onBack, data, onNavigate }) {
               <h2 style={{ fontWeight: "600", fontSize: "14px", marginBottom: "12px" }}>
                 Bukti Yang Dikumpulkan:
               </h2>
+
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
-                <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                  <input
-                    type="checkbox"
-                    checked={formData.buktiDikumpulkan.reviuProduk}
-                    onChange={() => handleCheckboxChange("reviuProduk")}
-                    style={{ transform: "scale(1.2)" }}
-                  />
-                  Hasil Reviu Produk
-                </label>
-                <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                  <input
-                    type="checkbox"
-                    checked={formData.buktiDikumpulkan.kegiatanTerstruktur}
-                    onChange={() => handleCheckboxChange("kegiatanTerstruktur")}
-                    style={{ transform: "scale(1.2)" }}
-                  />
-                  Hasil Kegiatan Terstruktur
-                </label>
-                <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                  <input
-                    type="checkbox"
-                    checked={formData.buktiDikumpulkan.pertanyaanTertulis}
-                    onChange={() => handleCheckboxChange("pertanyaanTertulis")}
-                    style={{ transform: "scale(1.2)" }}
-                  />
-                  Hasil Pertanyaan Tertulis
-                </label>
-                <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                  <input
-                    type="checkbox"
-                    checked={formData.buktiDikumpulkan.pertanyaanWawancara}
-                    onChange={() => handleCheckboxChange("pertanyaanWawancara")}
-                    style={{ transform: "scale(1.2)" }}
-                  />
-                  Hasil Pertanyaan Wawancara
-                </label>
-                <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                  <input
-                    type="checkbox"
-                    checked={formData.buktiDikumpulkan.verifikasiPortofolio}
-                    onChange={() => handleCheckboxChange("verifikasiPortofolio")}
-                    style={{ transform: "scale(1.2)" }}
-                  />
-                  Hasil Verifikasi Portofolio
-                </label>
-                <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                  <input
-                    type="checkbox"
-                    checked={formData.buktiDikumpulkan.observasiLangsung}
-                    onChange={() => handleCheckboxChange("observasiLangsung")}
-                    style={{ transform: "scale(1.2)" }}
-                  />
-                  Hasil Observasi Langsung
-                </label>
-                <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                  <input
-                    type="checkbox"
-                    checked={formData.buktiDikumpulkan.pertanyaanLisan}
-                    onChange={() => handleCheckboxChange("pertanyaanLisan")}
-                    style={{ transform: "scale(1.2)" }}
-                  />
-                  Hasil Pertanyaan Lisan
-                </label>
-                <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                  <input
-                    type="checkbox"
-                    checked={formData.buktiDikumpulkan.lainnya}
-                    onChange={() => handleCheckboxChange("lainnya")}
-                    style={{ transform: "scale(1.2)" }}
-                  />
-                  Lainnya:
-                  {formData.buktiDikumpulkan.lainnya && (
-                    <input
-                      type="text"
-                      value={formData.buktiDikumpulkan.lainnyaText}
-                      onChange={(e) => handleInputChange("lainnyaText", e.target.value)}
-                      style={{ ...inputStyle, marginLeft: "6px", width: "100px" }}
-                    />
-                  )}
-                </label>
+                {buktiDescriptions.length > 0 ? (
+                  buktiDescriptions.map((desc, i) => (
+                    <label
+                      key={`bukti-${i}`}
+                      style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked
+                        readOnly
+                        disabled
+                        style={{ transform: "scale(1.2)" }}
+                      />
+                      {desc}
+                    </label>
+                  ))
+                ) : (
+                  <span style={{ fontSize: "12px", color: "#666" }}>Tidak ada bukti terlampir</span>
+                )}
               </div>
             </div>
 
             {/* Tanggal Pelaksanaan */}
-            <div
+            {/* <div
               style={{
                 border: "1.5px solid #ff8c42",
                 borderRadius: "10px",
@@ -474,7 +435,7 @@ function LihatApprovementAk01({ onBack, data, onNavigate }) {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Pernyataan */}
             <div

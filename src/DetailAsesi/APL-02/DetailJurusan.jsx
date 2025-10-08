@@ -15,6 +15,9 @@ export default function DetailJurusan({
   const navigate = useNavigate();
 
   console.log("apl01s:", apl01s);
+  console.log("asesis:", asesis);
+  console.log("jurusanList:", jurusanList);
+
   const merged = [
     // APL-01
     ...apl01s.map((f) => ({
@@ -46,7 +49,7 @@ export default function DetailJurusan({
   const [selectedKelas, setSelectedKelas] = useState("Semua");
 
   // Filter data berdasarkan search dan kelas
-  const filteredData = merged.filter((item) => {
+  const filteredData = uniqueMerged.filter((item) => {
     const matchesSearch = item.nama_lengkap
       .toLowerCase()
       .includes(searchTerm.toLowerCase());

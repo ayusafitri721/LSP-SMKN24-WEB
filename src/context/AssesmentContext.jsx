@@ -52,7 +52,7 @@ export const AssesmentProvider = ({ children }) => {
         res = await getAssesmentByAssesor();
       } else if (user.role === "admin") {
         // Backend no longer exposes a global index; try user-scoped as a fallback
-        res = await getAssesmentAsesiByUser(user.id);
+        res = await getAssesmentByAssesor();
       }
       setAssesmentAsesis(res.data?.data || []);
       setAssesmentAsesisFetched(true);
